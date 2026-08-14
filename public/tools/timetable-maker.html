@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>週の時間割メーカー</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 24px;
+    font-size: 15px;
+  }
+  h1 {
+    color: #2d6cdf;
+    font-size: 24px;
+    margin: 0 0 16px 0;
+    text-align: center;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    font-size: 17px;
+    margin: 0 0 14px 0;
+    color: #444;
+    border-left: 4px solid #2d6cdf;
+    padding-left: 8px;
+  }
+  details.card summary {
+    font-size: 17px;
+    color: #444;
+    border-left: 4px solid #2d6cdf;
+    padding-left: 8px;
+    cursor: pointer;
+    list-style: revert;
+  }
+  details.card[open] summary {
+    margin-bottom: 14px;
+  }
+
+  /* 年度バー */
+  .year-bar {
+    max-width: 1200px;
+    margin: 0 auto 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: #eaf2ff;
+    border-radius: 10px;
+    padding: 10px 16px;
+  }
+  .year-label {
+    font-size: 15px;
+    font-weight: bold;
+    color: #2d6cdf;
+  }
+  .year-bar button {
+    background: #fff;
+    border: 1px solid #cdd8e8;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #2d6cdf;
+  }
+  .year-bar button:hover { background: #dde9fb; }
+  .year-bar button.active {
+    background: #2d6cdf;
+    color: #fff;
+    border-color: #2d6cdf;
+  }
+  .hiragana-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #444;
+    margin-left: 8px;
+  }
+  .hiragana-toggle input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+  }
+
+  /* データのバックアップ */
+  .backup-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .backup-bar button {
+    background: #eef1f5;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 16px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .backup-bar button:hover { background: #dde3ea; }
+
+  /* 週選択 */
+  .week-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .week-bar .field {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    color: #666;
+  }
+  .week-bar input[type="date"] {
+    margin-top: 4px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .week-bar button {
+    background: #eef1f5;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    height: 38px;
+  }
+  .week-bar button:hover { background: #dde3ea; }
+  .week-bar button.primary {
+    background-color: #2d6cdf;
+    color: #fff;
+  }
+  .week-bar button.primary:hover { background-color: #1f54b8; }
+  .week-bar button.danger {
+    background-color: #fdeaea;
+    color: #d94040;
+  }
+  .week-bar button.danger:hover { background-color: #fbd6d6; }
+
+  .class-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 14px;
+    justify-content: center;
+  }
+  .class-info .field input {
+    margin-top: 4px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 160px;
+  }
+  .day-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #444;
+  }
+  .day-toggle label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .day-toggle input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+  }
+
+  /* 年間予定 */
+  .annual-add {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .annual-add input[type="date"] {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .annual-add input[type="text"] {
+    flex: 1;
+    min-width: 180px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .annual-add button {
+    background: #2d6cdf;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .annual-add button:hover { background-color: #1f54b8; }
+  table.annual-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  table.annual-table th, table.annual-table td {
+    border: 1px solid #ddd;
+    padding: 7px 10px;
+    font-size: 14px;
+    text-align: left;
+  }
+  table.annual-table th { background-color: #eaf2ff; color: #2d6cdf; }
+  .annual-del-btn {
+    background: #fdeaea;
+    color: #d94040;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .annual-del-btn:hover { background: #fbd6d6; }
+
+  /* 教科の選択肢編集 */
+  .subject-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .subject-chip {
+    background: #eaf2ff;
+    color: #2d6cdf;
+    border-radius: 16px;
+    padding: 5px 10px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .subject-chip button {
+    border: none;
+    background: transparent;
+    color: #2d6cdf;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+    padding: 2px 4px;
+  }
+  .subject-chip button:not(.chip-move):hover { color: #d94040; }
+  .subject-chip .chip-move {
+    font-size: 11px;
+    color: #7c93b8;
+  }
+  .subject-chip .chip-move:hover:not(:disabled) { color: #2d6cdf; }
+  .subject-chip .chip-move:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .subject-add {
+    display: flex;
+    gap: 8px;
+  }
+  .subject-add input {
+    flex: 1;
+    max-width: 240px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .subject-add button {
+    background: #2d6cdf;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .subject-add button:hover { background-color: #1f54b8; }
+
+  /* 時間割テーブル(曜日=縦, 時限=横) */
+  .table-wrap { overflow-x: auto; }
+  table.timetable {
+    width: 100%;
+    min-width: 1600px;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  table.timetable th, table.timetable td {
+    border: 1px solid #ddd;
+    padding: 7px;
+    vertical-align: top;
+    text-align: center;
+  }
+  table.timetable th {
+    background-color: #eaf2ff;
+    color: #2d6cdf;
+    font-size: 15px;
+  }
+  table.timetable th.col-label, table.timetable td.row-label { width: 130px; }
+  table.timetable th.col-label { background-color: #f4f6f8; color: #666; }
+  table.timetable td.row-label {
+    background-color: #f9fafb;
+    color: #555;
+  }
+  table.timetable .day-head {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  table.timetable .day-date {
+    font-size: 13px;
+    color: #888;
+    font-weight: normal;
+  }
+  table.timetable .day-event {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #b3610a;
+    background: #fff3e0;
+    border-radius: 6px;
+    padding: 3px 6px;
+  }
+  table.timetable input, table.timetable select, table.timetable textarea {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 16px;
+    text-align: center;
+    font-family: inherit;
+    padding: 4px;
+    border-radius: 4px;
+    resize: none;
+  }
+  table.timetable input:hover, table.timetable select:hover, table.timetable textarea:hover,
+  table.timetable input:focus, table.timetable select:focus, table.timetable textarea:focus {
+    border-color: #cdd8e8;
+    background: #fbfdff;
+    outline: none;
+  }
+  table.timetable select.subject {
+    font-weight: bold;
+    color: #2d6cdf;
+  }
+  table.timetable textarea.content {
+    color: #555;
+    min-height: 56px;
+  }
+  table.timetable textarea.asa {
+    min-height: 56px;
+  }
+  table.timetable textarea.homework,
+  table.timetable textarea.mochimono,
+  table.timetable textarea.memo {
+    min-height: 140px;
+    font-size: 15px;
+  }
+  table.timetable td.col-asa, table.timetable th.col-asa { background-color: #fff8e6; }
+  table.timetable td.col-homework, table.timetable th.col-homework { background-color: #f2f9f0; }
+  table.timetable td.col-mochimono, table.timetable th.col-mochimono { background-color: #f2f6fb; }
+  table.timetable td.col-memo, table.timetable th.col-memo { background-color: #f6f0fb; }
+
+  /* 定型パターン編集テーブルは少し高さを抑える */
+  #patternTable textarea.homework,
+  #patternTable textarea.mochimono,
+  #patternTable textarea.memo {
+    min-height: 70px;
+  }
+
+  /* 授業なし(斜め線)トグル */
+  .cross-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-size: 11px;
+    color: #999;
+    margin-bottom: 3px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .cross-toggle input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    cursor: pointer;
+  }
+  table.timetable td.crossed {
+    background-image: linear-gradient(
+      to top right,
+      transparent calc(50% - 1px),
+      #aaaaaa calc(50% - 1px),
+      #aaaaaa calc(50% + 1px),
+      transparent calc(50% + 1px)
+    );
+  }
+  table.timetable td.crossed select.subject,
+  table.timetable td.crossed textarea.content {
+    visibility: hidden;
+  }
+
+  /* 授業回数の集計 */
+  table.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  table.stats-table th, table.stats-table td {
+    border: 1px solid #ddd;
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 15px;
+  }
+  table.stats-table th {
+    background-color: #eaf2ff;
+    color: #2d6cdf;
+  }
+  table.stats-table td.stat-subject {
+    text-align: left;
+    font-weight: bold;
+    color: #444;
+  }
+  table.stats-table tr.stat-total td {
+    background-color: #f4f6f8;
+    font-weight: bold;
+  }
+  table.stats-table input.target-input {
+    width: 72px;
+    padding: 5px 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+    text-align: center;
+  }
+  .progress-wrap {
+    position: relative;
+    background: #eef1f5;
+    border-radius: 6px;
+    height: 20px;
+    width: 100%;
+    min-width: 100px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    background: #2d6cdf;
+    height: 100%;
+    border-radius: 6px 0 0 6px;
+  }
+  .progress-bar.over { background: #1f9d55; }
+  .progress-label {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #333;
+  }
+  .progress-none {
+    color: #ccc;
+    font-size: 13px;
+  }
+
+  /* 保存済み週リスト */
+  .saved-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .saved-list button {
+    background: #eef1f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .saved-list button:hover { background: #dde3ea; }
+  .saved-list button.current {
+    background-color: #2d6cdf;
+    color: #fff;
+    border-color: #2d6cdf;
+  }
+  .empty-note {
+    color: #999;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .save-status {
+    text-align: center;
+    font-size: 12px;
+    color: #1f9d55;
+    height: 16px;
+    margin-top: 8px;
+  }
+  .pattern-note {
+    text-align: center;
+    font-size: 12px;
+    color: #b3610a;
+    background: #fff3e0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-top: 10px;
+  }
+
+  /* 印刷 */
+  @media print {
+    @page { size: A4 landscape; margin: 8mm; }
+    html, body {
+      background: #fff;
+      padding: 0;
+      margin: 0;
+      height: auto;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .no-print { display: none !important; }
+    .container { max-width: none; }
+    .card { box-shadow: none; padding: 0; margin-bottom: 8px; border-radius: 0; }
+    table.timetable {
+      min-width: 0;
+      width: 100%;
+      table-layout: fixed;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    table.timetable th, table.timetable td { padding: 4px; border: 1.5px solid #888; }
+    table.timetable th { font-size: 15px; }
+    table.timetable th.col-label, table.timetable td.row-label { width: 78px; }
+    table.timetable .day-head { font-size: 17px; }
+    table.timetable .day-date { font-size: 12px; }
+    table.timetable .day-event { font-size: 11px; padding: 2px 4px; margin-top: 3px; }
+    table.timetable input, table.timetable select, table.timetable textarea {
+      font-size: 15px;
+      padding: 2px;
+    }
+    table.timetable input::placeholder, table.timetable textarea::placeholder {
+      color: transparent;
+    }
+    table.timetable textarea.content { min-height: 42px; }
+    table.timetable textarea.asa { min-height: 40px; }
+    table.timetable textarea.homework,
+    table.timetable textarea.mochimono,
+    table.timetable textarea.memo {
+      min-height: 60px;
+      font-size: 14px;
+    }
+    .cross-toggle { display: none !important; }
+    table.timetable input:hover, table.timetable select:hover, table.timetable textarea:hover,
+    table.timetable input:focus, table.timetable select:focus, table.timetable textarea:focus {
+      border-color: transparent;
+      background: transparent;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1 class="no-print">週の時間割メーカー</h1>
+</div>
+
+<div class="year-bar no-print">
+  <span class="year-label">年度: <span id="yearLabel"></span></span>
+  <button id="prevYearBtn" type="button">前年度</button>
+  <button id="thisYearBtn" type="button">今年度</button>
+  <button id="nextYearBtn" type="button">来年度</button>
+  <label class="hiragana-toggle"><input type="checkbox" id="hiraganaCheckbox"> ひらがな表示(低学年向け)</label>
+</div>
+
+<div class="container">
+  <div class="card no-print">
+    <h2>週を選ぶ</h2>
+    <div class="week-bar">
+      <div class="field">
+        <label for="weekStart">週の開始日(月曜日)</label>
+        <input type="date" id="weekStart">
+      </div>
+      <button id="prevWeekBtn">&laquo; 前の週</button>
+      <button id="nextWeekBtn">次の週 &raquo;</button>
+      <button id="copyPrevBtn">前週の内容をコピー</button>
+      <button id="applyPatternBtn">定型を適用</button>
+      <button id="printBtn" class="primary">印刷する</button>
+      <button id="deleteWeekBtn" class="danger">この週を削除</button>
+    </div>
+    <div class="class-info">
+      <div class="field">
+        <label for="className">クラス名</label>
+        <input type="text" id="className" placeholder="例: 3年1組">
+      </div>
+      <div class="field">
+        <label for="teacherName">担任名</label>
+        <input type="text" id="teacherName" placeholder="例: 山田先生">
+      </div>
+    </div>
+    <div class="day-toggle">
+      <label><input type="checkbox" id="includeSatCheckbox"> 土曜日を追加(この週だけ)</label>
+      <label><input type="checkbox" id="includeSunCheckbox"> 日曜日を追加(この週だけ)</label>
+    </div>
+    <div class="pattern-note no-print" id="patternNote" style="display:none;"></div>
+    <div class="save-status" id="saveStatus"></div>
+  </div>
+
+  <details class="card no-print">
+    <summary>定型パターン(曜日ごとの基本時間割)</summary>
+    <div class="empty-note" style="margin:10px 0;">特定の日付とは関係のない、曜日だけの基本時間割です。ここを編集すると自動保存され、次に開く新しい週の初期値になります。</div>
+    <div class="table-wrap">
+      <table class="timetable" id="patternTable">
+        <thead>
+          <tr id="patternHeadRow"></tr>
+        </thead>
+        <tbody id="patternTableBody"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <div class="card no-print">
+    <h2>年間予定</h2>
+    <div class="annual-add">
+      <input type="date" id="annualDateInput">
+      <input type="text" id="annualTextInput" placeholder="行事名など(例: 運動会)">
+      <button id="addAnnualBtn" type="button">追加</button>
+    </div>
+    <div class="table-wrap">
+      <table class="annual-table">
+        <thead><tr><th>日付</th><th>内容</th><th></th></tr></thead>
+        <tbody id="annualBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <details class="card no-print">
+    <summary>教科の選択肢</summary>
+    <div class="empty-note" style="margin:10px 0;">↑↓で並び替え、×で削除できます</div>
+    <div class="subject-chips" id="subjectChips"></div>
+    <div class="subject-add">
+      <input type="text" id="newSubjectInput" placeholder="新しい教科名を入力">
+      <button id="addSubjectBtn" type="button">追加</button>
+    </div>
+  </details>
+
+  <div class="card">
+    <h2 class="no-print">時間割</h2>
+    <div id="printHeader" style="display:none; text-align:center; margin-bottom: 8px;">
+      <div style="font-size:20px; font-weight:bold;" id="printWeekRange"></div>
+      <div style="font-size:14px; color:#666;" id="printClassName"></div>
+    </div>
+    <div class="table-wrap">
+      <table class="timetable" id="timetable">
+        <thead>
+          <tr id="headRow"></tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- 行はJSで生成 -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card no-print">
+    <h2>教科ごとの授業回数</h2>
+    <div class="empty-note" style="margin-bottom:10px;">「目標(年間)」に年間標準時数を入れると、累計との進捗バーが表示されます(累計は年度が変わるとリセットされます)</div>
+    <div class="table-wrap">
+      <table class="stats-table">
+        <thead>
+          <tr><th>教科</th><th>今週</th><th>累計</th><th>目標(年間)</th><th>進捗</th></tr>
+        </thead>
+        <tbody id="statsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card no-print">
+    <h2>保存済みの週</h2>
+    <div class="saved-list" id="savedList">
+      <div class="empty-note">まだ保存された週はありません</div>
+    </div>
+  </div>
+
+  <div class="card no-print">
+    <h2>データのバックアップ</h2>
+    <div class="empty-note" style="margin-bottom:10px;">別のパソコン・ブラウザにデータを移すときや、万が一に備えて保存しておきたいときに使います(全年度分をまとめて書き出します)</div>
+    <div class="backup-bar">
+      <button id="exportBtn" type="button">データを書き出す</button>
+      <button id="importBtn" type="button">データを読み込む</button>
+      <input type="file" id="importFileInput" accept="application/json" style="display:none;">
+    </div>
+    <div class="save-status" id="backupStatus"></div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_PREFIX = "timetable_week_";
+  const SUBJECT_KEY = "timetable_subjects";
+  const ANNUAL_KEY = "timetable_annual_events";
+  const PATTERN_KEY = "timetable_pattern";
+  const TARGET_KEY = "timetable_targets";
+  const HIRAGANA_KEY = "timetable_hiragana_mode";
+
+  const DAY_NAMES = ["月", "火", "水", "木", "金", "土", "日"];
+  const DAY_NAMES_HIRA = ["げつ", "か", "すい", "もく", "きん", "ど", "にち"];
+  const ALL_DAYS = 7; // データは常に月〜日の7日分を保持し、表示だけ土日を切り替える
+  const NUM_PERIODS = 6;
+  const DEFAULT_SUBJECTS = [
+    "国語", "算数", "理科", "社会", "英語", "体育", "図工", "音楽",
+    "家庭科", "書写", "学活", "道徳", "総合", "行事", "児童会", "クラブ"
+  ];
+  // ひらがな表示モード用の読みがな(既定の教科のみ。追加した教科は元の表記のまま)
+  const SUBJECT_READINGS = {
+    "国語": "こくご", "算数": "さんすう", "理科": "りか", "社会": "しゃかい",
+    "英語": "えいご", "体育": "たいいく", "図工": "ずこう", "音楽": "おんがく",
+    "家庭科": "かていか", "書写": "しょしゃ", "学活": "がっかつ", "道徳": "どうとく",
+    "総合": "そうごう", "行事": "ぎょうじ", "児童会": "じどうかい"
+  };
+  const COLUMN_LABEL_HIRA = {
+    asa: "あさのじかん",
+    homework: "しゅくだい",
+    mochimono: "もちもの",
+    memo: "めも"
+  };
+
+  const COLUMNS = [
+    { key: "asa", label: "朝の時間", type: "line" },
+    ...Array.from({ length: NUM_PERIODS }, (_, i) => ({
+      key: "period" + (i + 1),
+      label: (i + 1) + "時間目",
+      type: "period"
+    })),
+    { key: "homework", label: "宿題", type: "area" },
+    { key: "mochimono", label: "持ち物", type: "area" },
+    { key: "memo", label: "メモ", type: "area" }
+  ];
+
+  const weekStartInput = document.getElementById("weekStart");
+  const headRow = document.getElementById("headRow");
+  const tableBody = document.getElementById("tableBody");
+  const patternHeadRow = document.getElementById("patternHeadRow");
+  const patternTableBody = document.getElementById("patternTableBody");
+  const savedList = document.getElementById("savedList");
+  const saveStatus = document.getElementById("saveStatus");
+  const classNameInput = document.getElementById("className");
+  const teacherNameInput = document.getElementById("teacherName");
+  const subjectChips = document.getElementById("subjectChips");
+  const newSubjectInput = document.getElementById("newSubjectInput");
+  const statsBody = document.getElementById("statsBody");
+  const annualBody = document.getElementById("annualBody");
+  const annualDateInput = document.getElementById("annualDateInput");
+  const annualTextInput = document.getElementById("annualTextInput");
+  const includeSatCheckbox = document.getElementById("includeSatCheckbox");
+  const includeSunCheckbox = document.getElementById("includeSunCheckbox");
+  const hiraganaCheckbox = document.getElementById("hiraganaCheckbox");
+
+  let activeYear = null;   // 現在表示中の年度(4月始まり)
+  let currentData = null;  // 現在表示中の週データ
+  let SUBJECTS = [];
+  let ANNUAL_EVENTS = [];
+  let TARGETS = {};
+  let PATTERN_DATA = null;
+  let HIRAGANA_MODE = localStorage.getItem(HIRAGANA_KEY) === "1";
+
+  /* ---------- 日付・年度ユーティリティ ---------- */
+
+  function pad(n) { return String(n).padStart(2, "0"); }
+
+  function toDateStr(d) {
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  }
+
+  function parseDateStr(s) {
+    const [y, m, d] = s.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  function getMonday(dateStr) {
+    const d = parseDateStr(dateStr);
+    const day = d.getDay(); // 0=日,1=月...
+    const diff = day === 0 ? -6 : 1 - day;
+    d.setDate(d.getDate() + diff);
+    return toDateStr(d);
+  }
+
+  function addDays(dateStr, n) {
+    const d = parseDateStr(dateStr);
+    d.setDate(d.getDate() + n);
+    return toDateStr(d);
+  }
+
+  function formatShort(dateStr) {
+    const d = parseDateStr(dateStr);
+    return (d.getMonth() + 1) + "/" + d.getDate();
+  }
+
+  function formatLongWithDow(dateStr) {
+    const d = parseDateStr(dateStr);
+    const idx = (d.getDay() + 6) % 7;
+    if (HIRAGANA_MODE) {
+      return (d.getMonth() + 1) + "がつ" + d.getDate() + "にち(" + DAY_NAMES_HIRA[idx] + ")";
+    }
+    return (d.getMonth() + 1) + "月" + d.getDate() + "日(" + DAY_NAMES[idx] + ")";
+  }
+
+  // 4月始まり3月終わりの年度(例: 2026年4月〜2027年3月 は 2026年度)
+  function schoolYearOf(dateStr) {
+    const d = parseDateStr(dateStr);
+    const y = d.getFullYear();
+    const m = d.getMonth() + 1;
+    return m >= 4 ? y : y - 1;
+  }
+
+  function currentSchoolYear() {
+    return schoolYearOf(toDateStr(new Date()));
+  }
+
+  // 指定した年度の4/1以降、最初の月曜日
+  function firstMondayOfSchoolYear(year) {
+    const d = new Date(year, 3, 1);
+    const day = d.getDay();
+    d.setDate(d.getDate() + ((8 - day) % 7));
+    return toDateStr(d);
+  }
+
+  function weekPrefixFor(year) {
+    return STORAGE_PREFIX + year + "_";
+  }
+
+  function storageKey(monday) {
+    return weekPrefixFor(schoolYearOf(monday)) + monday;
+  }
+
+  function subjectKeyFor(year) { return SUBJECT_KEY + "_" + year; }
+  function annualKeyFor(year) { return ANNUAL_KEY + "_" + year; }
+  function patternKeyFor(year) { return PATTERN_KEY + "_" + year; }
+  function targetKeyFor(year) { return TARGET_KEY + "_" + year; }
+
+  /* ---------- 旧バージョン(年度分けなし)のデータを移行 ---------- */
+
+  function migrateLegacyDataOnce() {
+    const year = currentSchoolYear();
+
+    [[SUBJECT_KEY, subjectKeyFor(year)],
+     [ANNUAL_KEY, annualKeyFor(year)],
+     [PATTERN_KEY, patternKeyFor(year)],
+     [TARGET_KEY, targetKeyFor(year)]].forEach(([oldKey, newKey]) => {
+      const raw = localStorage.getItem(oldKey);
+      if (raw !== null) {
+        if (localStorage.getItem(newKey) === null) {
+          localStorage.setItem(newKey, raw);
+        }
+        localStorage.removeItem(oldKey);
+      }
+    });
+
+    Object.keys(localStorage).forEach(k => {
+      if (k.startsWith(STORAGE_PREFIX) && /^timetable_week_\d{4}-\d{2}-\d{2}$/.test(k)) {
+        const monday = k.slice(STORAGE_PREFIX.length);
+        const newKey = storageKey(monday);
+        if (localStorage.getItem(newKey) === null) {
+          localStorage.setItem(newKey, localStorage.getItem(k));
+        }
+        localStorage.removeItem(k);
+      }
+    });
+  }
+
+  /* ---------- ひらがな表示 ---------- */
+
+  function dayLabel(d) {
+    return HIRAGANA_MODE ? (DAY_NAMES_HIRA[d] + "ようび") : (DAY_NAMES[d] + "曜日");
+  }
+
+  function getColumnLabel(col) {
+    if (col.type === "period") {
+      const num = col.key.replace("period", "");
+      return HIRAGANA_MODE ? (num + "じかんめ") : (num + "時間目");
+    }
+    if (HIRAGANA_MODE && COLUMN_LABEL_HIRA[col.key]) return COLUMN_LABEL_HIRA[col.key];
+    return col.label;
+  }
+
+  function subjectDisplayName(name) {
+    return (HIRAGANA_MODE && SUBJECT_READINGS[name]) ? SUBJECT_READINGS[name] : name;
+  }
+
+  function emptyDayData() {
+    const obj = {};
+    COLUMNS.forEach(c => {
+      if (c.type === "period") {
+        obj[c.key] = { subject: "", content: "", crossed: false };
+      } else {
+        obj[c.key] = "";
+      }
+    });
+    return obj;
+  }
+
+  function emptyPatternDays() {
+    return Array.from({ length: ALL_DAYS }, () => emptyDayData());
+  }
+
+  /* ---------- 教科の選択肢管理(年度ごと) ---------- */
+
+  function loadSubjects() {
+    const raw = localStorage.getItem(subjectKeyFor(activeYear));
+    if (raw) {
+      try {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr) && arr.length) return arr;
+      } catch (e) { /* fallthrough */ }
+    }
+    // 前年度の設定があれば引き継ぐ(なければ既定の一覧)
+    const prevRaw = localStorage.getItem(subjectKeyFor(activeYear - 1));
+    if (prevRaw) {
+      try {
+        const arr = JSON.parse(prevRaw);
+        if (Array.isArray(arr) && arr.length) return arr.slice();
+      } catch (e) { /* fallthrough */ }
+    }
+    return DEFAULT_SUBJECTS.slice();
+  }
+
+  function saveSubjects() {
+    localStorage.setItem(subjectKeyFor(activeYear), JSON.stringify(SUBJECTS));
+  }
+
+  function renderSubjectEditor() {
+    subjectChips.innerHTML = "";
+    SUBJECTS.forEach((s, i) => {
+      const chip = document.createElement("span");
+      chip.className = "subject-chip";
+
+      const upBtn = document.createElement("button");
+      upBtn.type = "button";
+      upBtn.className = "chip-move";
+      upBtn.textContent = "↑";
+      upBtn.disabled = i === 0;
+      upBtn.setAttribute("aria-label", s + "を前へ移動");
+      upBtn.addEventListener("click", () => moveSubject(i, -1));
+
+      const downBtn = document.createElement("button");
+      downBtn.type = "button";
+      downBtn.className = "chip-move";
+      downBtn.textContent = "↓";
+      downBtn.disabled = i === SUBJECTS.length - 1;
+      downBtn.setAttribute("aria-label", s + "を後ろへ移動");
+      downBtn.addEventListener("click", () => moveSubject(i, 1));
+
+      const label = document.createElement("span");
+      label.textContent = subjectDisplayName(s);
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.textContent = "×";
+      delBtn.setAttribute("aria-label", s + "を削除");
+      delBtn.addEventListener("click", () => removeSubject(s));
+
+      chip.appendChild(upBtn);
+      chip.appendChild(downBtn);
+      chip.appendChild(label);
+      chip.appendChild(delBtn);
+      subjectChips.appendChild(chip);
+    });
+  }
+
+  function moveSubject(index, delta) {
+    const newIndex = index + delta;
+    if (newIndex < 0 || newIndex >= SUBJECTS.length) return;
+    const tmp = SUBJECTS[index];
+    SUBJECTS[index] = SUBJECTS[newIndex];
+    SUBJECTS[newIndex] = tmp;
+    saveSubjects();
+    renderSubjectEditor();
+    refreshAllTables();
+  }
+
+  function addSubject(name) {
+    name = (name || "").trim();
+    if (!name || SUBJECTS.includes(name)) return;
+    SUBJECTS.push(name);
+    saveSubjects();
+    renderSubjectEditor();
+    refreshAllTables();
+  }
+
+  function removeSubject(name) {
+    SUBJECTS = SUBJECTS.filter(s => s !== name);
+    saveSubjects();
+    renderSubjectEditor();
+    refreshAllTables();
+  }
+
+  function refreshAllTables() {
+    if (currentData) fillValues();
+    if (PATTERN_DATA) fillPatternValues();
+  }
+
+  function populateSubjectSelect(select, value) {
+    select.innerHTML = "";
+    const blank = document.createElement("option");
+    blank.value = "";
+    blank.textContent = "―";
+    select.appendChild(blank);
+    SUBJECTS.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = subjectDisplayName(s);
+      select.appendChild(opt);
+    });
+    if (value && !SUBJECTS.includes(value)) {
+      const opt = document.createElement("option");
+      opt.value = value;
+      opt.textContent = subjectDisplayName(value) + "(旧)";
+      select.appendChild(opt);
+    }
+    select.value = value || "";
+  }
+
+  /* ---------- 年間予定の管理(年度ごと) ---------- */
+
+  function loadAnnualEvents() {
+    const raw = localStorage.getItem(annualKeyFor(activeYear));
+    if (raw) {
+      try {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) return arr;
+      } catch (e) { /* fallthrough */ }
+    }
+    return [];
+  }
+
+  function saveAnnualEvents() {
+    localStorage.setItem(annualKeyFor(activeYear), JSON.stringify(ANNUAL_EVENTS));
+  }
+
+  function addAnnualEvent(dateStr, text) {
+    text = (text || "").trim();
+    if (!dateStr || !text) return;
+    ANNUAL_EVENTS.push({
+      id: Date.now() + "_" + Math.random().toString(36).slice(2),
+      date: dateStr,
+      text
+    });
+    ANNUAL_EVENTS.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+    saveAnnualEvents();
+    renderAnnualList();
+    refreshTableIfNeeded();
+  }
+
+  function removeAnnualEvent(id) {
+    ANNUAL_EVENTS = ANNUAL_EVENTS.filter(ev => ev.id !== id);
+    saveAnnualEvents();
+    renderAnnualList();
+    refreshTableIfNeeded();
+  }
+
+  function getAnnualEventsForDate(dateStr) {
+    return ANNUAL_EVENTS.filter(ev => ev.date === dateStr);
+  }
+
+  function refreshTableIfNeeded() {
+    if (!currentData) return;
+    buildBody();
+    fillValues();
+  }
+
+  function renderAnnualList() {
+    annualBody.innerHTML = "";
+    if (ANNUAL_EVENTS.length === 0) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 3;
+      td.className = "empty-note";
+      td.textContent = "まだ登録されていません";
+      tr.appendChild(td);
+      annualBody.appendChild(tr);
+      return;
+    }
+    ANNUAL_EVENTS.forEach(ev => {
+      const tr = document.createElement("tr");
+
+      const tdDate = document.createElement("td");
+      const dow = DAY_NAMES[(parseDateStr(ev.date).getDay() + 6) % 7];
+      tdDate.textContent = formatShort(ev.date) + "(" + dow + ")";
+
+      const tdText = document.createElement("td");
+      tdText.textContent = ev.text;
+
+      const tdDel = document.createElement("td");
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "annual-del-btn";
+      delBtn.textContent = "削除";
+      delBtn.addEventListener("click", () => removeAnnualEvent(ev.id));
+      tdDel.appendChild(delBtn);
+
+      tr.appendChild(tdDate);
+      tr.appendChild(tdText);
+      tr.appendChild(tdDel);
+      annualBody.appendChild(tr);
+    });
+  }
+
+  /* ---------- 定型パターン(曜日ごとの基本時間割、年度ごと) ---------- */
+
+  function loadPattern() {
+    const raw = localStorage.getItem(patternKeyFor(activeYear));
+    if (raw) {
+      try {
+        const days = JSON.parse(raw);
+        if (Array.isArray(days) && days.length === ALL_DAYS) return days;
+      } catch (e) { /* fallthrough */ }
+    }
+    return null;
+  }
+
+  function savePattern(days) {
+    localStorage.setItem(patternKeyFor(activeYear), JSON.stringify(days));
+  }
+
+  function clonePatternDays(days) {
+    return days.map(day => JSON.parse(JSON.stringify(day)));
+  }
+
+  function buildPatternHeader() {
+    patternHeadRow.innerHTML = "";
+    const corner = document.createElement("th");
+    corner.className = "col-label";
+    patternHeadRow.appendChild(corner);
+    COLUMNS.forEach(col => {
+      const th = document.createElement("th");
+      th.className = "col-" + col.key;
+      th.textContent = getColumnLabel(col);
+      patternHeadRow.appendChild(th);
+    });
+  }
+
+  function buildPatternBody() {
+    patternTableBody.innerHTML = "";
+    for (let d = 0; d < ALL_DAYS; d++) {
+      const tr = document.createElement("tr");
+      const labelTd = document.createElement("td");
+      labelTd.className = "row-label";
+      const headDiv = document.createElement("div");
+      headDiv.className = "day-head";
+      headDiv.textContent = dayLabel(d);
+      labelTd.appendChild(headDiv);
+      tr.appendChild(labelTd);
+
+      COLUMNS.forEach(col => {
+        const td = document.createElement("td");
+        td.className = "col-" + col.key;
+        buildCellInto(td, col, d);
+        tr.appendChild(td);
+      });
+
+      patternTableBody.appendChild(tr);
+    }
+
+    patternTableBody.querySelectorAll("input, select, textarea").forEach(el => {
+      el.addEventListener("input", onPatternCellInput);
+      el.addEventListener("change", onPatternCellInput);
+    });
+  }
+
+  function fillPatternValues() {
+    patternTableBody.querySelectorAll("[data-key]").forEach(el => {
+      const day = Number(el.dataset.day);
+      const key = el.dataset.key;
+      const field = el.dataset.field;
+      const dayData = PATTERN_DATA[day] || emptyDayData();
+      const value = field ? (dayData[key] ? dayData[key][field] : "") : (dayData[key] || "");
+      if (el.tagName === "SELECT") {
+        populateSubjectSelect(el, value);
+      } else if (el.type === "checkbox") {
+        el.checked = !!value;
+        const td = el.closest("td");
+        if (td) td.classList.toggle("crossed", !!value);
+      } else {
+        el.value = value;
+      }
+    });
+  }
+
+  function onPatternCellInput(e) {
+    const el = e.target;
+    const day = Number(el.dataset.day);
+    const key = el.dataset.key;
+    const field = el.dataset.field;
+    const value = el.type === "checkbox" ? el.checked : el.value;
+    if (field) {
+      PATTERN_DATA[day][key][field] = value;
+    } else {
+      PATTERN_DATA[day][key] = value;
+    }
+    if (el.type === "checkbox") {
+      const td = el.closest("td");
+      if (td) td.classList.toggle("crossed", value);
+    }
+    savePattern(PATTERN_DATA);
+  }
+
+  /* ---------- 週データの読み書き ---------- */
+
+  function loadWeek(monday) {
+    const raw = localStorage.getItem(storageKey(monday));
+    if (raw) {
+      try {
+        const data = JSON.parse(raw);
+        // 旧バージョン(月〜金の5日分のみ)のデータを7日分に拡張
+        const days = Array.from({ length: ALL_DAYS }, (_, i) =>
+          (data.days && data.days[i]) ? data.days[i] : emptyDayData());
+        data.days = days;
+        data.includeSat = !!data.includeSat;
+        data.includeSun = !!data.includeSun;
+        data.fromPattern = !!data.fromPattern;
+        return data;
+      } catch (e) { /* fallthrough */ }
+    }
+    const pattern = loadPattern();
+    return {
+      monday,
+      className: classNameInput.value || "",
+      teacherName: teacherNameInput.value || "",
+      includeSat: false,
+      includeSun: false,
+      // 定型パターンから自動で埋めた週は、編集して確定するまで授業回数の集計に含めない
+      fromPattern: !!pattern,
+      days: pattern ? clonePatternDays(pattern) : emptyPatternDays()
+    };
+  }
+
+  function getVisibleDayIndices(data) {
+    const idx = [0, 1, 2, 3, 4];
+    if (data.includeSat) idx.push(5);
+    if (data.includeSun) idx.push(6);
+    return idx;
+  }
+
+  function saveCurrentWeek() {
+    if (!currentData) return;
+    currentData.className = classNameInput.value;
+    currentData.teacherName = teacherNameInput.value;
+    localStorage.setItem(storageKey(currentData.monday), JSON.stringify(currentData));
+    saveStatus.textContent = "保存しました";
+    clearTimeout(saveCurrentWeek._t);
+    saveCurrentWeek._t = setTimeout(() => { saveStatus.textContent = ""; }, 1200);
+    renderSavedList();
+  }
+
+  /* ---------- テーブル描画(曜日=行, 時限=列) ---------- */
+
+  function buildHeader() {
+    headRow.innerHTML = "";
+    const corner = document.createElement("th");
+    corner.className = "col-label";
+    headRow.appendChild(corner);
+    COLUMNS.forEach(col => {
+      const th = document.createElement("th");
+      th.className = "col-" + col.key;
+      th.textContent = getColumnLabel(col);
+      headRow.appendChild(th);
+    });
+  }
+
+  // 時限セルの中身(チェックボックス+教科+内容、または朝/宿題/持ち物/メモの入力)を作る
+  function buildCellInto(td, col, d) {
+    if (col.type === "period") {
+      const crossLabel = document.createElement("label");
+      crossLabel.className = "cross-toggle no-print";
+      crossLabel.title = "この時間は授業なし";
+      const crossCheckbox = document.createElement("input");
+      crossCheckbox.type = "checkbox";
+      crossCheckbox.dataset.day = d;
+      crossCheckbox.dataset.key = col.key;
+      crossCheckbox.dataset.field = "crossed";
+      crossLabel.appendChild(crossCheckbox);
+      crossLabel.appendChild(document.createTextNode("なし"));
+
+      const select = document.createElement("select");
+      select.className = "subject";
+      select.dataset.day = d;
+      select.dataset.key = col.key;
+      select.dataset.field = "subject";
+
+      const contentArea = document.createElement("textarea");
+      contentArea.className = "content";
+      contentArea.placeholder = "内容";
+      contentArea.rows = 2;
+      contentArea.dataset.day = d;
+      contentArea.dataset.key = col.key;
+      contentArea.dataset.field = "content";
+
+      td.appendChild(crossLabel);
+      td.appendChild(select);
+      td.appendChild(contentArea);
+    } else if (col.type === "line") {
+      const area = document.createElement("textarea");
+      area.rows = 2;
+      area.className = "asa";
+      area.placeholder = "例: 8:15 朝の会";
+      area.dataset.day = d;
+      area.dataset.key = col.key;
+      td.appendChild(area);
+    } else {
+      const area = document.createElement("textarea");
+      area.rows = 3;
+      area.className = col.key;
+      area.dataset.day = d;
+      area.dataset.key = col.key;
+      td.appendChild(area);
+    }
+  }
+
+  function buildBody() {
+    tableBody.innerHTML = "";
+    const monday = currentData.monday;
+    getVisibleDayIndices(currentData).forEach(d => {
+      const tr = document.createElement("tr");
+      const dateStr = addDays(monday, d);
+
+      const labelTd = document.createElement("td");
+      labelTd.className = "row-label";
+      const headDiv = document.createElement("div");
+      headDiv.className = "day-head";
+      headDiv.textContent = dayLabel(d);
+      const dateDiv = document.createElement("div");
+      dateDiv.className = "day-date";
+      dateDiv.textContent = formatShort(dateStr);
+      labelTd.appendChild(headDiv);
+      labelTd.appendChild(dateDiv);
+      getAnnualEventsForDate(dateStr).forEach(ev => {
+        const evDiv = document.createElement("div");
+        evDiv.className = "day-event";
+        evDiv.textContent = ev.text;
+        labelTd.appendChild(evDiv);
+      });
+      tr.appendChild(labelTd);
+
+      COLUMNS.forEach(col => {
+        const td = document.createElement("td");
+        td.className = "col-" + col.key;
+        buildCellInto(td, col, d);
+        tr.appendChild(td);
+      });
+
+      tableBody.appendChild(tr);
+    });
+
+    tableBody.querySelectorAll("input, select, textarea").forEach(el => {
+      el.addEventListener("input", onCellInput);
+      el.addEventListener("change", onCellInput);
+    });
+  }
+
+  function onCellInput(e) {
+    const el = e.target;
+    const day = Number(el.dataset.day);
+    const key = el.dataset.key;
+    const field = el.dataset.field;
+    const value = el.type === "checkbox" ? el.checked : el.value;
+    if (field) {
+      currentData.days[day][key][field] = value;
+    } else {
+      currentData.days[day][key] = value;
+    }
+    if (el.type === "checkbox") {
+      const td = el.closest("td");
+      if (td) td.classList.toggle("crossed", value);
+    }
+    if (currentData.fromPattern) {
+      currentData.fromPattern = false;
+      updatePatternNote();
+    }
+    saveCurrentWeek();
+    updateStats();
+  }
+
+  function fillValues() {
+    tableBody.querySelectorAll("[data-key]").forEach(el => {
+      const day = Number(el.dataset.day);
+      const key = el.dataset.key;
+      const field = el.dataset.field;
+      const dayData = currentData.days[day] || emptyDayData();
+      const value = field ? (dayData[key] ? dayData[key][field] : "") : (dayData[key] || "");
+      if (el.tagName === "SELECT") {
+        populateSubjectSelect(el, value);
+      } else if (el.type === "checkbox") {
+        el.checked = !!value;
+        const td = el.closest("td");
+        if (td) td.classList.toggle("crossed", !!value);
+      } else {
+        el.value = value;
+      }
+    });
+    updateStats();
+  }
+
+  function updatePrintHeader() {
+    const visible = getVisibleDayIndices(currentData);
+    const last = addDays(currentData.monday, visible[visible.length - 1]);
+    document.getElementById("printWeekRange").textContent =
+      formatLongWithDow(currentData.monday) + " 〜 " + formatLongWithDow(last);
+    const nameEl = document.getElementById("printClassName");
+    if (classNameInput.value) {
+      nameEl.textContent = classNameInput.value;
+      nameEl.style.display = "";
+    } else {
+      nameEl.textContent = "";
+      nameEl.style.display = "none";
+    }
+  }
+
+  /* ---------- 授業回数の集計(年度内) ---------- */
+
+  function countPeriodsInDays(days) {
+    const counts = {};
+    (days || []).forEach(day => {
+      for (let i = 1; i <= NUM_PERIODS; i++) {
+        const p = day["period" + i];
+        if (!p || p.crossed) continue;
+        const subj = p.subject;
+        if (subj) counts[subj] = (counts[subj] || 0) + 1;
+      }
+    });
+    return counts;
+  }
+
+  function getAllWeeksData() {
+    const prefix = weekPrefixFor(activeYear);
+    return Object.keys(localStorage)
+      .filter(k => k.startsWith(prefix))
+      .map(k => {
+        const monday = k.slice(prefix.length);
+        if (currentData && monday === currentData.monday) return currentData;
+        try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; }
+      })
+      .filter(Boolean);
+  }
+
+  function updateStats() {
+    if (!currentData) return;
+    const weekly = countPeriodsInDays(currentData.days);
+    const cumulative = {};
+    getAllWeeksData()
+      // 定型パターンから自動で埋めただけで未編集の週は、まだ実際に授業をしたか
+      // 確定していないため累計には含めない
+      .filter(w => !w.fromPattern)
+      .forEach(w => {
+        const c = countPeriodsInDays(w.days);
+        Object.keys(c).forEach(k => { cumulative[k] = (cumulative[k] || 0) + c[k]; });
+      });
+
+    const allSubjects = SUBJECTS.slice();
+    Object.keys(cumulative).forEach(s => { if (!allSubjects.includes(s)) allSubjects.push(s); });
+    Object.keys(weekly).forEach(s => { if (!allSubjects.includes(s)) allSubjects.push(s); });
+
+    statsBody.innerHTML = "";
+    let weeklyTotal = 0, cumulativeTotal = 0;
+    allSubjects.forEach(s => {
+      const w = weekly[s] || 0;
+      const c = cumulative[s] || 0;
+      weeklyTotal += w;
+      cumulativeTotal += c;
+      const tr = document.createElement("tr");
+
+      const tdName = document.createElement("td");
+      tdName.className = "stat-subject";
+      tdName.textContent = subjectDisplayName(s);
+
+      const tdWeek = document.createElement("td");
+      tdWeek.textContent = w;
+
+      const tdCum = document.createElement("td");
+      tdCum.textContent = c;
+
+      const tdTarget = document.createElement("td");
+      const targetInput = document.createElement("input");
+      targetInput.type = "number";
+      targetInput.min = "0";
+      targetInput.className = "target-input";
+      targetInput.placeholder = "未設定";
+      targetInput.value = TARGETS[s] != null ? TARGETS[s] : "";
+      targetInput.addEventListener("change", () => {
+        const v = parseInt(targetInput.value, 10);
+        if (!isNaN(v) && v > 0) {
+          TARGETS[s] = v;
+        } else {
+          delete TARGETS[s];
+        }
+        saveTargets();
+        updateStats();
+      });
+      tdTarget.appendChild(targetInput);
+
+      const tdProgress = document.createElement("td");
+      const target = TARGETS[s];
+      if (target) {
+        const pct = Math.round((c / target) * 100);
+        const wrap = document.createElement("div");
+        wrap.className = "progress-wrap";
+        const bar = document.createElement("div");
+        bar.className = "progress-bar" + (pct >= 100 ? " over" : "");
+        bar.style.width = Math.min(pct, 100) + "%";
+        const label = document.createElement("span");
+        label.className = "progress-label";
+        label.textContent = pct + "%";
+        wrap.appendChild(bar);
+        wrap.appendChild(label);
+        tdProgress.appendChild(wrap);
+      } else {
+        tdProgress.className = "progress-none";
+        tdProgress.textContent = "―";
+      }
+
+      tr.appendChild(tdName);
+      tr.appendChild(tdWeek);
+      tr.appendChild(tdCum);
+      tr.appendChild(tdTarget);
+      tr.appendChild(tdProgress);
+      statsBody.appendChild(tr);
+    });
+
+    const totalTr = document.createElement("tr");
+    totalTr.className = "stat-total";
+    const tdT = document.createElement("td");
+    tdT.textContent = "合計";
+    const tdTw = document.createElement("td");
+    tdTw.textContent = weeklyTotal;
+    const tdTc = document.createElement("td");
+    tdTc.textContent = cumulativeTotal;
+    const tdTBlank1 = document.createElement("td");
+    const tdTBlank2 = document.createElement("td");
+    totalTr.appendChild(tdT);
+    totalTr.appendChild(tdTw);
+    totalTr.appendChild(tdTc);
+    totalTr.appendChild(tdTBlank1);
+    totalTr.appendChild(tdTBlank2);
+    statsBody.appendChild(totalTr);
+  }
+
+  function loadTargets() {
+    const raw = localStorage.getItem(targetKeyFor(activeYear));
+    if (raw) {
+      try {
+        const obj = JSON.parse(raw);
+        if (obj && typeof obj === "object") return obj;
+      } catch (e) { /* fallthrough */ }
+    }
+    return {};
+  }
+
+  function saveTargets() {
+    localStorage.setItem(targetKeyFor(activeYear), JSON.stringify(TARGETS));
+  }
+
+  /* ---------- 保存済み週の一覧(年度内) ---------- */
+
+  function renderSavedList() {
+    const prefix = weekPrefixFor(activeYear);
+    const keys = Object.keys(localStorage)
+      .filter(k => k.startsWith(prefix))
+      .map(k => k.slice(prefix.length))
+      .sort();
+    if (keys.length === 0) {
+      savedList.innerHTML = '<div class="empty-note">まだ保存された週はありません</div>';
+      return;
+    }
+    savedList.innerHTML = "";
+    keys.forEach(monday => {
+      const btn = document.createElement("button");
+      let lastOffset = 4;
+      if (currentData && monday === currentData.monday) {
+        const v = getVisibleDayIndices(currentData);
+        lastOffset = v[v.length - 1];
+      } else {
+        try {
+          const d = JSON.parse(localStorage.getItem(storageKey(monday)));
+          const v = getVisibleDayIndices(d);
+          lastOffset = v[v.length - 1];
+        } catch (e) { /* fallthrough: 月〜金として扱う */ }
+      }
+      const last = addDays(monday, lastOffset);
+      btn.textContent = formatShort(monday) + " 〜 " + formatShort(last);
+      if (currentData && monday === currentData.monday) btn.classList.add("current");
+      btn.addEventListener("click", () => {
+        weekStartInput.value = monday;
+        loadAndRender(monday);
+      });
+      savedList.appendChild(btn);
+    });
+  }
+
+  /* ---------- 年度切り替え ---------- */
+
+  function switchToYear(year) {
+    activeYear = year;
+    SUBJECTS = loadSubjects();
+    ANNUAL_EVENTS = loadAnnualEvents();
+    TARGETS = loadTargets();
+    const p = loadPattern();
+    PATTERN_DATA = p ? clonePatternDays(p) : emptyPatternDays();
+
+    renderSubjectEditor();
+    renderAnnualList();
+    buildPatternHeader();
+    buildPatternBody();
+    fillPatternValues();
+    updateYearBar();
+  }
+
+  function updateYearBar() {
+    document.getElementById("yearLabel").textContent = activeYear + "年度";
+    document.getElementById("thisYearBtn").classList.toggle("active", activeYear === currentSchoolYear());
+    document.getElementById("prevYearBtn").classList.toggle("active", activeYear === currentSchoolYear() - 1);
+    document.getElementById("nextYearBtn").classList.toggle("active", activeYear === currentSchoolYear() + 1);
+  }
+
+  function loadAndRender(monday) {
+    const year = schoolYearOf(monday);
+    if (year !== activeYear) {
+      switchToYear(year);
+    }
+    currentData = loadWeek(monday);
+    classNameInput.value = currentData.className || "";
+    teacherNameInput.value = currentData.teacherName || "";
+    includeSatCheckbox.checked = !!currentData.includeSat;
+    includeSunCheckbox.checked = !!currentData.includeSun;
+    buildHeader();
+    buildBody();
+    fillValues();
+    updatePrintHeader();
+    updatePatternNote();
+    renderSavedList();
+  }
+
+  function updatePatternNote() {
+    const note = document.getElementById("patternNote");
+    if (currentData && currentData.fromPattern) {
+      note.style.display = "block";
+      note.textContent = "この週はまだ定型パターンのままです(未編集)。内容を編集すると授業回数の集計(累計)に反映されます。";
+    } else {
+      note.style.display = "none";
+      note.textContent = "";
+    }
+  }
+
+  /* ---------- イベント ---------- */
+
+  weekStartInput.addEventListener("change", () => {
+    const monday = getMonday(weekStartInput.value);
+    weekStartInput.value = monday;
+    loadAndRender(monday);
+  });
+
+  document.getElementById("prevWeekBtn").addEventListener("click", () => {
+    const monday = addDays(currentData.monday, -7);
+    weekStartInput.value = monday;
+    loadAndRender(monday);
+  });
+
+  document.getElementById("nextWeekBtn").addEventListener("click", () => {
+    const monday = addDays(currentData.monday, 7);
+    weekStartInput.value = monday;
+    loadAndRender(monday);
+  });
+
+  document.getElementById("copyPrevBtn").addEventListener("click", () => {
+    const prevMonday = addDays(currentData.monday, -7);
+    const raw = localStorage.getItem(storageKey(prevMonday));
+    if (!raw) {
+      alert("前週のデータが見つかりませんでした。");
+      return;
+    }
+    const prevData = JSON.parse(raw);
+    currentData.days = prevData.days;
+    fillValues();
+    saveCurrentWeek();
+  });
+
+  document.getElementById("applyPatternBtn").addEventListener("click", () => {
+    if (!confirm("現在の週の内容を、登録済みの定型パターンで上書きします。よろしいですか？")) return;
+    currentData.days = clonePatternDays(PATTERN_DATA);
+    currentData.fromPattern = true;
+    fillValues();
+    updatePatternNote();
+    saveCurrentWeek();
+  });
+
+  document.getElementById("deleteWeekBtn").addEventListener("click", () => {
+    if (!confirm("この週のデータを削除します。よろしいですか？")) return;
+    localStorage.removeItem(storageKey(currentData.monday));
+    loadAndRender(currentData.monday);
+  });
+
+  document.getElementById("printBtn").addEventListener("click", () => {
+    document.getElementById("printHeader").style.display = "block";
+    updatePrintHeader();
+    // ブラウザが印刷時に表示するページタイトル(ヘッダー/タブ名)を
+    // 「週の時間割メーカー」ではなく日付範囲に一時的に差し替える
+    const originalTitle = document.title;
+    const rangeText = document.getElementById("printWeekRange").textContent;
+    if (rangeText) document.title = rangeText;
+    let restored = false;
+    const restore = () => {
+      if (restored) return;
+      restored = true;
+      document.getElementById("printHeader").style.display = "none";
+      document.title = originalTitle;
+    };
+    window.addEventListener("afterprint", restore, { once: true });
+    window.print();
+    setTimeout(restore, 5000);
+  });
+
+  classNameInput.addEventListener("input", saveCurrentWeek);
+  teacherNameInput.addEventListener("input", saveCurrentWeek);
+
+  includeSatCheckbox.addEventListener("change", () => {
+    currentData.includeSat = includeSatCheckbox.checked;
+    buildBody();
+    fillValues();
+    updatePrintHeader();
+    saveCurrentWeek();
+  });
+  includeSunCheckbox.addEventListener("change", () => {
+    currentData.includeSun = includeSunCheckbox.checked;
+    buildBody();
+    fillValues();
+    updatePrintHeader();
+    saveCurrentWeek();
+  });
+
+  document.getElementById("addSubjectBtn").addEventListener("click", () => {
+    addSubject(newSubjectInput.value);
+    newSubjectInput.value = "";
+    newSubjectInput.focus();
+  });
+  newSubjectInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("addSubjectBtn").click();
+    }
+  });
+
+  document.getElementById("addAnnualBtn").addEventListener("click", () => {
+    addAnnualEvent(annualDateInput.value, annualTextInput.value);
+    annualTextInput.value = "";
+    annualTextInput.focus();
+  });
+  annualTextInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("addAnnualBtn").click();
+    }
+  });
+
+  document.getElementById("thisYearBtn").addEventListener("click", () => {
+    const monday = firstMondayOfSchoolYear(currentSchoolYear());
+    weekStartInput.value = monday;
+    loadAndRender(monday);
+  });
+  document.getElementById("prevYearBtn").addEventListener("click", () => {
+    const monday = firstMondayOfSchoolYear(currentSchoolYear() - 1);
+    weekStartInput.value = monday;
+    loadAndRender(monday);
+  });
+  document.getElementById("nextYearBtn").addEventListener("click", () => {
+    const monday = firstMondayOfSchoolYear(currentSchoolYear() + 1);
+    weekStartInput.value = monday;
+    loadAndRender(monday);
+  });
+
+  hiraganaCheckbox.addEventListener("change", () => {
+    HIRAGANA_MODE = hiraganaCheckbox.checked;
+    localStorage.setItem(HIRAGANA_KEY, HIRAGANA_MODE ? "1" : "0");
+    renderSubjectEditor();
+    buildHeader();
+    if (currentData) { buildBody(); fillValues(); }
+    buildPatternHeader();
+    buildPatternBody();
+    fillPatternValues();
+    if (currentData) updatePrintHeader();
+  });
+
+  /* ---------- データのバックアップ(書き出し/読み込み) ---------- */
+
+  const OWN_KEY_PREFIXES = [STORAGE_PREFIX, SUBJECT_KEY, ANNUAL_KEY, PATTERN_KEY, TARGET_KEY, HIRAGANA_KEY];
+
+  function isOwnKey(key) {
+    return OWN_KEY_PREFIXES.some(p => key.startsWith(p));
+  }
+
+  function showBackupStatus(text) {
+    const el = document.getElementById("backupStatus");
+    el.textContent = text;
+    clearTimeout(showBackupStatus._t);
+    showBackupStatus._t = setTimeout(() => { el.textContent = ""; }, 2500);
+  }
+
+  function exportAllData() {
+    const data = {};
+    Object.keys(localStorage).forEach(k => {
+      if (isOwnKey(k)) data[k] = localStorage.getItem(k);
+    });
+    const payload = {
+      app: "時間割メーカー",
+      exportedAt: new Date().toISOString(),
+      data
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "時間割メーカー_バックアップ_" + toDateStr(new Date()) + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showBackupStatus("書き出しました");
+  }
+
+  function importAllData(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      let payload;
+      try {
+        payload = JSON.parse(reader.result);
+      } catch (e) {
+        alert("ファイルの読み込みに失敗しました。正しいバックアップファイル(.json)か確認してください。");
+        return;
+      }
+      const data = (payload && typeof payload === "object" && payload.data) ? payload.data : payload;
+      if (!data || typeof data !== "object") {
+        alert("ファイルの読み込みに失敗しました。正しいバックアップファイル(.json)か確認してください。");
+        return;
+      }
+      const keys = Object.keys(data).filter(isOwnKey);
+      if (keys.length === 0) {
+        alert("このファイルには時間割メーカーのデータが見つかりませんでした。");
+        return;
+      }
+      if (!confirm(keys.length + "件のデータを読み込みます。現在保存されている同じ週・設定は上書きされます。よろしいですか？")) return;
+      keys.forEach(k => localStorage.setItem(k, data[k]));
+      switchToYear(activeYear);
+      loadAndRender(currentData.monday);
+      showBackupStatus("読み込みました");
+    };
+    reader.readAsText(file);
+  }
+
+  document.getElementById("exportBtn").addEventListener("click", exportAllData);
+  document.getElementById("importBtn").addEventListener("click", () => {
+    document.getElementById("importFileInput").click();
+  });
+  document.getElementById("importFileInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    e.target.value = "";
+    if (file) importAllData(file);
+  });
+
+  // 初期表示: 今週の月曜日
+  (function init() {
+    migrateLegacyDataOnce();
+    hiraganaCheckbox.checked = HIRAGANA_MODE;
+    const today = toDateStr(new Date());
+    const monday = getMonday(today);
+    weekStartInput.value = monday;
+    loadAndRender(monday);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>筆算マスター</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+    --cs:48px;
+    --cs-gap:4px;
+  }
+  body.op-add{--accent:#43a047;--accent-dark:#2e7d32;}
+  body.op-sub{--accent:#fb8c00;--accent-dark:#ef6c00;}
+  body.op-mul{--accent:#8e24aa;--accent-dark:#6a1b78;}
+  body.op-div{--accent:#1e88e5;--accent-dark:#1565c0;}
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"M PLUS Rounded 1c","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#333;
+    min-height:100vh;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:16px 14px 60px;}
+
+  .app-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 4px 18px;
+  }
+  .app-title{
+    font-size:22px;font-weight:800;color:var(--accent-dark);
+    display:flex;align-items:center;gap:8px;
+    transition:color .3s;
+  }
+  .header-btns{display:flex;gap:8px;align-items:center;}
+  .icon-btn{
+    background:#fff;border:2px solid #e2e8f0;border-radius:50%;
+    width:40px;height:40px;font-size:18px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 4px rgba(0,0,0,0.06);
+  }
+  .icon-btn:active{transform:scale(0.92);}
+  .star-badge{
+    background:#fff;border-radius:20px;padding:8px 14px;font-weight:800;color:#f5a623;
+    box-shadow:0 2px 4px rgba(0,0,0,0.06);font-size:14px;display:flex;align-items:center;gap:4px;
+  }
+
+  .card{
+    background:#fff;border-radius:20px;padding:22px;
+    box-shadow:0 4px 16px rgba(30,50,90,0.08);
+    margin-bottom:18px;
+  }
+
+  /* ---------- selection screen ---------- */
+  h2.section-title{margin:0 0 12px;font-size:16px;color:#555;font-weight:800;}
+  .op-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px;}
+  .op-btn{
+    border:3px solid #e2e8f0;background:#fafcff;border-radius:16px;
+    padding:18px 8px;font-size:17px;font-weight:800;cursor:pointer;color:#555;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    transition:all .15s;
+  }
+  .op-btn .emoji{font-size:30px;}
+  .op-btn[data-op="add"].selected{border-color:#43a047;background:#eafaec;color:#2e7d32;}
+  .op-btn[data-op="sub"].selected{border-color:#fb8c00;background:#fff4e6;color:#ef6c00;}
+  .op-btn[data-op="mul"].selected{border-color:#8e24aa;background:#f8ecfb;color:#6a1b78;}
+  .op-btn[data-op="div"].selected{border-color:#1e88e5;background:#e9f4fe;color:#1565c0;}
+  .op-btn:active{transform:scale(0.97);}
+
+  .level-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:22px;}
+  .level-btn{
+    border:2px solid #e2e8f0;background:#fafcff;border-radius:14px;
+    padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;color:#555;
+    text-align:left;display:flex;align-items:center;gap:10px;
+  }
+  .level-btn .lv-num{
+    background:#e2e8f0;color:#666;border-radius:50%;width:28px;height:28px;flex:none;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;
+  }
+  .level-btn.selected{border-color:var(--accent);background:#f2f7ff;color:var(--accent-dark);}
+  .level-btn.selected .lv-num{background:var(--accent);color:#fff;}
+
+  .btn-primary{
+    width:100%;padding:16px;border:none;border-radius:16px;
+    background:var(--accent);color:#fff;font-size:18px;font-weight:800;cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,0.12);
+  }
+  .btn-primary:disabled{background:#ccc;cursor:not-allowed;box-shadow:none;}
+  .btn-primary:active:not(:disabled){transform:scale(0.98);}
+  .btn-secondary{
+    width:100%;padding:14px;border:2px solid #e2e8f0;border-radius:16px;
+    background:#fff;color:#666;font-size:15px;font-weight:800;cursor:pointer;margin-top:10px;
+  }
+
+  /* ---------- play screen ---------- */
+  .play-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .progress-badge{
+    background:#fff;border-radius:20px;padding:8px 16px;font-weight:800;color:var(--accent-dark);
+    box-shadow:0 2px 4px rgba(0,0,0,0.06);font-size:14px;
+  }
+  .op-tag{
+    display:inline-block;background:var(--accent);color:#fff;border-radius:10px;
+    padding:3px 10px;font-size:12px;font-weight:800;margin-bottom:10px;
+  }
+  .instruction{font-size:14px;color:#888;margin-bottom:10px;font-weight:700;}
+  .tip-box{
+    background:#eef6ff;border:2px dashed var(--accent);color:var(--accent-dark);
+    border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;margin-bottom:14px;
+    line-height:1.5;
+  }
+  .tip-box.flash{animation:tipFlash 0.6s ease 2;}
+  @keyframes tipFlash{0%,100%{background:#eef6ff;}50%{background:#fff3cd;border-color:#f5a623;}}
+
+  .problem-scroll{overflow-x:auto;padding:8px 2px 14px;}
+  .problem-center{display:flex;justify-content:center;min-width:min-content;}
+
+  .calc-grid{display:grid;gap:var(--cs-gap);align-items:center;justify-items:center;}
+  .cell{
+    width:var(--cs);height:var(--cs);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:800;color:#333;
+    border-radius:8px;
+  }
+  div.cell{background:transparent;}
+  div.cell.empty{visibility:hidden;}
+  div.cell.op{color:var(--accent-dark);font-size:26px;}
+  div.cell.point{color:var(--accent-dark);font-size:30px;font-weight:800;align-items:flex-end;padding-bottom:4px;}
+  input.cell{
+    border:2.5px solid #d7dfe9;background:#fbfdff;text-align:center;
+    font-family:inherit;caret-color:var(--accent);padding:0;
+  }
+  input.cell.scratch{
+    width:calc(var(--cs) * 0.6);height:calc(var(--cs) * 0.6);
+    font-size:14px;border:2px dashed #cfd8e3;background:#fff;color:#999;align-self:end;
+  }
+  input.cell:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(45,108,223,0.15);}
+  input.cell.correct{
+    background:#e9f9ee;border-color:#43a047;color:#2e7d32;
+    animation:pop .28s ease;
+  }
+  input.cell.correct:disabled{opacity:1;-webkit-text-fill-color:#2e7d32;}
+  input.cell.wrong{border-color:#e53935;background:#fff0f0;animation:shake .35s;}
+  input.cell.hint{
+    border-color:#f5a623;background:#fff8e1;
+    box-shadow:0 0 0 4px rgba(245,166,35,0.25);
+    animation:glow 1s ease-in-out infinite alternate;
+  }
+  input.cell.hint2::placeholder{color:#f5a623;opacity:0.6;font-weight:800;}
+  input.cell::placeholder{color:transparent;}
+
+  @keyframes pop{0%{transform:scale(1);}45%{transform:scale(1.28);}100%{transform:scale(1);}}
+  @keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+  @keyframes glow{from{box-shadow:0 0 0 3px rgba(245,166,35,0.2);}to{box-shadow:0 0 0 7px rgba(245,166,35,0.35);}}
+
+  .calc-line{height:0;border-top:4px solid #333;align-self:center;width:100%;border-radius:2px;}
+
+  /* division specific */
+  .div-outer{display:inline-flex;flex-direction:column;align-items:flex-start;position:relative;}
+  .div-flexrow{display:flex;align-items:flex-start;}
+  .div-divisor-box{
+    min-width:38px;height:var(--cs);display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:800;color:var(--accent-dark);padding:0 8px 0 2px;margin-top:8px;
+  }
+  .div-divisor-box.spacer{visibility:hidden;}
+  .div-qgrid{margin-bottom:4px;}
+  .div-bracket{
+    position:relative;
+    border-top:4px solid #333;
+    padding:4px 6px 2px 12px;
+  }
+  .div-bracket::before{
+    content:'';position:absolute;left:0;top:-4px;width:4px;
+    height:calc(var(--cs) + 10px);background:#333;border-radius:0 0 0 3px;
+  }
+  .div-remainder-label{
+    margin-top:14px;background:#fff8e1;border:2px solid #f5a623;color:#c07d00;
+    padding:8px 16px;border-radius:12px;font-weight:800;font-size:15px;
+    opacity:0;transform:translateY(-6px);transition:all .35s;
+  }
+  .div-remainder-label.show{opacity:1;transform:translateY(0);}
+
+  /* controls */
+  .controls-area{margin-top:8px;}
+  .controls-row{display:flex;gap:10px;margin-bottom:12px;}
+  .hint-btn{
+    flex:1;padding:13px;border:none;border-radius:14px;background:#f5a623;color:#fff;
+    font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 3px 8px rgba(245,166,35,0.3);
+    display:flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .hint-btn:active{transform:scale(0.97);}
+  .teach-btn{
+    flex:1;padding:13px;border:none;border-radius:14px;background:var(--accent);color:#fff;
+    font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 3px 8px rgba(45,108,223,0.3);
+    display:flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .teach-btn:active{transform:scale(0.97);}
+  .mute-mini{
+    border:2px solid #e2e8f0;background:#fff;border-radius:14px;width:48px;font-size:18px;cursor:pointer;
+  }
+
+  .numpad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .numpad button{
+    padding:14px 0;border:none;border-radius:12px;background:#fff;border:2px solid #e2e8f0;
+    font-size:19px;font-weight:800;color:#444;cursor:pointer;
+  }
+  .numpad button:active{background:#eef3fb;transform:scale(0.95);}
+  .numpad button.back-key{color:#e53935;font-size:16px;}
+
+  .next-btn-wrap{display:none;margin-top:14px;}
+  .next-btn{
+    width:100%;padding:16px;border:none;border-radius:16px;background:var(--accent);color:#fff;
+    font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.15);
+    animation:pop .4s ease;
+  }
+
+  /* celebrate overlay */
+  .celebrate-overlay{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    pointer-events:none;z-index:50;opacity:0;transition:opacity .25s;
+  }
+  .celebrate-overlay.show{opacity:1;}
+  .celebrate-text{
+    font-size:52px;font-weight:800;color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    padding:22px 46px;border-radius:26px;box-shadow:0 10px 30px rgba(0,0,0,0.25);
+    transform:scale(0.5);opacity:0;
+  }
+  .celebrate-overlay.show .celebrate-text{animation:bounceIn .55s cubic-bezier(.34,1.56,.64,1) forwards;}
+  @keyframes bounceIn{0%{transform:scale(0.4);opacity:0;}60%{transform:scale(1.12);opacity:1;}100%{transform:scale(1);opacity:1;}}
+
+  .confetti-container{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:49;}
+  .confetti-piece{
+    position:absolute;top:-8%;width:10px;height:14px;opacity:0.95;
+    animation-name:fall;animation-timing-function:ease-in;animation-fill-mode:forwards;
+  }
+  @keyframes fall{
+    0%{top:-8%;opacity:1;}
+    100%{top:108%;opacity:0.5;}
+  }
+
+  /* modal */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(20,30,50,0.45);
+    display:flex;align-items:center;justify-content:center;z-index:60;padding:20px;
+  }
+  .modal-card{
+    background:#fff;border-radius:22px;padding:28px 24px;max-width:360px;width:100%;
+    text-align:center;box-shadow:0 12px 40px rgba(0,0,0,0.25);
+    animation:bounceIn .4s cubic-bezier(.34,1.56,.64,1);
+  }
+  .modal-card .big-emoji{font-size:44px;margin-bottom:6px;}
+  .modal-card h3{margin:4px 0 4px;font-size:19px;color:#333;}
+  .modal-card p{margin:0 0 18px;color:#777;font-size:14px;font-weight:700;}
+  .modal-btns{display:flex;flex-direction:column;gap:10px;}
+
+  .hidden{display:none !important;}
+
+  .summary-card{text-align:center;}
+  .summary-emoji{font-size:56px;margin-bottom:6px;}
+  .summary-stats{
+    display:flex;justify-content:center;gap:14px;margin:18px 0;flex-wrap:wrap;
+  }
+  .summary-stat{
+    background:#f4f8ff;border-radius:14px;padding:14px 18px;min-width:100px;
+  }
+  .summary-stat .num{font-size:26px;font-weight:800;color:var(--accent-dark);}
+  .summary-stat .lbl{font-size:12px;color:#888;font-weight:700;margin-top:2px;}
+
+  @media (max-width:420px){
+    :root{--cs:40px;}
+    .cell{font-size:18px;}
+    .celebrate-text{font-size:36px;padding:16px 30px;}
+    .app-title{font-size:18px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="app-header">
+    <div class="app-title"><span>🧮</span><span>筆算マスター</span></div>
+    <div class="header-btns">
+      <div class="star-badge" id="star-badge">⭐ 0</div>
+      <button class="icon-btn" id="mute-btn" title="おと">🔊</button>
+    </div>
+  </div>
+
+  <!-- ================= SELECT SCREEN ================= -->
+  <div id="screen-select">
+    <div class="card">
+      <h2 class="section-title">① けいさんの しゅるいを えらぼう</h2>
+      <div class="op-grid" id="op-grid">
+        <button class="op-btn" data-op="add"><span class="emoji">➕</span>たしざん</button>
+        <button class="op-btn" data-op="sub"><span class="emoji">➖</span>ひきざん</button>
+        <button class="op-btn" data-op="mul"><span class="emoji">✖️</span>かけざん</button>
+        <button class="op-btn" data-op="div"><span class="emoji">➗</span>わりざん</button>
+      </div>
+
+      <h2 class="section-title">② むずかしさを えらぼう</h2>
+      <div class="level-grid" id="level-grid"></div>
+
+      <button class="btn-primary" id="start-btn" disabled>スタート！</button>
+    </div>
+  </div>
+
+  <!-- ================= PLAY SCREEN ================= -->
+  <div id="screen-play" class="hidden">
+    <div class="play-topbar">
+      <button class="icon-btn" id="back-btn" title="もどる">🏠</button>
+      <div class="progress-badge" id="progress-badge">1問目 / 5</div>
+    </div>
+    <div class="card">
+      <div class="op-tag" id="op-tag">たしざん レベル1</div>
+      <div class="instruction">つぎの けいさんを ひっさんで しよう！</div>
+      <div class="tip-box" id="tip-box"></div>
+      <div class="problem-scroll"><div class="problem-center" id="problem-area"></div></div>
+
+      <div class="controls-area">
+        <div class="controls-row">
+          <button class="hint-btn" id="hint-btn">💡 ヒント</button>
+          <button class="teach-btn" id="teach-btn">🙋 おしえて</button>
+        </div>
+        <div class="numpad" id="numpad"></div>
+        <div class="next-btn-wrap" id="next-btn-wrap">
+          <button class="next-btn" id="next-btn">つぎのもんだいへ ▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SUMMARY SCREEN ================= -->
+  <div id="screen-summary" class="hidden">
+    <div class="card summary-card">
+      <div class="summary-emoji">🏆</div>
+      <h3 style="margin:4px 0;font-size:20px;">よくがんばったね！</h3>
+      <div class="summary-stats">
+        <div class="summary-stat"><div class="num" id="sum-solved">0</div><div class="lbl">といた もんだい</div></div>
+        <div class="summary-stat"><div class="num" id="sum-stars">0</div><div class="lbl">ぜんぶの ⭐</div></div>
+      </div>
+      <button class="btn-primary" id="summary-back-btn">もんだいを えらびなおす</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="celebrate-overlay" id="celebrate-overlay"><div class="celebrate-text">せいかい！🎉</div></div>
+<div class="confetti-container" id="confetti-container"></div>
+
+<div class="modal-overlay hidden" id="continue-modal">
+  <div class="modal-card">
+    <div class="big-emoji">🌟</div>
+    <h3>5もん とけたよ！</h3>
+    <p>つづけて れんしゅうする？</p>
+    <div class="modal-btns">
+      <button class="btn-primary" id="continue-yes">つづける</button>
+      <button class="btn-secondary" id="continue-no">やめる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------------- utils ---------------- */
+const randInt=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+
+function digitsOf(n){ // index0 = ones, ascending place
+  return String(n).split('').reverse().map(Number);
+}
+function placeDigitsLTR(value, rightmostPlace){
+  const s=String(value);
+  const res=[];
+  for(let i=0;i<s.length;i++){
+    res.push({place: rightmostPlace + (s.length-1-i), digit:Number(s[i])});
+  }
+  return res;
+}
+function countCarries(a,b){
+  const da=digitsOf(a), db=digitsOf(b);
+  const len=Math.max(da.length,db.length);
+  let carry=0,count=0;
+  for(let i=0;i<len;i++){
+    const sum=(da[i]||0)+(db[i]||0)+carry;
+    if(sum>=10){carry=1;count++;} else carry=0;
+  }
+  return count;
+}
+function countBorrows(a,b){ // requires a>=b
+  const da=digitsOf(a), db=digitsOf(b);
+  let borrow=0,count=0;
+  for(let i=0;i<da.length;i++){
+    const top=da[i]-borrow;
+    const bot=db[i]||0;
+    if(top<bot){count++;borrow=1;} else borrow=0;
+  }
+  return count;
+}
+function countCarriesMul(a,b){ // b is a single digit (2-9)
+  const da=digitsOf(a);
+  let carry=0,count=0;
+  for(let i=0;i<da.length;i++){
+    const val=da[i]*b+carry;
+    carry=Math.floor(val/10);
+    if(carry>0) count++;
+  }
+  return count;
+}
+
+/* ---------------- decimal helpers ---------------- */
+function decLen(numStr){
+  const parts=String(numStr).split('.');
+  return parts[1] ? parts[1].length : 0;
+}
+function maxWholePlace(numStr){
+  return String(numStr).split('.')[0].length-1;
+}
+function digitAtPlace(numStr, place){
+  const [wholeStr, decStr='']=String(numStr).split('.');
+  if(place>=0){
+    const idx=wholeStr.length-1-place;
+    return idx>=0 ? Number(wholeStr[idx]) : null;
+  } else {
+    const idx=-place-1;
+    return idx<decStr.length ? Number(decStr[idx]) : null;
+  }
+}
+function toScaledInt(numStr, scale){
+  const [wholeStr, decStr='']=String(numStr).split('.');
+  const decPadded=(decStr+'0'.repeat(scale)).slice(0,scale);
+  return parseInt(wholeStr+decPadded, 10);
+}
+function formatScaledInt(n, scale){
+  if(scale===0) return String(n);
+  const s=String(n).padStart(scale+1,'0');
+  const whole=s.slice(0, s.length-scale) || '0';
+  const dec=s.slice(s.length-scale);
+  return `${whole}.${dec}`;
+}
+function decColIndex(place, maxPlace, scale, leftOffset){
+  let idx=maxPlace-place;
+  if(scale>0 && place<0) idx+=1;
+  return leftOffset+idx+1;
+}
+function decPointColIndex(maxPlace, leftOffset){
+  return leftOffset+(maxPlace-0)+1+1;
+}
+function decTotalCols(maxPlace, scale, leftOffset){
+  return leftOffset+(maxPlace+scale+1)+(scale>0?1:0);
+}
+function renderDecimalStaticRow(grid,row,numStr,maxPlace,scale,leftOffset){
+  for(let p=maxPlace;p>=-scale;p--){
+    const col=decColIndex(p,maxPlace,scale,leftOffset);
+    const d=digitAtPlace(numStr,p);
+    if(d===null) addCell(grid,{row,col,extraClass:'empty'});
+    else addCell(grid,{row,col,digit:d});
+    if(scale>0 && p===0){
+      addCell(grid,{row,col:decPointColIndex(maxPlace,leftOffset),digit:'.',extraClass:'point'});
+    }
+  }
+}
+function renderDecimalAnswerRow(grid,row,resultStr,maxPlace,scale,leftOffset){
+  for(let p=maxPlace;p>=-scale;p--){
+    const col=decColIndex(p,maxPlace,scale,leftOffset);
+    const d=digitAtPlace(resultStr,p);
+    if(d===null){ addCell(grid,{row,col,extraClass:'empty'}); }
+    else { const el=addCell(grid,{row,col,editable:true,correct:d}); answerCells.push(el); }
+    if(scale>0 && p===0){
+      addCell(grid,{row,col:decPointColIndex(maxPlace,leftOffset),digit:'.',extraClass:'point'});
+    }
+  }
+}
+
+/* ---------------- generators ---------------- */
+const ADD_SPECS={
+  1:{da:[10,99],   db:[1,9],    carry:'none'},
+  2:{da:[10,99],   db:[1,9],    carry:'some'},
+  3:{da:[10,99],   db:[10,99],  carry:'none'},
+  4:{da:[10,99],   db:[10,99],  carry:'some'},
+  5:{da:[100,999], db:[100,999],carry:'none'},
+  6:{da:[100,999], db:[100,999],carry:'some'},
+  7:{da:[1000,9999],db:[100,999],carry:'some'},
+  8:{da:[1000,9999],db:[1000,9999],carry:'many'}
+};
+function genAddition(level){
+  const s=ADD_SPECS[level];
+  let a,b,tries=0,ok=false;
+  while(!ok && tries<600){
+    tries++;
+    a=randInt(s.da[0],s.da[1]); b=randInt(s.db[0],s.db[1]);
+    const c=countCarries(a,b);
+    ok = s.carry==='none' ? c===0 : s.carry==='many' ? c>=2 : c>=1;
+  }
+  return {a,b};
+}
+
+const SUB_SPECS={
+  1:{da:[10,99],   db:[1,9],    borrow:'none'},
+  2:{da:[10,99],   db:[1,9],    borrow:'some'},
+  3:{da:[10,99],   db:[10,99],  borrow:'none'},
+  4:{da:[10,99],   db:[10,99],  borrow:'some'},
+  5:{da:[100,999], db:[100,999],borrow:'none'},
+  6:{da:[100,999], db:[100,999],borrow:'some'},
+  7:{da:[1000,9999],db:[100,999],borrow:'some'},
+  8:{da:[1000,9999],db:[1000,9999],borrow:'many'}
+};
+function genSubtraction(level){
+  const s=SUB_SPECS[level];
+  let a,b,tries=0,ok=false;
+  while(!ok && tries<600){
+    tries++;
+    a=randInt(s.da[0],s.da[1]);
+    const bmax=Math.min(s.db[1], a-1);
+    if(bmax<s.db[0]) continue;
+    b=randInt(s.db[0], bmax);
+    const c=countBorrows(a,b);
+    ok = s.borrow==='none' ? c===0 : s.borrow==='many' ? c>=2 : c>=1;
+  }
+  return {a,b};
+}
+
+const MUL_SPECS={
+  1:{da:[10,99],    singleB:true, carry:'none'},
+  2:{da:[10,99],    singleB:true, carry:'some'},
+  3:{da:[100,999],  singleB:true, carry:'none'},
+  4:{da:[100,999],  singleB:true, carry:'some'},
+  5:{da:[1000,9999],singleB:true, carry:'some'},
+  6:{da:[10,99],    singleB:false},
+  7:{da:[100,999],  singleB:false},
+  8:{da:[1000,9999],singleB:false}
+};
+function genMultiplication(level){
+  const s=MUL_SPECS[level];
+  let a,b,tries=0,ok=false;
+  while(!ok && tries<600){
+    tries++;
+    a=randInt(s.da[0],s.da[1]);
+    b = s.singleB ? randInt(2,9) : randInt(11,99);
+    if(s.singleB && s.carry){
+      const c=countCarriesMul(a,b);
+      ok = s.carry==='none' ? c===0 : c>=1;
+    } else {
+      ok=true;
+    }
+  }
+  return {a,b};
+}
+
+const DIV_SPECS={
+  1:{range:[10,99],    divisor:[2,9],  remainder:false},
+  2:{range:[10,99],    divisor:[2,9],  remainder:true},
+  3:{range:[100,999],  divisor:[2,9],  remainder:false},
+  4:{range:[100,999],  divisor:[2,9],  remainder:true},
+  5:{range:[1000,9999],divisor:[2,9],  remainder:false},
+  6:{range:[1000,9999],divisor:[2,9],  remainder:true},
+  7:{range:[100,999],  divisor:[11,99],remainder:false},
+  8:{range:[100,999],  divisor:[11,99],remainder:true}
+};
+function genDivision(level){
+  const s=DIV_SPECS[level];
+  let divisor,dividend,tries=0,ok=false;
+  while(!ok && tries<800){
+    tries++;
+    divisor=randInt(s.divisor[0], s.divisor[1]);
+    if(s.remainder){
+      dividend=randInt(s.range[0], s.range[1]);
+      if(dividend<=divisor) continue;
+      if(dividend%divisor===0) continue;
+    } else {
+      const qMin=Math.max(1, Math.ceil(s.range[0]/divisor));
+      const qMax=Math.floor(s.range[1]/divisor);
+      if(qMax<qMin) continue;
+      const q=randInt(qMin,qMax);
+      dividend=divisor*q;
+    }
+    ok=true;
+  }
+  return {dividend,divisor};
+}
+
+/* ---------------- decimal generators ---------------- */
+function randomDecimal(intMin,intMax,decPlaces){
+  const whole=randInt(intMin,intMax);
+  let decStr='';
+  for(let i=0;i<decPlaces;i++){ decStr+=randInt(1,9); }
+  return decPlaces>0 ? `${whole}.${decStr}` : `${whole}`;
+}
+function computeDecimalResult(a,b,op){
+  const scale=Math.max(decLen(a),decLen(b));
+  const aInt=toScaledInt(a,scale), bInt=toScaledInt(b,scale);
+  const rInt = op==='add' ? aInt+bInt : aInt-bInt;
+  return formatScaledInt(rInt,scale);
+}
+function genDecimalAddition(){
+  const decA=randInt(1,2), decB=randInt(1,2);
+  const a=randomDecimal(1,9,decA);
+  const b=randomDecimal(1,9,decB);
+  return {a,b};
+}
+function genDecimalSubtraction(){
+  const decA=randInt(1,2), decB=randInt(1,2);
+  let a,b,tries=0,ok=false;
+  while(!ok && tries<300){
+    tries++;
+    a=randomDecimal(3,9,decA);
+    b=randomDecimal(1,8,decB);
+    const scale=Math.max(decA,decB);
+    if(toScaledInt(a,scale)>toScaledInt(b,scale)) ok=true;
+  }
+  return {a,b};
+}
+function genDecimalMultiplication(){
+  const a=randomDecimal(1,9,1);
+  const b=randomDecimal(1,9,1);
+  return {a,b};
+}
+function genDecimalDivision(){
+  let a,b,tries=0,ok=false;
+  while(!ok && tries<300){
+    tries++;
+    const divisorWhole=randInt(0,2);
+    b=`${divisorWhole}.${randInt(1,9)}`;
+    a=`${randInt(1,9)}.${randInt(1,9)}`;
+    const aInt=toScaledInt(a,1), bInt=toScaledInt(b,1);
+    if(aInt>bInt && aInt%bInt!==0) ok=true;
+  }
+  return {a,b};
+}
+
+/* ---------------- level labels ---------------- */
+const OP_META={
+  add:{name:'たしざん', emoji:'➕', levels:[
+    '2けた＋1けた（くり上がりなし）','2けた＋1けた（くり上がりあり）',
+    '2けた＋2けた（くり上がりなし）','2けた＋2けた（くり上がりあり）',
+    '3けた＋3けた（くり上がりなし）','3けた＋3けた（くり上がりあり）',
+    '4けた＋3けた（くり上がりあり）','4けた＋4けた（くり上がり多数）',
+    '小数のたし算（位をそろえよう）']},
+  sub:{name:'ひきざん', emoji:'➖', levels:[
+    '2けた－1けた（くり下がりなし）','2けた－1けた（くり下がりあり）',
+    '2けた－2けた（くり下がりなし）','2けた－2けた（くり下がりあり）',
+    '3けた－3けた（くり下がりなし）','3けた－3けた（くり下がりあり）',
+    '4けた－3けた（くり下がりあり）','4けた－4けた（くり下がり多数）',
+    '小数のひき算（位をそろえよう）']},
+  mul:{name:'かけざん', emoji:'✖️', levels:[
+    '2けた×1けた（くり上がりなし）','2けた×1けた（くり上がりあり）',
+    '3けた×1けた（くり上がりなし）','3けた×1けた（くり上がりあり）',
+    '4けた×1けた（くり上がりあり）','2けた×2けた',
+    '3けた×2けた','4けた×2けた',
+    '小数×小数（積の小数点に注意）']},
+  div:{name:'わりざん', emoji:'➗', levels:[
+    '2けた÷1けた（あまりなし）','2けた÷1けた（あまりあり）',
+    '3けた÷1けた（あまりなし）','3けた÷1けた（あまりあり）',
+    '4けた÷1けた（あまりなし）','4けた÷1けた（あまりあり）',
+    '3けた÷2けた（あまりなし）','3けた÷2けた（あまりあり）',
+    '小数÷小数（あまりの小数点に注意）']}
+};
+
+const TIPS={
+  add:{
+    1:'いちの位から じゅんに たしていこう。',
+    2:'いちの位の こたえが 10いじょうに なったら、じゅうの位に 1くり上げよう。',
+    3:'いちの位、じゅうの位の じゅんに たしざんしよう。くり上がりは ないよ。',
+    4:'くり上がった 1を わすれずに、上の位に たしてね。',
+    5:'位を そろえて、いちの位から じゅんばんに けいさんしよう。',
+    6:'くり上がりが なんかい あっても、1つずつ ていねいに たしていこう。',
+    7:'けたが おおくても やりかたは おなじ。いちの位から じゅんに たしていこう。',
+    8:'くり上がりが おおいから、あわてずに 1つずつ たしかめよう。',
+    9:'小数点を たてに そろえて、あいている位には 0が あると かんがえて けいさんしよう！'
+  },
+  sub:{
+    1:'いちの位から じゅんに ひいていこう。くり下がりは ないよ。',
+    2:'いちの位が ひけないときは、じゅうの位から 1 かりてこよう。',
+    3:'位を そろえて ひきざんしよう。くり下がりは ないよ。',
+    4:'かりた 1を わすれずに、上の位から 1 へらしてね。',
+    5:'いちの位、じゅうの位、百の位の じゅんに ひいていこう。',
+    6:'くり下がりが あっても、1つずつ ていねいに けいさんしよう。',
+    7:'けたが ちがっても、位を そろえて けいさんすれば だいじょうぶ。',
+    8:'くり下がりが おおいから、じゅんばんに ゆっくり すすめよう。',
+    9:'小数点を たてに そろえて、あいている位には 0が あると かんがえて けいさんしよう！'
+  },
+  mul:{
+    1:'かける数を いちの位から じゅんに かけていこう。くり上がりは ないよ。',
+    2:'かけた こたえが 10いじょうに なったら、上の位に くり上げよう。',
+    3:'百の位まで じゅんばんに かけざんしよう。',
+    4:'くり上がりを わすれずに、上の位に たしていこう。',
+    5:'けたが おおくても、いちの位から じゅんに かけていこう。',
+    6:'かける数の いちの位、じゅうの位の じゅんに べつべつに かけて、さいごに たしあわせよう。',
+    7:'だんずつ かけて、位を 1つずつ ずらして たしあわせよう。',
+    8:'けたが おおくても、やりかたは おなじ。だんごとに ていねいに けいさんしよう。',
+    9:'小数点は むしして せいすうとして かけざんし、さいごに りょうほうの 小数点いかの けた数を たして こたえに 小数点を うとう！'
+  },
+  div:{
+    1:'上の位から じゅんに 商を たてていこう。わりきれるよ。',
+    2:'あまりが 出たら、わる数より 小さいか かくにんしよう。',
+    3:'百の位から じゅんに 商を たてていこう。わりきれるよ。',
+    4:'さいごの あまりが わる数より 小さくなったら おわりだよ。',
+    5:'けたが おおくても、上の位から じゅんばんに もとめよう。',
+    6:'あまりが わる数より 小さいか、さいごに かくにんしよう。',
+    7:'かりに 商を たてて、大きすぎたら 1つずつ へらして ちょうせいしよう。',
+    8:'商を 修正しながら、あまりが わる数より 小さくなるまで ちょうせいしよう。',
+    9:'わる数の 小数点が なくなるように、わられる数と わる数を 同じだけ 右に ずらしてから 計算しよう。あまりの 小数点は、わられる数の もとの 小数点から そのまま 真下に おろそう！'
+  }
+};
+
+/* ---------------- state ---------------- */
+const state={op:null, level:null, questionCount:0, sessionSolved:0};
+let answerCells=[];
+let muted = localStorage.getItem('hissan_muted')==='1';
+let lifetimeStars = parseInt(localStorage.getItem('hissan_stars')||'0',10);
+
+/* ---------------- audio ---------------- */
+let audioCtx=null;
+function playTone(kind){
+  if(muted) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const now=audioCtx.currentTime;
+    function tone(freq,start,dur,type,vol){
+      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+      o.type=type||'sine'; o.frequency.value=freq;
+      o.connect(g); g.connect(audioCtx.destination);
+      g.gain.setValueAtTime(vol||0.14, now+start);
+      g.gain.exponentialRampToValueAtTime(0.001, now+start+dur);
+      o.start(now+start); o.stop(now+start+dur+0.02);
+    }
+    if(kind==='correct') tone(880,0,0.1);
+    else if(kind==='wrong') tone(200,0,0.15,'square',0.07);
+    else if(kind==='success'){ tone(523.25,0,0.13); tone(659.25,0.11,0.13); tone(783.99,0.22,0.24); }
+  }catch(e){}
+}
+
+/* ---------------- grid building helpers ---------------- */
+function addCell(grid, opts){
+  const {row,col,digit,editable,correct,extraClass}=opts;
+  const el=document.createElement(editable?'input':'div');
+  el.classList.add('cell');
+  if(extraClass) extraClass.split(' ').forEach(c=>el.classList.add(c));
+  el.style.gridRow=row;
+  el.style.gridColumn=col;
+  if(editable){
+    el.type='text';
+    el.inputMode='numeric';
+    el.maxLength=1;
+    el.autocomplete='off';
+    if(correct!==undefined){ el.dataset.correct=String(correct); }
+    el.addEventListener('input', onCellInput);
+    el.addEventListener('focus', onCellFocus);
+  } else {
+    el.textContent = (digit===undefined||digit===null) ? '' : digit;
+  }
+  grid.appendChild(el);
+  return el;
+}
+function addLine(grid,row,totalCols){
+  const line=document.createElement('div');
+  line.className='calc-line';
+  line.style.gridColumn=`1 / span ${totalCols}`;
+  line.style.gridRow=row;
+  grid.appendChild(line);
+}
+
+let divRemainderLabel=null;
+
+function resetProblemArea(){
+  answerCells=[];
+  divRemainderLabel=null;
+  const area=document.getElementById('problem-area');
+  area.innerHTML='';
+  document.getElementById('next-btn-wrap').style.display='none';
+  return area;
+}
+
+function buildOpGridInto(container,a,b,opChar,result,withScratch){
+  const da=digitsOf(a), db=digitsOf(b), dr=digitsOf(result);
+  const maxPlace=Math.max(da.length-1, db.length-1, dr.length-1);
+  const leftOffset=1;
+  const totalCols=leftOffset+maxPlace+1;
+  const grid=document.createElement('div');
+  grid.className='calc-grid';
+  grid.style.gridTemplateColumns=`repeat(${totalCols}, var(--cs))`;
+  let row=1;
+  if(withScratch){
+    for(let p=1;p<=maxPlace;p++){
+      addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, editable:true, extraClass:'scratch'});
+    }
+    row++;
+  }
+  for(let p=0;p<=maxPlace;p++){
+    if(p<da.length) addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, digit:da[p]});
+    else addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, extraClass:'empty'});
+  }
+  row++;
+  addCell(grid,{row,col:1,digit:opChar,extraClass:'op'});
+  for(let p=0;p<=maxPlace;p++){
+    if(p<db.length) addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, digit:db[p]});
+    else addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, extraClass:'empty'});
+  }
+  row++;
+  addLine(grid,row,totalCols); row++;
+  for(let p=0;p<dr.length;p++){
+    const col=leftOffset+(maxPlace-p)+1;
+    const el=addCell(grid,{row,col,editable:true,correct:dr[p]});
+    answerCells.push(el);
+  }
+  container.appendChild(grid);
+}
+function renderSimpleOpGrid(a,b,opChar,result,withScratch){
+  const area=resetProblemArea();
+  buildOpGridInto(area,a,b,opChar,result,withScratch);
+}
+
+function buildMultiplicationInto(container,a,b){
+  if(b<10){ buildOpGridInto(container,a,b,'×',a*b,true); return; }
+  const product=a*b;
+  const ones=b%10, tens=Math.floor(b/10)%10;
+  const partial1=a*ones, partial2=a*tens;
+  const da=digitsOf(a), db=digitsOf(b), dp=digitsOf(product);
+  const maxPlace=Math.max(da.length-1, db.length-1, dp.length-1);
+  const leftOffset=1;
+  const totalCols=leftOffset+maxPlace+1;
+  const grid=document.createElement('div');
+  grid.className='calc-grid';
+  grid.style.gridTemplateColumns=`repeat(${totalCols}, var(--cs))`;
+  let row=1;
+  for(let p=0;p<=maxPlace;p++){
+    if(p<da.length) addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, digit:da[p]});
+    else addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, extraClass:'empty'});
+  }
+  row++;
+  addCell(grid,{row,col:1,digit:'×',extraClass:'op'});
+  for(let p=0;p<=maxPlace;p++){
+    if(p<db.length) addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, digit:db[p]});
+    else addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, extraClass:'empty'});
+  }
+  row++;
+  addLine(grid,row,totalCols); row++;
+
+  const dpart1=digitsOf(partial1);
+  for(let p=0;p<dpart1.length;p++){
+    const col=leftOffset+(maxPlace-p)+1;
+    const el=addCell(grid,{row,col,editable:true,correct:dpart1[p]});
+    answerCells.push(el);
+  }
+  row++;
+  const dpart2=digitsOf(partial2);
+  for(let p=0;p<dpart2.length;p++){
+    const actualPlace=p+1;
+    const col=leftOffset+(maxPlace-actualPlace)+1;
+    const el=addCell(grid,{row,col,editable:true,correct:dpart2[p]});
+    answerCells.push(el);
+  }
+  row++;
+  addLine(grid,row,totalCols); row++;
+  for(let p=0;p<dp.length;p++){
+    const col=leftOffset+(maxPlace-p)+1;
+    const el=addCell(grid,{row,col,editable:true,correct:dp[p]});
+    answerCells.push(el);
+  }
+  container.appendChild(grid);
+}
+function renderMultiplication(a,b){
+  const area=resetProblemArea();
+  buildMultiplicationInto(area,a,b);
+}
+
+function buildDivisionInto(container,dividend,divisor){
+  const ddigits=String(dividend).split('').map(Number);
+  const n=ddigits.length;
+  let partial=0, started=false;
+  const steps=[];
+  for(let i=0;i<n;i++){
+    const place=n-1-i;
+    partial=partial*10+ddigits[i];
+    const qd=Math.floor(partial/divisor);
+    if(qd>0||started){
+      started=true;
+      const product=qd*divisor;
+      const diff=partial-product;
+      steps.push({place,qDigit:qd,product,diff,digitIndex:i,skip:false});
+      partial=diff;
+    } else {
+      steps.push({place,skip:true,digitIndex:i});
+    }
+  }
+  const remainder=partial;
+  const maxPlace=n-1;
+  const cols=maxPlace+1;
+  const col=(place)=>(maxPlace-place)+1;
+
+  const outer=document.createElement('div');
+  outer.className='div-outer';
+
+  const qRowWrap=document.createElement('div'); qRowWrap.className='div-flexrow';
+  const qSpacer=document.createElement('div'); qSpacer.className='div-divisor-box spacer';
+  qSpacer.textContent=String(divisor);
+  const qGrid=document.createElement('div'); qGrid.className='calc-grid div-qgrid';
+  qGrid.style.gridTemplateColumns=`repeat(${cols}, var(--cs))`;
+  qRowWrap.appendChild(qSpacer); qRowWrap.appendChild(qGrid);
+
+  const mainRow=document.createElement('div'); mainRow.className='div-flexrow';
+  const divisorBox=document.createElement('div'); divisorBox.className='div-divisor-box';
+  divisorBox.textContent=String(divisor);
+  const bracket=document.createElement('div'); bracket.className='div-bracket';
+  const stepsGrid=document.createElement('div'); stepsGrid.className='calc-grid div-stepsgrid';
+  stepsGrid.style.gridTemplateColumns=`repeat(${cols}, var(--cs))`;
+  bracket.appendChild(stepsGrid);
+  mainRow.appendChild(divisorBox); mainRow.appendChild(bracket);
+
+  outer.appendChild(qRowWrap);
+  outer.appendChild(mainRow);
+
+  let srow=1;
+  for(let i=0;i<n;i++){
+    const place=n-1-i;
+    addCell(stepsGrid,{row:srow,col:col(place),digit:ddigits[i]});
+  }
+  srow++;
+
+  steps.forEach(step=>{
+    if(step.skip) return;
+    const qel=addCell(qGrid,{row:1,col:col(step.place),editable:true,correct:step.qDigit});
+    answerCells.push(qel);
+
+    const prodAsc=placeDigitsLTR(step.product, step.place).sort((x,y)=>x.place-y.place);
+    prodAsc.forEach(d=>{
+      const el=addCell(stepsGrid,{row:srow,col:col(d.place),editable:true,correct:d.digit});
+      answerCells.push(el);
+    });
+    srow++;
+
+    const prodCols=prodAsc.map(d=>col(d.place));
+    const stepLine=document.createElement('div');
+    stepLine.className='calc-line';
+    stepLine.style.gridColumn=`${Math.min(...prodCols)} / ${Math.max(...prodCols)+1}`;
+    stepLine.style.gridRow=srow;
+    stepsGrid.appendChild(stepLine);
+    srow++;
+
+    const diffAsc=placeDigitsLTR(step.diff, step.place).sort((x,y)=>x.place-y.place);
+    diffAsc.forEach(d=>{
+      const el=addCell(stepsGrid,{row:srow,col:col(d.place),editable:true,correct:d.digit});
+      answerCells.push(el);
+    });
+    const nextIndex=step.digitIndex+1;
+    if(nextIndex<n){
+      const bdPlace=step.place-1;
+      const el=addCell(stepsGrid,{row:srow,col:col(bdPlace),editable:true,correct:ddigits[nextIndex]});
+      answerCells.push(el);
+    }
+    srow++;
+  });
+
+  container.appendChild(outer);
+
+  const remLabel=document.createElement('div');
+  remLabel.className='div-remainder-label';
+  remLabel.textContent = remainder>0 ? `あまり ${remainder}` : 'わりきれた！ぴったり！';
+  outer.appendChild(remLabel);
+  divRemainderLabel=remLabel;
+  return {remainder, divisor};
+}
+function renderDivision(dividend,divisor){
+  const area=resetProblemArea();
+  buildDivisionInto(area,dividend,divisor);
+}
+
+/* ---------------- decimal renderers ---------------- */
+function renderDecimalAddSub(a,b,opChar,resultStr){
+  const area=resetProblemArea();
+  const scale=Math.max(decLen(a),decLen(b),decLen(resultStr));
+  const maxPlace=Math.max(maxWholePlace(a),maxWholePlace(b),maxWholePlace(resultStr));
+  const leftOffset=1;
+  const totalCols=decTotalCols(maxPlace,scale,leftOffset);
+  const grid=document.createElement('div');
+  grid.className='calc-grid';
+  grid.style.gridTemplateColumns=`repeat(${totalCols}, var(--cs))`;
+  let row=1;
+  renderDecimalStaticRow(grid,row,a,maxPlace,scale,leftOffset); row++;
+  addCell(grid,{row,col:1,digit:opChar,extraClass:'op'});
+  renderDecimalStaticRow(grid,row,b,maxPlace,scale,leftOffset); row++;
+  addLine(grid,row,totalCols); row++;
+  renderDecimalAnswerRow(grid,row,resultStr,maxPlace,scale,leftOffset);
+  area.appendChild(grid);
+}
+
+function renderDecimalMultiplication(aStr,bStr){
+  const area=resetProblemArea();
+  const scaleA=decLen(aStr), scaleB=decLen(bStr), combinedScale=scaleA+scaleB;
+  const Aint=toScaledInt(aStr,scaleA), Bint=toScaledInt(bStr,scaleB);
+  const productInt=Aint*Bint;
+
+  const dispScale=Math.max(scaleA,scaleB);
+  const dispMaxPlace=Math.max(maxWholePlace(aStr),maxWholePlace(bStr));
+  const leftOffset=1;
+  const dispTotalCols=decTotalCols(dispMaxPlace,dispScale,leftOffset);
+  const headerGrid=document.createElement('div');
+  headerGrid.className='calc-grid';
+  headerGrid.style.gridTemplateColumns=`repeat(${dispTotalCols}, var(--cs))`;
+  renderDecimalStaticRow(headerGrid,1,aStr,dispMaxPlace,dispScale,leftOffset);
+  addCell(headerGrid,{row:2,col:1,digit:'×',extraClass:'op'});
+  renderDecimalStaticRow(headerGrid,2,bStr,dispMaxPlace,dispScale,leftOffset);
+  area.appendChild(headerGrid);
+
+  const calcWrap=document.createElement('div');
+  calcWrap.style.marginTop='10px';
+  area.appendChild(calcWrap);
+  buildMultiplicationInto(calcWrap, Aint, Bint);
+
+  const finalWrap=document.createElement('div');
+  finalWrap.style.marginTop='16px';
+  const finalLabel=document.createElement('div');
+  finalLabel.textContent='こたえ（小数点に気をつけて）';
+  finalLabel.style.cssText='font-size:13px;color:#888;font-weight:800;margin-bottom:6px;';
+  finalWrap.appendChild(finalLabel);
+
+  const resultStr=formatScaledInt(productInt, combinedScale);
+  const finalMaxPlace=maxWholePlace(resultStr);
+  const finalTotalCols=decTotalCols(finalMaxPlace,combinedScale,leftOffset);
+  const finalGrid=document.createElement('div');
+  finalGrid.className='calc-grid';
+  finalGrid.style.gridTemplateColumns=`repeat(${finalTotalCols}, var(--cs))`;
+  renderDecimalAnswerRow(finalGrid,1,resultStr,finalMaxPlace,combinedScale,leftOffset);
+  finalWrap.appendChild(finalGrid);
+  area.appendChild(finalWrap);
+}
+
+function renderDecimalDivision(aStr,bStr){
+  const area=resetProblemArea();
+  const scale=decLen(bStr);
+  const Aint=toScaledInt(aStr,scale);
+  const Bint=toScaledInt(bStr,scale);
+
+  const capWrap=document.createElement('div');
+  capWrap.textContent=`${aStr} ÷ ${bStr} → わる数の小数点をなくすため、りょうほうを10倍して ${Aint} ÷ ${Bint} として計算しよう`;
+  capWrap.style.cssText='font-size:13px;color:#888;font-weight:800;margin-bottom:10px;max-width:320px;text-align:center;';
+  area.appendChild(capWrap);
+
+  const calcWrap=document.createElement('div');
+  area.appendChild(calcWrap);
+  const {remainder}=buildDivisionInto(calcWrap, Aint, Bint);
+
+  const remWrap=document.createElement('div');
+  remWrap.style.cssText='margin-top:18px;display:flex;align-items:center;gap:12px;justify-content:center;';
+  const remLabelEl=document.createElement('div');
+  remLabelEl.textContent='あまり';
+  remLabelEl.style.cssText='font-weight:800;color:var(--accent-dark);font-size:18px;';
+  const remainderStr=formatScaledInt(remainder, scale); // always "D.D" since scale=1 and remainder<Bint<=29
+  const [remWhole,remDec]=remainderStr.split('.');
+  const remGrid=document.createElement('div');
+  remGrid.className='calc-grid';
+  remGrid.style.gridTemplateColumns='repeat(3, var(--cs))';
+  const elW=addCell(remGrid,{row:1,col:1,editable:true,correct:remWhole});
+  addCell(remGrid,{row:1,col:2,digit:'.',extraClass:'point'});
+  const elD=addCell(remGrid,{row:1,col:3,editable:true,correct:remDec});
+  answerCells.push(elW,elD);
+  remWrap.appendChild(remLabelEl); remWrap.appendChild(remGrid);
+  area.appendChild(remWrap);
+}
+
+/* ---------------- interaction ---------------- */
+function onCellFocus(e){
+  e.target.classList.remove('hint','hint2');
+  e.target.placeholder='';
+}
+function focusNextCell(){
+  const target=answerCells.find(c=>!c.classList.contains('correct'));
+  if(target){ target.focus(); }
+}
+function onCellInput(e){
+  const el=e.target;
+  let v=el.value.replace(/[^0-9]/g,'');
+  v=v.slice(-1);
+  el.value=v;
+  if(el.dataset.correct===undefined) return; // scratch cell
+  if(v===''){ return; }
+  if(v===el.dataset.correct){
+    el.value=v;
+    el.classList.remove('wrong');
+    el.classList.add('correct');
+    el.classList.remove('hint','hint2');
+    el.placeholder='';
+    el.disabled=true;
+    playTone('correct');
+    focusNextCell();
+    checkAllComplete();
+  } else {
+    el.classList.add('wrong');
+    playTone('wrong');
+    const wc=(parseInt(el.dataset.wrongCount||'0',10))+1;
+    el.dataset.wrongCount=wc;
+    if(wc>=2) flashTip();
+    setTimeout(()=>{ if(el.value===v){ el.value=''; } el.classList.remove('wrong'); },420);
+  }
+}
+function onHint(){
+  const target=answerCells.find(c=>!c.classList.contains('correct'));
+  if(!target) return;
+  answerCells.forEach(c=>{ if(c!==target){ c.classList.remove('hint','hint2'); c.placeholder=''; } });
+  if(target.classList.contains('hint')){
+    target.classList.add('hint2');
+    target.placeholder=target.dataset.correct;
+  } else {
+    target.classList.add('hint');
+  }
+  target.focus();
+}
+function onTeach(){
+  const target=answerCells.find(c=>!c.classList.contains('correct'));
+  if(!target) return;
+  target.classList.remove('hint','hint2','wrong');
+  target.placeholder='';
+  target.value=target.dataset.correct;
+  target.classList.add('correct');
+  target.disabled=true;
+  playTone('correct');
+  focusNextCell();
+  checkAllComplete();
+}
+function checkAllComplete(){
+  if(answerCells.length>0 && answerCells.every(c=>c.classList.contains('correct'))){
+    celebrate();
+  }
+}
+
+/* ---------------- celebration ---------------- */
+function showConfetti(){
+  const container=document.getElementById('confetti-container');
+  const colors=['#ff6b6b','#feca57','#48dbfb','#1dd1a1','#f368e0','#54a0ff','#ffa502'];
+  for(let i=0;i<40;i++){
+    const p=document.createElement('div');
+    p.className='confetti-piece';
+    p.style.left=(Math.random()*100)+'%';
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDelay=(Math.random()*0.25)+'s';
+    p.style.animationDuration=(0.9+Math.random()*0.9)+'s';
+    p.style.borderRadius=(Math.random()<0.5)?'50%':'2px';
+    container.appendChild(p);
+    setTimeout(()=>p.remove(),2200);
+  }
+}
+function celebrate(){
+  state.sessionSolved++;
+  lifetimeStars++;
+  localStorage.setItem('hissan_stars', String(lifetimeStars));
+  updateStarBadge();
+  if(divRemainderLabel) divRemainderLabel.classList.add('show');
+  showConfetti();
+  playTone('success');
+  const overlay=document.getElementById('celebrate-overlay');
+  overlay.classList.add('show');
+  setTimeout(()=>{
+    overlay.classList.remove('show');
+    document.getElementById('next-btn-wrap').style.display='block';
+  }, 1200);
+}
+function updateStarBadge(){
+  document.getElementById('star-badge').textContent='⭐ '+lifetimeStars;
+}
+
+/* ---------------- numpad ---------------- */
+function buildNumpad(){
+  const pad=document.getElementById('numpad');
+  pad.innerHTML='';
+  for(let i=1;i<=9;i++){
+    const b=document.createElement('button');
+    b.textContent=i;
+    b.addEventListener('click',()=>enterDigit(i));
+    pad.appendChild(b);
+  }
+  const zero=document.createElement('button');
+  zero.textContent='0';
+  zero.addEventListener('click',()=>enterDigit(0));
+  pad.appendChild(zero);
+  const back=document.createElement('button');
+  back.textContent='⌫';
+  back.className='back-key';
+  back.addEventListener('click',()=>{
+    const t=document.activeElement;
+    const target=(t&&t.classList&&t.classList.contains('cell')&&!t.disabled)?t:answerCells.find(c=>!c.classList.contains('correct'));
+    if(target){ target.value=''; target.focus(); }
+  });
+  pad.appendChild(back);
+}
+function enterDigit(d){
+  const t=document.activeElement;
+  const target=(t&&t.classList&&t.classList.contains('cell')&&!t.disabled)?t:answerCells.find(c=>!c.classList.contains('correct'));
+  if(!target) return;
+  target.focus();
+  target.value=String(d);
+  target.dispatchEvent(new Event('input'));
+}
+
+/* ---------------- flow control ---------------- */
+function newProblem(){
+  const {op,level}=state;
+  if(level===9){
+    if(op==='add'){ const {a,b}=genDecimalAddition(); renderDecimalAddSub(a,b,'＋',computeDecimalResult(a,b,'add')); }
+    else if(op==='sub'){ const {a,b}=genDecimalSubtraction(); renderDecimalAddSub(a,b,'－',computeDecimalResult(a,b,'sub')); }
+    else if(op==='mul'){ const {a,b}=genDecimalMultiplication(); renderDecimalMultiplication(a,b); }
+    else if(op==='div'){ const {a,b}=genDecimalDivision(); renderDecimalDivision(a,b); }
+  } else {
+    if(op==='add'){ const {a,b}=genAddition(level); renderSimpleOpGrid(a,b,'＋',a+b,true); }
+    else if(op==='sub'){ const {a,b}=genSubtraction(level); renderSimpleOpGrid(a,b,'－',a-b,false); }
+    else if(op==='mul'){ const {a,b}=genMultiplication(level); renderMultiplication(a,b); }
+    else if(op==='div'){ const {dividend,divisor}=genDivision(level); renderDivision(dividend,divisor); }
+  }
+  updateProgressUI();
+  setTimeout(focusNextCell,50);
+}
+function updateProgressUI(){
+  const inSet=(state.questionCount%5)+1;
+  document.getElementById('progress-badge').textContent=`${inSet}問目 / 5`;
+  document.getElementById('op-tag').textContent=OP_META[state.op].name+' レベル'+state.level;
+  updateTipBox();
+}
+function updateTipBox(){
+  const box=document.getElementById('tip-box');
+  if(!box) return;
+  box.textContent='💡 '+((TIPS[state.op]||{})[state.level] || '');
+}
+function flashTip(){
+  const box=document.getElementById('tip-box');
+  if(!box) return;
+  box.classList.remove('flash');
+  void box.offsetWidth;
+  box.classList.add('flash');
+}
+function advanceQuestion(){
+  state.questionCount++;
+  if(state.questionCount%5===0){
+    document.getElementById('continue-modal').classList.remove('hidden');
+  } else {
+    newProblem();
+  }
+}
+
+/* ---------------- screens ---------------- */
+function showScreen(id){
+  ['screen-select','screen-play','screen-summary'].forEach(s=>{
+    document.getElementById(s).classList.toggle('hidden', s!==id);
+  });
+}
+
+function buildLevelGrid(){
+  const wrap=document.getElementById('level-grid');
+  wrap.innerHTML='';
+  if(!state.op) return;
+  OP_META[state.op].levels.forEach((label,idx)=>{
+    const lv=idx+1;
+    const btn=document.createElement('button');
+    btn.className='level-btn'+(state.level===lv?' selected':'');
+    btn.innerHTML=`<span class="lv-num">${lv}</span><span>${label}</span>`;
+    btn.addEventListener('click',()=>{
+      state.level=lv;
+      buildLevelGrid();
+      updateStartBtn();
+    });
+    wrap.appendChild(btn);
+  });
+}
+function updateStartBtn(){
+  document.getElementById('start-btn').disabled = !(state.op && state.level);
+}
+
+document.querySelectorAll('.op-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    state.op=btn.dataset.op;
+    state.level=null;
+    document.querySelectorAll('.op-btn').forEach(b=>b.classList.toggle('selected', b===btn));
+    buildLevelGrid();
+    updateStartBtn();
+  });
+});
+
+document.getElementById('start-btn').addEventListener('click',()=>{
+  if(!state.op||!state.level) return;
+  document.body.className='op-'+state.op;
+  state.questionCount=0;
+  state.sessionSolved=0;
+  showScreen('screen-play');
+  newProblem();
+});
+
+document.getElementById('back-btn').addEventListener('click',()=>{
+  goToSelectFromPlay();
+});
+function goToSelectFromPlay(){
+  showScreen('screen-select');
+}
+
+document.getElementById('hint-btn').addEventListener('click', onHint);
+document.getElementById('teach-btn').addEventListener('click', onTeach);
+document.getElementById('next-btn').addEventListener('click', advanceQuestion);
+
+document.getElementById('continue-yes').addEventListener('click',()=>{
+  document.getElementById('continue-modal').classList.add('hidden');
+  newProblem();
+});
+document.getElementById('continue-no').addEventListener('click',()=>{
+  document.getElementById('continue-modal').classList.add('hidden');
+  document.getElementById('sum-solved').textContent=state.sessionSolved;
+  document.getElementById('sum-stars').textContent=lifetimeStars;
+  showScreen('screen-summary');
+});
+document.getElementById('summary-back-btn').addEventListener('click',()=>{
+  showScreen('screen-select');
+});
+
+document.getElementById('mute-btn').addEventListener('click',(e)=>{
+  muted=!muted;
+  localStorage.setItem('hissan_muted', muted?'1':'0');
+  e.target.textContent = muted ? '🔇' : '🔊';
+});
+
+/* ---------------- init ---------------- */
+buildNumpad();
+updateStarBadge();
+document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+showScreen('screen-select');
+
+})();
+</script>
+</body>
+</html>

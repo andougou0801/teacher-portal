@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>算数プリントメーカー</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+      margin: 0;
+      padding: 24px;
+    }
+    .no-print {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      max-width: 700px;
+      margin: 0 auto 24px auto;
+    }
+    .no-print h1 {
+      color: #2d6cdf;
+      font-size: 22px;
+      margin-top: 0;
+    }
+    .no-print label {
+      display: block;
+      margin-bottom: 14px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #444;
+    }
+    .no-print input,
+    .no-print select {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+    .no-print input.error-taisyou,
+    .no-print select.error-taisyou {
+      border: 2px solid #e53935;
+      background-color: #fff0f0;
+    }
+    .no-print button {
+      background-color: #2d6cdf;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-right: 8px;
+      margin-top: 8px;
+    }
+    .no-print button:hover {
+      background-color: #1f54b8;
+    }
+    .no-print hr {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 20px 0;
+    }
+    .no-print .setsumei {
+      font-size: 12px;
+      color: #888;
+      font-weight: normal;
+      margin-top: -8px;
+      margin-bottom: 14px;
+    }
+    .checkbox-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .checkbox-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 0;
+      font-weight: normal;
+    }
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .input-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 0;
+      font-weight: bold;
+    }
+    .fontsize-bar {
+      max-width: 210mm;
+      margin: 16px auto 0 auto;
+      text-align: center;
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    .fontsize-bar label {
+      font-weight: bold;
+      font-size: 14px;
+      color: #444;
+    }
+    #a4-frame {
+      width: 210mm;
+      aspect-ratio: 210 / 297;
+      overflow: hidden;
+      box-sizing: border-box;
+      padding: 20mm;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+    #print-area {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      box-sizing: border-box;
+    }
+    #title-hyouji {
+      text-align: center;
+      font-size: 22px;
+      border-bottom: 3px solid #2d6cdf;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+    .page-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 20px;
+    }
+    .kaku-sen {
+      display: inline-block;
+      width: 2.2em;
+      border-bottom: 2px solid #000;
+      margin: 0 3px;
+    }
+    .kaku-sen-s {
+      display: inline-block;
+      width: 1.8em;
+      border-bottom: 2px solid #000;
+      margin: 0 3px;
+    }
+    .kaku-sen-l {
+      display: inline-block;
+      width: 5.5em;
+      border-bottom: 2px solid #000;
+      margin-left: 6px;
+    }
+    #mondai {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-auto-flow: column;
+      column-gap: 30px;
+      row-gap: 8px;
+      margin-bottom: 40px;
+    }
+    #mondai p {
+      margin: 0;
+    }
+    .bangou {
+      display: inline-block;
+      min-width: 2em;
+    }
+    .ana {
+      display: inline-block;
+      min-width: 1.6em;
+      text-align: center;
+      border-bottom: 2px solid transparent;
+    }
+    .ana-sen {
+      border-bottom: 2px solid #000;
+    }
+    .bunsuu {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      line-height: 1.2;
+      margin: 0 4px;
+    }
+    .bunshi {
+      padding: 0 4px;
+    }
+    .bunbo {
+      padding: 0 4px;
+      border-top: 2px solid #000;
+    }
+    .taibunsuu {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      vertical-align: middle;
+      margin: 0 2px;
+    }
+
+    @media print {
+      .no-print,
+      .fontsize-bar {
+        display: none;
+      }
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      #a4-frame {
+        width: auto;
+        aspect-ratio: auto;
+        overflow: visible;
+        padding: 0;
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+      }
+      #print-area {
+        height: auto;
+      }
+      .page-footer {
+        position: static;
+        margin-top: 20px;
+      }
+      #title-hyouji {
+        border-bottom: 3px solid #000;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print">
+    <h1>算数プリントメーカー</h1>
+
+    <label>設定モード：
+      <select id="settei-mode" onchange="setteiModeHenkou()">
+        <option value="kantan" selected>簡単設定</option>
+        <option value="kodawari">こだわり設定</option>
+      </select>
+    </label>
+    <div id="kantan-setsumei" class="setsumei">
+      ※簡単設定では、次のルールで自動的に数字が作られます。<br>
+      ・たし算：1けたの数（1〜9）どうし<br>
+      ・ひき算：答えがマイナスにならない、最大20までの数<br>
+      ・かけ算・わり算：九九の範囲（1〜9）
+    </div>
+
+    <label>プリントのタイトル：<input type="text" id="title" value="計算プリント"></label>
+    <label>問題数：<input type="number" id="mondaisu" value="10" min="1" max="50"></label>
+
+    <label>計算の種類（複数選べます）：</label>
+    <div class="checkbox-row">
+      <label><input type="checkbox" class="keisan-checkbox" value="tashizan" checked onchange="keisanShuruiHenkou()"> たし算</label>
+      <label><input type="checkbox" class="keisan-checkbox" value="hikizan" onchange="keisanShuruiHenkou()"> ひき算</label>
+      <label><input type="checkbox" class="keisan-checkbox" value="kakezan" onchange="keisanShuruiHenkou()"> かけ算</label>
+      <label><input type="checkbox" class="keisan-checkbox" value="warizan" onchange="keisanShuruiHenkou()"> わり算</label>
+    </div>
+
+    <div id="kodawari-settings">
+      <div class="input-row">
+        <label>問題の数の最小値：<input type="number" id="mondai-saishou" value="1" min="0" max="1000"></label>
+        <label>問題の数の最大値：<input type="number" id="mondai-saidai" value="10" min="1" max="1000"></label>
+      </div>
+      <div class="input-row">
+        <label>答えの数の最小値：<input type="number" id="kotae-saishou" value="0" min="0" max="100000"></label>
+        <label>答えの数の最大値：<input type="number" id="kotae-saidai" value="1000" min="1" max="100000"></label>
+      </div>
+      <div class="setsumei">※4つの条件をすべて満たす問題を作ります。実際に作れる答えの範囲を自動で計算するので、答えの最大値を大きくしすぎても問題ありません。条件が本当に厳しすぎる場合はエラーになり、原因と思われる設定が赤くなります。</div>
+
+      <div class="input-row">
+        <label>1つ目の数の種類：
+          <select id="a-shu-taipu" onchange="taipuHyoujiKirikae()">
+            <option value="seisuu">整数</option>
+            <option value="shousuu">小数</option>
+            <option value="bunsuu">分数</option>
+            <option value="random">ランダム</option>
+          </select>
+        </label>
+        <label id="a-bunsuu-taipu-label">分数の種類：
+          <select id="a-bunsuu-taipu">
+            <option value="shin">真分数</option>
+            <option value="ka">仮分数</option>
+            <option value="tai">帯分数</option>
+            <option value="random">ランダム</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="input-row">
+        <label>2つ目の数の種類：
+          <select id="b-shu-taipu" onchange="taipuHyoujiKirikae()">
+            <option value="seisuu">整数</option>
+            <option value="shousuu">小数</option>
+            <option value="bunsuu">分数</option>
+            <option value="random">ランダム</option>
+          </select>
+        </label>
+        <label id="b-bunsuu-taipu-label">分数の種類：
+          <select id="b-bunsuu-taipu">
+            <option value="shin">真分数</option>
+            <option value="ka">仮分数</option>
+            <option value="tai">帯分数</option>
+            <option value="random">ランダム</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="bunsuu-saidai-settings">
+        <div class="input-row">
+          <label>分母の最大値：<input type="number" id="bunbo-saidai" value="10" min="2" max="100"></label>
+          <label>分子の最大値：<input type="number" id="bunshi-saidai" value="10" min="2" max="200"></label>
+        </div>
+
+        <label>分数の分母（両方が分数のときのみ）：
+          <select id="bunbo-shurui">
+            <option value="onaji">同じ分母</option>
+            <option value="chigau">違う分母</option>
+          </select>
+        </label>
+      </div>
+
+      <label id="kuriagari-label">くりあがり・くりさがり（両方が整数または小数のときのみ）：
+        <select id="kuriagari">
+          <option value="shitei-nashi">指定しない</option>
+          <option value="ari">あり（くりあがる／くりさがる）</option>
+          <option value="nashi">なし（くりあがらない／くりさがらない）</option>
+        </select>
+      </label>
+
+      <label id="warizan-kotae-taipu-label">わり算の答え（分数が関わらないとき）：
+        <select id="warizan-kotae-taipu" onchange="amariHyoujiKousin()">
+          <option value="seisuu">整数</option>
+          <option value="shousuu">小数</option>
+          <option value="dochirademo">どちらでも</option>
+        </select>
+      </label>
+
+      <label id="amari-label">わり算のあまり（答えが整数のときのみ）：
+        <select id="amari-settei">
+          <option value="nashi">なし（割り切れる）</option>
+          <option value="ari">あり（あまりが出る）</option>
+          <option value="dochirademo">どちらでも</option>
+        </select>
+      </label>
+
+      <label id="dan-label">かけ算・わり算の段（両方が整数のときのみ、指定しない場合はランダム）：
+        <select id="dan-settei">
+          <option value="random">指定しない</option>
+          <option value="1">1の段</option>
+          <option value="2">2の段</option>
+          <option value="3">3の段</option>
+          <option value="4">4の段</option>
+          <option value="5">5の段</option>
+          <option value="6">6の段</option>
+          <option value="7">7の段</option>
+          <option value="8">8の段</option>
+          <option value="9">9の段</option>
+        </select>
+      </label>
+      <div class="setsumei">※答えは、分数が関わる場合は約分した分数、それ以外は整数・小数で表示されます。わり算で1つ目と2つ目の数が同じになる問題は作りません。</div>
+    </div>
+
+    <label>空欄にする場所：
+      <select id="ana-basho">
+        <option value="kotae">答え</option>
+        <option value="a">1つ目の数</option>
+        <option value="b">2つ目の数</option>
+        <option value="random">ランダム</option>
+      </select>
+    </label>
+    <label>文字の大きさ：<input type="range" id="fontsize" min="10" max="50" value="20" oninput="fontSizeUpdate()"> <span id="fontsize-hyouji">20</span>px</label>
+    <label><input type="checkbox" id="kotae-hyouji" onchange="hyouji()"> 答えを表示する</label>
+    <button onclick="tsukuru()">問題を作る</button>
+    <button onclick="window.print()">印刷する</button>
+    <button onclick="hozonJikkou()">保存する</button>
+
+    <hr>
+  </div>
+
+  <div id="a4-frame">
+    <div id="print-area">
+      <div class="page-header">
+        <div class="hizuke-ran"><span class="kaku-sen"></span>月<span class="kaku-sen"></span>日</div>
+        <div class="namae-ran"><span class="kaku-sen-s"></span>年<span class="kaku-sen-s"></span>組<span class="kaku-sen-s"></span>番　名前<span class="kaku-sen-l"></span></div>
+      </div>
+      <h2 id="title-hyouji"></h2>
+      <div id="mondai"></div>
+      <div class="page-footer">
+        <div class="jikan-ran"><span class="kaku-sen"></span>分<span class="kaku-sen"></span>秒</div>
+        <div class="tensuu-ran"><span class="kaku-sen"></span>点</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fontsize-bar">
+    <label>文字の大きさ：<input type="range" id="fontsize2" min="10" max="50" value="20" oninput="fontSizeUpdate2()"> <span id="fontsize2-hyouji">20</span>px</label>
+  </div>
+
+  <script>
+    let genzaiNoMondai = [];
+    const MUJUN_MESSEEJI = "矛盾が生じているので問題が作れません。赤くなっている設定を見直してください。";
+    const AKAKU_TAISHOU_ID_LIST = ["mondai-saishou", "mondai-saidai", "kotae-saishou", "kotae-saidai", "kuriagari", "warizan-kotae-taipu", "amari-settei", "a-shu-taipu", "b-shu-taipu", "a-bunsuu-taipu", "b-bunsuu-taipu"];
+
+    function setteiModeHenkou() {
+      let mode = document.getElementById("settei-mode").value;
+      let kodawariSettings = document.getElementById("kodawari-settings");
+      let kantanSetsumei = document.getElementById("kantan-setsumei");
+
+      kodawariSettings.style.display = (mode === "kodawari") ? "block" : "none";
+      kantanSetsumei.style.display = (mode === "kantan") ? "block" : "none";
+    }
+
+    function danHyoujiKousin() {
+      let list = erabareteiruKeisan();
+      let hasKake = list.includes("kakezan");
+      let hasWari = list.includes("warizan");
+      let aShu = document.getElementById("a-shu-taipu").value;
+      let bShu = document.getElementById("b-shu-taipu").value;
+      let bothSeisuu = (aShu === "seisuu" && bShu === "seisuu");
+      document.getElementById("dan-label").style.display = ((hasKake || hasWari) && bothSeisuu) ? "block" : "none";
+    }
+
+    function taipuHyoujiKirikae() {
+      let aShu = document.getElementById("a-shu-taipu").value;
+      let bShu = document.getElementById("b-shu-taipu").value;
+      document.getElementById("a-bunsuu-taipu-label").style.display = (aShu === "bunsuu") ? "inline-flex" : "none";
+      document.getElementById("b-bunsuu-taipu-label").style.display = (bShu === "bunsuu") ? "inline-flex" : "none";
+
+      let bunsuuKanren = (aShu === "bunsuu" || aShu === "random" || bShu === "bunsuu" || bShu === "random");
+      document.getElementById("bunsuu-saidai-settings").style.display = bunsuuKanren ? "block" : "none";
+
+      danHyoujiKousin();
+    }
+
+    function keisanShuruiHenkou() {
+      let list = erabareteiruKeisan();
+      let hasTasu = list.includes("tashizan");
+      let hasHiku = list.includes("hikizan");
+      let hasWari = list.includes("warizan");
+
+      document.getElementById("kuriagari-label").style.display = (hasTasu || hasHiku) ? "block" : "none";
+      document.getElementById("warizan-kotae-taipu-label").style.display = hasWari ? "block" : "none";
+      danHyoujiKousin();
+      amariHyoujiKousin();
+    }
+
+    function amariHyoujiKousin() {
+      let list = erabareteiruKeisan();
+      let hasWari = list.includes("warizan");
+      let warizanKotaeTaipu = document.getElementById("warizan-kotae-taipu").value;
+      document.getElementById("amari-label").style.display = (hasWari && warizanKotaeTaipu !== "shousuu") ? "block" : "none";
+    }
+
+    function erabareteiruKeisan() {
+      let checkboxes = document.querySelectorAll(".keisan-checkbox:checked");
+      let list = [];
+      checkboxes.forEach(function (cb) {
+        list.push(cb.value);
+      });
+      return list;
+    }
+
+    function akakuKesu() {
+      AKAKU_TAISHOU_ID_LIST.forEach(function (id) {
+        let el = document.getElementById(id);
+        if (el) {
+          el.classList.remove("error-taisyou");
+        }
+      });
+    }
+
+    function akakuHyouji(idList) {
+      idList.forEach(function (id) {
+        let el = document.getElementById(id);
+        if (el) {
+          el.classList.add("error-taisyou");
+        }
+      });
+    }
+
+    function mujunGeninSagasu(keisanList, aShuTaipu, bShuTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, warizanKotaeTaipu) {
+      let list = [];
+
+      if (mondaiSaishou > mondaiSaidai) {
+        list.push("mondai-saishou", "mondai-saidai");
+      }
+      if (kotaeSaishou > kotaeSaidai) {
+        list.push("kotae-saishou", "kotae-saidai");
+      }
+      if ((keisanList.includes("tashizan") || keisanList.includes("hikizan")) && kuriagariSettei !== "shitei-nashi" && aShuTaipu !== "bunsuu" && bShuTaipu !== "bunsuu" && mondaiSaidai < 10) {
+        list.push("kuriagari", "mondai-saidai");
+      }
+      if (keisanList.includes("warizan") && warizanKotaeTaipu === "shousuu" && aShuTaipu === "seisuu" && bShuTaipu === "seisuu") {
+        list.push("warizan-kotae-taipu", "a-shu-taipu", "b-shu-taipu");
+      }
+      if (keisanList.includes("warizan") && warizanKotaeTaipu === "seisuu" && bShuTaipu === "seisuu" && aShuTaipu === "shousuu") {
+        list.push("warizan-kotae-taipu", "a-shu-taipu", "b-shu-taipu");
+      }
+      if (keisanList.includes("hikizan") && aShuTaipu === "bunsuu" && bShuTaipu === "bunsuu") {
+        list.push("a-bunsuu-taipu", "b-bunsuu-taipu");
+      }
+      if (kotaeSaishou > mondaiSaidai + mondaiSaidai || kotaeSaidai < mondaiSaishou + mondaiSaishou) {
+        list.push("kotae-saishou", "kotae-saidai", "mondai-saishou", "mondai-saidai");
+      }
+      if (list.length === 0) {
+        list.push("mondai-saishou", "mondai-saidai", "kotae-saishou", "kotae-saidai");
+      }
+
+      return list;
+    }
+
+    function maruSuuji(n) {
+      if (n >= 1 && n <= 20) {
+        return String.fromCharCode(0x2460 + (n - 1));
+      } else if (n >= 21 && n <= 35) {
+        return String.fromCharCode(0x3251 + (n - 21));
+      } else if (n >= 36 && n <= 50) {
+        return String.fromCharCode(0x32B1 + (n - 36));
+      } else {
+        return n + ".";
+      }
+    }
+
+    function kantanMondaiTsukuru(shurui) {
+      let op = shurui === "tashizan" ? "+" : shurui === "hikizan" ? "-" : shurui === "kakezan" ? "×" : "÷";
+      let a, b, kotae;
+
+      if (shurui === "tashizan") {
+        a = Math.floor(Math.random() * 9) + 1;
+        b = Math.floor(Math.random() * 9) + 1;
+        kotae = a + b;
+      } else if (shurui === "hikizan") {
+        a = Math.floor(Math.random() * 20) + 1;
+        b = Math.floor(Math.random() * 20) + 1;
+        if (a < b) {
+          let tmp = a; a = b; b = tmp;
+        }
+        kotae = a - b;
+      } else if (shurui === "kakezan") {
+        a = Math.floor(Math.random() * 9) + 1;
+        b = Math.floor(Math.random() * 9) + 1;
+        kotae = a * b;
+      } else {
+        let wariKotae = Math.floor(Math.random() * 9) + 1;
+        b = Math.floor(Math.random() * 9) + 1;
+        a = wariKotae * b;
+        kotae = wariKotae;
+      }
+
+      return { a: a, b: b, op: op, kotae: kotae };
+    }
+
+    function kuriagariHanteiYou(digitA, digitB, shurui, settei) {
+      if (settei === "shitei-nashi") {
+        return true;
+      }
+      let ari;
+      if (shurui === "tashizan") {
+        ari = (digitA + digitB) >= 10;
+      } else {
+        ari = digitA < digitB;
+      }
+      if (settei === "ari") {
+        return ari;
+      } else {
+        return !ari;
+      }
+    }
+
+    function shousuuTenthsDigit(x) {
+      if (Number.isInteger(x)) {
+        return 0;
+      }
+      return Math.round((x - Math.floor(x)) * 10);
+    }
+
+    function randomSeisuu(min, max) {
+      if (max < min) {
+        max = min;
+      }
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function randomShousuu(min, max) {
+      if (max <= min) {
+        max = min + 1;
+      }
+      let seisuuBubun = min + Math.floor(Math.random() * (max - min));
+      let shousuuBubun = Math.floor(Math.random() * 9) + 1;
+      let value = Number((seisuuBubun + shousuuBubun / 10).toFixed(1));
+      if (value > max) {
+        value = max;
+      }
+      return value;
+    }
+
+    function yakusuuList(n) {
+      let list = [];
+      for (let d = 1; d <= n; d++) {
+        if (n % d === 0) {
+          list.push(d);
+        }
+      }
+      return list;
+    }
+
+    function saidaiKoyakusuu(a, b) {
+      a = Math.abs(a);
+      b = Math.abs(b);
+      while (b) {
+        let amari = a % b;
+        a = b;
+        b = amari;
+      }
+      return a;
+    }
+
+    function bunsuuYakubun(num, den) {
+      let g = saidaiKoyakusuu(num, den);
+      if (g === 0) {
+        g = 1;
+      }
+      return { num: num / g, den: den / g };
+    }
+
+    function isFractionTaipu(t) {
+      return (t === "shin" || t === "ka" || t === "tai");
+    }
+
+    function zenTaipuKettei(shuSettei, bunsuuSettei) {
+      let shu = shuSettei;
+      if (shu === "random") {
+        let kouho = ["seisuu", "shousuu", "bunsuu"];
+        shu = kouho[Math.floor(Math.random() * 3)];
+      }
+      if (shu === "bunsuu") {
+        let bt = bunsuuSettei;
+        if (bt === "random") {
+          let kouho2 = ["shin", "ka", "tai"];
+          bt = kouho2[Math.floor(Math.random() * 3)];
+        }
+        return bt;
+      }
+      return shu;
+    }
+
+    function bunsuuAtaiTsukuruDenShitei(taipu, den, bunshiSaidai) {
+      if (taipu === "tai") {
+        let maxNum = Math.min(den - 1, bunshiSaidai);
+        if (maxNum < 1) {
+          maxNum = 1;
+        }
+        let num = Math.floor(Math.random() * maxNum) + 1;
+        let whole = Math.floor(Math.random() * 5) + 1;
+        return { whole: whole, num: num, den: den };
+      } else if (taipu === "ka") {
+        let haba = Math.max(1, bunshiSaidai - den);
+        let num = den + Math.floor(Math.random() * haba) + 1;
+        return { whole: 0, num: num, den: den };
+      } else {
+        let maxNum = Math.min(den - 1, bunshiSaidai);
+        if (maxNum < 1) {
+          maxNum = 1;
+        }
+        let num = Math.floor(Math.random() * maxNum) + 1;
+        return { whole: 0, num: num, den: den };
+      }
+    }
+
+    function bunsuuAtaiTsukuru(taipu, bunboSaidai, bunshiSaidai) {
+      let den = Math.floor(Math.random() * (bunboSaidai - 1)) + 2;
+      return bunsuuAtaiTsukuruDenShitei(taipu, den, bunshiSaidai);
+    }
+
+    function ataiTsukuru(taipu, mondaiSaishou, mondaiSaidai, kyoyuDen, bunboSaidai, bunshiSaidai) {
+      if (taipu === "seisuu") {
+        return randomSeisuu(mondaiSaishou, mondaiSaidai);
+      }
+      if (taipu === "shousuu") {
+        return randomShousuu(mondaiSaishou, mondaiSaidai);
+      }
+      if (kyoyuDen) {
+        return bunsuuAtaiTsukuruDenShitei(taipu, kyoyuDen, bunshiSaidai);
+      }
+      return bunsuuAtaiTsukuru(taipu, bunboSaidai, bunshiSaidai);
+    }
+
+    function zenbuBunsuu(v) {
+      return { num: v.whole * v.den + v.num, den: v.den };
+    }
+
+    function ataiWoBunsuuNiHenkan(v) {
+      if (typeof v === "object" && v !== null) {
+        return zenbuBunsuu(v);
+      }
+      if (Number.isInteger(v)) {
+        return { num: v, den: 1 };
+      }
+      let scaled = Math.round(v * 10);
+      return { num: scaled, den: 10 };
+    }
+
+    function bunsuuHyoujiHenkan(num, den, taipu) {
+      if (taipu === "tai" && num > den) {
+        let whole = Math.floor(num / den);
+        let amari = num % den;
+        return { whole: whole, num: amari, den: den };
+      }
+      return { whole: 0, num: num, den: den };
+    }
+
+    function kotaeAtai(kotaeHyouji) {
+      if (typeof kotaeHyouji === "object" && kotaeHyouji !== null) {
+        if ("remainder" in kotaeHyouji) {
+          return kotaeHyouji.quotient;
+        }
+        if ("den" in kotaeHyouji) {
+          return kotaeHyouji.whole + (kotaeHyouji.num / kotaeHyouji.den);
+        }
+      }
+      return kotaeHyouji;
+    }
+
+    function kotaeHanIHantei(kotaeHyouji, kotaeSaishou, kotaeSaidai) {
+      let atai = kotaeAtai(kotaeHyouji);
+      return atai >= kotaeSaishou && atai <= kotaeSaidai;
+    }
+
+    function kumiawaseTsukuruTaipuKotei(shurui, aTaipu, bTaipu, bunboShurui, mondaiSaishou, mondaiSaidai, bunboSaidai, bunshiSaidai) {
+      let kyoyuDen = null;
+      if (bunboShurui === "onaji" && aTaipu !== "seisuu" && aTaipu !== "shousuu" && bTaipu !== "seisuu" && bTaipu !== "shousuu") {
+        kyoyuDen = Math.floor(Math.random() * (bunboSaidai - 1)) + 2;
+      }
+
+      let vA = ataiTsukuru(aTaipu, mondaiSaishou, mondaiSaidai, kyoyuDen, bunboSaidai, bunshiSaidai);
+      let vB = ataiTsukuru(bTaipu, mondaiSaishou, mondaiSaidai, kyoyuDen, bunboSaidai, bunshiSaidai);
+
+      let zenA = ataiWoBunsuuNiHenkan(vA);
+      let zenB = ataiWoBunsuuNiHenkan(vB);
+
+      let kotaeNum, kotaeDen;
+
+      if (shurui === "tashizan" || shurui === "hikizan") {
+        let commonDen, numAHenkan, numBHenkan;
+        if (zenA.den === zenB.den) {
+          commonDen = zenA.den;
+          numAHenkan = zenA.num;
+          numBHenkan = zenB.num;
+        } else {
+          commonDen = zenA.den * zenB.den;
+          numAHenkan = zenA.num * zenB.den;
+          numBHenkan = zenB.num * zenA.den;
+        }
+
+        if (shurui === "hikizan" && numAHenkan < numBHenkan) {
+          if (aTaipu === bTaipu) {
+            let tmpV = vA; vA = vB; vB = tmpV;
+            let tmpHenkan = numAHenkan; numAHenkan = numBHenkan; numBHenkan = tmpHenkan;
+          } else {
+            return null;
+          }
+        }
+
+        kotaeNum = shurui === "tashizan" ? numAHenkan + numBHenkan : numAHenkan - numBHenkan;
+        kotaeDen = commonDen;
+      } else if (shurui === "kakezan") {
+        kotaeNum = zenA.num * zenB.num;
+        kotaeDen = zenA.den * zenB.den;
+      } else {
+        kotaeNum = zenA.num * zenB.den;
+        kotaeDen = zenA.den * zenB.num;
+      }
+
+      let kotaeReduced = bunsuuYakubun(kotaeNum, kotaeDen);
+      let aIsFrac = isFractionTaipu(aTaipu);
+      let bIsFrac = isFractionTaipu(bTaipu);
+      let kotaeHyouji;
+
+      if (aIsFrac || bIsFrac) {
+        let taipuForKotae = (aTaipu === "tai" || bTaipu === "tai") ? "tai" : "shin";
+        kotaeHyouji = bunsuuHyoujiHenkan(kotaeReduced.num, kotaeReduced.den, taipuForKotae);
+      } else {
+        kotaeHyouji = Number((kotaeReduced.num / kotaeReduced.den).toFixed(2));
+      }
+
+      return { a: vA, b: vB, kotae: kotaeHyouji };
+    }
+
+    function ichikaiMondaiTsukokoromi(shurui, aTaipu, bTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, amariSettei, danSettei, warizanKotaeTaipu, bunboShurui, bunboSaidai, bunshiSaidai) {
+      let aIsFrac = isFractionTaipu(aTaipu);
+      let bIsFrac = isFractionTaipu(bTaipu);
+
+      if (aIsFrac || bIsFrac) {
+        return kumiawaseTsukuruTaipuKotei(shurui, aTaipu, bTaipu, bunboShurui, mondaiSaishou, mondaiSaidai, bunboSaidai, bunshiSaidai);
+      }
+
+      let keiSousuu = (aTaipu === "shousuu" || bTaipu === "shousuu");
+
+      if (shurui === "tashizan" || shurui === "hikizan") {
+        if (!keiSousuu) {
+          let genKotaeMin, genKotaeMax;
+          if (shurui === "tashizan") {
+            genKotaeMin = Math.max(kotaeSaishou, mondaiSaishou + mondaiSaishou);
+            genKotaeMax = Math.min(kotaeSaidai, mondaiSaidai + mondaiSaidai);
+          } else {
+            genKotaeMin = Math.max(kotaeSaishou, 0);
+            genKotaeMax = Math.min(kotaeSaidai, mondaiSaidai - mondaiSaishou);
+          }
+          if (genKotaeMin > genKotaeMax) {
+            return null;
+          }
+          let kotae = randomSeisuu(genKotaeMin, genKotaeMax);
+          let a, b;
+          if (shurui === "tashizan") {
+            let aMin = Math.max(mondaiSaishou, kotae - mondaiSaidai);
+            let aMax = Math.min(mondaiSaidai, kotae - mondaiSaishou);
+            if (aMin > aMax) {
+              return null;
+            }
+            a = randomSeisuu(aMin, aMax);
+            b = kotae - a;
+          } else {
+            let bMin = mondaiSaishou;
+            let bMax = Math.min(mondaiSaidai, mondaiSaidai - kotae);
+            if (bMin > bMax) {
+              return null;
+            }
+            b = randomSeisuu(bMin, bMax);
+            a = kotae + b;
+          }
+          if (!kuriagariHanteiYou(a % 10, b % 10, shurui, kuriagariSettei)) {
+            return null;
+          }
+          return { a: a, b: b, kotae: kotae };
+        } else {
+          let a = (aTaipu === "seisuu") ? randomSeisuu(mondaiSaishou, mondaiSaidai) : randomShousuu(mondaiSaishou, mondaiSaidai);
+          let b = (bTaipu === "seisuu") ? randomSeisuu(mondaiSaishou, mondaiSaidai) : randomShousuu(mondaiSaishou, mondaiSaidai);
+          if (shurui === "hikizan" && a < b) {
+            let tmp = a; a = b; b = tmp;
+          }
+          if (!kuriagariHanteiYou(shousuuTenthsDigit(a), shousuuTenthsDigit(b), shurui, kuriagariSettei)) {
+            return null;
+          }
+          let kotae = shurui === "tashizan" ? Number((a + b).toFixed(1)) : Number((a - b).toFixed(1));
+          return { a: a, b: b, kotae: kotae };
+        }
+      }
+
+      if (shurui === "kakezan") {
+        if (danSettei !== "random" && aTaipu === "seisuu" && bTaipu === "seisuu") {
+          let dan = Number(danSettei);
+          let hoka = Math.floor(Math.random() * 9) + 1;
+          let a, b;
+          if (Math.random() < 0.5) {
+            a = dan; b = hoka;
+          } else {
+            a = hoka; b = dan;
+          }
+          return { a: a, b: b, kotae: a * b };
+        }
+        if (!keiSousuu) {
+          let a = randomSeisuu(mondaiSaishou, mondaiSaidai);
+          if (a === 0) {
+            if (kotaeSaishou > 0 || kotaeSaidai < 0) {
+              return null;
+            }
+            let b = randomSeisuu(mondaiSaishou, mondaiSaidai);
+            return { a: 0, b: b, kotae: 0 };
+          }
+          let bMin = Math.max(mondaiSaishou, Math.ceil(kotaeSaishou / a));
+          let bMax = Math.min(mondaiSaidai, Math.floor(kotaeSaidai / a));
+          if (bMin > bMax) {
+            return null;
+          }
+          let b = randomSeisuu(bMin, bMax);
+          return { a: a, b: b, kotae: a * b };
+        }
+        let a = (aTaipu === "seisuu") ? randomSeisuu(mondaiSaishou, mondaiSaidai) : randomShousuu(mondaiSaishou, mondaiSaidai);
+        let b = (bTaipu === "seisuu") ? randomSeisuu(mondaiSaishou, mondaiSaidai) : randomShousuu(mondaiSaishou, mondaiSaidai);
+        return { a: a, b: b, kotae: Number((a * b).toFixed(2)) };
+      }
+
+      // わり算
+      let kotaeWant = warizanKotaeTaipu === "dochirademo" ? (Math.random() < 0.5 ? "seisuu" : "shousuu") : warizanKotaeTaipu;
+      let a, b, kotaeHyouji;
+
+      if (kotaeWant === "seisuu") {
+        let bSaishouSeisuu = Math.max(1, mondaiSaishou);
+
+        if (danSettei !== "random" && bTaipu === "seisuu") {
+          let dan = Number(danSettei);
+          let amariKettei = amariSettei === "dochirademo" ? (Math.random() < 0.5 ? "nashi" : "ari") : amariSettei;
+
+          if (amariKettei === "ari") {
+            let quotient = Math.floor(Math.random() * 9) + 1;
+            let remainder = Math.floor(Math.random() * (dan - 1)) + 1;
+            a = quotient * dan + remainder;
+            b = dan;
+            kotaeHyouji = { quotient: quotient, remainder: remainder };
+          } else {
+            let quotient = Math.floor(Math.random() * 8) + 2;
+            a = dan * quotient;
+            b = dan;
+            kotaeHyouji = quotient;
+          }
+        } else if (amariSettei !== "nashi" && bTaipu === "seisuu") {
+          let amariKettei = amariSettei === "dochirademo" ? (Math.random() < 0.5 ? "nashi" : "ari") : amariSettei;
+
+          if (amariKettei === "ari") {
+            let bDivisor = Math.max(2, bSaishouSeisuu);
+            let genQuotientMin = Math.max(kotaeSaishou, 1);
+            let genQuotientMax = Math.min(kotaeSaidai, Math.floor((mondaiSaidai - 1) / bDivisor));
+            if (genQuotientMin > genQuotientMax) {
+              return null;
+            }
+            let quotient = randomSeisuu(genQuotientMin, genQuotientMax);
+            b = randomSeisuu(bDivisor, mondaiSaidai);
+            let remainder = Math.floor(Math.random() * (b - 1)) + 1;
+            a = quotient * b + remainder;
+            if (a > mondaiSaidai) {
+              return null;
+            }
+            kotaeHyouji = { quotient: quotient, remainder: remainder };
+          } else {
+            let genQuotientMin = Math.max(kotaeSaishou, 1);
+            let genQuotientMax = Math.min(kotaeSaidai, Math.floor(mondaiSaidai / bSaishouSeisuu));
+            if (genQuotientMin > genQuotientMax) {
+              return null;
+            }
+            let quotient = randomSeisuu(genQuotientMin, genQuotientMax);
+            let bMax = Math.min(mondaiSaidai, Math.floor(mondaiSaidai / quotient));
+            let bMin = bSaishouSeisuu;
+            if (bMin > bMax) {
+              return null;
+            }
+            b = randomSeisuu(bMin, bMax);
+            a = quotient * b;
+            kotaeHyouji = quotient;
+          }
+        } else {
+          let genQuotientMin = Math.max(kotaeSaishou, 2);
+          let genQuotientMax = Math.min(kotaeSaidai, Math.floor(mondaiSaidai / bSaishouSeisuu));
+          if (genQuotientMin > genQuotientMax) {
+            return null;
+          }
+          let quotient = randomSeisuu(genQuotientMin, genQuotientMax);
+          let bMax = Math.min(mondaiSaidai, Math.floor(mondaiSaidai / quotient));
+          let bMin = bSaishouSeisuu;
+          if (bMin > bMax) {
+            return null;
+          }
+          b = randomSeisuu(bMin, bMax);
+          a = (bTaipu === "seisuu") ? quotient * b : Number((quotient * b).toFixed(2));
+          kotaeHyouji = quotient;
+        }
+      } else {
+        b = (bTaipu === "seisuu") ? randomSeisuu(Math.max(1, mondaiSaishou), mondaiSaidai) : randomShousuu(Math.max(0.1, mondaiSaishou), mondaiSaidai);
+        let maxWariKotae = Math.floor(mondaiSaidai / b);
+        if (maxWariKotae < 1) { maxWariKotae = 1; }
+        let wariKotae = randomShousuu(0.1, maxWariKotae);
+        a = Number((wariKotae * b).toFixed(2));
+        kotaeHyouji = wariKotae;
+      }
+
+      if (a === b) {
+        return null;
+      }
+
+      if (aTaipu === "seisuu" && !Number.isInteger(a)) {
+        return null;
+      }
+      if (aTaipu === "shousuu" && Number.isInteger(a)) {
+        return null;
+      }
+
+      return { a: a, b: b, kotae: kotaeHyouji };
+    }
+
+    function tsukuru() {
+      let setteiMode = document.getElementById("settei-mode").value;
+      let title = document.getElementById("title").value;
+      let kaisu = Number(document.getElementById("mondaisu").value);
+      let anaBashoSentaku = document.getElementById("ana-basho").value;
+      let keisanList = erabareteiruKeisan();
+
+      akakuKesu();
+
+      if (keisanList.length === 0) {
+        alert("計算の種類を1つ以上選んでください");
+        return;
+      }
+
+      if (setteiMode === "kantan") {
+        genzaiNoMondai = [];
+
+        for (let i = 0; i < kaisu; i++) {
+          let shurui = keisanList[Math.floor(Math.random() * keisanList.length)];
+          let mondai = kantanMondaiTsukuru(shurui);
+
+          let anaBasho = anaBashoSentaku;
+          if (anaBashoSentaku === "random") {
+            let kouho = ["a", "b", "kotae"];
+            anaBasho = kouho[Math.floor(Math.random() * 3)];
+          }
+
+          genzaiNoMondai.push({ a: mondai.a, b: mondai.b, op: mondai.op, kotae: mondai.kotae, anaBasho: anaBasho });
+        }
+
+        document.getElementById("title-hyouji").textContent = title;
+        fontSizeUpdate();
+        hyouji();
+        return;
+      }
+
+      let mondaiSaishou = Number(document.getElementById("mondai-saishou").value);
+      let mondaiSaidai = Number(document.getElementById("mondai-saidai").value);
+      let kotaeSaishou = Number(document.getElementById("kotae-saishou").value);
+      let kotaeSaidai = Number(document.getElementById("kotae-saidai").value);
+      let kuriagariSettei = document.getElementById("kuriagari").value;
+      let amariSettei = document.getElementById("amari-settei").value;
+      let danSettei = document.getElementById("dan-settei").value;
+      let warizanKotaeTaipu = document.getElementById("warizan-kotae-taipu").value;
+      let bunboShurui = document.getElementById("bunbo-shurui").value;
+      let bunboSaidai = Number(document.getElementById("bunbo-saidai").value);
+      let bunshiSaidai = Number(document.getElementById("bunshi-saidai").value);
+      let aShuTaipu = document.getElementById("a-shu-taipu").value;
+      let aBunsuuTaipu = document.getElementById("a-bunsuu-taipu").value;
+      let bShuTaipu = document.getElementById("b-shu-taipu").value;
+      let bBunsuuTaipu = document.getElementById("b-bunsuu-taipu").value;
+
+      genzaiNoMondai = [];
+
+      for (let i = 0; i < kaisu; i++) {
+        let shurui = keisanList[Math.floor(Math.random() * keisanList.length)];
+        let op = shurui === "tashizan" ? "+" : shurui === "hikizan" ? "-" : shurui === "kakezan" ? "×" : "÷";
+
+        let aTaipu = zenTaipuKettei(aShuTaipu, aBunsuuTaipu);
+        let bTaipu = zenTaipuKettei(bShuTaipu, bBunsuuTaipu);
+
+        let kekka = null;
+        let tries = 0;
+        do {
+          kekka = ichikaiMondaiTsukokoromi(shurui, aTaipu, bTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, amariSettei, danSettei, warizanKotaeTaipu, bunboShurui, bunboSaidai, bunshiSaidai);
+          tries++;
+        } while ((kekka === null || !kotaeHanIHantei(kekka.kotae, kotaeSaishou, kotaeSaidai)) && tries < 150);
+
+        if (kekka === null || !kotaeHanIHantei(kekka.kotae, kotaeSaishou, kotaeSaidai)) {
+          let genin = mujunGeninSagasu(keisanList, aShuTaipu, bShuTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, warizanKotaeTaipu);
+          akakuHyouji(genin);
+          alert(MUJUN_MESSEEJI);
+          return;
+        }
+
+        let anaBasho = anaBashoSentaku;
+        if (anaBashoSentaku === "random") {
+          let kouho = ["a", "b", "kotae"];
+          anaBasho = kouho[Math.floor(Math.random() * 3)];
+        }
+
+        genzaiNoMondai.push({ a: kekka.a, b: kekka.b, op: op, kotae: kekka.kotae, anaBasho: anaBasho });
+      }
+
+      document.getElementById("title-hyouji").textContent = title;
+
+      fontSizeUpdate();
+
+      hyouji();
+    }
+
+    function anaSpan() {
+      return "<span class='ana ana-sen'>&nbsp;</span>";
+    }
+
+    function ataiSpan(value) {
+      return "<span class='ana'>" + value + "</span>";
+    }
+
+    function bunsuuSpan(whole, num, den) {
+      if (den === 1 && whole === 0) {
+        return "<span class='ana'>" + num + "</span>";
+      }
+      if (num === 0) {
+        return "<span class='ana'>" + whole + "</span>";
+      }
+      let bunsuuBubun = "<span class='bunsuu'><span class='bunshi'>" + num + "</span><span class='bunbo'>" + den + "</span></span>";
+      if (whole !== 0) {
+        return "<span class='taibunsuu'>" + whole + bunsuuBubun + "</span>";
+      }
+      return bunsuuBubun;
+    }
+
+    function ataiHyouji(value, isAna) {
+      if (typeof value === "object" && value !== null && "remainder" in value) {
+        if (isAna) {
+          return anaSpan() + " あまり " + anaSpan();
+        }
+        return "<span class='ana'>" + value.quotient + "</span> あまり <span class='ana'>" + value.remainder + "</span>";
+      }
+      if (isAna) {
+        return anaSpan();
+      }
+      if (typeof value === "object" && value !== null && "den" in value) {
+        return bunsuuSpan(value.whole, value.num, value.den);
+      }
+      return ataiSpan(value);
+    }
+
+    function hyouji() {
+      let kotaeHyouji = document.getElementById("kotae-hyouji").checked;
+      let mondaiHTML = "";
+
+      for (let i = 0; i < genzaiNoMondai.length; i++) {
+        let mondai = genzaiNoMondai[i];
+
+        let aIsAna = (mondai.anaBasho === "a" && !kotaeHyouji);
+        let bIsAna = (mondai.anaBasho === "b" && !kotaeHyouji);
+        let kotaeIsAna = (mondai.anaBasho === "kotae" && !kotaeHyouji);
+
+        mondaiHTML += "<p>"
+          + "<span class='bangou'>" + maruSuuji(i + 1) + "</span>"
+          + ataiHyouji(mondai.a, aIsAna) + " "
+          + mondai.op + " "
+          + ataiHyouji(mondai.b, bIsAna) + " = "
+          + ataiHyouji(mondai.kotae, kotaeIsAna)
+          + "</p>";
+      }
+
+      let mondaiWaku = document.getElementById("mondai");
+      mondaiWaku.innerHTML = mondaiHTML;
+
+      let gyouSuu = Math.ceil(genzaiNoMondai.length / 2);
+      if (gyouSuu < 1) {
+        gyouSuu = 1;
+      }
+      mondaiWaku.style.gridTemplateRows = "repeat(" + gyouSuu + ", auto)";
+    }
+
+    function fontSizeUpdate() {
+      let size = document.getElementById("fontsize").value;
+      document.getElementById("mondai").style.fontSize = size + "px";
+      document.getElementById("fontsize-hyouji").textContent = size;
+      document.getElementById("fontsize2").value = size;
+      document.getElementById("fontsize2-hyouji").textContent = size;
+    }
+
+    function fontSizeUpdate2() {
+      let size = document.getElementById("fontsize2").value;
+      document.getElementById("mondai").style.fontSize = size + "px";
+      document.getElementById("fontsize2-hyouji").textContent = size;
+      document.getElementById("fontsize").value = size;
+      document.getElementById("fontsize-hyouji").textContent = size;
+    }
+
+    async function purintoCanvasSakusei() {
+      let taishou = document.getElementById("print-area");
+      return await html2canvas(taishou, {
+        backgroundColor: "#ffffff",
+        scrollX: -window.scrollX,
+        scrollY: -window.scrollY,
+        windowWidth: document.documentElement.scrollWidth,
+        windowHeight: document.documentElement.scrollHeight,
+        scale: 1
+      });
+    }
+
+    function pdfBlobSakusei(canvas) {
+      let imgData = canvas.toDataURL("image/png");
+      let jsPDFKurasu = window.jspdf.jsPDF;
+      let pdf = new jsPDFKurasu({ orientation: "portrait", unit: "mm", format: "a4" });
+
+      let pdfHaba = 210;
+      let pdfTakasa = (canvas.height * pdfHaba) / canvas.width;
+      if (pdfTakasa > 297) {
+        pdfTakasa = 297;
+      }
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfHaba, pdfTakasa);
+      return pdf.output("blob");
+    }
+
+    function wordSenHTML(haba) {
+      return "<span style='display:inline-block;border-bottom:2px solid #000;width:" + haba + "em;margin:0 3px;'>&nbsp;</span>";
+    }
+
+    function wordAtaiHyouji(value, isAna) {
+      if (typeof value === "object" && value !== null && "remainder" in value) {
+        if (isAna) {
+          return wordSenHTML(1.6) + " あまり " + wordSenHTML(1.6);
+        }
+        return value.quotient + " あまり " + value.remainder;
+      }
+      if (isAna) {
+        return wordSenHTML(1.6);
+      }
+      if (typeof value === "object" && value !== null && "den" in value) {
+        let moji = "";
+        if (value.whole !== 0) {
+          moji += value.whole + " ";
+        }
+        if (value.num !== 0) {
+          moji += "<sup>" + value.num + "</sup>⁄<sub>" + value.den + "</sub>";
+        } else if (value.whole === 0) {
+          moji += "0";
+        }
+        return moji;
+      }
+      return value;
+    }
+
+    function wordMondaiMoji(mondai, i, kotaeHyouji, fontSize) {
+      let aIsAna = (mondai.anaBasho === "a" && !kotaeHyouji);
+      let bIsAna = (mondai.anaBasho === "b" && !kotaeHyouji);
+      let kotaeIsAna = (mondai.anaBasho === "kotae" && !kotaeHyouji);
+
+      return "<span style='font-size:" + fontSize + "px;'>"
+        + maruSuuji(i + 1) + "　"
+        + wordAtaiHyouji(mondai.a, aIsAna) + " "
+        + mondai.op + " "
+        + wordAtaiHyouji(mondai.b, bIsAna) + " = "
+        + wordAtaiHyouji(mondai.kotae, kotaeIsAna)
+        + "</span>";
+    }
+
+    function wordMondaiHTMLTsukuru() {
+      let kotaeHyouji = document.getElementById("kotae-hyouji").checked;
+      let hanbun = Math.ceil(genzaiNoMondai.length / 2);
+      let fontSize = document.getElementById("fontsize").value;
+
+      let html = "<table style='width:100%; border-collapse:collapse;'>";
+      for (let i = 0; i < hanbun; i++) {
+        html += "<tr>";
+        html += "<td style='width:50%; vertical-align:middle; padding:6px 20px 6px 0;'>"
+          + wordMondaiMoji(genzaiNoMondai[i], i, kotaeHyouji, fontSize)
+          + "</td>";
+
+        let migiIndex = i + hanbun;
+        if (migiIndex < genzaiNoMondai.length) {
+          html += "<td style='width:50%; vertical-align:middle; padding:6px 0;'>"
+            + wordMondaiMoji(genzaiNoMondai[migiIndex], migiIndex, kotaeHyouji, fontSize)
+            + "</td>";
+        } else {
+          html += "<td style='width:50%;'>&nbsp;</td>";
+        }
+        html += "</tr>";
+      }
+      html += "</table>";
+
+      return html;
+    }
+
+    function wordBlobSakusei() {
+      let title = document.getElementById("title").value;
+      let mondaiHTML = wordMondaiHTMLTsukuru();
+
+      let html = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>"
+        + "<head><meta charset='utf-8'><title>" + title + "</title></head>"
+        + "<body style=\"font-family:'Yu Gothic','MS Gothic',sans-serif;\">"
+        + "<table style='width:100%; border-collapse:collapse; margin-bottom:14px;'><tr>"
+        + "<td style='text-align:left; font-size:20px;'>" + wordSenHTML(2.2) + "月" + wordSenHTML(2.2) + "日</td>"
+        + "<td style='text-align:right; font-size:20px;'>" + wordSenHTML(1.8) + "年" + wordSenHTML(1.8) + "組" + wordSenHTML(1.8) + "番　名前" + wordSenHTML(5.5) + "</td>"
+        + "</tr></table>"
+        + "<h2 style='text-align:center; border-bottom:3px solid #000; padding-bottom:8px;'>" + title + "</h2>"
+        + mondaiHTML
+        + "<table style='width:100%; border-collapse:collapse; margin-top:30px;'><tr>"
+        + "<td style='text-align:left; font-size:20px;'>" + wordSenHTML(2.2) + "分" + wordSenHTML(2.2) + "秒</td>"
+        + "<td style='text-align:right; font-size:20px;'>" + wordSenHTML(2.2) + "点</td>"
+        + "</tr></table>"
+        + "</body></html>";
+
+      return new Blob(["﻿", html], { type: "application/msword" });
+    }
+
+    async function hozonJikkou() {
+      if (genzaiNoMondai.length === 0) {
+        alert("先に「問題を作る」を押してください");
+        return;
+      }
+
+      if (window.showSaveFilePicker) {
+        let handle;
+        try {
+          handle = await window.showSaveFilePicker({
+            suggestedName: "算数プリント.pdf",
+            types: [
+              { description: "PDFファイル", accept: { "application/pdf": [".pdf"] } },
+              { description: "Wordファイル", accept: { "application/msword": [".doc"] } },
+              { description: "画像ファイル（PNG）", accept: { "image/png": [".png"] } }
+            ]
+          });
+        } catch (e) {
+          // 保存をキャンセルした場合はここに来ます
+          return;
+        }
+
+        let namae = handle.name.toLowerCase();
+        let blob;
+        if (namae.endsWith(".doc")) {
+          blob = wordBlobSakusei();
+        } else if (namae.endsWith(".png")) {
+          let canvas = await purintoCanvasSakusei();
+          blob = await new Promise(function (kaiketsu) { canvas.toBlob(kaiketsu); });
+        } else {
+          let canvas = await purintoCanvasSakusei();
+          blob = pdfBlobSakusei(canvas);
+        }
+
+        let writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        alert("保存しました");
+      } else {
+        // このブラウザでは保存の種類を選べないため、PDFで保存します
+        let canvas = await purintoCanvasSakusei();
+        let blob = pdfBlobSakusei(canvas);
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = "算数プリント.pdf";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    setteiModeHenkou();
+    taipuHyoujiKirikae();
+    keisanShuruiHenkou();
+  </script>
+</body>
+</html>

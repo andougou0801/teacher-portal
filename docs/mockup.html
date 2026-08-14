@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全国教員支援ポータル（仮称） - サイトモックアップ</title>
+<style>
+  :root{
+    --navy:#1F4E79;
+    --navy-dark:#163a58;
+    --accent:#2E86AB;
+    --bg:#F7F9FB;
+    --card:#FFFFFF;
+    --text:#1E2732;
+    --muted:#5B6B7A;
+    --line:#E3E9EF;
+    --good:#2F8F5B;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Sans","Yu Gothic",-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.7;
+  }
+  a{color:inherit;text-decoration:none;}
+  .badge-note{
+    background:#FFF7E0;color:#8A6D00;border:1px solid #F2D98A;
+    font-size:12px;padding:6px 14px;text-align:center;
+  }
+
+  /* Header */
+  header{
+    background:var(--navy);
+    color:#fff;
+    padding:16px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;top:0;z-index:10;
+  }
+  .logo{font-size:20px;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .logo span.mark{
+    background:#fff;color:var(--navy);border-radius:8px;
+    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+    font-size:16px;font-weight:800;
+  }
+  nav{display:flex;gap:28px;font-size:14px;}
+  nav a{opacity:.9;}
+  nav a:hover{opacity:1;text-decoration:underline;}
+  .cta{
+    background:#fff;color:var(--navy);padding:8px 18px;border-radius:20px;
+    font-size:13px;font-weight:700;
+  }
+
+  /* Hero */
+  .hero{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);
+    color:#fff;
+    padding:64px 32px 80px;
+    text-align:center;
+  }
+  .hero h1{
+    font-size:34px;margin:0 0 16px;font-weight:800;letter-spacing:.02em;
+  }
+  .hero p{
+    max-width:640px;margin:0 auto 28px;color:#DCE8F2;font-size:15px;
+  }
+  .hero-search{
+    max-width:520px;margin:0 auto;background:#fff;border-radius:30px;
+    display:flex;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.15);
+  }
+  .hero-search input{
+    flex:1;border:none;outline:none;padding:10px 18px;font-size:14px;border-radius:30px;
+  }
+  .hero-search button{
+    background:var(--accent);color:#fff;border:none;border-radius:24px;
+    padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;
+  }
+  .hero-stats{
+    display:flex;justify-content:center;gap:48px;margin-top:36px;flex-wrap:wrap;
+  }
+  .hero-stats div{text-align:center;}
+  .hero-stats .num{font-size:24px;font-weight:800;}
+  .hero-stats .lbl{font-size:12px;color:#B9CEDD;}
+
+  section{padding:56px 32px;max-width:1080px;margin:0 auto;}
+  .section-head{text-align:center;margin-bottom:36px;}
+  .section-head .eyebrow{
+    color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .section-head h2{font-size:26px;margin:8px 0 8px;}
+  .section-head p{color:var(--muted);font-size:14px;max-width:520px;margin:0 auto;}
+
+  /* Pillars */
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .pillar{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:26px;text-align:left;
+  }
+  .pillar .icon{
+    width:44px;height:44px;border-radius:10px;background:#EAF2FA;color:var(--navy);
+    display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;
+  }
+  .pillar h3{font-size:16px;margin:0 0 8px;}
+  .pillar p{font-size:13px;color:var(--muted);margin:0;}
+
+  /* Tools */
+  .tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .tool-card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .tool-thumb{
+    height:96px;background:linear-gradient(135deg,#EAF2FA,#DCE6F1);
+    display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--navy);
+  }
+  .tool-body{padding:16px;flex:1;display:flex;flex-direction:column;gap:8px;}
+  .tool-card h4{font-size:14px;margin:0;}
+  .tool-card p{font-size:12px;color:var(--muted);margin:0;flex:1;}
+  .tool-tags{display:flex;gap:6px;flex-wrap:wrap;}
+  .tag{
+    background:#EAF2FA;color:var(--navy);font-size:10px;padding:3px 9px;border-radius:10px;font-weight:700;
+  }
+  .made-by{
+    font-size:10px;color:var(--good);font-weight:700;display:flex;align-items:center;gap:4px;
+  }
+  .tool-cta{
+    background:var(--navy);color:#fff;text-align:center;padding:9px;font-size:12px;font-weight:700;
+  }
+
+  /* Articles */
+  .article-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:18px;}
+  .article-card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  }
+  .article-card .thumb{
+    height:120px;background:linear-gradient(135deg,#F0F4F8,#E3E9EF);
+  }
+  .article-card.big .thumb{height:200px;}
+  .article-body{padding:16px;}
+  .article-cat{font-size:10px;color:var(--accent);font-weight:800;letter-spacing:.05em;}
+  .article-card h4{font-size:14px;margin:6px 0;}
+  .article-card.big h4{font-size:18px;}
+  .article-card .meta{font-size:11px;color:var(--muted);}
+
+  /* Community */
+  .community{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;
+  }
+  .thread{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 4px;border-bottom:1px solid var(--line);font-size:13px;
+  }
+  .thread:last-child{border-bottom:none;}
+  .thread .title{font-weight:700;}
+  .thread .info{color:var(--muted);font-size:11px;margin-top:4px;}
+  .thread .replies{
+    background:var(--bg);border-radius:10px;padding:4px 12px;font-size:11px;color:var(--navy);font-weight:700;
+    white-space:nowrap;
+  }
+
+  footer{
+    background:var(--navy-dark);color:#B9CEDD;padding:36px 32px;text-align:center;font-size:12px;
+  }
+  footer .cols{
+    display:flex;justify-content:center;gap:40px;margin-bottom:20px;flex-wrap:wrap;font-size:13px;
+  }
+  footer a{opacity:.85;}
+  footer a:hover{opacity:1;text-decoration:underline;}
+
+  @media (max-width:820px){
+    .pillars,.tool-grid{grid-template-columns:1fr;}
+    .article-grid{grid-template-columns:1fr;}
+    nav{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="badge-note">これはサイトの方向性を確認するためのモックアップです。実データ・実機能は未実装です。</div>
+
+<header>
+  <div class="logo"><span class="mark">先</span>全国教員支援ポータル（仮称）</div>
+  <nav>
+    <a href="#tools">ツール</a>
+    <a href="#articles">記事・コラム</a>
+    <a href="#community">コミュニティ</a>
+    <a href="#about">このサイトについて</a>
+  </nav>
+  <div class="cta">教員登録（無料）</div>
+</header>
+
+<section class="hero" style="padding-top:56px;">
+  <h1>先生の「時間」と「工夫」を、<br>もっとシェアできる場所へ。</h1>
+  <p>校務・授業を助ける自作ツール、現場のノウハウ、教員同士のつながり。<br>日本中の教員が使いやすい情報とツールを、ここに集めます。</p>
+  <div class="hero-search">
+    <input type="text" placeholder="例）成績処理　時間割　プリント作成」で検索">
+    <button>検索する</button>
+  </div>
+  <div class="hero-stats">
+    <div><div class="num">32</div><div class="lbl">公開中の自作ツール</div></div>
+    <div><div class="num">148</div><div class="lbl">掲載記事・実践事例</div></div>
+    <div><div class="num">全国</div><div class="lbl">対応校種：小・中・高</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <div class="eyebrow">Three Pillars</div>
+    <h2>サイトの3つの柱</h2>
+    <p>「使えるツール」「読める情報」「頼れる仲間」を1つの場所に。</p>
+  </div>
+  <div class="pillars">
+    <div class="pillar">
+      <div class="icon">🛠</div>
+      <h3>自作ツールポータル</h3>
+      <p>成績処理・時間割作成・プリント生成など、現場発の自作ツールをブラウザですぐに使える形で公開。</p>
+    </div>
+    <div class="pillar">
+      <div class="icon">📰</div>
+      <h3>情報発信メディア</h3>
+      <p>ICT活用事例、授業アイデア、時短術など、明日から使える情報を毎週発信。</p>
+    </div>
+    <div class="pillar">
+      <div class="icon">💬</div>
+      <h3>教員コミュニティ</h3>
+      <p>悩みや工夫を投稿・相談できる掲示板。全国の先生同士がゆるやかにつながる場所。</p>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="section-head">
+    <div class="eyebrow">Tool Portal</div>
+    <h2>自作ツールカタログ（例）</h2>
+    <p>CODEで開発したツールをこの形式で掲載していくイメージです。</p>
+  </div>
+  <div class="tool-grid">
+    <div class="tool-card">
+      <div class="tool-thumb">📊</div>
+      <div class="tool-body">
+        <div class="tool-tags"><span class="tag">校務効率化</span><span class="tag">無料</span></div>
+        <h4>成績集計くん</h4>
+        <p>点数を入力するだけで平均・順位・所見のたたき台を自動生成。</p>
+        <div class="made-by">✓ 開発者本人による自作ツール</div>
+      </div>
+      <div class="tool-cta">ツールを開く</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-thumb">🗓</div>
+      <div class="tool-body">
+        <div class="tool-tags"><span class="tag">時間割</span><span class="tag">無料</span></div>
+        <h4>時間割自動作成ツール</h4>
+        <p>条件を入れるだけで学級・教科の時間割案を複数パターン提示。</p>
+        <div class="made-by">✓ 開発者本人による自作ツール</div>
+      </div>
+      <div class="tool-cta">ツールを開く</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-thumb">🖨</div>
+      <div class="tool-body">
+        <div class="tool-tags"><span class="tag">授業支援</span><span class="tag">β版</span></div>
+        <h4>プリント自動レイアウト</h4>
+        <p>問題文を貼り付けるだけでA4プリントの体裁に自動整形。</p>
+        <div class="made-by">✓ 開発者本人による自作ツール</div>
+      </div>
+      <div class="tool-cta">ツールを開く</div>
+    </div>
+  </div>
+</section>
+
+<section id="articles">
+  <div class="section-head">
+    <div class="eyebrow">Media</div>
+    <h2>新着記事・実践事例（例）</h2>
+    <p>教員の「困った」を解決する記事や、現場発のアイデアを紹介するイメージです。</p>
+  </div>
+  <div class="article-grid">
+    <div class="article-card big">
+      <div class="thumb"></div>
+      <div class="article-body">
+        <div class="article-cat">ICT活用</div>
+        <h4>採点・所見作成を半分の時間にした3つの工夫</h4>
+        <div class="meta">現職教員の実践レポート ・ 5分で読める</div>
+      </div>
+    </div>
+    <div class="article-card">
+      <div class="thumb"></div>
+      <div class="article-body">
+        <div class="article-cat">授業アイデア</div>
+        <h4>盛り上がる係活動の決め方</h4>
+        <div class="meta">3分で読める</div>
+      </div>
+    </div>
+    <div class="article-card">
+      <div class="thumb"></div>
+      <div class="article-body">
+        <div class="article-cat">時短術</div>
+        <h4>職員会議の資料作りを効率化する</h4>
+        <div class="meta">4分で読める</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="community">
+  <div class="section-head">
+    <div class="eyebrow">Community</div>
+    <h2>教員コミュニティ（例）</h2>
+    <p>相談・情報交換の掲示板イメージです。</p>
+  </div>
+  <div class="community">
+    <div class="thread">
+      <div>
+        <div class="title">保護者対応で困っています。良い声かけの例はありますか？</div>
+        <div class="info">小学校・6年担任　5時間前</div>
+      </div>
+      <div class="replies">返信 14</div>
+    </div>
+    <div class="thread">
+      <div>
+        <div class="title">自作の採点補助ツール、使ってみた感想を教えてください</div>
+        <div class="info">中学校・国語科　昨日</div>
+      </div>
+      <div class="replies">返信 9</div>
+    </div>
+    <div class="thread">
+      <div>
+        <div class="title">来年度に向けたICT研修、おすすめの内容ありますか？</div>
+        <div class="info">高等学校・情報科　2日前</div>
+      </div>
+      <div class="replies">返信 6</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="cols">
+    <a href="#">サイトについて</a>
+    <a href="#">ツールを提供したい方へ</a>
+    <a href="#">運営チームに参加する</a>
+    <a href="#">お問い合わせ</a>
+    <a href="#">プライバシーポリシー</a>
+  </div>
+  <div>© 2026 全国教員支援ポータル（仮称）・個人プロジェクトとして開発中</div>
+</footer>
+
+</body>
+</html>

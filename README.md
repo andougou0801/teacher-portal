@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 全国教員支援ポータル（仮称）
 
-## Getting Started
+日本中の教員が使いやすい情報・自作ツール共有サイトを目指すプロジェクトのMVP実装です。
+[プロジェクト企画書](./docs/教員支援ポータル_立ち上げ企画書.docx)にある3本柱「自作ツールポータル」「情報発信メディア」「教員コミュニティ」のうち、
+フェーズ1（MVP）スコープ＝**トップページ＋自作ツール掲載＋簡易記事**を実装しています。
 
-First, run the development server:
+## 現在できること
+
+- トップページ（ヒーロー・3本柱紹介・ツール／記事／コミュニティのプレビュー）
+- 自作ツールカタログ（`/tools`）と各ツールの個別ページ（`/tools/[slug]`）
+  - 時間割自動作成ツール／筆算マスター／算数プリントメーカーを実際に動く形で掲載
+- 記事一覧（`/articles`）・コミュニティ（`/community`）はサンプル表示（実データ・投稿機能は未実装）
+- サイト概要・チーム参加案内（`/about`）
+
+## まだ実装していないこと（企画書のフェーズ2以降）
+
+- 会員登録・ログイン（学校メールドメイン確認等）
+- 記事のCMS化・実データ投稿
+- コミュニティの投稿・返信機能
+- 検索バーの実機能（現状は見た目のみ）
+
+## 開発サーバーの起動
+
+Node.js が必要です（推奨: LTS版）。
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000) で確認できます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ツールの追加方法
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. ツールのHTMLファイルを `public/tools/` に配置する
+2. `src/lib/tools.ts` の `tools` 配列にエントリを追加する（slug, name, description, icon, tags, file）
 
-## Learn More
+これだけで `/tools` 一覧と `/tools/[slug]` 個別ページに自動的に反映されます。
 
-To learn more about Next.js, take a look at the following resources:
+## 技術スタック
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Next.js（App Router）+ TypeScript + Tailwind CSS v4
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 関連ドキュメント
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [プロジェクト企画書](./docs/教員支援ポータル_立ち上げ企画書.docx)
+- [初期モックアップ](./docs/mockup.html)
+- [次のアクション（TODO）](./TODO.md)
