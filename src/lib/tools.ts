@@ -5,6 +5,7 @@ export type Tool = {
   icon: string;
   tags: string[];
   file: string;
+  mobileNote?: string;
 };
 
 export const tools: Tool[] = [
@@ -34,6 +35,8 @@ export const tools: Tool[] = [
     icon: "🖨",
     tags: ["授業支援", "無料"],
     file: "/tools/math-worksheet-maker.html",
+    mobileNote:
+      "印刷プレビューはA4サイズ基準のため、スマートフォンでは横スクロールしてご確認ください。PCでの利用を推奨します。",
   },
 ];
 

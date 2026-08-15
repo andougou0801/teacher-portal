@@ -42,6 +42,11 @@ export default async function ToolPage(props: PageProps<"/tools/[slug]">) {
         <div className="mt-1 flex items-center gap-1 text-xs font-bold text-good">
           ✓ 開発者本人による自作ツール
         </div>
+        {tool.mobileNote && (
+          <div className="mt-3 rounded-xl border border-[#F2D98A] bg-[#FFF7E0] px-4 py-2.5 text-xs text-[#8A6D00] md:hidden">
+            {tool.mobileNote}
+          </div>
+        )}
       </div>
       <div className="overflow-hidden rounded-2xl border border-line bg-white">
         <iframe

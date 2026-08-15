@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { tools } from "@/lib/tools";
+import { articles } from "@/lib/articles";
 
 const pillars = [
   {
@@ -20,6 +21,8 @@ const pillars = [
 ];
 
 export default function Home() {
+  const [featuredArticle] = articles;
+
   return (
     <>
       <section className="bg-gradient-to-br from-navy to-navy-dark px-8 pt-14 pb-20 text-center text-white">
@@ -49,7 +52,7 @@ export default function Home() {
             <div className="text-xs text-[#B9CEDD]">公開中の自作ツール</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-extrabold">準備中</div>
+            <div className="text-2xl font-extrabold">{articles.length}</div>
             <div className="text-xs text-[#B9CEDD]">掲載記事・実践事例</div>
           </div>
           <div className="text-center">
@@ -139,16 +142,31 @@ export default function Home() {
           </div>
           <h2 className="mt-2 mb-2 text-2xl font-bold">記事・コラム</h2>
           <p className="mx-auto max-w-lg text-sm text-muted">
-            準備中です。教員の「困った」を解決する記事を今後発信していきます。
+            教員の「困った」を解決する記事を発信していきます。
           </p>
         </div>
-        <div className="rounded-2xl border border-line bg-white p-8 text-center text-sm text-muted">
-          記事は現在準備中です。公開までしばらくお待ちください。
-          <div className="mt-4">
-            <Link href="/articles" className="font-bold text-accent hover:underline">
-              記事ページ（準備中）を見る →
-            </Link>
-          </div>
+        {featuredArticle && (
+          <Link
+            href={`/articles/${featuredArticle.slug}`}
+            className="block overflow-hidden rounded-2xl border border-line bg-white md:flex"
+          >
+            <div className="h-40 bg-gradient-to-br from-[#F0F4F8] to-line md:h-auto md:w-64 md:shrink-0" />
+            <div className="p-6">
+              <div className="text-[10px] font-extrabold tracking-wide text-accent">
+                {featuredArticle.category}
+              </div>
+              <h4 className="my-2 text-lg font-bold">{featuredArticle.title}</h4>
+              <p className="text-sm text-muted">{featuredArticle.summary}</p>
+              <div className="mt-3 text-[11px] text-muted">
+                {featuredArticle.author}・{featuredArticle.readTime}
+              </div>
+            </div>
+          </Link>
+        )}
+        <div className="mt-4 text-center">
+          <Link href="/articles" className="font-bold text-accent hover:underline">
+            記事一覧を見る →
+          </Link>
         </div>
       </section>
 
