@@ -12,6 +12,7 @@
     --accent-dark:#1f54b8;
     --cs:48px;
     --cs-gap:4px;
+    --pw:18px;
   }
   body.op-add{--accent:#43a047;--accent-dark:#2e7d32;}
   body.op-sub{--accent:#fb8c00;--accent-dark:#ef6c00;}
@@ -58,6 +59,11 @@
 
   /* ---------- selection screen ---------- */
   h2.section-title{margin:0 0 12px;font-size:16px;color:#555;font-weight:800;}
+  .notebook-tip{
+    background:#fff8e1;border:2px dashed #f5a623;color:#a06800;
+    border-radius:14px;padding:12px 16px;font-size:14px;font-weight:800;
+    margin-bottom:16px;text-align:center;line-height:1.5;
+  }
   .op-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px;}
   .op-btn{
     border:3px solid #e2e8f0;background:#fafcff;border-radius:16px;
@@ -129,7 +135,7 @@
   div.cell{background:transparent;}
   div.cell.empty{visibility:hidden;}
   div.cell.op{color:var(--accent-dark);font-size:26px;}
-  div.cell.point{color:var(--accent-dark);font-size:30px;font-weight:800;align-items:flex-end;padding-bottom:4px;}
+  div.cell.point{width:var(--pw);color:var(--accent-dark);font-size:26px;font-weight:800;align-items:flex-end;padding-bottom:4px;justify-self:center;}
   input.cell{
     border:2.5px solid #d7dfe9;background:#fbfdff;text-align:center;
     font-family:inherit;caret-color:var(--accent);padding:0;
@@ -272,7 +278,7 @@
   .summary-stat .lbl{font-size:12px;color:#888;font-weight:700;margin-top:2px;}
 
   @media (max-width:420px){
-    :root{--cs:40px;}
+    :root{--cs:40px;--pw:13px;}
     .cell{font-size:18px;}
     .celebrate-text{font-size:36px;padding:16px 30px;}
     .app-title{font-size:18px;}
@@ -292,6 +298,7 @@
 
   <!-- ================= SELECT SCREEN ================= -->
   <div id="screen-select">
+    <div class="notebook-tip">📓 じっさいに ノートにも かきながら、もんだいを といてみよう！</div>
     <div class="card">
       <h2 class="section-title">① けいさんの しゅるいを えらぼう</h2>
       <div class="op-grid" id="op-grid">
@@ -453,19 +460,27 @@ function decPointColIndex(maxPlace, leftOffset){
 function decTotalCols(maxPlace, scale, leftOffset){
   return leftOffset+(maxPlace+scale+1)+(scale>0?1:0);
 }
+function colTemplate(totalCols, pointCol){
+  const parts=[];
+  for(let i=1;i<=totalCols;i++){
+    parts.push(i===pointCol ? 'var(--pw)' : 'var(--cs)');
+  }
+  return parts.join(' ');
+}
 function renderDecimalStaticRow(grid,row,numStr,maxPlace,scale,leftOffset){
+  const hasOwnDecimal = decLen(numStr) > 0;
   for(let p=maxPlace;p>=-scale;p--){
     const col=decColIndex(p,maxPlace,scale,leftOffset);
     const d=digitAtPlace(numStr,p);
     if(d===null) addCell(grid,{row,col,extraClass:'empty'});
     else addCell(grid,{row,col,digit:d});
-    if(scale>0 && p===0){
+    if(scale>0 && p===0 && hasOwnDecimal){
       addCell(grid,{row,col:decPointColIndex(maxPlace,leftOffset),digit:'.',extraClass:'point'});
     }
   }
 }
 function renderDecimalAnswerRow(grid,row,resultStr,maxPlace,scale,leftOffset){
-  for(let p=maxPlace;p>=-scale;p--){
+  for(let p=-scale;p<=maxPlace;p++){
     const col=decColIndex(p,maxPlace,scale,leftOffset);
     const d=digitAtPlace(resultStr,p);
     if(d===null){ addCell(grid,{row,col,extraClass:'empty'}); }
@@ -473,6 +488,12 @@ function renderDecimalAnswerRow(grid,row,resultStr,maxPlace,scale,leftOffset){
     if(scale>0 && p===0){
       addCell(grid,{row,col:decPointColIndex(maxPlace,leftOffset),digit:'.',extraClass:'point'});
     }
+  }
+}
+function renderDecimalScratchRow(grid,row,maxPlace,scale,leftOffset){
+  for(let p=-scale+1;p<=maxPlace;p++){
+    const col=decColIndex(p,maxPlace,scale,leftOffset);
+    addCell(grid,{row,col,editable:true,extraClass:'scratch'});
   }
 }
 
@@ -596,14 +617,19 @@ function computeDecimalResult(a,b,op){
   const rInt = op==='add' ? aInt+bInt : aInt-bInt;
   return formatScaledInt(rInt,scale);
 }
+function randDecPlacesPair(maxDec){
+  let a,b;
+  do{ a=randInt(0,maxDec); b=randInt(0,maxDec); } while(a===0 && b===0);
+  return [a,b];
+}
 function genDecimalAddition(){
-  const decA=randInt(1,2), decB=randInt(1,2);
+  const [decA,decB]=randDecPlacesPair(2);
   const a=randomDecimal(1,9,decA);
   const b=randomDecimal(1,9,decB);
   return {a,b};
 }
 function genDecimalSubtraction(){
-  const decA=randInt(1,2), decB=randInt(1,2);
+  const [decA,decB]=randDecPlacesPair(2);
   let a,b,tries=0,ok=false;
   while(!ok && tries<300){
     tries++;
@@ -615,19 +641,21 @@ function genDecimalSubtraction(){
   return {a,b};
 }
 function genDecimalMultiplication(){
-  const a=randomDecimal(1,9,1);
-  const b=randomDecimal(1,9,1);
+  const [decA,decB]=randDecPlacesPair(1);
+  const a=randomDecimal(1,9,decA);
+  const b=randomDecimal(1,9,decB);
   return {a,b};
 }
 function genDecimalDivision(){
   let a,b,tries=0,ok=false;
   while(!ok && tries<300){
     tries++;
-    const divisorWhole=randInt(0,2);
+    const divisorWhole=randInt(0,1);
     b=`${divisorWhole}.${randInt(1,9)}`;
     a=`${randInt(1,9)}.${randInt(1,9)}`;
     const aInt=toScaledInt(a,1), bInt=toScaledInt(b,1);
-    if(aInt>bInt && aInt%bInt!==0) ok=true;
+    const q=Math.floor(aInt/bInt);
+    if(aInt>bInt && aInt%bInt!==0 && q>=1 && q<=9) ok=true;
   }
   return {a,b};
 }
@@ -775,37 +803,51 @@ function resetProblemArea(){
   return area;
 }
 
-function buildOpGridInto(container,a,b,opChar,result,withScratch){
+function buildOpGridInto(container,a,b,opChar,result,withScratch,opts){
+  opts = opts || {};
+  const skipOperands = !!opts.skipOperands;
+  const decimalScale = opts.decimalScale || 0;
   const da=digitsOf(a), db=digitsOf(b), dr=digitsOf(result);
   const maxPlace=Math.max(da.length-1, db.length-1, dr.length-1);
   const leftOffset=1;
-  const totalCols=leftOffset+maxPlace+1;
+  const totalCols=leftOffset+maxPlace+1+(decimalScale>0?1:0);
+  const col=(p)=>{
+    let idx=maxPlace-p;
+    if(decimalScale>0 && p<decimalScale) idx+=1;
+    return leftOffset+idx+1;
+  };
+  const pointCol = decimalScale>0 ? leftOffset+(maxPlace-decimalScale)+2 : null;
   const grid=document.createElement('div');
   grid.className='calc-grid';
-  grid.style.gridTemplateColumns=`repeat(${totalCols}, var(--cs))`;
+  grid.style.gridTemplateColumns=colTemplate(totalCols,pointCol);
   let row=1;
   if(withScratch){
     for(let p=1;p<=maxPlace;p++){
-      addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, editable:true, extraClass:'scratch'});
+      addCell(grid,{row,col:col(p), editable:true, extraClass:'scratch'});
     }
     row++;
   }
-  for(let p=0;p<=maxPlace;p++){
-    if(p<da.length) addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, digit:da[p]});
-    else addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, extraClass:'empty'});
+  if(!skipOperands){
+    for(let p=0;p<=maxPlace;p++){
+      if(p<da.length) addCell(grid,{row,col:col(p), digit:da[p]});
+      else addCell(grid,{row,col:col(p), extraClass:'empty'});
+    }
+    row++;
+    addCell(grid,{row,col:1,digit:opChar,extraClass:'op'});
+    for(let p=0;p<=maxPlace;p++){
+      if(p<db.length) addCell(grid,{row,col:col(p), digit:db[p]});
+      else addCell(grid,{row,col:col(p), extraClass:'empty'});
+    }
+    row++;
   }
-  row++;
-  addCell(grid,{row,col:1,digit:opChar,extraClass:'op'});
-  for(let p=0;p<=maxPlace;p++){
-    if(p<db.length) addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, digit:db[p]});
-    else addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, extraClass:'empty'});
-  }
-  row++;
   addLine(grid,row,totalCols); row++;
   for(let p=0;p<dr.length;p++){
-    const col=leftOffset+(maxPlace-p)+1;
-    const el=addCell(grid,{row,col,editable:true,correct:dr[p]});
+    const c=col(p);
+    const el=addCell(grid,{row,col:c,editable:true,correct:dr[p]});
     answerCells.push(el);
+  }
+  if(decimalScale>0){
+    addCell(grid,{row,col:pointCol,digit:'.',extraClass:'point'});
   }
   container.appendChild(grid);
 }
@@ -814,52 +856,66 @@ function renderSimpleOpGrid(a,b,opChar,result,withScratch){
   buildOpGridInto(area,a,b,opChar,result,withScratch);
 }
 
-function buildMultiplicationInto(container,a,b){
-  if(b<10){ buildOpGridInto(container,a,b,'×',a*b,true); return; }
+function buildMultiplicationInto(container,a,b,opts){
+  opts = opts || {};
+  if(b<10){ buildOpGridInto(container,a,b,'×',a*b,true,opts); return; }
+  const skipOperands = !!opts.skipOperands;
+  const decimalScale = opts.decimalScale || 0;
   const product=a*b;
   const ones=b%10, tens=Math.floor(b/10)%10;
   const partial1=a*ones, partial2=a*tens;
   const da=digitsOf(a), db=digitsOf(b), dp=digitsOf(product);
   const maxPlace=Math.max(da.length-1, db.length-1, dp.length-1);
   const leftOffset=1;
-  const totalCols=leftOffset+maxPlace+1;
+  const totalCols=leftOffset+maxPlace+1+(decimalScale>0?1:0);
+  const col=(p)=>{
+    let idx=maxPlace-p;
+    if(decimalScale>0 && p<decimalScale) idx+=1;
+    return leftOffset+idx+1;
+  };
+  const pointCol = decimalScale>0 ? leftOffset+(maxPlace-decimalScale)+2 : null;
   const grid=document.createElement('div');
   grid.className='calc-grid';
-  grid.style.gridTemplateColumns=`repeat(${totalCols}, var(--cs))`;
+  grid.style.gridTemplateColumns=colTemplate(totalCols,pointCol);
   let row=1;
-  for(let p=0;p<=maxPlace;p++){
-    if(p<da.length) addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, digit:da[p]});
-    else addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, extraClass:'empty'});
+  if(!skipOperands){
+    for(let p=0;p<=maxPlace;p++){
+      if(p<da.length) addCell(grid,{row,col:col(p), digit:da[p]});
+      else addCell(grid,{row,col:col(p), extraClass:'empty'});
+    }
+    row++;
+    addCell(grid,{row,col:1,digit:'×',extraClass:'op'});
+    for(let p=0;p<=maxPlace;p++){
+      if(p<db.length) addCell(grid,{row,col:col(p), digit:db[p]});
+      else addCell(grid,{row,col:col(p), extraClass:'empty'});
+    }
+    row++;
   }
-  row++;
-  addCell(grid,{row,col:1,digit:'×',extraClass:'op'});
-  for(let p=0;p<=maxPlace;p++){
-    if(p<db.length) addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, digit:db[p]});
-    else addCell(grid,{row,col:leftOffset+(maxPlace-p)+1, extraClass:'empty'});
-  }
-  row++;
   addLine(grid,row,totalCols); row++;
 
   const dpart1=digitsOf(partial1);
   for(let p=0;p<dpart1.length;p++){
-    const col=leftOffset+(maxPlace-p)+1;
-    const el=addCell(grid,{row,col,editable:true,correct:dpart1[p]});
+    const c=col(p);
+    const el=addCell(grid,{row,col:c,editable:true,correct:dpart1[p]});
     answerCells.push(el);
   }
   row++;
   const dpart2=digitsOf(partial2);
   for(let p=0;p<dpart2.length;p++){
     const actualPlace=p+1;
-    const col=leftOffset+(maxPlace-actualPlace)+1;
-    const el=addCell(grid,{row,col,editable:true,correct:dpart2[p]});
+    const c=col(actualPlace);
+    const el=addCell(grid,{row,col:c,editable:true,correct:dpart2[p]});
     answerCells.push(el);
   }
   row++;
   addLine(grid,row,totalCols); row++;
   for(let p=0;p<dp.length;p++){
-    const col=leftOffset+(maxPlace-p)+1;
-    const el=addCell(grid,{row,col,editable:true,correct:dp[p]});
+    const c=col(p);
+    const el=addCell(grid,{row,col:c,editable:true,correct:dp[p]});
     answerCells.push(el);
+  }
+  if(decimalScale>0){
+    addCell(grid,{row,col:pointCol,digit:'.',extraClass:'point'});
   }
   container.appendChild(grid);
 }
@@ -868,7 +924,10 @@ function renderMultiplication(a,b){
   buildMultiplicationInto(area,a,b);
 }
 
-function buildDivisionInto(container,dividend,divisor){
+function buildDivisionInto(container,dividend,divisor,opts){
+  opts = opts || {};
+  const scale = opts.scale || 0;
+  const divisorLabel = opts.divisorLabel !== undefined ? opts.divisorLabel : String(divisor);
   const ddigits=String(dividend).split('').map(Number);
   const n=ddigits.length;
   let partial=0, started=false;
@@ -889,25 +948,30 @@ function buildDivisionInto(container,dividend,divisor){
   }
   const remainder=partial;
   const maxPlace=n-1;
-  const cols=maxPlace+1;
-  const col=(place)=>(maxPlace-place)+1;
+  const cols=maxPlace+1+(scale>0?1:0);
+  const col=(place)=>{
+    let idx=maxPlace-place;
+    if(scale>0 && place<scale) idx+=1;
+    return idx+1;
+  };
+  const pointCol = scale>0 ? (maxPlace-scale)+2 : null;
 
   const outer=document.createElement('div');
   outer.className='div-outer';
 
   const qRowWrap=document.createElement('div'); qRowWrap.className='div-flexrow';
   const qSpacer=document.createElement('div'); qSpacer.className='div-divisor-box spacer';
-  qSpacer.textContent=String(divisor);
+  qSpacer.textContent=divisorLabel;
   const qGrid=document.createElement('div'); qGrid.className='calc-grid div-qgrid';
-  qGrid.style.gridTemplateColumns=`repeat(${cols}, var(--cs))`;
+  qGrid.style.gridTemplateColumns=colTemplate(cols,pointCol);
   qRowWrap.appendChild(qSpacer); qRowWrap.appendChild(qGrid);
 
   const mainRow=document.createElement('div'); mainRow.className='div-flexrow';
   const divisorBox=document.createElement('div'); divisorBox.className='div-divisor-box';
-  divisorBox.textContent=String(divisor);
+  divisorBox.textContent=divisorLabel;
   const bracket=document.createElement('div'); bracket.className='div-bracket';
   const stepsGrid=document.createElement('div'); stepsGrid.className='calc-grid div-stepsgrid';
-  stepsGrid.style.gridTemplateColumns=`repeat(${cols}, var(--cs))`;
+  stepsGrid.style.gridTemplateColumns=colTemplate(cols,pointCol);
   bracket.appendChild(stepsGrid);
   mainRow.appendChild(divisorBox); mainRow.appendChild(bracket);
 
@@ -918,6 +982,9 @@ function buildDivisionInto(container,dividend,divisor){
   for(let i=0;i<n;i++){
     const place=n-1-i;
     addCell(stepsGrid,{row:srow,col:col(place),digit:ddigits[i]});
+  }
+  if(scale>0){
+    addCell(stepsGrid,{row:srow,col:pointCol,digit:'.',extraClass:'point'});
   }
   srow++;
 
@@ -978,8 +1045,11 @@ function renderDecimalAddSub(a,b,opChar,resultStr){
   const totalCols=decTotalCols(maxPlace,scale,leftOffset);
   const grid=document.createElement('div');
   grid.className='calc-grid';
-  grid.style.gridTemplateColumns=`repeat(${totalCols}, var(--cs))`;
+  grid.style.gridTemplateColumns=colTemplate(totalCols, scale>0?decPointColIndex(maxPlace,leftOffset):null);
   let row=1;
+  if(opChar==='＋'){
+    renderDecimalScratchRow(grid,row,maxPlace,scale,leftOffset); row++;
+  }
   renderDecimalStaticRow(grid,row,a,maxPlace,scale,leftOffset); row++;
   addCell(grid,{row,col:1,digit:opChar,extraClass:'op'});
   renderDecimalStaticRow(grid,row,b,maxPlace,scale,leftOffset); row++;
@@ -992,41 +1062,26 @@ function renderDecimalMultiplication(aStr,bStr){
   const area=resetProblemArea();
   const scaleA=decLen(aStr), scaleB=decLen(bStr), combinedScale=scaleA+scaleB;
   const Aint=toScaledInt(aStr,scaleA), Bint=toScaledInt(bStr,scaleB);
-  const productInt=Aint*Bint;
 
   const dispScale=Math.max(scaleA,scaleB);
   const dispMaxPlace=Math.max(maxWholePlace(aStr),maxWholePlace(bStr));
   const leftOffset=1;
   const dispTotalCols=decTotalCols(dispMaxPlace,dispScale,leftOffset);
+  const stack=document.createElement('div');
+  stack.style.cssText='display:flex;flex-direction:column;align-items:flex-end;';
+  area.appendChild(stack);
+
   const headerGrid=document.createElement('div');
   headerGrid.className='calc-grid';
-  headerGrid.style.gridTemplateColumns=`repeat(${dispTotalCols}, var(--cs))`;
+  headerGrid.style.gridTemplateColumns=colTemplate(dispTotalCols, dispScale>0?decPointColIndex(dispMaxPlace,leftOffset):null);
   renderDecimalStaticRow(headerGrid,1,aStr,dispMaxPlace,dispScale,leftOffset);
   addCell(headerGrid,{row:2,col:1,digit:'×',extraClass:'op'});
   renderDecimalStaticRow(headerGrid,2,bStr,dispMaxPlace,dispScale,leftOffset);
-  area.appendChild(headerGrid);
+  stack.appendChild(headerGrid);
 
   const calcWrap=document.createElement('div');
-  calcWrap.style.marginTop='10px';
-  area.appendChild(calcWrap);
-  buildMultiplicationInto(calcWrap, Aint, Bint);
-
-  const finalWrap=document.createElement('div');
-  finalWrap.style.marginTop='16px';
-  const finalLabel=document.createElement('div');
-  finalLabel.textContent='こたえ（小数点に気をつけて）';
-  finalLabel.style.cssText='font-size:13px;color:#888;font-weight:800;margin-bottom:6px;';
-  finalWrap.appendChild(finalLabel);
-
-  const resultStr=formatScaledInt(productInt, combinedScale);
-  const finalMaxPlace=maxWholePlace(resultStr);
-  const finalTotalCols=decTotalCols(finalMaxPlace,combinedScale,leftOffset);
-  const finalGrid=document.createElement('div');
-  finalGrid.className='calc-grid';
-  finalGrid.style.gridTemplateColumns=`repeat(${finalTotalCols}, var(--cs))`;
-  renderDecimalAnswerRow(finalGrid,1,resultStr,finalMaxPlace,combinedScale,leftOffset);
-  finalWrap.appendChild(finalGrid);
-  area.appendChild(finalWrap);
+  stack.appendChild(calcWrap);
+  buildMultiplicationInto(calcWrap, Aint, Bint, {skipOperands:true, decimalScale:combinedScale});
 }
 
 function renderDecimalDivision(aStr,bStr){
@@ -1035,14 +1090,18 @@ function renderDecimalDivision(aStr,bStr){
   const Aint=toScaledInt(aStr,scale);
   const Bint=toScaledInt(bStr,scale);
 
+  const stack=document.createElement('div');
+  stack.style.cssText='display:flex;flex-direction:column;align-items:center;';
+  area.appendChild(stack);
+
   const capWrap=document.createElement('div');
-  capWrap.textContent=`${aStr} ÷ ${bStr} → わる数の小数点をなくすため、りょうほうを10倍して ${Aint} ÷ ${Bint} として計算しよう`;
+  capWrap.textContent=`わる数「${bStr}」の小数点が消えるように、わる数とわられる数の小数点をどちらも右に${scale}つずらしてから計算しよう（下の点線の小数点がずらした場所だよ）`;
   capWrap.style.cssText='font-size:13px;color:#888;font-weight:800;margin-bottom:10px;max-width:320px;text-align:center;';
-  area.appendChild(capWrap);
+  stack.appendChild(capWrap);
 
   const calcWrap=document.createElement('div');
-  area.appendChild(calcWrap);
-  const {remainder}=buildDivisionInto(calcWrap, Aint, Bint);
+  stack.appendChild(calcWrap);
+  const {remainder}=buildDivisionInto(calcWrap, Aint, Bint, {scale, divisorLabel:bStr});
 
   const remWrap=document.createElement('div');
   remWrap.style.cssText='margin-top:18px;display:flex;align-items:center;gap:12px;justify-content:center;';
@@ -1053,13 +1112,13 @@ function renderDecimalDivision(aStr,bStr){
   const [remWhole,remDec]=remainderStr.split('.');
   const remGrid=document.createElement('div');
   remGrid.className='calc-grid';
-  remGrid.style.gridTemplateColumns='repeat(3, var(--cs))';
+  remGrid.style.gridTemplateColumns=colTemplate(3,2);
   const elW=addCell(remGrid,{row:1,col:1,editable:true,correct:remWhole});
   addCell(remGrid,{row:1,col:2,digit:'.',extraClass:'point'});
   const elD=addCell(remGrid,{row:1,col:3,editable:true,correct:remDec});
   answerCells.push(elW,elD);
   remWrap.appendChild(remLabelEl); remWrap.appendChild(remGrid);
-  area.appendChild(remWrap);
+  stack.appendChild(remWrap);
 }
 
 /* ---------------- interaction ---------------- */

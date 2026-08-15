@@ -30,12 +30,25 @@ npm run dev
 
 [http://localhost:3000](http://localhost:3000) で確認できます。
 
-## ツールの追加方法
+## ツールの追加・更新方法
 
-1. ツールのHTMLファイルを `public/tools/` に配置する
+`public/tools/` 内の各HTMLファイルは、デスクトップの元ファイル（例：`時間割メーカー.html`）への**ハードリンク**です。
+コピーではなく実体を共有しているため、元ファイルを保存するだけで自動的にポータル側にも反映されます（コピーし直す作業は不要）。
+
+| 元ファイル | ポータル内のファイル |
+|---|---|
+| `時間割メーカー.html` | `teacher-portal/public/tools/timetable-maker.html` |
+| `筆算マスター.html` | `teacher-portal/public/tools/written-calc-master.html` |
+| `算数プリントメーカー.html` | `teacher-portal/public/tools/math-worksheet-maker.html` |
+
+新しいツールを追加する場合は、
+
+1. 元ファイルを `public/tools/` にハードリンクする（`mklink /H <リンク先> <元ファイル>`）
 2. `src/lib/tools.ts` の `tools` 配列にエントリを追加する（slug, name, description, icon, tags, file）
 
-これだけで `/tools` 一覧と `/tools/[slug]` 個別ページに自動的に反映されます。
+これだけで `/tools` 一覧と `/tools/[slug]` 個別ページに反映されます。
+
+> ハードリンクは同じドライブ内でのみ有効です。元ファイルを別ドライブに移動すると壊れるので注意してください。また `next build` で本番用に出力する際は、その時点の内容がスナップショットされます（公開前に最新化してからビルドしてください）。
 
 ## 技術スタック
 
