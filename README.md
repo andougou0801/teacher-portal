@@ -57,16 +57,19 @@ npm run dev
 `public/tools/` 内の各HTMLファイルは、デスクトップの元ファイル（例：`時間割メーカー.html`）への**ハードリンク**です。
 コピーではなく実体を共有しているため、元ファイルを保存するだけで自動的にポータル側にも反映されます（コピーし直す作業は不要）。
 
-| 元ファイル | ポータル内のファイル |
-|---|---|
-| `時間割メーカー.html` | `teacher-portal/public/tools/timetable-maker.html` |
-| `筆算マスター.html` | `teacher-portal/public/tools/written-calc-master.html` |
-| `算数プリントメーカー.html` | `teacher-portal/public/tools/math-worksheet-maker.html` |
+| 元ファイル | ポータル内のファイル | 対象 |
+|---|---|---|
+| `時間割メーカー.html` | `teacher-portal/public/tools/timetable-maker.html` | 先生 |
+| `算数プリントメーカー.html` | `teacher-portal/public/tools/math-worksheet-maker.html` | 先生 |
+| `筆算マスター.html` | `teacher-portal/public/tools/written-calc-master.html` | 子ども |
+| `都道府県マスターゲーム.html` | `teacher-portal/public/tools/prefecture-master-game.html` | 子ども |
 
 新しいツールを追加する場合は、
 
 1. 元ファイルを `public/tools/` にハードリンクする（`mklink /H <リンク先> <元ファイル>`）
-2. `src/lib/tools.ts` の `tools` 配列にエントリを追加する（slug, name, description, icon, tags, file）
+2. `src/lib/tools.ts` の `tools` 配列にエントリを追加する（slug, name, description, icon, tags, `audience`（teacher/student）, `status`（live/planned）, file）
+
+ツールの対象（先生向け/子ども向け）を変更したいときは、`tools.ts`内の該当ツールの`audience`を書き換えるだけです（ファイルの移動は不要）。
 
 これだけで `/tools` 一覧と `/tools/[slug]` 個別ページに反映されます。
 

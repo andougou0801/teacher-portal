@@ -6,7 +6,9 @@ import { categories } from "@/lib/categories";
 export default function Home() {
   const [featuredArticle] = articles;
   const liveTools = tools.filter((tool) => tool.status === "live");
-  const featuredTools = liveTools.slice(0, 3);
+  const featuredTools = liveTools
+    .filter((tool) => tool.audience === "teacher")
+    .slice(0, 3);
 
   return (
     <>
