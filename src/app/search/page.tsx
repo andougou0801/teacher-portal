@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { tools } from "@/lib/tools";
 import { articles } from "@/lib/articles";
 import { officialLinks } from "@/lib/officialLinks";
+import { qaItems } from "@/lib/qa";
+import { aiGuides } from "@/lib/aiGuides";
 
 export const metadata: Metadata = {
   title: "検索結果 | 全国教員支援ポータル（仮称）",
@@ -27,9 +29,19 @@ export default async function SearchPage(props: PageProps<"/search">) {
   const matchedLinks = officialLinks.filter((link) =>
     matches(query, link.name, link.description, link.whenToUse),
   );
+  const matchedQa = qaItems.filter((item) =>
+    matches(query, item.question, item.category, item.answer.join(" ")),
+  );
+  const matchedGuides = aiGuides.filter((guide) =>
+    matches(query, guide.title, guide.summary, guide.tool),
+  );
   const hasQuery = query.trim().length > 0;
   const totalResults =
-    matchedTools.length + matchedArticles.length + matchedLinks.length;
+    matchedTools.length +
+    matchedArticles.length +
+    matchedLinks.length +
+    matchedQa.length +
+    matchedGuides.length;
   const hasResults = totalResults > 0;
 
   return (
@@ -110,6 +122,51 @@ export default async function SearchPage(props: PageProps<"/search">) {
                 </div>
                 <h3 className="mt-1 text-sm font-bold">{article.title}</h3>
                 <p className="mt-1 text-xs text-muted">{article.summary}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {matchedQa.length > 0 && (
+        <div className="mb-10">
+          <h2 className="mb-3 text-sm font-bold text-navy">
+            Q&A（{matchedQa.length}件）
+          </h2>
+          <div className="flex flex-col gap-3">
+            {matchedQa.map((item) => (
+              <Link
+                key={item.slug}
+                href="/qa"
+                className="rounded-2xl border border-line bg-white p-4"
+              >
+                <div className="text-[10px] font-extrabold tracking-wide text-accent">
+                  {item.category}
+                </div>
+                <h3 className="mt-1 text-sm font-bold">Q. {item.question}</h3>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {matchedGuides.length > 0 && (
+        <div className="mb-10">
+          <h2 className="mb-3 text-sm font-bold text-navy">
+            AI活用ガイド（{matchedGuides.length}件）
+          </h2>
+          <div className="flex flex-col gap-3">
+            {matchedGuides.map((guide) => (
+              <Link
+                key={guide.slug}
+                href="/ai"
+                className="rounded-2xl border border-line bg-white p-4"
+              >
+                <div className="text-[10px] font-extrabold tracking-wide text-accent">
+                  {guide.tool}
+                </div>
+                <h3 className="mt-1 text-sm font-bold">{guide.title}</h3>
+                <p className="mt-1 text-xs text-muted">{guide.summary}</p>
               </Link>
             ))}
           </div>

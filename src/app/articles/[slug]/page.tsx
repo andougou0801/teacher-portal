@@ -30,8 +30,20 @@ export default async function ArticlePage(
 
   return (
     <article className="mx-auto max-w-2xl px-8 py-14">
-      <div className="text-[11px] font-extrabold tracking-wide text-accent">
-        {article.category}
+      <div className="flex flex-wrap items-center gap-2">
+        {article.month && (
+          <span className="rounded-full bg-navy px-2.5 py-0.5 text-[10px] font-bold text-white">
+            {article.month}
+          </span>
+        )}
+        <span className="text-[11px] font-extrabold tracking-wide text-accent">
+          {article.category}
+        </span>
+        {article.subject && (
+          <span className="rounded-full bg-[#EAF2FA] px-2 py-0.5 text-[10px] font-bold text-navy">
+            {article.subject}
+          </span>
+        )}
       </div>
       <h1 className="mt-2 mb-3 text-2xl font-bold">{article.title}</h1>
       <div className="mb-8 text-xs text-muted">
