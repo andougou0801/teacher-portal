@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { tools } from "@/lib/tools";
 import { articles } from "@/lib/articles";
+import { officialLinks } from "@/lib/officialLinks";
 
 export const metadata: Metadata = {
   title: "検索結果 | 全国教員支援ポータル（仮称）",
@@ -23,8 +24,13 @@ export default async function SearchPage(props: PageProps<"/search">) {
   const matchedArticles = articles.filter((article) =>
     matches(query, article.title, article.summary, article.category),
   );
+  const matchedLinks = officialLinks.filter((link) =>
+    matches(query, link.name, link.description, link.whenToUse),
+  );
   const hasQuery = query.trim().length > 0;
-  const hasResults = matchedTools.length > 0 || matchedArticles.length > 0;
+  const totalResults =
+    matchedTools.length + matchedArticles.length + matchedLinks.length;
+  const hasResults = totalResults > 0;
 
   return (
     <section className="mx-auto max-w-4xl px-8 py-14">
@@ -34,7 +40,7 @@ export default async function SearchPage(props: PageProps<"/search">) {
             type="text"
             name="q"
             defaultValue={query}
-            placeholder="例）時間割　プリント作成 で検索"
+            placeholder="何を探していますか？ 例：算数プリント、学級開き、保護者対応"
             className="flex-1 rounded-full border-none px-4 py-2.5 text-sm text-[#1E2732] outline-none"
           />
           <button className="rounded-full bg-accent px-6 py-2.5 text-sm font-bold text-white">
@@ -46,10 +52,10 @@ export default async function SearchPage(props: PageProps<"/search">) {
       <h1 className="mb-6 text-center text-lg font-bold">
         {hasQuery ? (
           <>
-            「{query}」の検索結果（{matchedTools.length + matchedArticles.length}件）
+            「{query}」の検索結果（{totalResults}件）
           </>
         ) : (
-          "すべてのツール・記事"
+          "すべてのツール・記事・公式サイト"
         )}
       </h1>
 
@@ -72,7 +78,14 @@ export default async function SearchPage(props: PageProps<"/search">) {
                 className="rounded-2xl border border-line bg-white p-4"
               >
                 <div className="text-2xl">{tool.icon}</div>
-                <h3 className="mt-2 text-sm font-bold">{tool.name}</h3>
+                <h3 className="mt-2 text-sm font-bold">
+                  {tool.name}
+                  {tool.status === "planned" && (
+                    <span className="ml-1.5 rounded-full bg-background px-2 py-0.5 text-[9px] font-bold text-muted">
+                      作成予定
+                    </span>
+                  )}
+                </h3>
                 <p className="mt-1 text-xs text-muted">{tool.description}</p>
               </Link>
             ))}
@@ -81,7 +94,7 @@ export default async function SearchPage(props: PageProps<"/search">) {
       )}
 
       {matchedArticles.length > 0 && (
-        <div>
+        <div className="mb-10">
           <h2 className="mb-3 text-sm font-bold text-navy">
             記事（{matchedArticles.length}件）
           </h2>
@@ -98,6 +111,28 @@ export default async function SearchPage(props: PageProps<"/search">) {
                 <h3 className="mt-1 text-sm font-bold">{article.title}</h3>
                 <p className="mt-1 text-xs text-muted">{article.summary}</p>
               </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {matchedLinks.length > 0 && (
+        <div>
+          <h2 className="mb-3 text-sm font-bold text-navy">
+            公式サイト（{matchedLinks.length}件）
+          </h2>
+          <div className="flex flex-col gap-3">
+            {matchedLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-2xl border border-line bg-white p-4"
+              >
+                <h3 className="text-sm font-bold">{link.name}</h3>
+                <p className="mt-1 text-xs text-muted">{link.description}</p>
+              </a>
             ))}
           </div>
         </div>

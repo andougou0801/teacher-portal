@@ -1,40 +1,21 @@
 import Link from "next/link";
 import { tools } from "@/lib/tools";
 import { articles } from "@/lib/articles";
-
-const pillars = [
-  {
-    icon: "🛠",
-    title: "自作ツールポータル",
-    body: "成績処理・時間割作成・プリント生成など、現場発の自作ツールをブラウザですぐに使える形で公開。",
-  },
-  {
-    icon: "📰",
-    title: "情報発信メディア",
-    body: "ICT活用事例、授業アイデア、時短術など、明日から使える情報を発信。",
-  },
-  {
-    icon: "💬",
-    title: "教員コミュニティ",
-    body: "悩みや工夫を投稿・相談できる掲示板。全国の先生同士がゆるやかにつながる場所。",
-  },
-];
+import { categories } from "@/lib/categories";
 
 export default function Home() {
   const [featuredArticle] = articles;
+  const liveTools = tools.filter((tool) => tool.status === "live");
+  const featuredTools = liveTools.slice(0, 3);
 
   return (
     <>
       <section className="bg-gradient-to-br from-navy to-navy-dark px-8 pt-14 pb-20 text-center text-white">
         <h1 className="mx-auto mb-4 text-3xl font-extrabold tracking-wide text-balance md:text-4xl">
-          先生の「時間」と「工夫」を、
-          <br />
-          もっとシェアできる場所へ。
+          先生の困ったを、すぐ解決。
         </h1>
         <p className="mx-auto mb-7 max-w-xl text-sm text-[#DCE8F2]">
-          校務・授業を助ける自作ツール、現場のノウハウ、教員同士のつながり。
-          <br />
-          日本中の教員が使いやすい情報とツールを、ここに集めます。
+          授業・学級経営・教材・学校生活をサポートする教育ポータル。
         </p>
         <form
           action="/search"
@@ -44,7 +25,7 @@ export default function Home() {
           <input
             type="text"
             name="q"
-            placeholder="例）成績処理　時間割　プリント作成 で検索"
+            placeholder="何を探していますか？ 例：算数プリント、学級開き、保護者対応"
             className="flex-1 rounded-full border-none px-4 py-2.5 text-sm text-[#1E2732] outline-none"
           />
           <button className="rounded-full bg-accent px-6 py-2.5 text-sm font-bold text-white">
@@ -53,7 +34,7 @@ export default function Home() {
         </form>
         <div className="mt-9 flex flex-wrap justify-center gap-12">
           <div className="text-center">
-            <div className="text-2xl font-extrabold">{tools.length}</div>
+            <div className="text-2xl font-extrabold">{liveTools.length}</div>
             <div className="text-xs text-[#B9CEDD]">公開中の自作ツール</div>
           </div>
           <div className="text-center">
@@ -70,25 +51,28 @@ export default function Home() {
       <section className="mx-auto max-w-5xl px-8 py-14">
         <div className="mb-9 text-center">
           <div className="text-xs font-bold tracking-widest text-accent uppercase">
-            Three Pillars
+            Categories
           </div>
-          <h2 className="mt-2 mb-2 text-2xl font-bold">サイトの3つの柱</h2>
+          <h2 className="mt-2 mb-2 text-2xl font-bold">どこから探しますか？</h2>
           <p className="mx-auto max-w-lg text-sm text-muted">
-            「使えるツール」「読める情報」「頼れる仲間」を1つの場所に。
+            困りごとから、カテゴリーごとにすぐたどり着けます。
           </p>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {pillars.map((pillar) => (
-            <div
-              key={pillar.title}
-              className="rounded-2xl border border-line bg-white p-6"
+        <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-5">
+          {categories.map((category) => (
+            <Link
+              key={category.slug}
+              href={category.href}
+              className="relative flex flex-col items-center gap-2 rounded-2xl border border-line bg-white p-4 text-center"
             >
-              <div className="mb-3.5 flex h-11 w-11 items-center justify-center rounded-xl bg-[#EAF2FA] text-xl text-navy">
-                {pillar.icon}
-              </div>
-              <h3 className="mb-2 text-base font-bold">{pillar.title}</h3>
-              <p className="text-sm text-muted">{pillar.body}</p>
-            </div>
+              {category.status === "coming-soon" && (
+                <span className="absolute top-2 right-2 rounded-full bg-background px-2 py-0.5 text-[9px] font-bold text-muted">
+                  準備中
+                </span>
+              )}
+              <div className="text-2xl">{category.icon}</div>
+              <div className="text-xs font-bold">{category.label}</div>
+            </Link>
           ))}
         </div>
       </section>
@@ -98,13 +82,13 @@ export default function Home() {
           <div className="text-xs font-bold tracking-widest text-accent uppercase">
             Tool Portal
           </div>
-          <h2 className="mt-2 mb-2 text-2xl font-bold">自作ツールカタログ</h2>
+          <h2 className="mt-2 mb-2 text-2xl font-bold">先生の便利ツール</h2>
           <p className="mx-auto max-w-lg text-sm text-muted">
             現場で実際に使えるツールを、これからも増やしていきます。
           </p>
         </div>
         <div className="grid gap-4.5 md:grid-cols-3">
-          {tools.map((tool) => (
+          {featuredTools.map((tool) => (
             <div
               key={tool.slug}
               className="flex flex-col overflow-hidden rounded-2xl border border-line bg-white"
@@ -137,6 +121,11 @@ export default function Home() {
               </Link>
             </div>
           ))}
+        </div>
+        <div className="mt-4 text-center">
+          <Link href="/tools" className="font-bold text-accent hover:underline">
+            先生の便利ツール一覧を見る →
+          </Link>
         </div>
       </section>
 

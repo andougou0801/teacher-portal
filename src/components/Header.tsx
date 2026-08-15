@@ -1,12 +1,6 @@
 import Link from "next/link";
 import MobileNav from "./MobileNav";
-
-const navItems = [
-  { href: "/tools", label: "ツール" },
-  { href: "/articles", label: "記事・コラム" },
-  { href: "/community", label: "コミュニティ" },
-  { href: "/about", label: "このサイトについて" },
-];
+import { navItems } from "@/lib/nav";
 
 export default function Header() {
   return (

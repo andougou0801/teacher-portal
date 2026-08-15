@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-
-const navItems = [
-  { href: "/tools", label: "ツール" },
-  { href: "/articles", label: "記事・コラム" },
-  { href: "/community", label: "コミュニティ" },
-  { href: "/about", label: "このサイトについて" },
-];
+import { navItems } from "@/lib/nav";
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);

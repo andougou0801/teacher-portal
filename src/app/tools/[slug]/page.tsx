@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { tools, getToolBySlug } from "@/lib/tools";
 
 export function generateStaticParams() {
-  return tools.map((tool) => ({ slug: tool.slug }));
+  return tools
+    .filter((tool) => tool.status === "live")
+    .map((tool) => ({ slug: tool.slug }));
 }
 
 export async function generateMetadata(
@@ -39,22 +41,28 @@ export default async function ToolPage(props: PageProps<"/tools/[slug]">) {
           {tool.icon} {tool.name}
         </h1>
         <p className="mt-1 text-sm text-muted">{tool.description}</p>
-        <div className="mt-1 flex items-center gap-1 text-xs font-bold text-good">
-          ✓ 開発者本人による自作ツール
-        </div>
+        {tool.status === "live" ? (
+          <div className="mt-1 flex items-center gap-1 text-xs font-bold text-good">
+            ✓ 開発者本人による自作ツール
+          </div>
+        ) : (
+          <div className="mt-1 text-xs font-bold text-accent">作成予定のツールです</div>
+        )}
         {tool.mobileNote && (
           <div className="mt-3 rounded-xl border border-[#F2D98A] bg-[#FFF7E0] px-4 py-2.5 text-xs text-[#8A6D00] md:hidden">
             {tool.mobileNote}
           </div>
         )}
       </div>
-      <div className="overflow-hidden rounded-2xl border border-line bg-white">
-        <iframe
-          src={tool.file}
-          title={tool.name}
-          className="h-[80vh] w-full"
-        />
-      </div>
+      {tool.status === "live" && tool.file ? (
+        <div className="overflow-hidden rounded-2xl border border-line bg-white">
+          <iframe src={tool.file} title={tool.name} className="h-[80vh] w-full" />
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-line bg-white p-10 text-center text-sm text-muted">
+          このツールはまだ準備中です。公開までしばらくお待ちください。
+        </div>
+      )}
     </section>
   );
 }
