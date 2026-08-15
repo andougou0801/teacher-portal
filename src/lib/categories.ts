@@ -30,7 +30,7 @@ export const categories: Category[] = [
     icon: "📚",
     description: "「明日の授業に使える」教科別・場面別のアイデア集。",
     href: "/lessons",
-    status: "coming-soon",
+    status: "live",
   },
   {
     slug: "classroom",
@@ -38,7 +38,7 @@ export const categories: Category[] = [
     icon: "🏫",
     description: "学級開き・トラブル対応・保護者対応など、困った場面から探せるページ。",
     href: "/classroom",
-    status: "coming-soon",
+    status: "live",
   },
   {
     slug: "events",
@@ -46,7 +46,7 @@ export const categories: Category[] = [
     icon: "📅",
     description: "時期ごとに必要な情報を探せる、年間行事の準備ガイド。",
     href: "/events",
-    status: "coming-soon",
+    status: "live",
   },
   {
     slug: "links",
@@ -78,7 +78,7 @@ export const categories: Category[] = [
     icon: "🤖",
     description: "ChatGPT・Claudeなど、生成AIを授業準備や校務に活かすための入門ガイド。",
     href: "/ai",
-    status: "coming-soon",
+    status: "live",
   },
   {
     slug: "qa",
@@ -86,6 +86,6 @@ export const categories: Category[] = [
     icon: "❓",
     description: "教員が検索しそうな悩みを、Q&A形式でまとめたページ。",
     href: "/qa",
-    status: "coming-soon",
+    status: "live",
   },
 ];
