@@ -4,6 +4,49 @@ export const metadata: Metadata = {
   title: "このサイトについて | 全国教員支援ポータル（仮称）",
 };
 
+const roadmap = [
+  {
+    phase: "フェーズ0：企画・チーム編成",
+    detail: "ビジョン確定、役割分担、技術選定",
+    status: "done" as const,
+  },
+  {
+    phase: "フェーズ1：MVP開発",
+    detail: "トップページ＋自作ツール掲載＋簡易記事",
+    status: "current" as const,
+  },
+  {
+    phase: "フェーズ2：クローズドβ",
+    detail: "知人の教員10〜30名に試用してもらいフィードバック収集",
+    status: "next" as const,
+  },
+  {
+    phase: "フェーズ3：正式公開",
+    detail: "SNS・教育委員会・教員向けポータル等への掲載依頼",
+    status: "next" as const,
+  },
+  {
+    phase: "フェーズ4：運用・拡大",
+    detail: "新規ツール追加、コミュニティ活性化、法人化検討",
+    status: "next" as const,
+  },
+];
+
+const references = [
+  {
+    name: "SENSEIポータル",
+    note: "全国の教員向け研修・セミナー情報を集約。検索・ブックマーク機能を参考にしています。",
+  },
+  {
+    name: "グローバル教師ポータルサイト",
+    note: "在外教育施設の教員向け実践事例・動画共有。実践事例の蓄積・共有の仕組みを参考にしています。",
+  },
+  {
+    name: "文部科学省 校長・教職員学習情報ポータル",
+    note: "国が運営する研修・学習情報の公式ポータル。信頼性の担保のあり方を参考にしています。",
+  },
+];
+
 export default function AboutPage() {
   return (
     <section className="mx-auto max-w-3xl px-8 py-14">
@@ -36,6 +79,24 @@ export default function AboutPage() {
           </ul>
         </div>
 
+        <div>
+          <h2 className="mb-2 text-lg font-bold text-navy">参考にしている先行事例</h2>
+          <p className="mb-3 text-sm text-muted">
+            すでに教員向けに情報発信・共有を行っている、以下のようなサイトを参考にしながら企画しています。
+          </p>
+          <ul className="flex flex-col gap-3">
+            {references.map((ref) => (
+              <li
+                key={ref.name}
+                className="rounded-xl border border-line bg-white p-3.5 text-sm"
+              >
+                <span className="font-bold">{ref.name}</span>
+                <span className="mt-1 block text-xs text-muted">{ref.note}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div id="provide">
           <h2 className="mb-2 text-lg font-bold text-navy">
             ツールを提供したい方へ
@@ -62,6 +123,45 @@ export default function AboutPage() {
             <li>コミュニティ運営、広報・SNS担当</li>
             <li>法務・個人情報保護アドバイザー</li>
           </ul>
+        </div>
+
+        <div>
+          <h2 className="mb-2 text-lg font-bold text-navy">ロードマップ</h2>
+          <p className="mb-3 text-sm text-muted">
+            現在はフェーズ1（MVP開発）の段階です。今後の流れは以下を予定しています。
+          </p>
+          <ol className="flex flex-col gap-2.5">
+            {roadmap.map((step) => (
+              <li
+                key={step.phase}
+                className={`flex items-start gap-3 rounded-xl border p-3.5 text-sm ${
+                  step.status === "current"
+                    ? "border-accent bg-[#EAF2FA]"
+                    : "border-line bg-white"
+                }`}
+              >
+                <span
+                  className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                    step.status === "done"
+                      ? "bg-[#E7F3EC] text-good"
+                      : step.status === "current"
+                        ? "bg-accent text-white"
+                        : "bg-background text-muted"
+                  }`}
+                >
+                  {step.status === "done"
+                    ? "完了"
+                    : step.status === "current"
+                      ? "進行中"
+                      : "予定"}
+                </span>
+                <div>
+                  <div className="font-bold">{step.phase}</div>
+                  <div className="mt-0.5 text-xs text-muted">{step.detail}</div>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
 
         <div id="contact">
