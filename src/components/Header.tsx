@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MobileNav from "./MobileNav";
 
 const navItems = [
   { href: "/tools", label: "ツール" },
@@ -27,12 +28,15 @@ export default function Header() {
           </Link>
         ))}
       </nav>
-      <Link
-        href="/about"
-        className="rounded-full bg-white px-4 py-2 text-xs font-bold text-navy"
-      >
-        教員登録（無料）
-      </Link>
+      <div className="flex items-center gap-3">
+        <Link
+          href="/about"
+          className="rounded-full bg-white px-4 py-2 text-xs font-bold text-navy"
+        >
+          教員登録（無料）
+        </Link>
+        <MobileNav />
+      </div>
     </header>
   );
 }

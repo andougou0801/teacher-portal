@@ -36,16 +36,21 @@ export default function Home() {
           <br />
           日本中の教員が使いやすい情報とツールを、ここに集めます。
         </p>
-        <div className="mx-auto flex max-w-lg gap-1.5 rounded-full bg-white p-1.5 shadow-xl">
+        <form
+          action="/search"
+          method="get"
+          className="mx-auto flex max-w-lg gap-1.5 rounded-full bg-white p-1.5 shadow-xl"
+        >
           <input
             type="text"
+            name="q"
             placeholder="例）成績処理　時間割　プリント作成 で検索"
             className="flex-1 rounded-full border-none px-4 py-2.5 text-sm text-[#1E2732] outline-none"
           />
           <button className="rounded-full bg-accent px-6 py-2.5 text-sm font-bold text-white">
             検索する
           </button>
-        </div>
+        </form>
         <div className="mt-9 flex flex-wrap justify-center gap-12">
           <div className="text-center">
             <div className="text-2xl font-extrabold">{tools.length}</div>
