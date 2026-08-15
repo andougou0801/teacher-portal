@@ -22,7 +22,7 @@ export const categories: Category[] = [
     icon: "🎮",
     description: "漢字・計算・タイピングなど、子どもが学校や家庭で使える学習ツール。",
     href: "/kids",
-    status: "coming-soon",
+    status: "live",
   },
   {
     slug: "lessons",
