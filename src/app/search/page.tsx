@@ -27,7 +27,7 @@ export default async function SearchPage(props: PageProps<"/search">) {
     matches(query, article.title, article.summary, article.category),
   );
   const matchedLinks = officialLinks.filter((link) =>
-    matches(query, link.name, link.description, link.whenToUse),
+    matches(query, link.name, link.description, link.whenToUse, link.category),
   );
   const matchedQa = qaItems.filter((item) =>
     matches(query, item.question, item.category, item.answer.join(" ")),
