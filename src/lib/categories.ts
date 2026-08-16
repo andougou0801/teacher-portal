@@ -82,10 +82,10 @@ export const categories: Category[] = [
   },
   {
     slug: "qa",
-    label: "先生の「困った！」Q&A",
-    icon: "❓",
-    description: "教員が検索しそうな悩みを、Q&A形式でまとめたページ。",
-    href: "/qa",
+    label: "先生の「困った」Q&A・コミュニティ",
+    icon: "💬",
+    description: "気軽に質問を投稿し、他の先生から回答をもらえる掲示板。",
+    href: "/community",
     status: "live",
   },
 ];
