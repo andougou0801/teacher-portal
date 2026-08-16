@@ -134,6 +134,15 @@
     margin-bottom:5px;
     white-space:nowrap;
   }
+  .seat-inner{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+  .seat-inner.rotated{
+    transform:rotate(180deg);
+  }
 
   .status{
     text-align:center;
@@ -444,20 +453,27 @@
         const div = document.createElement('div');
         div.className = 'seat' + (name ? '' : ' empty') +
           (selected && selected.r === r && selected.c === actualC ? ' selected' : '');
-        if(name && roles[name]){
-          const badge = document.createElement('div');
-          badge.className = 'role-badge';
-          badge.textContent = roles[name];
-          div.appendChild(badge);
-        }
-        const nameSpan = document.createElement('div');
-        nameSpan.textContent = name || '（空席）';
-        div.appendChild(nameSpan);
+        div.appendChild(buildSeatInner(name, viewMode === 'front'));
         div.addEventListener('click', () => onSeatClick(r, actualC));
         seatGrid.appendChild(div);
       }
     }
     populateRoleNameSelect();
+  }
+
+  function buildSeatInner(name, rotated){
+    const inner = document.createElement('div');
+    inner.className = 'seat-inner' + (rotated ? ' rotated' : '');
+    if(name && roles[name]){
+      const badge = document.createElement('div');
+      badge.className = 'role-badge';
+      badge.textContent = roles[name];
+      inner.appendChild(badge);
+    }
+    const nameSpan = document.createElement('div');
+    nameSpan.textContent = name || '（空席）';
+    inner.appendChild(nameSpan);
+    return inner;
   }
 
   function onSeatClick(r, c){
@@ -556,15 +572,7 @@
         const name = seats[r][actualC];
         const div = document.createElement('div');
         div.className = 'seat' + (name ? '' : ' empty');
-        if(name && roles[name]){
-          const badge = document.createElement('div');
-          badge.className = 'role-badge';
-          badge.textContent = roles[name];
-          div.appendChild(badge);
-        }
-        const nameSpan = document.createElement('div');
-        nameSpan.textContent = name || '（空席）';
-        div.appendChild(nameSpan);
+        div.appendChild(buildSeatInner(name, !mirrored));
         grid.appendChild(div);
       }
     }
