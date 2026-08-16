@@ -104,20 +104,24 @@ export const tools: Tool[] = [
   {
     slug: "class-timer",
     name: "授業用タイマー",
-    description: "授業中の活動時間を管理するタイマーを提供する予定です。",
+    description:
+      "プリセット・カスタム両対応のカウントダウンタイマー。終了時に音と画面の色でお知らせします。",
     icon: "⏱",
-    tags: ["授業支援", "作成予定"],
+    tags: ["授業支援", "無料"],
     audience: "teacher",
-    status: "planned",
+    status: "live",
+    file: "/tools/class-timer.html",
   },
   {
     slug: "lottery-roulette",
     name: "抽選・ルーレット",
-    description: "発表者や当番を決める抽選・ルーレットツールを提供する予定です。",
+    description:
+      "名前や項目を入力するだけで使えるルーレット抽選ツール。発表者や当番決めに。",
     icon: "🎯",
-    tags: ["授業支援", "作成予定"],
+    tags: ["授業支援", "無料"],
     audience: "teacher",
-    status: "planned",
+    status: "live",
+    file: "/tools/lottery-roulette.html",
   },
   {
     slug: "kanji-practice",

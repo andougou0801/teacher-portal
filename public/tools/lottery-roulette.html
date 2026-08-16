@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>抽選・ルーレット</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:20px 14px 60px;
+  }
+  .wrap{max-width:480px;width:100%;}
+  h1{
+    text-align:center;
+    font-size:20px;
+    color:var(--accent-dark);
+    margin:6px 0 20px;
+  }
+  .card{
+    background:#fff;
+    border-radius:20px;
+    padding:22px 20px;
+    box-shadow:0 4px 16px rgba(30,50,90,0.08);
+    margin-bottom:16px;
+  }
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    color:#555;
+    margin-bottom:6px;
+  }
+  textarea{
+    width:100%;
+    min-height:110px;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #d8dfea;
+    font-size:15px;
+    font-family:inherit;
+    resize:vertical;
+    line-height:1.6;
+  }
+  .hint{
+    font-size:11px;
+    color:#8a93a3;
+    margin:6px 0 0;
+  }
+  .wheel-area{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    margin:22px 0 18px;
+  }
+  .pointer{
+    position:absolute;
+    top:-6px;
+    left:50%;
+    transform:translateX(-50%);
+    width:0;height:0;
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-top:22px solid var(--accent-dark);
+    z-index:2;
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  }
+  canvas{
+    border-radius:50%;
+    box-shadow:0 4px 20px rgba(30,50,90,0.18);
+    transition:transform 4s cubic-bezier(.17,.67,.16,1);
+  }
+  .controls{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .checkbox-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    color:#555;
+  }
+  button{
+    font-family:inherit;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .btn-main{
+    background:var(--accent);
+    color:#fff;
+    font-size:17px;
+    font-weight:800;
+    padding:15px 40px;
+    box-shadow:0 3px 8px rgba(45,108,223,0.3);
+  }
+  .btn-main:active{transform:scale(0.97);}
+  .btn-main:disabled{opacity:0.5;cursor:default;}
+  .btn-reset{
+    background:#eef1f6;
+    color:#555;
+    font-size:13px;
+    font-weight:700;
+    padding:10px 18px;
+  }
+  .result{
+    text-align:center;
+    margin-top:16px;
+    min-height:34px;
+  }
+  .result .name{
+    display:inline-block;
+    background:#fff7e0;
+    border:2px solid #f2d98a;
+    color:#8a6d00;
+    font-size:22px;
+    font-weight:800;
+    padding:8px 24px;
+    border-radius:16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎯 抽選・ルーレット</h1>
+
+  <div class="card">
+    <label for="namesInput">名前や項目を1行に1つずつ入力してください</label>
+    <textarea id="namesInput">たなか
+さとう
+すずき
+やまだ
+いとう
+わたなべ</textarea>
+    <p class="hint">最大20件まで表示できます。入力後、下の「スタート」を押してください。</p>
+  </div>
+
+  <div class="card">
+    <div class="wheel-area">
+      <div class="pointer"></div>
+      <canvas id="wheel" width="280" height="280"></canvas>
+    </div>
+    <div class="controls">
+      <button class="btn-main" id="spinBtn">スタート</button>
+      <div class="checkbox-row">
+        <input type="checkbox" id="excludeCheck">
+        <label for="excludeCheck" style="display:inline;font-weight:400;margin:0;">選ばれた人を次回から外す</label>
+      </div>
+      <button class="btn-reset" id="resetBtn">リストを元に戻す</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('wheel');
+  const ctx = canvas.getContext('2d');
+  const namesInput = document.getElementById('namesInput');
+  const spinBtn = document.getElementById('spinBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const excludeCheck = document.getElementById('excludeCheck');
+  const resultEl = document.getElementById('result');
+
+  const colors = ['#2d6cdf','#43a047','#fb8c00','#8e24aa','#e53935','#00897b','#c0ca33','#5c6bc0','#f4511e','#039be5'];
+
+  let entries = [];
+  let currentRotation = 0;
+  let spinning = false;
+
+  function parseEntries(){
+    return namesInput.value
+      .split('\n')
+      .map(s => s.trim())
+      .filter(s => s.length > 0)
+      .slice(0, 20);
+  }
+
+  function drawWheel(list){
+    const size = canvas.width;
+    const cx = size/2, cy = size/2, r = size/2 - 4;
+    ctx.clearRect(0,0,size,size);
+
+    if(list.length === 0){
+      ctx.beginPath();
+      ctx.arc(cx,cy,r,0,Math.PI*2);
+      ctx.fillStyle = '#eef1f6';
+      ctx.fill();
+      ctx.fillStyle = '#8a93a3';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('リストが空です', cx, cy);
+      return;
+    }
+
+    const sliceAngle = (Math.PI*2) / list.length;
+    list.forEach((name, i) => {
+      const start = i * sliceAngle;
+      const end = start + sliceAngle;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r,start,end);
+      ctx.closePath();
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fill();
+
+      ctx.save();
+      ctx.translate(cx,cy);
+      ctx.rotate(start + sliceAngle/2);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 13px sans-serif';
+      const label = name.length > 6 ? name.slice(0,6) + '…' : name;
+      ctx.fillText(label, r - 12, 5);
+      ctx.restore();
+    });
+  }
+
+  function resetWheel(){
+    entries = parseEntries();
+    currentRotation = 0;
+    canvas.style.transition = 'none';
+    canvas.style.transform = 'rotate(0deg)';
+    drawWheel(entries);
+    resultEl.innerHTML = '';
+    spinBtn.disabled = false;
+    // re-enable transition on next frame
+    requestAnimationFrame(() => { canvas.style.transition = 'transform 4s cubic-bezier(.17,.67,.16,1)'; });
+  }
+
+  function spin(){
+    if(spinning) return;
+    entries = entries.length > 0 ? entries : parseEntries();
+    if(entries.length === 0){
+      resultEl.innerHTML = '<span style="color:#c0392b;font-size:13px;">名前を1つ以上入力してください</span>';
+      return;
+    }
+    spinning = true;
+    spinBtn.disabled = true;
+    resultEl.innerHTML = '';
+
+    const sliceAngleDeg = 360 / entries.length;
+    const winnerIndex = Math.floor(Math.random() * entries.length);
+    // pointer is at top (0deg / 12 o'clock). Slice i spans [i*sliceAngleDeg, (i+1)*sliceAngleDeg) starting from 0deg (right side, canvas convention: angle 0 is 3 o'clock).
+    // canvas slices start at angle 0 = 3 o'clock direction; pointer is at top = -90deg (or 270deg) in canvas terms.
+    // We rotate the wheel via CSS transform, so compute target so that the winner slice's center ends up at the top (pointer).
+    const winnerCenterDeg = (winnerIndex * sliceAngleDeg) + sliceAngleDeg/2;
+    // canvas 0deg is at 3 o'clock; top(pointer) corresponds to canvas angle -90deg (i.e. 270deg).
+    // To bring winnerCenterDeg to the pointer position via rotation R: (winnerCenterDeg + R) mod 360 == 270
+    const baseTarget = (270 - winnerCenterDeg + 360) % 360;
+    const extraSpins = 5 + Math.floor(Math.random()*3); // 5-7 full turns
+    const finalRotation = currentRotation - (currentRotation % 360) + extraSpins*360 + baseTarget;
+
+    currentRotation = finalRotation;
+    canvas.style.transform = 'rotate(' + finalRotation + 'deg)';
+
+    const onDone = () => {
+      canvas.removeEventListener('transitionend', onDone);
+      spinning = false;
+      spinBtn.disabled = false;
+      const winner = entries[winnerIndex];
+      resultEl.innerHTML = '<span class="name">🎉 ' + winner + '</span>';
+      if(excludeCheck.checked){
+        entries.splice(winnerIndex, 1);
+      }
+    };
+    canvas.addEventListener('transitionend', onDone);
+  }
+
+  spinBtn.addEventListener('click', () => {
+    if(entries.length === 0){
+      entries = parseEntries();
+      drawWheel(entries);
+    }
+    spin();
+  });
+
+  resetBtn.addEventListener('click', resetWheel);
+
+  namesInput.addEventListener('input', () => {
+    if(!spinning){
+      entries = parseEntries();
+      currentRotation = 0;
+      canvas.style.transition = 'none';
+      canvas.style.transform = 'rotate(0deg)';
+      drawWheel(entries);
+      resultEl.innerHTML = '';
+      requestAnimationFrame(() => { canvas.style.transition = 'transform 4s cubic-bezier(.17,.67,.16,1)'; });
+    }
+  });
+
+  entries = parseEntries();
+  drawWheel(entries);
+</script>
+</body>
+</html>
