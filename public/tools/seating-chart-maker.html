@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>座席表作成</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+    --good:#2f8f5b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:#f4f8ff;
+    color:#2a2a2a;
+    padding:20px 16px 80px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+  h1{
+    text-align:center;
+    font-size:22px;
+    color:var(--accent-dark);
+    margin:6px 0 4px;
+  }
+  .lead{
+    text-align:center;
+    font-size:13px;
+    color:#667;
+    margin:0 0 20px;
+  }
+  .card{
+    background:#fff;
+    border-radius:18px;
+    padding:18px 20px;
+    box-shadow:0 4px 14px rgba(30,50,90,0.08);
+    margin-bottom:16px;
+  }
+  .card h2{
+    font-size:14px;
+    margin:0 0 12px;
+    color:#333;
+    border-left:4px solid var(--accent);
+    padding-left:8px;
+  }
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  label{font-size:13px;color:#555;font-weight:700;}
+  input[type=number]{
+    width:64px;padding:8px;border-radius:10px;border:1px solid #d8dfea;
+    font-size:14px;text-align:center;
+  }
+  textarea{
+    width:100%;min-height:90px;padding:12px;border-radius:12px;
+    border:1px solid #d8dfea;font-size:14px;font-family:inherit;line-height:1.7;resize:vertical;
+  }
+  button{
+    font-family:inherit;border:none;border-radius:12px;cursor:pointer;
+    font-weight:700;
+  }
+  .btn{background:#eef1f6;color:#333;padding:10px 16px;font-size:13px;}
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--accent);color:#fff;padding:10px 20px;font-size:13px;}
+  .btn-primary:active{transform:scale(0.97);}
+  .btn-danger{background:#fdeeee;color:#c0392b;padding:10px 16px;font-size:13px;}
+  .hint{font-size:11px;color:#8a93a3;margin-top:6px;}
+  .file-btn{display:inline-block;}
+  .file-btn input[type=file]{display:none;}
+
+  .view-toggle{display:flex;gap:8px;margin-bottom:14px;justify-content:center;}
+  .view-toggle button{padding:10px 20px;font-size:13px;background:#eef1f6;color:#555;}
+  .view-toggle button.active{background:var(--accent);color:#fff;}
+
+  .board{
+    text-align:center;
+    background:#e3e9ef;
+    color:#555;
+    font-size:12px;
+    font-weight:700;
+    padding:8px;
+    border-radius:8px;
+    margin-bottom:14px;
+  }
+
+  .grid{
+    display:grid;
+    gap:8px;
+    justify-content:center;
+  }
+  .seat{
+    min-width:64px;
+    min-height:56px;
+    background:#eef4ff;
+    border:2px solid #d3e0f7;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size:13px;
+    font-weight:700;
+    color:var(--accent-dark);
+    cursor:pointer;
+    padding:4px;
+    word-break:break-all;
+    transition:background .15s, transform .1s;
+  }
+  .seat:hover{background:#dde9fb;}
+  .seat:active{transform:scale(0.96);}
+  .seat.empty{
+    background:#f6f8fb;
+    color:#c3ccd8;
+    border-style:dashed;
+  }
+  .seat.selected{
+    background:#fff7e0;
+    border-color:#f2d98a;
+    color:#8a6d00;
+  }
+
+  .status{
+    text-align:center;
+    font-size:12px;
+    color:var(--good);
+    min-height:18px;
+    margin-top:10px;
+  }
+  .status.warn{color:#c0392b;}
+
+  .actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;}
+
+  @media print{
+    body{padding:0;background:#fff;}
+    .card, .view-toggle, .actions, .lead{display:none !important;}
+    .print-only{display:block !important;}
+    .print-view{page-break-after:always;margin-bottom:24px;}
+    .print-view h3{text-align:center;font-size:16px;margin-bottom:10px;}
+    .seat{border:1px solid #999;color:#000;background:#fff;}
+    .seat.empty{border-style:dashed;}
+  }
+  .print-only{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🪑 座席表作成</h1>
+  <p class="lead">名簿を読み込んで自動配置、席をクリックして入れ替え、印刷までできる座席表ツールです。</p>
+
+  <div class="card">
+    <h2>① 座席の行数・列数</h2>
+    <div class="row">
+      <label>行（前後）</label>
+      <input type="number" id="rowsInput" min="1" max="12" value="6">
+      <label>列（左右）</label>
+      <input type="number" id="colsInput" min="1" max="10" value="6">
+      <button class="btn" id="resizeBtn">この行数・列数で作る</button>
+    </div>
+    <p class="hint">教卓に近い方が1行目です。あとから変更すると、はみ出した席の名前は消えます。</p>
+  </div>
+
+  <div class="card">
+    <h2>② 名簿を読み込む</h2>
+    <textarea id="rosterInput" placeholder="1行に1人ずつ名前を入力（出席番号順など）&#10;例）&#10;たなか いちろう&#10;さとう はなこ&#10;すずき じろう"></textarea>
+    <div class="actions" style="margin-top:10px;">
+      <button class="btn-primary" id="loadRosterBtn">名簿順に配置する</button>
+      <button class="btn" id="shuffleBtn">ランダムに配置する</button>
+      <button class="btn-danger" id="clearBtn">全部クリア</button>
+    </div>
+    <p class="hint">名簿順は「教卓側から見た図」の1行目左端から順に配置されます。</p>
+  </div>
+
+  <div class="card">
+    <h2>③ データの保存・読み込み（このPC内で完結・サーバーには送信されません）</h2>
+    <div class="actions">
+      <button class="btn" id="exportBtn">保存データを書き出す（.json）</button>
+      <label class="btn file-btn" for="importFile">保存データを読み込む</label>
+      <input type="file" id="importFile" accept="application/json">
+    </div>
+    <p class="hint">ブラウザを閉じても自動的に保存されています。別の端末で使う場合は書き出し・読み込みをご利用ください。</p>
+  </div>
+
+  <div class="view-toggle">
+    <button id="frontViewBtn" class="active">教卓側から見た座席表</button>
+    <button id="backViewBtn">うしろから見た座席表</button>
+  </div>
+
+  <div class="board">⬛ 教卓・黒板側</div>
+  <div class="grid" id="seatGrid"></div>
+  <div class="status" id="status"></div>
+
+  <div class="actions">
+    <button class="btn-primary" id="printBtn">🖨 印刷する（両方の向きをまとめて印刷）</button>
+  </div>
+
+  <!-- 印刷専用：両方の向きをまとめて表示 -->
+  <div class="print-only" id="printArea"></div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'seatingChartData_v1';
+
+  const rowsInput = document.getElementById('rowsInput');
+  const colsInput = document.getElementById('colsInput');
+  const resizeBtn = document.getElementById('resizeBtn');
+  const rosterInput = document.getElementById('rosterInput');
+  const loadRosterBtn = document.getElementById('loadRosterBtn');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const importFile = document.getElementById('importFile');
+  const frontViewBtn = document.getElementById('frontViewBtn');
+  const backViewBtn = document.getElementById('backViewBtn');
+  const seatGrid = document.getElementById('seatGrid');
+  const statusEl = document.getElementById('status');
+  const printBtn = document.getElementById('printBtn');
+  const printArea = document.getElementById('printArea');
+
+  let rows = 6, cols = 6;
+  let seats = []; // seats[row][col] = name string | null
+  let selected = null; // {r,c} | null
+  let viewMode = 'front'; // 'front' | 'back'
+
+  function makeEmptyGrid(r, c){
+    return Array.from({length:r}, () => Array.from({length:c}, () => null));
+  }
+
+  function loadFromStorage(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return false;
+      const data = JSON.parse(raw);
+      if(!data || !Array.isArray(data.seats)) return false;
+      rows = data.rows || data.seats.length;
+      cols = data.cols || (data.seats[0] ? data.seats[0].length : 6);
+      seats = data.seats;
+      rowsInput.value = rows;
+      colsInput.value = cols;
+      return true;
+    }catch(e){ return false; }
+  }
+
+  function saveToStorage(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({rows, cols, seats}));
+  }
+
+  function setStatus(msg, warn){
+    statusEl.textContent = msg || '';
+    statusEl.classList.toggle('warn', !!warn);
+  }
+
+  function resizeGrid(newRows, newCols){
+    const next = makeEmptyGrid(newRows, newCols);
+    for(let r = 0; r < Math.min(newRows, rows); r++){
+      for(let c = 0; c < Math.min(newCols, cols); c++){
+        next[r][c] = seats[r][c];
+      }
+    }
+    rows = newRows;
+    cols = newCols;
+    seats = next;
+    selected = null;
+    render();
+    saveToStorage();
+  }
+
+  function displayCols(c){
+    // for back view, mirror the column order
+    return viewMode === 'back' ? [...Array(cols).keys()].reverse()[c] : c;
+  }
+
+  function render(){
+    seatGrid.style.gridTemplateColumns = `repeat(${cols}, minmax(0,1fr))`;
+    seatGrid.innerHTML = '';
+    for(let r = 0; r < rows; r++){
+      for(let displayC = 0; displayC < cols; displayC++){
+        const actualC = viewMode === 'back' ? (cols - 1 - displayC) : displayC;
+        const name = seats[r][actualC];
+        const div = document.createElement('div');
+        div.className = 'seat' + (name ? '' : ' empty') +
+          (selected && selected.r === r && selected.c === actualC ? ' selected' : '');
+        div.textContent = name || '（空席）';
+        div.addEventListener('click', () => onSeatClick(r, actualC));
+        seatGrid.appendChild(div);
+      }
+    }
+  }
+
+  function onSeatClick(r, c){
+    if(!selected){
+      if(seats[r][c] === null){
+        setStatus('空席です。まず名前が入っている席を選んでください。', true);
+        return;
+      }
+      selected = {r, c};
+      setStatus('移動先の席をクリックしてください（同じ席をクリックで選択解除）。');
+      render();
+      return;
+    }
+    if(selected.r === r && selected.c === c){
+      selected = null;
+      setStatus('');
+      render();
+      return;
+    }
+    const tmp = seats[r][c];
+    seats[r][c] = seats[selected.r][selected.c];
+    seats[selected.r][selected.c] = tmp;
+    selected = null;
+    setStatus('席を入れ替えました。');
+    render();
+    saveToStorage();
+  }
+
+  function loadRoster(){
+    const names = rosterInput.value.split('\n').map(s => s.trim()).filter(Boolean);
+    const capacity = rows * cols;
+    seats = makeEmptyGrid(rows, cols);
+    let i = 0;
+    for(let r = 0; r < rows && i < names.length; r++){
+      for(let c = 0; c < cols && i < names.length; c++){
+        seats[r][c] = names[i];
+        i++;
+      }
+    }
+    selected = null;
+    render();
+    saveToStorage();
+    if(names.length > capacity){
+      setStatus(`席数(${capacity})より名簿の人数(${names.length})が多いため、${names.length - capacity}人は配置できませんでした。`, true);
+    }else{
+      setStatus(`${Math.min(names.length, capacity)}人を配置しました。`);
+    }
+  }
+
+  function shuffleSeats(){
+    const names = [];
+    for(let r = 0; r < rows; r++) for(let c = 0; c < cols; c++) if(seats[r][c]) names.push(seats[r][c]);
+    for(let i = names.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [names[i], names[j]] = [names[j], names[i]];
+    }
+    let i = 0;
+    for(let r = 0; r < rows; r++){
+      for(let c = 0; c < cols; c++){
+        seats[r][c] = i < names.length ? names[i++] : null;
+      }
+    }
+    selected = null;
+    render();
+    saveToStorage();
+    setStatus('ランダムに並べ替えました。');
+  }
+
+  function clearAll(){
+    seats = makeEmptyGrid(rows, cols);
+    selected = null;
+    render();
+    saveToStorage();
+    setStatus('すべての席をクリアしました。');
+  }
+
+  function buildPrintView(title, mirrored){
+    const section = document.createElement('div');
+    section.className = 'print-view';
+    const h3 = document.createElement('h3');
+    h3.textContent = title;
+    section.appendChild(h3);
+
+    const boardLabel = document.createElement('div');
+    boardLabel.className = 'board';
+    boardLabel.textContent = '⬛ 教卓・黒板側';
+    section.appendChild(boardLabel);
+
+    const grid = document.createElement('div');
+    grid.className = 'grid';
+    grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0,1fr))`;
+    for(let r = 0; r < rows; r++){
+      for(let displayC = 0; displayC < cols; displayC++){
+        const actualC = mirrored ? (cols - 1 - displayC) : displayC;
+        const name = seats[r][actualC];
+        const div = document.createElement('div');
+        div.className = 'seat' + (name ? '' : ' empty');
+        div.textContent = name || '（空席）';
+        grid.appendChild(div);
+      }
+    }
+    section.appendChild(grid);
+    return section;
+  }
+
+  function preparePrint(){
+    printArea.innerHTML = '';
+    printArea.appendChild(buildPrintView('教卓側から見た座席表', false));
+    printArea.appendChild(buildPrintView('うしろから見た座席表', true));
+  }
+
+  resizeBtn.addEventListener('click', () => {
+    const r = Math.max(1, Math.min(12, parseInt(rowsInput.value, 10) || 6));
+    const c = Math.max(1, Math.min(10, parseInt(colsInput.value, 10) || 6));
+    resizeGrid(r, c);
+    setStatus(`${r}行 × ${c}列 の座席表にしました。`);
+  });
+
+  loadRosterBtn.addEventListener('click', loadRoster);
+  shuffleBtn.addEventListener('click', shuffleSeats);
+  clearBtn.addEventListener('click', clearAll);
+
+  frontViewBtn.addEventListener('click', () => {
+    viewMode = 'front';
+    frontViewBtn.classList.add('active');
+    backViewBtn.classList.remove('active');
+    selected = null;
+    render();
+  });
+  backViewBtn.addEventListener('click', () => {
+    viewMode = 'back';
+    backViewBtn.classList.add('active');
+    frontViewBtn.classList.remove('active');
+    selected = null;
+    render();
+  });
+
+  exportBtn.addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify({rows, cols, seats}, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '座席表データ.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  importFile.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const data = JSON.parse(reader.result);
+        if(!Array.isArray(data.seats)) throw new Error('invalid');
+        rows = data.rows || data.seats.length;
+        cols = data.cols || (data.seats[0] ? data.seats[0].length : 6);
+        seats = data.seats;
+        rowsInput.value = rows;
+        colsInput.value = cols;
+        selected = null;
+        render();
+        saveToStorage();
+        setStatus('保存データを読み込みました。');
+      }catch(err){
+        setStatus('読み込みに失敗しました。ファイルの形式をご確認ください。', true);
+      }
+    };
+    reader.readAsText(file);
+    importFile.value = '';
+  });
+
+  printBtn.addEventListener('click', () => {
+    preparePrint();
+    window.print();
+  });
+
+  // init
+  if(!loadFromStorage()){
+    seats = makeEmptyGrid(rows, cols);
+  }
+  render();
+</script>
+</body>
+</html>

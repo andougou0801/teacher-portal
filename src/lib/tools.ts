@@ -68,11 +68,13 @@ export const tools: Tool[] = [
   {
     slug: "seating-chart-maker",
     name: "座席表作成",
-    description: "条件を指定して座席表を自動作成する予定のツールです。",
+    description:
+      "名簿を読み込んで自動配置、席をクリックで入れ替え。教卓側／うしろ側どちらの向きでも印刷できます。",
     icon: "🪑",
-    tags: ["学級経営", "作成予定"],
+    tags: ["学級経営", "無料"],
     audience: "teacher",
-    status: "planned",
+    status: "live",
+    file: "/tools/seating-chart-maker.html",
   },
   {
     slug: "group-divider",
