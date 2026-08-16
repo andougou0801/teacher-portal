@@ -131,6 +131,49 @@
     padding:8px 24px;
     border-radius:16px;
   }
+  .headcount-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .headcount-row input[type="number"]{
+    width:80px;
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #d8dfea;
+    font-size:14px;
+    font-family:inherit;
+  }
+  .btn-small{
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 14px;
+    white-space:nowrap;
+  }
+  .btn-small:hover{background:#e3e8f0;}
+  .preset-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid #eef1f6;
+  }
+  .preset-row select,
+  .preset-row input[type="text"]{
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #d8dfea;
+    font-size:13px;
+    font-family:inherit;
+  }
+  .preset-row select{flex:1;min-width:120px;}
+  .preset-row input[type="text"]{flex:1;min-width:120px;}
+  .btn-danger{color:#c0392b;}
 </style>
 </head>
 <body>
@@ -138,6 +181,11 @@
   <h1>🎯 抽選・ルーレット</h1>
 
   <div class="card">
+    <div class="headcount-row">
+      <label for="headcountInput" style="margin:0;">人数を指定して自動入力</label>
+      <input type="number" id="headcountInput" min="2" max="20" placeholder="例: 5">
+      <button class="btn-small" id="headcountBtn">欄を作る</button>
+    </div>
     <label for="namesInput">名前や項目を1行に1つずつ入力してください</label>
     <textarea id="namesInput">たなか
 さとう
@@ -146,6 +194,12 @@
 いとう
 わたなべ</textarea>
     <p class="hint">最大20件まで表示できます。入力後、下の「スタート」を押してください。</p>
+    <div class="preset-row">
+      <select id="presetSelect"><option value="">保存済みリストを選択…</option></select>
+      <input type="text" id="presetNameInput" placeholder="保存名（例: 3年1組）">
+      <button class="btn-small" id="presetSaveBtn">保存</button>
+      <button class="btn-small btn-danger" id="presetDeleteBtn">削除</button>
+    </div>
   </div>
 
   <div class="card">
@@ -173,6 +227,96 @@
   const resetBtn = document.getElementById('resetBtn');
   const excludeCheck = document.getElementById('excludeCheck');
   const resultEl = document.getElementById('result');
+  const headcountInput = document.getElementById('headcountInput');
+  const headcountBtn = document.getElementById('headcountBtn');
+  const presetSelect = document.getElementById('presetSelect');
+  const presetNameInput = document.getElementById('presetNameInput');
+  const presetSaveBtn = document.getElementById('presetSaveBtn');
+  const presetDeleteBtn = document.getElementById('presetDeleteBtn');
+
+  const PRESET_KEY = 'lottery-roulette-presets-v1';
+  let presets = {};
+
+  function setStatusMessage(msg, isError){
+    resultEl.textContent = msg;
+    resultEl.style.color = isError ? '#c0392b' : '#2d6cdf';
+    resultEl.style.fontSize = '13px';
+  }
+
+  function loadPresets(){
+    try{
+      const raw = localStorage.getItem(PRESET_KEY);
+      presets = raw ? (JSON.parse(raw) || {}) : {};
+    }catch(e){ presets = {}; }
+  }
+
+  function persistPresets(){
+    localStorage.setItem(PRESET_KEY, JSON.stringify(presets));
+  }
+
+  function renderPresetSelect(selected){
+    presetSelect.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '保存済みリストを選択…';
+    presetSelect.appendChild(placeholder);
+    Object.keys(presets).forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      if(name === selected) opt.selected = true;
+      presetSelect.appendChild(opt);
+    });
+  }
+
+  headcountBtn.addEventListener('click', () => {
+    const n = Math.floor(Number(headcountInput.value));
+    if(!n || n < 2 || n > 20){
+      setStatusMessage('人数を2〜20の範囲で入力してください', true);
+      return;
+    }
+    const current = parseEntries();
+    const lines = [];
+    for(let i = 0; i < n; i++){
+      lines.push(current[i] || ('参加者' + (i + 1)));
+    }
+    namesInput.value = lines.join('\n');
+    namesInput.dispatchEvent(new Event('input'));
+  });
+
+  presetSelect.addEventListener('change', () => {
+    const name = presetSelect.value;
+    if(!name || !presets[name]) return;
+    namesInput.value = presets[name].namesText || '';
+    excludeCheck.checked = !!presets[name].exclude;
+    presetNameInput.value = name;
+    namesInput.dispatchEvent(new Event('input'));
+  });
+
+  presetSaveBtn.addEventListener('click', () => {
+    const name = presetNameInput.value.trim();
+    if(!name){
+      setStatusMessage('保存名を入力してください', true);
+      return;
+    }
+    presets[name] = { namesText: namesInput.value, exclude: excludeCheck.checked };
+    persistPresets();
+    renderPresetSelect(name);
+    setStatusMessage(`「${name}」として保存しました`, false);
+  });
+
+  presetDeleteBtn.addEventListener('click', () => {
+    const name = presetSelect.value;
+    if(!name || !presets[name]) return;
+    delete presets[name];
+    persistPresets();
+    renderPresetSelect('');
+    presetNameInput.value = '';
+    setStatusMessage(`「${name}」を削除しました`, false);
+  });
+
+  loadPresets();
+  renderPresetSelect('');
 
   const colors = ['#2d6cdf','#43a047','#fb8c00','#8e24aa','#e53935','#00897b','#c0ca33','#5c6bc0','#f4511e','#039be5'];
 
@@ -266,7 +410,10 @@
     currentRotation = finalRotation;
     canvas.style.transform = 'rotate(' + finalRotation + 'deg)';
 
+    let finished = false;
     const onDone = () => {
+      if(finished) return;
+      finished = true;
       canvas.removeEventListener('transitionend', onDone);
       spinning = false;
       spinBtn.disabled = false;
@@ -276,7 +423,11 @@
         entries.splice(winnerIndex, 1);
       }
     };
+    // transitionend can fail to fire in some environments (reduced motion,
+    // background tabs); a timeout matching the CSS duration guarantees the
+    // result still appears.
     canvas.addEventListener('transitionend', onDone);
+    setTimeout(onDone, 4200);
   }
 
   spinBtn.addEventListener('click', () => {
