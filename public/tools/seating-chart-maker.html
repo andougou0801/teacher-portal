@@ -9,6 +9,7 @@
     --accent:#2d6cdf;
     --accent-dark:#1f54b8;
     --good:#2f8f5b;
+    --badge:#f5a623;
   }
   *{box-sizing:border-box;}
   body{
@@ -18,7 +19,7 @@
     color:#2a2a2a;
     padding:20px 16px 80px;
   }
-  .wrap{max-width:920px;margin:0 auto;}
+  .wrap{max-width:960px;margin:0 auto;}
   h1{
     text-align:center;
     font-size:22px;
@@ -50,6 +51,10 @@
   input[type=number]{
     width:64px;padding:8px;border-radius:10px;border:1px solid #d8dfea;
     font-size:14px;text-align:center;
+  }
+  input[type=text], select{
+    padding:8px 10px;border-radius:10px;border:1px solid #d8dfea;
+    font-size:14px;font-family:inherit;
   }
   textarea{
     width:100%;min-height:90px;padding:12px;border-radius:12px;
@@ -85,24 +90,25 @@
 
   .grid{
     display:grid;
-    gap:8px;
+    gap:10px;
     justify-content:center;
   }
   .seat{
-    min-width:64px;
-    min-height:56px;
+    min-width:104px;
+    min-height:92px;
     background:#eef4ff;
     border:2px solid #d3e0f7;
-    border-radius:10px;
+    border-radius:12px;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
     text-align:center;
-    font-size:13px;
+    font-size:16px;
     font-weight:700;
     color:var(--accent-dark);
     cursor:pointer;
-    padding:4px;
+    padding:6px;
     word-break:break-all;
     transition:background .15s, transform .1s;
   }
@@ -117,6 +123,16 @@
     background:#fff7e0;
     border-color:#f2d98a;
     color:#8a6d00;
+  }
+  .role-badge{
+    background:var(--badge);
+    color:#fff;
+    font-size:10px;
+    font-weight:800;
+    padding:2px 8px;
+    border-radius:8px;
+    margin-bottom:5px;
+    white-space:nowrap;
   }
 
   .status{
@@ -138,6 +154,7 @@
     .print-view h3{text-align:center;font-size:16px;margin-bottom:10px;}
     .seat{border:1px solid #999;color:#000;background:#fff;}
     .seat.empty{border-style:dashed;}
+    .role-badge{background:#ddd;color:#000;border:1px solid #999;}
   }
   .print-only{display:none;}
 </style>
@@ -171,13 +188,47 @@
   </div>
 
   <div class="card">
-    <h2>③ データの保存・読み込み（このPC内で完結・サーバーには送信されません）</h2>
+    <h2>③ 役職・目印をつける</h2>
+    <div class="row">
+      <label>だれに</label>
+      <select id="roleNameSelect"><option value="">（席に名前がありません）</option></select>
+      <label>目印</label>
+      <input type="text" id="roleLabelInput" list="roleSuggestions" placeholder="例）学級委員">
+      <datalist id="roleSuggestions">
+        <option value="学級委員">
+        <option value="副委員長">
+        <option value="班長">
+        <option value="日直">
+        <option value="掃除当番">
+      </datalist>
+      <button class="btn-primary" id="setRoleBtn">設定する</button>
+      <button class="btn" id="clearRoleBtn">解除する</button>
+    </div>
+    <p class="hint">目印は名前に紐づくので、席を入れ替えても一緒に移動します。座席のマスの上に小さく表示されます。</p>
+  </div>
+
+  <div class="card">
+    <h2>④ 学期ごとに保存する</h2>
+    <div class="row">
+      <label>今表示中の保存</label>
+      <select id="presetSelect"></select>
+      <button class="btn-danger" id="deletePresetBtn">この保存を削除</button>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <input type="text" id="newPresetNameInput" placeholder="例）2学期">
+      <button class="btn-primary" id="savePresetBtn">今の内容を新しい名前で保存</button>
+    </div>
+    <p class="hint">今の座席・目印の状態は自動保存されています。学期が変わったら新しい名前で保存すれば、あとから選んで見比べられます。</p>
+  </div>
+
+  <div class="card">
+    <h2>⑤ データの書き出し・読み込み（バックアップ用・サーバーには送信されません）</h2>
     <div class="actions">
-      <button class="btn" id="exportBtn">保存データを書き出す（.json）</button>
+      <button class="btn" id="exportBtn">すべての保存データを書き出す（.json）</button>
       <label class="btn file-btn" for="importFile">保存データを読み込む</label>
       <input type="file" id="importFile" accept="application/json">
     </div>
-    <p class="hint">ブラウザを閉じても自動的に保存されています。別の端末で使う場合は書き出し・読み込みをご利用ください。</p>
+    <p class="hint">別の端末で使う場合や、念のためのバックアップにご利用ください。</p>
   </div>
 
   <div class="view-toggle">
@@ -198,7 +249,9 @@
 </div>
 
 <script>
-  const STORAGE_KEY = 'seatingChartData_v1';
+  const STORAGE_KEY = 'seatingChartData_v2';
+  const LEGACY_STORAGE_KEY = 'seatingChartData_v1';
+  const DEFAULT_PRESET_NAME = '1学期';
 
   const rowsInput = document.getElementById('rowsInput');
   const colsInput = document.getElementById('colsInput');
@@ -207,6 +260,14 @@
   const loadRosterBtn = document.getElementById('loadRosterBtn');
   const shuffleBtn = document.getElementById('shuffleBtn');
   const clearBtn = document.getElementById('clearBtn');
+  const roleNameSelect = document.getElementById('roleNameSelect');
+  const roleLabelInput = document.getElementById('roleLabelInput');
+  const setRoleBtn = document.getElementById('setRoleBtn');
+  const clearRoleBtn = document.getElementById('clearRoleBtn');
+  const presetSelect = document.getElementById('presetSelect');
+  const deletePresetBtn = document.getElementById('deletePresetBtn');
+  const newPresetNameInput = document.getElementById('newPresetNameInput');
+  const savePresetBtn = document.getElementById('savePresetBtn');
   const exportBtn = document.getElementById('exportBtn');
   const importFile = document.getElementById('importFile');
   const frontViewBtn = document.getElementById('frontViewBtn');
@@ -218,30 +279,118 @@
 
   let rows = 6, cols = 6;
   let seats = []; // seats[row][col] = name string | null
+  let roles = {}; // { name: label }
   let selected = null; // {r,c} | null
   let viewMode = 'front'; // 'front' | 'back'
+  let presets = {}; // { presetName: {rows, cols, seats, roles} }
+  let currentPresetName = DEFAULT_PRESET_NAME;
 
   function makeEmptyGrid(r, c){
     return Array.from({length:r}, () => Array.from({length:c}, () => null));
   }
 
-  function loadFromStorage(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(!raw) return false;
-      const data = JSON.parse(raw);
-      if(!data || !Array.isArray(data.seats)) return false;
-      rows = data.rows || data.seats.length;
-      cols = data.cols || (data.seats[0] ? data.seats[0].length : 6);
-      seats = data.seats;
-      rowsInput.value = rows;
-      colsInput.value = cols;
-      return true;
-    }catch(e){ return false; }
+  function snapshotCurrent(){
+    return { rows, cols, seats: JSON.parse(JSON.stringify(seats)), roles: JSON.parse(JSON.stringify(roles)) };
   }
 
-  function saveToStorage(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({rows, cols, seats}));
+  function applySnapshot(data){
+    rows = data.rows || (data.seats ? data.seats.length : 6);
+    cols = data.cols || (data.seats && data.seats[0] ? data.seats[0].length : 6);
+    seats = data.seats || makeEmptyGrid(rows, cols);
+    roles = data.roles || {};
+    rowsInput.value = rows;
+    colsInput.value = cols;
+    selected = null;
+  }
+
+  function persistPresets(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ presets, currentPresetName }));
+  }
+
+  function saveCurrentToPresets(){
+    presets[currentPresetName] = snapshotCurrent();
+    persistPresets();
+  }
+
+  function loadInitialData(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        const data = JSON.parse(raw);
+        if(data && data.presets && Object.keys(data.presets).length > 0){
+          presets = data.presets;
+          currentPresetName = data.currentPresetName && presets[data.currentPresetName]
+            ? data.currentPresetName
+            : Object.keys(presets)[0];
+          applySnapshot(presets[currentPresetName]);
+          return;
+        }
+      }
+    }catch(e){ /* fall through to migration / defaults */ }
+
+    // migrate legacy single-config data if present
+    try{
+      const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if(legacyRaw){
+        const legacy = JSON.parse(legacyRaw);
+        if(legacy && Array.isArray(legacy.seats)){
+          presets = { [DEFAULT_PRESET_NAME]: { rows: legacy.rows, cols: legacy.cols, seats: legacy.seats, roles: {} } };
+          currentPresetName = DEFAULT_PRESET_NAME;
+          applySnapshot(presets[currentPresetName]);
+          persistPresets();
+          return;
+        }
+      }
+    }catch(e){ /* ignore */ }
+
+    presets = { [DEFAULT_PRESET_NAME]: { rows, cols, seats: makeEmptyGrid(rows, cols), roles: {} } };
+    currentPresetName = DEFAULT_PRESET_NAME;
+    applySnapshot(presets[currentPresetName]);
+  }
+
+  function renderPresetSelect(){
+    presetSelect.innerHTML = '';
+    Object.keys(presets).forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      if(name === currentPresetName) opt.selected = true;
+      presetSelect.appendChild(opt);
+    });
+  }
+
+  function switchToPreset(name){
+    if(!presets[name]) return;
+    applySnapshot(presets[name]);
+    currentPresetName = name;
+    renderPresetSelect();
+    render();
+    setStatus(`「${name}」を表示しています。`);
+  }
+
+  function savePresetAs(name){
+    if(!name){
+      setStatus('保存名を入力してください。', true);
+      return;
+    }
+    presets[name] = snapshotCurrent();
+    currentPresetName = name;
+    persistPresets();
+    renderPresetSelect();
+    setStatus(`「${name}」として保存しました。`);
+  }
+
+  function deleteCurrentPreset(){
+    const names = Object.keys(presets);
+    if(names.length <= 1){
+      setStatus('最後の1つは削除できません。', true);
+      return;
+    }
+    delete presets[currentPresetName];
+    const nextName = Object.keys(presets)[0];
+    persistPresets();
+    switchToPreset(nextName);
+    setStatus(`削除しました。「${nextName}」を表示しています。`);
   }
 
   function setStatus(msg, warn){
@@ -261,12 +410,28 @@
     seats = next;
     selected = null;
     render();
-    saveToStorage();
+    saveCurrentToPresets();
   }
 
-  function displayCols(c){
-    // for back view, mirror the column order
-    return viewMode === 'back' ? [...Array(cols).keys()].reverse()[c] : c;
+  function populateRoleNameSelect(){
+    const names = [];
+    for(let r = 0; r < rows; r++) for(let c = 0; c < cols; c++) if(seats[r][c] && !names.includes(seats[r][c])) names.push(seats[r][c]);
+    const prevValue = roleNameSelect.value;
+    roleNameSelect.innerHTML = '';
+    if(names.length === 0){
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = '（席に名前がありません）';
+      roleNameSelect.appendChild(opt);
+      return;
+    }
+    names.forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name + (roles[name] ? `（${roles[name]}）` : '');
+      roleNameSelect.appendChild(opt);
+    });
+    if(names.includes(prevValue)) roleNameSelect.value = prevValue;
   }
 
   function render(){
@@ -279,11 +444,20 @@
         const div = document.createElement('div');
         div.className = 'seat' + (name ? '' : ' empty') +
           (selected && selected.r === r && selected.c === actualC ? ' selected' : '');
-        div.textContent = name || '（空席）';
+        if(name && roles[name]){
+          const badge = document.createElement('div');
+          badge.className = 'role-badge';
+          badge.textContent = roles[name];
+          div.appendChild(badge);
+        }
+        const nameSpan = document.createElement('div');
+        nameSpan.textContent = name || '（空席）';
+        div.appendChild(nameSpan);
         div.addEventListener('click', () => onSeatClick(r, actualC));
         seatGrid.appendChild(div);
       }
     }
+    populateRoleNameSelect();
   }
 
   function onSeatClick(r, c){
@@ -309,7 +483,7 @@
     selected = null;
     setStatus('席を入れ替えました。');
     render();
-    saveToStorage();
+    saveCurrentToPresets();
   }
 
   function loadRoster(){
@@ -325,7 +499,7 @@
     }
     selected = null;
     render();
-    saveToStorage();
+    saveCurrentToPresets();
     if(names.length > capacity){
       setStatus(`席数(${capacity})より名簿の人数(${names.length})が多いため、${names.length - capacity}人は配置できませんでした。`, true);
     }else{
@@ -348,16 +522,17 @@
     }
     selected = null;
     render();
-    saveToStorage();
+    saveCurrentToPresets();
     setStatus('ランダムに並べ替えました。');
   }
 
   function clearAll(){
     seats = makeEmptyGrid(rows, cols);
+    roles = {};
     selected = null;
     render();
-    saveToStorage();
-    setStatus('すべての席をクリアしました。');
+    saveCurrentToPresets();
+    setStatus('すべての席と目印をクリアしました。');
   }
 
   function buildPrintView(title, mirrored){
@@ -381,7 +556,15 @@
         const name = seats[r][actualC];
         const div = document.createElement('div');
         div.className = 'seat' + (name ? '' : ' empty');
-        div.textContent = name || '（空席）';
+        if(name && roles[name]){
+          const badge = document.createElement('div');
+          badge.className = 'role-badge';
+          badge.textContent = roles[name];
+          div.appendChild(badge);
+        }
+        const nameSpan = document.createElement('div');
+        nameSpan.textContent = name || '（空席）';
+        div.appendChild(nameSpan);
         grid.appendChild(div);
       }
     }
@@ -391,8 +574,8 @@
 
   function preparePrint(){
     printArea.innerHTML = '';
-    printArea.appendChild(buildPrintView('教卓側から見た座席表', false));
-    printArea.appendChild(buildPrintView('うしろから見た座席表', true));
+    printArea.appendChild(buildPrintView(`教卓側から見た座席表（${currentPresetName}）`, false));
+    printArea.appendChild(buildPrintView(`うしろから見た座席表（${currentPresetName}）`, true));
   }
 
   resizeBtn.addEventListener('click', () => {
@@ -405,6 +588,47 @@
   loadRosterBtn.addEventListener('click', loadRoster);
   shuffleBtn.addEventListener('click', shuffleSeats);
   clearBtn.addEventListener('click', clearAll);
+
+  setRoleBtn.addEventListener('click', () => {
+    const name = roleNameSelect.value;
+    const label = roleLabelInput.value.trim();
+    if(!name){
+      setStatus('目印をつける相手を選んでください。', true);
+      return;
+    }
+    if(!label){
+      setStatus('目印の内容を入力してください。', true);
+      return;
+    }
+    roles[name] = label;
+    roleLabelInput.value = '';
+    render();
+    saveCurrentToPresets();
+    setStatus(`${name}さんに「${label}」の目印をつけました。`);
+  });
+
+  clearRoleBtn.addEventListener('click', () => {
+    const name = roleNameSelect.value;
+    if(!name || !roles[name]){
+      setStatus('この人には目印がついていません。', true);
+      return;
+    }
+    delete roles[name];
+    render();
+    saveCurrentToPresets();
+    setStatus(`${name}さんの目印を解除しました。`);
+  });
+
+  presetSelect.addEventListener('change', () => {
+    switchToPreset(presetSelect.value);
+  });
+
+  savePresetBtn.addEventListener('click', () => {
+    savePresetAs(newPresetNameInput.value.trim());
+    newPresetNameInput.value = '';
+  });
+
+  deletePresetBtn.addEventListener('click', deleteCurrentPreset);
 
   frontViewBtn.addEventListener('click', () => {
     viewMode = 'front';
@@ -422,7 +646,8 @@
   });
 
   exportBtn.addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify({rows, cols, seats}, null, 2)], {type:'application/json'});
+    saveCurrentToPresets();
+    const blob = new Blob([JSON.stringify({ presets, currentPresetName }, null, 2)], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -440,15 +665,15 @@
     reader.onload = () => {
       try{
         const data = JSON.parse(reader.result);
-        if(!Array.isArray(data.seats)) throw new Error('invalid');
-        rows = data.rows || data.seats.length;
-        cols = data.cols || (data.seats[0] ? data.seats[0].length : 6);
-        seats = data.seats;
-        rowsInput.value = rows;
-        colsInput.value = cols;
-        selected = null;
+        if(!data.presets || Object.keys(data.presets).length === 0) throw new Error('invalid');
+        presets = data.presets;
+        currentPresetName = data.currentPresetName && presets[data.currentPresetName]
+          ? data.currentPresetName
+          : Object.keys(presets)[0];
+        applySnapshot(presets[currentPresetName]);
+        persistPresets();
+        renderPresetSelect();
         render();
-        saveToStorage();
         setStatus('保存データを読み込みました。');
       }catch(err){
         setStatus('読み込みに失敗しました。ファイルの形式をご確認ください。', true);
@@ -464,9 +689,8 @@
   });
 
   // init
-  if(!loadFromStorage()){
-    seats = makeEmptyGrid(rows, cols);
-  }
+  loadInitialData();
+  renderPresetSelect();
   render();
 </script>
 </body>

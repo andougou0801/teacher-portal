@@ -69,7 +69,7 @@ export const tools: Tool[] = [
     slug: "seating-chart-maker",
     name: "座席表作成",
     description:
-      "名簿を読み込んで自動配置、席をクリックで入れ替え。教卓側／うしろ側どちらの向きでも印刷できます。",
+      "名簿を読み込んで自動配置、席をクリックで入れ替え。学級委員などの目印付けや、学期ごとの複数保存にも対応。",
     icon: "🪑",
     tags: ["学級経営", "無料"],
     audience: "teacher",
