@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { articles } from "@/lib/articles";
+import { icebreakers } from "@/lib/icebreakers";
 
 export const metadata: Metadata = {
   title: "授業・教材アイデア | 全国教員支援ポータル（仮称）",
@@ -26,6 +27,22 @@ export default function LessonsPage() {
           「明日の授業に使える」を合言葉に、教科別・場面別のアイデアを紹介していきます。
         </p>
       </div>
+
+      <Link
+        href="/lessons/icebreakers"
+        className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-accent bg-[#EAF2FA] p-5"
+      >
+        <div>
+          <div className="text-[10px] font-extrabold tracking-wide text-accent">
+            NEW・{icebreakers.length}個掲載
+          </div>
+          <h2 className="mt-1 text-base font-bold">🎉 アイスブレイク大特集</h2>
+          <p className="mt-1 text-xs text-muted">
+            時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集
+          </p>
+        </div>
+        <span className="shrink-0 text-accent">→</span>
+      </Link>
 
       <div className="flex flex-col gap-4">
         {lessons.map((lesson) => (
