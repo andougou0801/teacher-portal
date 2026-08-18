@@ -30,7 +30,7 @@ export default function Home() {
             placeholder="何を探していますか？ 例：算数プリント、学級開き、保護者対応"
             className="flex-1 rounded-full border-none px-4 py-2.5 text-sm text-[#1E2732] outline-none"
           />
-          <button className="rounded-full bg-accent px-6 py-2.5 text-sm font-bold text-white">
+          <button className="rounded-full bg-cta px-6 py-2.5 text-sm font-bold text-white hover:bg-cta-dark">
             検索する
           </button>
         </form>
@@ -68,7 +68,7 @@ export default function Home() {
               className="relative flex flex-col items-center gap-2 rounded-2xl border border-line bg-white p-4 text-center"
             >
               {category.status === "coming-soon" && (
-                <span className="absolute top-2 right-2 rounded-full bg-background px-2 py-0.5 text-[9px] font-bold text-muted">
+                <span className="absolute top-2 right-2 rounded-full bg-background px-2 py-0.5 text-[12px] font-bold text-muted">
                   準備中
                 </span>
               )}
@@ -103,21 +103,21 @@ export default function Home() {
                   {tool.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[10px] font-bold text-navy"
+                      className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
                 <h4 className="text-sm font-bold">{tool.name}</h4>
-                <p className="flex-1 text-xs text-muted">{tool.description}</p>
-                <div className="flex items-center gap-1 text-[10px] font-bold text-good">
+                <p className="flex-1 text-sm text-muted">{tool.description}</p>
+                <div className="flex items-center gap-1 text-[13px] font-bold text-good">
                   ✓ 開発者本人による自作ツール
                 </div>
               </div>
               <Link
                 href={`/tools/${tool.slug}`}
-                className="bg-navy py-2.5 text-center text-xs font-bold text-white"
+                className="bg-cta py-3 text-center text-sm font-bold text-white hover:bg-cta-dark"
               >
                 ツールを開く
               </Link>
@@ -148,12 +148,12 @@ export default function Home() {
           >
             <div className="h-40 bg-gradient-to-br from-[#F0F4F8] to-line md:h-auto md:w-64 md:shrink-0" />
             <div className="p-6">
-              <div className="text-[10px] font-extrabold tracking-wide text-accent">
+              <div className="text-[13px] font-extrabold tracking-wide text-accent">
                 {featuredArticle.category}
               </div>
               <h4 className="my-2 text-lg font-bold">{featuredArticle.title}</h4>
               <p className="text-sm text-muted">{featuredArticle.summary}</p>
-              <div className="mt-3 text-[11px] text-muted">
+              <div className="mt-3 text-[13px] text-muted">
                 {featuredArticle.author}・{featuredArticle.readTime}
               </div>
             </div>

@@ -47,10 +47,10 @@ export default function IcebreakersPage() {
                       {ib.emoji} {ib.title}
                     </h3>
                     <div className="mt-2 flex flex-wrap gap-1.5">
-                      <span className="rounded-full bg-background px-2 py-0.5 text-[10px] font-bold text-navy">
+                      <span className="rounded-full bg-background px-2 py-0.5 text-[13px] font-bold text-navy">
                         ⏱ {ib.duration}
                       </span>
-                      <span className="rounded-full bg-background px-2 py-0.5 text-[10px] font-bold text-navy">
+                      <span className="rounded-full bg-background px-2 py-0.5 text-[13px] font-bold text-navy">
                         👥 {ib.groupSize}
                       </span>
                     </div>

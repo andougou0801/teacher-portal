@@ -103,7 +103,7 @@ export default function CommunityPage() {
       </div>
 
       {!isSupabaseConfigured ? (
-        <div className="rounded-2xl border border-[#F2D98A] bg-[#FFF7E0] p-6 text-center text-sm text-[#8A6D00]">
+        <div className="rounded-2xl border border-warn-line bg-warn-bg p-6 text-center text-sm text-warn">
           このコミュニティ機能は現在準備中です。公開までしばらくお待ちください。
         </div>
       ) : (
@@ -157,7 +157,7 @@ export default function CommunityPage() {
                   {submitting ? "投稿中..." : "質問を投稿する"}
                 </button>
                 {submitMessage && (
-                  <span className="text-xs text-muted">{submitMessage}</span>
+                  <span className="text-sm text-muted">{submitMessage}</span>
                 )}
               </div>
             </form>
@@ -201,15 +201,15 @@ export default function CommunityPage() {
                 className="rounded-2xl border border-line bg-white p-4"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[10px] font-bold text-navy">
+                  <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy">
                     {q.category}
                   </span>
-                  <span className="shrink-0 rounded-lg bg-background px-2.5 py-1 text-[11px] font-bold text-navy">
+                  <span className="shrink-0 rounded-lg bg-background px-2.5 py-1 text-[13px] font-bold text-navy">
                     回答 {q.answers?.[0]?.count ?? 0}
                   </span>
                 </div>
                 <h3 className="my-1.5 text-sm font-bold">{q.question}</h3>
-                <div className="text-[11px] text-muted">
+                <div className="text-[13px] text-muted">
                   {q.nickname || "名無しの先生"}・{formatDate(q.created_at)}
                 </div>
               </Link>

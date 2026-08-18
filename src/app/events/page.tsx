@@ -37,17 +37,17 @@ export default function EventsPage() {
           >
             <div className="flex flex-wrap items-center gap-2">
               {post.month && (
-                <span className="rounded-full bg-navy px-2.5 py-0.5 text-[10px] font-bold text-white">
+                <span className="rounded-full bg-navy px-2.5 py-0.5 text-[13px] font-bold text-white">
                   {post.month}
                 </span>
               )}
-              <span className="text-[10px] font-extrabold tracking-wide text-accent">
+              <span className="text-[13px] font-extrabold tracking-wide text-accent">
                 {post.category}
               </span>
             </div>
             <h2 className="my-1.5 text-base font-bold">{post.title}</h2>
-            <p className="text-xs text-muted">{post.summary}</p>
-            <div className="mt-2 text-[11px] text-muted">{post.readTime}</div>
+            <p className="text-sm text-muted">{post.summary}</p>
+            <div className="mt-2 text-[13px] text-muted">{post.readTime}</div>
           </Link>
         ))}
       </div>
@@ -58,7 +58,7 @@ export default function EventsPage() {
           {upcomingMonths.map((month) => (
             <span
               key={month}
-              className="rounded-xl border border-line bg-white px-3 py-2 text-xs text-muted"
+              className="rounded-xl border border-line bg-white px-3 py-2 text-sm text-muted"
             >
               {month}
             </span>

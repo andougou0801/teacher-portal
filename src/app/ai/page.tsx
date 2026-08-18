@@ -27,20 +27,20 @@ export default function AiPage() {
       <div className="flex flex-col gap-5">
         {aiGuides.map((guide) => (
           <div key={guide.slug} className="rounded-2xl border border-line bg-white p-5">
-            <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[10px] font-bold text-navy">
+            <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy">
               {guide.tool}
             </span>
             <h2 className="my-1.5 text-base font-bold">{guide.title}</h2>
-            <p className="mb-3 text-xs text-muted">{guide.summary}</p>
+            <p className="mb-3 text-sm text-muted">{guide.summary}</p>
 
             <div className="mb-3">
               <div className="mb-1 text-xs font-bold text-navy">何ができる？</div>
-              <p className="text-xs text-muted">{guide.whatItDoes}</p>
+              <p className="text-sm text-muted">{guide.whatItDoes}</p>
             </div>
 
             <div className="mb-3">
               <div className="mb-1 text-xs font-bold text-navy">どう使う？</div>
-              <ol className="list-decimal space-y-1 pl-4 text-xs text-muted">
+              <ol className="list-decimal space-y-1 pl-4 text-sm text-muted">
                 {guide.howToUse.map((step, i) => (
                   <li key={i}>{step}</li>
                 ))}
@@ -54,7 +54,7 @@ export default function AiPage() {
               </p>
             </div>
 
-            <div className="rounded-xl border border-[#F2D98A] bg-[#FFF7E0] p-3 text-xs text-[#8A6D00]">
+            <div className="rounded-xl border border-warn-line bg-warn-bg p-3 text-xs text-warn">
               ⚠ {guide.caution}
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function AiPage() {
           {upcomingTopics.map((topic) => (
             <span
               key={topic}
-              className="rounded-full border border-line bg-white px-3 py-1.5 text-xs text-muted"
+              className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
             >
               {topic}
             </span>

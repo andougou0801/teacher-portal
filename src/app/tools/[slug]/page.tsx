@@ -31,7 +31,7 @@ export default async function ToolPage(props: PageProps<"/tools/[slug]">) {
           {tool.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[10px] font-bold text-navy"
+              className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy"
             >
               {tag}
             </span>
@@ -49,7 +49,7 @@ export default async function ToolPage(props: PageProps<"/tools/[slug]">) {
           <div className="mt-1 text-xs font-bold text-accent">作成予定のツールです</div>
         )}
         {tool.mobileNote && (
-          <div className="mt-3 rounded-xl border border-[#F2D98A] bg-[#FFF7E0] px-4 py-2.5 text-xs text-[#8A6D00] md:hidden">
+          <div className="mt-3 rounded-xl border border-warn-line bg-warn-bg px-4 py-2.5 text-xs text-warn md:hidden">
             {tool.mobileNote}
           </div>
         )}

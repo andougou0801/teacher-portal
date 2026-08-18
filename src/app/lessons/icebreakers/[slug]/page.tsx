@@ -41,7 +41,7 @@ export default async function IcebreakerDetailPage(
         <IcebreakerScene type={ib.scene} />
       </div>
 
-      <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[10px] font-bold text-navy">
+      <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy">
         {ib.category}
       </span>
       <h1 className="mt-2 mb-4 text-2xl font-bold">
@@ -51,19 +51,19 @@ export default async function IcebreakerDetailPage(
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="rounded-xl border border-line bg-white p-3 text-center">
           <div className="text-lg">⏱</div>
-          <div className="mt-1 text-[11px] font-bold text-navy">{ib.duration}</div>
+          <div className="mt-1 text-[13px] font-bold text-navy">{ib.duration}</div>
         </div>
         <div className="rounded-xl border border-line bg-white p-3 text-center">
           <div className="text-lg">📍</div>
-          <div className="mt-1 text-[11px] font-bold text-navy">{ib.place}</div>
+          <div className="mt-1 text-[13px] font-bold text-navy">{ib.place}</div>
         </div>
         <div className="rounded-xl border border-line bg-white p-3 text-center">
           <div className="text-lg">👥</div>
-          <div className="mt-1 text-[11px] font-bold text-navy">{ib.groupSize}</div>
+          <div className="mt-1 text-[13px] font-bold text-navy">{ib.groupSize}</div>
         </div>
         <div className="rounded-xl border border-line bg-white p-3 text-center">
           <div className="text-lg">🧰</div>
-          <div className="mt-1 text-[11px] font-bold text-navy">{ib.materials}</div>
+          <div className="mt-1 text-[13px] font-bold text-navy">{ib.materials}</div>
         </div>
       </div>
 
@@ -82,7 +82,7 @@ export default async function IcebreakerDetailPage(
       </div>
 
       {ib.tip && (
-        <div className="mt-4 rounded-2xl bg-[#FFF7E0] p-4 text-sm text-[#8A6D00]">
+        <div className="mt-4 rounded-2xl bg-warn-bg p-4 text-sm text-warn">
           💡 <span className="font-bold">コツ：</span>
           {ib.tip}
         </div>

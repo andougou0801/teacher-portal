@@ -40,21 +40,21 @@ export default function KidsPage() {
                 {tool.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[10px] font-bold text-navy"
+                    className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
               <h4 className="text-sm font-bold">{tool.name}</h4>
-              <p className="flex-1 text-xs text-muted">{tool.description}</p>
-              <div className="flex items-center gap-1 text-[10px] font-bold text-good">
+              <p className="flex-1 text-sm text-muted">{tool.description}</p>
+              <div className="flex items-center gap-1 text-[13px] font-bold text-good">
                 ✓ 開発者本人による自作ツール
               </div>
             </div>
             <Link
               href={`/tools/${tool.slug}`}
-              className="bg-navy py-2.5 text-center text-xs font-bold text-white"
+              className="bg-cta py-3 text-center text-sm font-bold text-white hover:bg-cta-dark"
             >
               ツールを開く
             </Link>
@@ -77,7 +77,7 @@ export default function KidsPage() {
                   <span>{tool.icon}</span>
                   {tool.name}
                 </div>
-                <p className="text-xs text-muted">{tool.description}</p>
+                <p className="text-sm text-muted">{tool.description}</p>
               </div>
             ))}
           </div>

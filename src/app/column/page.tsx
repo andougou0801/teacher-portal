@@ -35,19 +35,19 @@ export default function ColumnPage() {
               href={`/articles/${column.slug}`}
               className="rounded-2xl border border-line bg-white p-5"
             >
-              <div className="text-[10px] font-extrabold tracking-wide text-accent">
+              <div className="text-[13px] font-extrabold tracking-wide text-accent">
                 {column.category}
               </div>
               <h2 className="my-1.5 text-base font-bold">{column.title}</h2>
-              <p className="text-xs text-muted">{column.summary}</p>
-              <div className="mt-2 text-[11px] text-muted">
+              <p className="text-sm text-muted">{column.summary}</p>
+              <div className="mt-2 text-[13px] text-muted">
                 {column.author}・{column.publishedAt}・{column.readTime}
               </div>
             </Link>
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-[#F2D98A] bg-[#FFF7E0] p-6 text-center text-sm text-[#8A6D00]">
+        <div className="rounded-2xl border border-warn-line bg-warn-bg p-6 text-center text-sm text-warn">
           コラムはまだ執筆中です。公開までしばらくお待ちください。
         </div>
       )}
@@ -58,7 +58,7 @@ export default function ColumnPage() {
           {topics.map((topic) => (
             <span
               key={topic}
-              className="rounded-full border border-line bg-white px-3 py-1.5 text-xs text-muted"
+              className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
             >
               {topic}
             </span>

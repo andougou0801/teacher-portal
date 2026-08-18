@@ -35,13 +35,13 @@ export default function ClassroomPage() {
             className="rounded-2xl border border-line bg-white p-5"
           >
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-extrabold tracking-wide text-accent">
+              <span className="text-[13px] font-extrabold tracking-wide text-accent">
                 {post.category}
               </span>
             </div>
             <h2 className="my-1.5 text-base font-bold">{post.title}</h2>
-            <p className="text-xs text-muted">{post.summary}</p>
-            <div className="mt-2 text-[11px] text-muted">{post.readTime}</div>
+            <p className="text-sm text-muted">{post.summary}</p>
+            <div className="mt-2 text-[13px] text-muted">{post.readTime}</div>
           </Link>
         ))}
       </div>
@@ -52,7 +52,7 @@ export default function ClassroomPage() {
           {upcomingTopics.map((topic) => (
             <span
               key={topic}
-              className="rounded-full border border-line bg-white px-3 py-1.5 text-xs text-muted"
+              className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
             >
               {topic}
             </span>

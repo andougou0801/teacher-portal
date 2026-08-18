@@ -91,7 +91,7 @@ export default function AboutPage() {
                 className="rounded-xl border border-line bg-white p-3.5 text-sm"
               >
                 <span className="font-bold">{ref.name}</span>
-                <span className="mt-1 block text-xs text-muted">{ref.note}</span>
+                <span className="mt-1 block text-sm text-muted">{ref.note}</span>
               </li>
             ))}
           </ul>
@@ -141,7 +141,7 @@ export default function AboutPage() {
                 }`}
               >
                 <span
-                  className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                  className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-[13px] font-bold ${
                     step.status === "done"
                       ? "bg-[#E7F3EC] text-good"
                       : step.status === "current"
@@ -157,7 +157,7 @@ export default function AboutPage() {
                 </span>
                 <div>
                   <div className="font-bold">{step.phase}</div>
-                  <div className="mt-0.5 text-xs text-muted">{step.detail}</div>
+                  <div className="mt-0.5 text-sm text-muted">{step.detail}</div>
                 </div>
               </li>
             ))}

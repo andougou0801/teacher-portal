@@ -33,11 +33,11 @@ export default function LessonsPage() {
         className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-accent bg-[#EAF2FA] p-5"
       >
         <div>
-          <div className="text-[10px] font-extrabold tracking-wide text-accent">
+          <div className="text-[13px] font-extrabold tracking-wide text-accent">
             NEW・{icebreakers.length}個掲載
           </div>
           <h2 className="mt-1 text-base font-bold">🎉 アイスブレイク大特集</h2>
-          <p className="mt-1 text-xs text-muted">
+          <p className="mt-1 text-sm text-muted">
             時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集
           </p>
         </div>
@@ -52,18 +52,18 @@ export default function LessonsPage() {
             className="rounded-2xl border border-line bg-white p-5"
           >
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-extrabold tracking-wide text-accent">
+              <span className="text-[13px] font-extrabold tracking-wide text-accent">
                 {lesson.category}
               </span>
               {lesson.subject && (
-                <span className="rounded-full bg-[#EAF2FA] px-2 py-0.5 text-[10px] font-bold text-navy">
+                <span className="rounded-full bg-[#EAF2FA] px-2 py-0.5 text-[13px] font-bold text-navy">
                   {lesson.subject}
                 </span>
               )}
             </div>
             <h2 className="my-1.5 text-base font-bold">{lesson.title}</h2>
-            <p className="text-xs text-muted">{lesson.summary}</p>
-            <div className="mt-2 text-[11px] text-muted">{lesson.readTime}</div>
+            <p className="text-sm text-muted">{lesson.summary}</p>
+            <div className="mt-2 text-[13px] text-muted">{lesson.readTime}</div>
           </Link>
         ))}
       </div>
@@ -74,7 +74,7 @@ export default function LessonsPage() {
           {upcomingTopics.map((topic) => (
             <span
               key={topic}
-              className="rounded-full border border-line bg-white px-3 py-1.5 text-xs text-muted"
+              className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
             >
               {topic}
             </span>

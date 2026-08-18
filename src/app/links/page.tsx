@@ -50,11 +50,11 @@ export default function LinksPage() {
                 >
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-bold">{link.name}</h3>
-                    <span className="rounded-full bg-background px-2 py-0.5 text-[10px] font-bold text-muted">
+                    <span className="rounded-full bg-background px-2 py-0.5 text-[13px] font-bold text-muted">
                       外部サイト ↗
                     </span>
                   </div>
-                  <p className="mt-1.5 text-xs text-muted">{link.description}</p>
+                  <p className="mt-1.5 text-sm text-muted">{link.description}</p>
                   <p className="mt-1 text-xs font-bold text-navy">
                     使うタイミング：{link.whenToUse}
                   </p>
@@ -65,7 +65,7 @@ export default function LinksPage() {
         );
       })}
 
-      <p className="text-center text-xs text-muted">{officialLinksNote}</p>
+      <p className="text-center text-sm text-muted">{officialLinksNote}</p>
     </section>
   );
 }

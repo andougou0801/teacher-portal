@@ -118,11 +118,11 @@ export default function QuestionDetailPage() {
       {question && (
         <>
           <div className="rounded-2xl border border-line bg-white p-5">
-            <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[10px] font-bold text-navy">
+            <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy">
               {question.category}
             </span>
             <h1 className="my-2 text-lg font-bold">{question.question}</h1>
-            <div className="text-[11px] text-muted">
+            <div className="text-[13px] text-muted">
               {question.nickname || "名無しの先生"}・{formatDate(question.created_at)}
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function QuestionDetailPage() {
             {answers?.map((a) => (
               <div key={a.id} className="rounded-2xl border border-line bg-white p-4">
                 <p className="text-sm leading-loose whitespace-pre-wrap">{a.answer}</p>
-                <div className="mt-2 text-[11px] text-muted">
+                <div className="mt-2 text-[13px] text-muted">
                   {a.nickname || "名無しの先生"}・{formatDate(a.created_at)}
                 </div>
               </div>
@@ -173,7 +173,7 @@ export default function QuestionDetailPage() {
                   {submitting ? "投稿中..." : "回答する"}
                 </button>
                 {submitMessage && (
-                  <span className="text-xs text-muted">{submitMessage}</span>
+                  <span className="text-sm text-muted">{submitMessage}</span>
                 )}
               </div>
             </form>

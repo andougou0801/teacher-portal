@@ -25,7 +25,7 @@ export default function Header() {
       <div className="flex items-center gap-3">
         <Link
           href="/about"
-          className="rounded-full bg-white px-4 py-2 text-xs font-bold text-navy"
+          className="rounded-full bg-cta px-4 py-2 text-sm font-bold text-white hover:bg-cta-dark"
         >
           教員登録（無料）
         </Link>

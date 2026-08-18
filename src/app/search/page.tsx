@@ -88,12 +88,12 @@ export default async function SearchPage(props: PageProps<"/search">) {
                 <h3 className="mt-2 text-sm font-bold">
                   {tool.name}
                   {tool.status === "planned" && (
-                    <span className="ml-1.5 rounded-full bg-background px-2 py-0.5 text-[9px] font-bold text-muted">
+                    <span className="ml-1.5 rounded-full bg-background px-2 py-0.5 text-[12px] font-bold text-muted">
                       作成予定
                     </span>
                   )}
                 </h3>
-                <p className="mt-1 text-xs text-muted">{tool.description}</p>
+                <p className="mt-1 text-sm text-muted">{tool.description}</p>
               </Link>
             ))}
           </div>
@@ -112,11 +112,11 @@ export default async function SearchPage(props: PageProps<"/search">) {
                 href={`/articles/${article.slug}`}
                 className="rounded-2xl border border-line bg-white p-4"
               >
-                <div className="text-[10px] font-extrabold tracking-wide text-accent">
+                <div className="text-[13px] font-extrabold tracking-wide text-accent">
                   {article.category}
                 </div>
                 <h3 className="mt-1 text-sm font-bold">{article.title}</h3>
-                <p className="mt-1 text-xs text-muted">{article.summary}</p>
+                <p className="mt-1 text-sm text-muted">{article.summary}</p>
               </Link>
             ))}
           </div>
@@ -135,11 +135,11 @@ export default async function SearchPage(props: PageProps<"/search">) {
                 href="/ai"
                 className="rounded-2xl border border-line bg-white p-4"
               >
-                <div className="text-[10px] font-extrabold tracking-wide text-accent">
+                <div className="text-[13px] font-extrabold tracking-wide text-accent">
                   {guide.tool}
                 </div>
                 <h3 className="mt-1 text-sm font-bold">{guide.title}</h3>
-                <p className="mt-1 text-xs text-muted">{guide.summary}</p>
+                <p className="mt-1 text-sm text-muted">{guide.summary}</p>
               </Link>
             ))}
           </div>
@@ -161,7 +161,7 @@ export default async function SearchPage(props: PageProps<"/search">) {
                 className="rounded-2xl border border-line bg-white p-4"
               >
                 <h3 className="text-sm font-bold">{link.name}</h3>
-                <p className="mt-1 text-xs text-muted">{link.description}</p>
+                <p className="mt-1 text-sm text-muted">{link.description}</p>
               </a>
             ))}
           </div>

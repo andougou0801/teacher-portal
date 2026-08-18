@@ -42,11 +42,11 @@ export default function ArticlesPage() {
           >
             <div className="h-50 bg-gradient-to-br from-[#F0F4F8] to-line" />
             <div className="p-4">
-              <div className="text-[10px] font-extrabold tracking-wide text-accent">
+              <div className="text-[13px] font-extrabold tracking-wide text-accent">
                 {featured.category}
               </div>
               <h4 className="my-1.5 text-lg font-bold">{featured.title}</h4>
-              <div className="text-[11px] text-muted">
+              <div className="text-[13px] text-muted">
                 {featured.author}・{featured.readTime}
               </div>
             </div>
@@ -59,11 +59,11 @@ export default function ArticlesPage() {
           >
             <div className="h-30 bg-gradient-to-br from-[#F0F4F8] to-line" />
             <div className="p-4">
-              <div className="text-[10px] font-extrabold tracking-wide text-accent">
+              <div className="text-[13px] font-extrabold tracking-wide text-accent">
                 {article.category}
               </div>
               <h4 className="my-1.5 text-sm font-bold">{article.title}</h4>
-              <div className="text-[11px] text-muted">{article.meta}</div>
+              <div className="text-[13px] text-muted">{article.meta}</div>
             </div>
           </div>
         ))}

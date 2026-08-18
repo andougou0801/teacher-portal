@@ -21,7 +21,7 @@ export default function ComingSoonSection({
         <p className="mx-auto max-w-lg text-sm text-muted">{description}</p>
       </div>
 
-      <div className="rounded-2xl border border-[#F2D98A] bg-[#FFF7E0] p-6 text-center text-sm text-[#8A6D00]">
+      <div className="rounded-2xl border border-warn-line bg-warn-bg p-6 text-center text-sm text-warn">
         このページは準備中です。公開までしばらくお待ちください。
       </div>
 
@@ -32,7 +32,7 @@ export default function ComingSoonSection({
             {topics.map((topic) => (
               <span
                 key={topic}
-                className="rounded-full border border-line bg-white px-3 py-1.5 text-xs text-muted"
+                className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
               >
                 {topic}
               </span>
