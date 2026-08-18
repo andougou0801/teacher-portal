@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { icebreakers } from "@/lib/icebreakers";
+import IcebreakerScene from "@/components/IcebreakerScene";
+import { icebreakers, icebreakerCategories } from "@/lib/icebreakers";
 
 export const metadata: Metadata = {
   title: "アイスブレイク大特集 | 全国教員支援ポータル（仮称）",
   description:
-    "時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集。",
+    "時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集（全30種類）。",
 };
 
 export default function IcebreakersPage() {
   return (
-    <section className="mx-auto max-w-3xl px-8 py-14">
+    <section className="mx-auto max-w-4xl px-8 py-14">
       <div className="mb-8 text-center">
         <Link href="/lessons" className="mb-3 inline-block text-xs font-bold text-accent">
           ← 授業・教材アイデアにもどる
@@ -20,54 +21,46 @@ export default function IcebreakersPage() {
         </div>
         <h1 className="mt-2 mb-2 text-2xl font-bold">🎉 アイスブレイク大特集</h1>
         <p className="mx-auto max-w-lg text-sm text-muted">
-          見てすぐ分かる・すぐ使える、{icebreakers.length}個のアイスブレイクを集めました。
-          時間や場所、人数を確認して、その場に合ったものを選んでください。
+          全{icebreakers.length}種類。気になるものをタップすると、やり方をイラスト付きで詳しく紹介します。
         </p>
       </div>
 
-      <div className="flex flex-col gap-4">
-        {icebreakers.map((ib) => (
-          <div key={ib.slug} className="rounded-2xl border border-line bg-white p-5">
-            <div className="flex items-start gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF2FA] text-xl">
-                {ib.emoji}
-              </div>
-              <div>
-                <h2 className="text-base font-bold">{ib.title}</h2>
-                <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  <span className="rounded-full bg-background px-2.5 py-0.5 text-[10px] font-bold text-navy">
-                    ⏱ {ib.duration}
-                  </span>
-                  <span className="rounded-full bg-background px-2.5 py-0.5 text-[10px] font-bold text-navy">
-                    📍 {ib.place}
-                  </span>
-                  <span className="rounded-full bg-background px-2.5 py-0.5 text-[10px] font-bold text-navy">
-                    👥 {ib.groupSize}
-                  </span>
-                  <span className="rounded-full bg-background px-2.5 py-0.5 text-[10px] font-bold text-navy">
-                    🧰 {ib.materials}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <ol className="mt-4 flex flex-col gap-1.5 border-t border-line pt-4 text-sm leading-relaxed">
-              {ib.steps.map((step, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="shrink-0 font-bold text-accent">{i + 1}.</span>
-                  <span>{step}</span>
-                </li>
+      {icebreakerCategories.map((category) => {
+        const items = icebreakers.filter((ib) => ib.category === category);
+        return (
+          <div key={category} className="mb-10">
+            <h2 className="mb-3 text-sm font-bold text-navy">
+              {category}（{items.length}件）
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {items.map((ib) => (
+                <Link
+                  key={ib.slug}
+                  href={`/lessons/icebreakers/${ib.slug}`}
+                  className="overflow-hidden rounded-2xl border border-line bg-white"
+                >
+                  <div className="h-28">
+                    <IcebreakerScene type={ib.scene} />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-bold">
+                      {ib.emoji} {ib.title}
+                    </h3>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      <span className="rounded-full bg-background px-2 py-0.5 text-[10px] font-bold text-navy">
+                        ⏱ {ib.duration}
+                      </span>
+                      <span className="rounded-full bg-background px-2 py-0.5 text-[10px] font-bold text-navy">
+                        👥 {ib.groupSize}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
               ))}
-            </ol>
-
-            {ib.tip && (
-              <div className="mt-3 rounded-xl bg-[#FFF7E0] px-3 py-2 text-xs text-[#8A6D00]">
-                💡 {ib.tip}
-              </div>
-            )}
+            </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </section>
   );
 }
