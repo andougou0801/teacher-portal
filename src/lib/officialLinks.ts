@@ -134,6 +134,22 @@ export const officialLinks: OfficialLink[] = [
     whenToUse: "低学年向けのやさしいプリントを探したいときに。",
     category: "プリント・ドリル",
   },
+  {
+    name: "学習プリント.com",
+    url: "https://xn--fdk3a7ctb5192box5b.com/",
+    description:
+      "幼児〜中学生向けに、学年別・教科別（国語・算数・英語・社会・理科など）の学習プリントを幅広く無料提供するサイトです。",
+    whenToUse: "学年・教科を横断して、まとまった量のプリントを探したいときに。",
+    category: "プリント・ドリル",
+  },
+  {
+    name: "School Stock（現役教員による無料教材の棚）",
+    url: "https://a-tozak.github.io/School_Stock/",
+    description:
+      "現役の小学校教員が作成・公開している、教室用イラスト・教科別ワークシート・学級経営ツール・AIプロンプト集など1,400点以上の無料素材をまとめたサイトです。登録不要・クレジット表記も不要で使えます。",
+    whenToUse: "掲示物のイラストや、すぐ使える教材・学級経営ツールを探したいときに。",
+    category: "プリント・ドリル",
+  },
 
   // ── ぬりえ ──────────────────────────
   {
