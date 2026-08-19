@@ -14,7 +14,7 @@ export default function MobileNav() {
         aria-label={open ? "メニューを閉じる" : "メニューを開く"}
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
-        className="flex h-9 w-9 items-center justify-center rounded-lg text-xl text-white"
+        className="flex h-11 w-11 items-center justify-center rounded-lg text-xl text-white focus-visible:ring-2 focus-visible:ring-white"
       >
         {open ? "✕" : "☰"}
       </button>

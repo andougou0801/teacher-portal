@@ -27,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <div className="bg-warn-bg px-4 py-1.5 text-center text-xs text-warn border-b border-warn-line">
+        <div className="bg-warn-bg px-4 py-2 text-center text-sm text-warn border-b border-warn-line">
           このサイトは立ち上げ準備中のMVPです。掲載ツールは実際に使えますが、記事・コミュニティ機能は準備中です。
         </div>
         <Header />

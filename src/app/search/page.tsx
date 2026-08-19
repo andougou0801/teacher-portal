@@ -43,14 +43,18 @@ export default async function SearchPage(props: PageProps<"/search">) {
     <section className="mx-auto max-w-4xl px-8 py-14">
       <form action="/search" method="get" className="mb-10">
         <div className="mx-auto flex max-w-lg gap-1.5 rounded-full border border-line bg-white p-1.5">
+          <label htmlFor="search-q" className="sr-only">
+            キーワード検索
+          </label>
           <input
+            id="search-q"
             type="text"
             name="q"
             defaultValue={query}
             placeholder="何を探していますか？ 例：算数プリント、学級開き、保護者対応"
-            className="flex-1 rounded-full border-none px-4 py-2.5 text-sm text-[#1E2732] outline-none"
+            className="flex-1 rounded-full border-none px-4 py-2.5 text-sm text-[#1E2732] outline-none focus-visible:ring-2 focus-visible:ring-accent"
           />
-          <button className="rounded-full bg-accent px-6 py-2.5 text-sm font-bold text-white">
+          <button className="rounded-full bg-cta px-6 py-2.5 text-sm font-bold text-white hover:bg-cta-dark">
             検索する
           </button>
         </div>

@@ -38,7 +38,7 @@ export default function ColumnPage() {
               <div className="text-[13px] font-extrabold tracking-wide text-accent">
                 {column.category}
               </div>
-              <h2 className="my-1.5 text-base font-bold">{column.title}</h2>
+              <h3 className="my-1.5 text-base font-bold">{column.title}</h3>
               <p className="text-sm text-muted">{column.summary}</p>
               <div className="mt-2 text-[13px] text-muted">
                 {column.author}・{column.publishedAt}・{column.readTime}

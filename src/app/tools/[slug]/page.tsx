@@ -42,14 +42,14 @@ export default async function ToolPage(props: PageProps<"/tools/[slug]">) {
         </h1>
         <p className="mt-1 text-sm text-muted">{tool.description}</p>
         {tool.status === "live" ? (
-          <div className="mt-1 flex items-center gap-1 text-xs font-bold text-good">
+          <div className="mt-1 flex items-center gap-1 text-sm font-bold text-good">
             ✓ 開発者本人による自作ツール
           </div>
         ) : (
-          <div className="mt-1 text-xs font-bold text-accent">作成予定のツールです</div>
+          <div className="mt-1 text-sm font-bold text-accent">作成予定のツールです</div>
         )}
         {tool.mobileNote && (
-          <div className="mt-3 rounded-xl border border-warn-line bg-warn-bg px-4 py-2.5 text-xs text-warn md:hidden">
+          <div className="mt-3 rounded-xl border border-warn-line bg-warn-bg px-4 py-2.5 text-sm text-warn md:hidden">
             {tool.mobileNote}
           </div>
         )}

@@ -103,7 +103,7 @@ export default function QuestionDetailPage() {
 
   return (
     <section className="mx-auto max-w-2xl px-8 py-14">
-      <Link href="/community" className="mb-6 inline-block text-xs font-bold text-accent">
+      <Link href="/community" className="mb-6 inline-block text-sm font-bold text-accent">
         ← 質問一覧にもどる
       </Link>
 
@@ -149,26 +149,34 @@ export default function QuestionDetailPage() {
           <div className="mt-8 rounded-2xl border border-line bg-white p-5">
             <h2 className="mb-3 text-sm font-bold text-navy">回答する</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+              <label htmlFor="answer-text" className="sr-only">
+                回答内容
+              </label>
               <textarea
+                id="answer-text"
                 value={formAnswer}
                 onChange={(e) => setFormAnswer(e.target.value)}
                 maxLength={1000}
                 placeholder="回答を入力してください（1000字まで）"
-                className="min-h-24 w-full rounded-xl border border-line p-3 text-sm outline-none focus:border-accent"
+                className="min-h-24 w-full rounded-xl border border-line p-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
               />
               <div className="flex flex-wrap items-center gap-2">
+                <label htmlFor="answer-nickname" className="sr-only">
+                  ニックネーム（任意）
+                </label>
                 <input
+                  id="answer-nickname"
                   type="text"
                   value={formNickname}
                   onChange={(e) => setFormNickname(e.target.value)}
                   maxLength={20}
                   placeholder="ニックネーム（任意）"
-                  className="rounded-xl border border-line px-3 py-2 text-sm outline-none focus:border-accent"
+                  className="rounded-xl border border-line px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 />
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="rounded-full bg-accent px-6 py-2 text-sm font-bold text-white disabled:opacity-60"
+                  className="rounded-full bg-cta px-6 py-2 text-sm font-bold text-white hover:bg-cta-dark disabled:opacity-60"
                 >
                   {submitting ? "投稿中..." : "回答する"}
                 </button>

@@ -13,7 +13,7 @@ export default function IcebreakersPage() {
   return (
     <section className="mx-auto max-w-4xl px-8 py-14">
       <div className="mb-8 text-center">
-        <Link href="/lessons" className="mb-3 inline-block text-xs font-bold text-accent">
+        <Link href="/lessons" className="mb-3 inline-block text-sm font-bold text-accent">
           ← 授業・教材アイデアにもどる
         </Link>
         <div className="text-xs font-bold tracking-widest text-accent uppercase">

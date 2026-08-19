@@ -30,16 +30,16 @@ export default function AiPage() {
             <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy">
               {guide.tool}
             </span>
-            <h2 className="my-1.5 text-base font-bold">{guide.title}</h2>
+            <h3 className="my-1.5 text-base font-bold">{guide.title}</h3>
             <p className="mb-3 text-sm text-muted">{guide.summary}</p>
 
             <div className="mb-3">
-              <div className="mb-1 text-xs font-bold text-navy">何ができる？</div>
+              <div className="mb-1 text-sm font-bold text-navy">何ができる？</div>
               <p className="text-sm text-muted">{guide.whatItDoes}</p>
             </div>
 
             <div className="mb-3">
-              <div className="mb-1 text-xs font-bold text-navy">どう使う？</div>
+              <div className="mb-1 text-sm font-bold text-navy">どう使う？</div>
               <ol className="list-decimal space-y-1 pl-4 text-sm text-muted">
                 {guide.howToUse.map((step, i) => (
                   <li key={i}>{step}</li>
@@ -48,13 +48,13 @@ export default function AiPage() {
             </div>
 
             <div className="mb-3">
-              <div className="mb-1 text-xs font-bold text-navy">実際のプロンプト例</div>
-              <p className="rounded-xl bg-background p-3 text-xs text-[#1E2732]">
+              <div className="mb-1 text-sm font-bold text-navy">実際のプロンプト例</div>
+              <p className="rounded-xl bg-background p-3 text-sm text-[#1E2732]">
                 {guide.samplePrompt}
               </p>
             </div>
 
-            <div className="rounded-xl border border-warn-line bg-warn-bg p-3 text-xs text-warn">
+            <div className="rounded-xl border border-warn-line bg-warn-bg p-3 text-sm text-warn">
               ⚠ {guide.caution}
             </div>
           </div>

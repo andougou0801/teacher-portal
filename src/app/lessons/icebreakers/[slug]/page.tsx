@@ -32,7 +32,7 @@ export default async function IcebreakerDetailPage(
     <section className="mx-auto max-w-2xl px-8 py-14">
       <Link
         href="/lessons/icebreakers"
-        className="mb-6 inline-block text-xs font-bold text-accent"
+        className="mb-6 inline-block text-sm font-bold text-accent"
       >
         ← アイスブレイク一覧にもどる
       </Link>
@@ -50,20 +50,24 @@ export default async function IcebreakerDetailPage(
 
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="rounded-xl border border-line bg-white p-3 text-center">
-          <div className="text-lg">⏱</div>
-          <div className="mt-1 text-[13px] font-bold text-navy">{ib.duration}</div>
+          <div className="text-lg" aria-hidden="true">⏱</div>
+          <div className="text-[11px] text-muted">所要時間</div>
+          <div className="mt-0.5 text-[13px] font-bold text-navy">{ib.duration}</div>
         </div>
         <div className="rounded-xl border border-line bg-white p-3 text-center">
-          <div className="text-lg">📍</div>
-          <div className="mt-1 text-[13px] font-bold text-navy">{ib.place}</div>
+          <div className="text-lg" aria-hidden="true">📍</div>
+          <div className="text-[11px] text-muted">場所</div>
+          <div className="mt-0.5 text-[13px] font-bold text-navy">{ib.place}</div>
         </div>
         <div className="rounded-xl border border-line bg-white p-3 text-center">
-          <div className="text-lg">👥</div>
-          <div className="mt-1 text-[13px] font-bold text-navy">{ib.groupSize}</div>
+          <div className="text-lg" aria-hidden="true">👥</div>
+          <div className="text-[11px] text-muted">人数</div>
+          <div className="mt-0.5 text-[13px] font-bold text-navy">{ib.groupSize}</div>
         </div>
         <div className="rounded-xl border border-line bg-white p-3 text-center">
-          <div className="text-lg">🧰</div>
-          <div className="mt-1 text-[13px] font-bold text-navy">{ib.materials}</div>
+          <div className="text-lg" aria-hidden="true">🧰</div>
+          <div className="text-[11px] text-muted">持ち物</div>
+          <div className="mt-0.5 text-[13px] font-bold text-navy">{ib.materials}</div>
         </div>
       </div>
 

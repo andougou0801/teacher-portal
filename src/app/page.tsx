@@ -24,11 +24,15 @@ export default function Home() {
           method="get"
           className="mx-auto flex max-w-lg gap-1.5 rounded-full bg-white p-1.5 shadow-xl"
         >
+          <label htmlFor="home-search-q" className="sr-only">
+            キーワード検索
+          </label>
           <input
+            id="home-search-q"
             type="text"
             name="q"
             placeholder="何を探していますか？ 例：算数プリント、学級開き、保護者対応"
-            className="flex-1 rounded-full border-none px-4 py-2.5 text-sm text-[#1E2732] outline-none"
+            className="flex-1 rounded-full border-none px-4 py-2.5 text-sm text-[#1E2732] outline-none focus-visible:ring-2 focus-visible:ring-accent"
           />
           <button className="rounded-full bg-cta px-6 py-2.5 text-sm font-bold text-white hover:bg-cta-dark">
             検索する
@@ -109,7 +113,7 @@ export default function Home() {
                     </span>
                   ))}
                 </div>
-                <h4 className="text-sm font-bold">{tool.name}</h4>
+                <h3 className="text-sm font-bold">{tool.name}</h3>
                 <p className="flex-1 text-sm text-muted">{tool.description}</p>
                 <div className="flex items-center gap-1 text-[13px] font-bold text-good">
                   ✓ 開発者本人による自作ツール
@@ -151,7 +155,7 @@ export default function Home() {
               <div className="text-[13px] font-extrabold tracking-wide text-accent">
                 {featuredArticle.category}
               </div>
-              <h4 className="my-2 text-lg font-bold">{featuredArticle.title}</h4>
+              <h3 className="my-2 text-lg font-bold">{featuredArticle.title}</h3>
               <p className="text-sm text-muted">{featuredArticle.summary}</p>
               <div className="mt-3 text-[13px] text-muted">
                 {featuredArticle.author}・{featuredArticle.readTime}

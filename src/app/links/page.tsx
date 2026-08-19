@@ -55,7 +55,7 @@ export default function LinksPage() {
                     </span>
                   </div>
                   <p className="mt-1.5 text-sm text-muted">{link.description}</p>
-                  <p className="mt-1 text-xs font-bold text-navy">
+                  <p className="mt-1 text-sm font-bold text-navy">
                     使うタイミング：{link.whenToUse}
                   </p>
                 </a>

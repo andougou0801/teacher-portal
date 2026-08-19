@@ -39,7 +39,7 @@ export default function ClassroomPage() {
                 {post.category}
               </span>
             </div>
-            <h2 className="my-1.5 text-base font-bold">{post.title}</h2>
+            <h3 className="my-1.5 text-base font-bold">{post.title}</h3>
             <p className="text-sm text-muted">{post.summary}</p>
             <div className="mt-2 text-[13px] text-muted">{post.readTime}</div>
           </Link>

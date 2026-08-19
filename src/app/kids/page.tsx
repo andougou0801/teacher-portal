@@ -46,7 +46,7 @@ export default function KidsPage() {
                   </span>
                 ))}
               </div>
-              <h4 className="text-sm font-bold">{tool.name}</h4>
+              <h3 className="text-sm font-bold">{tool.name}</h3>
               <p className="flex-1 text-sm text-muted">{tool.description}</p>
               <div className="flex items-center gap-1 text-[13px] font-bold text-good">
                 ✓ 開発者本人による自作ツール

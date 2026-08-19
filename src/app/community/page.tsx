@@ -115,7 +115,7 @@ export default function CommunityPage() {
                 {qaCategories.map((cat) => (
                   <label
                     key={cat}
-                    className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-bold ${
+                    className={`cursor-pointer rounded-full border px-3.5 py-2 text-sm font-bold has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent ${
                       formCategory === cat
                         ? "border-accent bg-accent text-white"
                         : "border-line bg-white text-muted"
@@ -133,26 +133,34 @@ export default function CommunityPage() {
                   </label>
                 ))}
               </div>
+              <label htmlFor="question-text" className="sr-only">
+                質問内容
+              </label>
               <textarea
+                id="question-text"
                 value={formQuestion}
                 onChange={(e) => setFormQuestion(e.target.value)}
                 maxLength={300}
                 placeholder="困っていることを書いてください（300字まで）"
-                className="min-h-24 w-full rounded-xl border border-line p-3 text-sm outline-none focus:border-accent"
+                className="min-h-24 w-full rounded-xl border border-line p-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
               />
               <div className="flex flex-wrap items-center gap-2">
+                <label htmlFor="question-nickname" className="sr-only">
+                  ニックネーム（任意）
+                </label>
                 <input
+                  id="question-nickname"
                   type="text"
                   value={formNickname}
                   onChange={(e) => setFormNickname(e.target.value)}
                   maxLength={20}
                   placeholder="ニックネーム（任意）"
-                  className="rounded-xl border border-line px-3 py-2 text-sm outline-none focus:border-accent"
+                  className="rounded-xl border border-line px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 />
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="rounded-full bg-accent px-6 py-2 text-sm font-bold text-white disabled:opacity-60"
+                  className="rounded-full bg-cta px-6 py-2 text-sm font-bold text-white hover:bg-cta-dark disabled:opacity-60"
                 >
                   {submitting ? "投稿中..." : "質問を投稿する"}
                 </button>
@@ -168,7 +176,7 @@ export default function CommunityPage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-bold ${
+                className={`rounded-full px-3.5 py-2 text-sm font-bold focus-visible:ring-2 focus-visible:ring-accent ${
                   activeCategory === cat
                     ? "bg-navy text-white"
                     : "bg-white text-muted border border-line"

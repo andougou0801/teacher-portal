@@ -61,7 +61,7 @@ export default function LessonsPage() {
                 </span>
               )}
             </div>
-            <h2 className="my-1.5 text-base font-bold">{lesson.title}</h2>
+            <h3 className="my-1.5 text-base font-bold">{lesson.title}</h3>
             <p className="text-sm text-muted">{lesson.summary}</p>
             <div className="mt-2 text-[13px] text-muted">{lesson.readTime}</div>
           </Link>

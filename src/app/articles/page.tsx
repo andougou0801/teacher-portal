@@ -45,7 +45,7 @@ export default function ArticlesPage() {
               <div className="text-[13px] font-extrabold tracking-wide text-accent">
                 {featured.category}
               </div>
-              <h4 className="my-1.5 text-lg font-bold">{featured.title}</h4>
+              <h3 className="my-1.5 text-lg font-bold">{featured.title}</h3>
               <div className="text-[13px] text-muted">
                 {featured.author}・{featured.readTime}
               </div>
@@ -62,7 +62,7 @@ export default function ArticlesPage() {
               <div className="text-[13px] font-extrabold tracking-wide text-accent">
                 {article.category}
               </div>
-              <h4 className="my-1.5 text-sm font-bold">{article.title}</h4>
+              <h3 className="my-1.5 text-sm font-bold">{article.title}</h3>
               <div className="text-[13px] text-muted">{article.meta}</div>
             </div>
           </div>

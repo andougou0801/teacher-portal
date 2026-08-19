@@ -11,13 +11,13 @@
   --color-navy: #1b4965;
   --color-navy-dark: #102e42;
   --color-accent: #1f7a9e;
-  --color-cta: #e0692a;
-  --color-cta-dark: #c2551e;
+  --color-cta: #c2551e;
+  --color-cta-dark: #a3461a;
   --color-muted: #4b5b6b;
   --color-line: #e2e0d8;
-  --color-good: #2f8f5b;
+  --color-good: #1f7a4a;
   --color-good-bg: #eaf6ee;
-  --color-warn: #a8710a;
+  --color-warn: #8a5a08;
   --color-warn-bg: #fff3d6;
   --color-warn-line: #f0d99a;
   --font-sans: var(--font-geist-sans);
