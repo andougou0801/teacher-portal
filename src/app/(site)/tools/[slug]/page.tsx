@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { tools, getToolBySlug } from "@/lib/tools";
+import CopyEmbedLinkButton from "@/components/CopyEmbedLinkButton";
 
 export function generateStaticParams() {
   return tools
@@ -51,6 +52,14 @@ export default async function ToolPage(props: PageProps<"/tools/[slug]">) {
         {tool.mobileNote && (
           <div className="mt-3 rounded-xl border border-warn-line bg-warn-bg px-4 py-2.5 text-sm text-warn md:hidden">
             {tool.mobileNote}
+          </div>
+        )}
+        {tool.status === "live" && tool.file && (
+          <div className="mt-3">
+            <CopyEmbedLinkButton slug={tool.slug} />
+            <p className="mt-1.5 text-sm text-muted">
+              コピーしたURLはヘッダーなしでツールだけが開く、共有・ブックマーク用のリンクです。
+            </p>
           </div>
         )}
       </div>
