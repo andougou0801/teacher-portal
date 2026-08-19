@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>名簿作成ツール</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    padding:20px 14px 60px;
+  }
+  .wrap{max-width:640px;width:100%;margin:0 auto;}
+  h1{
+    text-align:center;
+    font-size:20px;
+    color:var(--accent-dark);
+    margin:6px 0 4px;
+  }
+  .privacy-note{
+    text-align:center;
+    font-size:11px;
+    color:#8a93a3;
+    margin:0 0 20px;
+  }
+  .card{
+    background:#fff;
+    border-radius:20px;
+    padding:22px 20px;
+    box-shadow:0 4px 16px rgba(30,50,90,0.08);
+    margin-bottom:16px;
+  }
+  h2{
+    font-size:15px;
+    color:var(--accent-dark);
+    margin:0 0 14px;
+  }
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    color:#555;
+    margin-bottom:6px;
+  }
+  textarea{
+    width:100%;
+    min-height:130px;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #d8dfea;
+    font-size:15px;
+    font-family:inherit;
+    resize:vertical;
+    line-height:1.6;
+  }
+  select, input[type="text"], input[type="number"]{
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #d8dfea;
+    font-size:14px;
+    font-family:inherit;
+  }
+  .hint{
+    font-size:11px;
+    color:#8a93a3;
+    margin:6px 0 0;
+    line-height:1.6;
+  }
+  .error-msg{
+    font-size:13px;
+    color:#c0392b;
+    margin:10px 0 0;
+    min-height:16px;
+  }
+  .headcount-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .headcount-row input[type="number"]{width:80px;}
+  button{
+    font-family:inherit;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .btn-main{
+    display:block;
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    font-size:17px;
+    font-weight:800;
+    padding:15px 40px;
+    box-shadow:0 3px 8px rgba(45,108,223,0.3);
+    margin-top:4px;
+  }
+  .btn-main:active{transform:scale(0.99);}
+  .btn-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:12px;
+  }
+  .btn-sub{
+    flex:1;
+    min-width:140px;
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:10px 14px;
+  }
+  .btn-sub:hover{background:#e3e8f0;}
+  .btn-small{
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 14px;
+    white-space:nowrap;
+  }
+  .btn-small:hover{background:#e3e8f0;}
+  .btn-danger{color:#c0392b;}
+  .preset-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .preset-row select,
+  .preset-row input[type="text"]{
+    flex:1;
+    min-width:120px;
+  }
+  .status-msg{
+    font-size:13px;
+    color:var(--accent);
+    margin:0 0 4px;
+    min-height:16px;
+  }
+  .status-msg.error{color:#c0392b;}
+  .warn-msg{
+    font-size:12px;
+    color:#b8860b;
+    background:#fff7e0;
+    border:1px solid #f2d98a;
+    border-radius:10px;
+    padding:8px 12px;
+    margin-bottom:14px;
+    line-height:1.6;
+  }
+  .empty-state{
+    text-align:center;
+    color:#8a93a3;
+    font-size:13px;
+    padding:24px 0;
+  }
+
+  /* ---- editable roster table ---- */
+  .table-scroll{overflow-x:auto;}
+  .roster-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+    min-width:420px;
+  }
+  .roster-table th{
+    text-align:left;
+    font-size:11px;
+    color:#8a93a3;
+    padding:4px 6px;
+    border-bottom:2px solid #eef1f6;
+  }
+  .roster-table td{
+    padding:8px 6px;
+    border-bottom:1px solid #eef1f6;
+    vertical-align:middle;
+  }
+  .roster-table tr.row-warn{background:#fff9ec;}
+  .drag-handle{
+    cursor:grab;
+    color:#b6bfce;
+    width:22px;
+    text-align:center;
+    font-size:15px;
+  }
+  .num-cell{
+    width:34px;
+    font-weight:800;
+    color:var(--accent-dark);
+  }
+  .warn-icon{font-size:12px;margin-left:2px;}
+  .ops-cell{white-space:nowrap;text-align:right;}
+  .ops-cell button{
+    background:#eef1f6;
+    color:#3a4152;
+    border-radius:8px;
+    padding:4px 7px;
+    font-size:11px;
+    margin-left:4px;
+    cursor:pointer;
+  }
+  .ops-cell button:hover{background:#e3e8f0;}
+  .ops-cell button:disabled{opacity:0.3;cursor:default;}
+  .ops-cell button.del-btn{color:#c0392b;}
+
+  /* ---- print preview area ---- */
+  .preview-wrap{max-width:900px;margin:0 auto;}
+  #a4-frame{
+    width:210mm;
+    min-height:auto;
+    box-sizing:border-box;
+    padding:16mm 16mm;
+    margin:0 auto;
+    background:#ffffff;
+    border-radius:4px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+    position:relative;
+  }
+  #print-area{
+    width:100%;
+    box-sizing:border-box;
+  }
+  #print-title{
+    text-align:center;
+    font-size:22px;
+    border-bottom:3px solid var(--accent);
+    padding-bottom:8px;
+    margin:0 0 4px;
+  }
+  #print-count{
+    text-align:center;
+    font-size:12px;
+    color:#666;
+    margin:0 0 16px;
+  }
+  .print-columns{
+    display:flex;
+    gap:24px;
+  }
+  .print-table{
+    flex:1;
+    width:100%;
+    border-collapse:collapse;
+  }
+  .print-table th,
+  .print-table td{
+    border:1px solid #333;
+    padding:4px 8px;
+    text-align:left;
+  }
+  .print-table th{background:#f0f0f0;}
+  .print-table td.num-td{width:2.6em;text-align:center;font-weight:700;}
+  .print-footer{
+    display:flex;
+    justify-content:flex-end;
+    align-items:baseline;
+    font-size:14px;
+    margin-top:20px;
+  }
+  .kaku-sen{
+    display:inline-block;
+    width:2.2em;
+    border-bottom:2px solid #000;
+    margin:0 3px;
+  }
+  .fontsize-bar{
+    max-width:210mm;
+    margin:16px auto 0 auto;
+    text-align:center;
+  }
+  .fontsize-bar label{
+    display:inline;
+    font-weight:700;
+    font-size:13px;
+    color:#444;
+  }
+
+  @media print{
+    .no-print{display:none;}
+    body{background:#fff;padding:0;}
+    .preview-wrap{max-width:none;}
+    #a4-frame{
+      width:auto;
+      padding:0;
+      margin:0;
+      box-shadow:none;
+      border-radius:0;
+    }
+  }
+  @page{
+    size:A4;
+    margin:15mm;
+  }
+</style>
+</head>
+<body>
+<div class="wrap no-print">
+  <h1>📋 名簿作成ツール</h1>
+  <p class="privacy-note">入力した名簿はこの端末のブラウザ内だけで処理されます（外部サーバーへの送信はありません）。</p>
+
+  <div class="card">
+    <h2>1. 名簿を入力</h2>
+    <div class="headcount-row">
+      <label for="headcountInput" style="margin:0;">人数を指定して欄を作る</label>
+      <input type="number" id="headcountInput" min="1" max="60" placeholder="例: 30">
+      <button class="btn-small" id="headcountBtn">欄を作る</button>
+    </div>
+    <label for="rosterInput">氏名とふりがなを1行に1人ずつ「漢字の氏名,ふりがな」の形式で入力（カンマまたはタブ区切り。表計算ソフトから貼り付けも可）</label>
+    <textarea id="rosterInput">田中太郎,たなかたろう
+佐藤花子,さとうはなこ
+鈴木一郎,すずきいちろう
+高橋美咲,たかはしみさき</textarea>
+    <p class="hint">
+      💡 なぜ「ふりがな」の入力が必要？ 漢字だけでは正しい五十音順に並べられません（例：「東海林」は「とうかいりん」「しょうじ」など複数の読み方があり、漢字の並び順だけでは五十音順が決まりません）。ふりがなを入力することで、正確な50音順の並べ替えができます。最大60人まで対応します。
+    </p>
+    <p class="error-msg" id="parseError"></p>
+    <button class="btn-main" id="applyBtn">この内容で名簿表を作る</button>
+  </div>
+
+  <div class="card" id="rosterCard" style="display:none;">
+    <h2>2. 並べ替え・出席番号</h2>
+    <div class="btn-row">
+      <button class="btn-sub" id="sortKanaBtn">🔤 ふりがなで50音順に並べ替え</button>
+      <button class="btn-sub btn-danger" id="clearRosterBtn">名簿表をクリア</button>
+    </div>
+    <p class="hint">行の左端をドラッグするか、↑↓ボタンで順番を手動調整できます（例：1人だけ順番を入れ替えたいときに）。出席番号は並びを変えるたびに自動で振り直されます。</p>
+    <p class="warn-msg" id="furiganaWarn" style="display:none;"></p>
+    <div class="table-scroll">
+      <table class="roster-table">
+        <thead><tr><th></th><th>番</th><th>氏名</th><th>ふりがな</th><th></th></tr></thead>
+        <tbody id="editTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" id="exportCard" style="display:none;">
+    <h2>3. 保存・エクスポート</h2>
+    <label for="printTitleInput">印刷用タイトル</label>
+    <input type="text" id="printTitleInput" value="学級名簿" style="width:100%;margin-bottom:14px;">
+
+    <div class="preset-row">
+      <select id="presetSelect"><option value="">保存済み名簿を選択…</option></select>
+      <input type="text" id="presetNameInput" placeholder="保存名（例: 3年1組）">
+      <button class="btn-small" id="presetSaveBtn">保存</button>
+      <button class="btn-small btn-danger" id="presetDeleteBtn">削除</button>
+    </div>
+    <p class="status-msg" id="statusMsg"></p>
+
+    <div class="btn-row">
+      <button class="btn-sub" id="csvBtn">⬇ CSVファイルでダウンロード</button>
+      <button class="btn-sub" id="printBtn">🖨 印刷する</button>
+    </div>
+  </div>
+</div>
+
+<div class="preview-wrap" id="printPreview" style="display:none;">
+  <div id="a4-frame">
+    <div id="print-area">
+      <h2 id="print-title"></h2>
+      <p id="print-count"></p>
+      <div class="print-columns" id="printColumns"></div>
+      <div class="print-footer"><span>作成日：<span class="kaku-sen"></span>年<span class="kaku-sen"></span>月<span class="kaku-sen"></span>日</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap no-print fontsize-bar" id="fontsizeBar" style="display:none;">
+  <div class="card">
+    <label for="fontsize">文字の大きさ：</label>
+    <input type="range" id="fontsize" min="10" max="20" value="14" oninput="updateFontSize()">
+    <span id="fontsize-hyouji">14</span>px
+  </div>
+</div>
+
+<script>
+  const headcountInput = document.getElementById('headcountInput');
+  const headcountBtn = document.getElementById('headcountBtn');
+  const rosterInput = document.getElementById('rosterInput');
+  const parseError = document.getElementById('parseError');
+  const applyBtn = document.getElementById('applyBtn');
+
+  const rosterCard = document.getElementById('rosterCard');
+  const exportCard = document.getElementById('exportCard');
+  const printPreview = document.getElementById('printPreview');
+  const fontsizeBar = document.getElementById('fontsizeBar');
+
+  const sortKanaBtn = document.getElementById('sortKanaBtn');
+  const clearRosterBtn = document.getElementById('clearRosterBtn');
+  const furiganaWarn = document.getElementById('furiganaWarn');
+  const editTbody = document.getElementById('editTbody');
+
+  const printTitleInput = document.getElementById('printTitleInput');
+  const printTitle = document.getElementById('print-title');
+  const printCount = document.getElementById('print-count');
+  const printColumns = document.getElementById('printColumns');
+
+  const presetSelect = document.getElementById('presetSelect');
+  const presetNameInput = document.getElementById('presetNameInput');
+  const presetSaveBtn = document.getElementById('presetSaveBtn');
+  const presetDeleteBtn = document.getElementById('presetDeleteBtn');
+  const statusMsg = document.getElementById('statusMsg');
+  const csvBtn = document.getElementById('csvBtn');
+  const printBtn = document.getElementById('printBtn');
+
+  const PRESET_KEY = 'roster-tool-presets-v1';
+  let presets = {};
+  let roster = []; // [{kanji, furigana}]
+  let dragSrcIndex = null;
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : str;
+    return div.innerHTML;
+  }
+
+  function setStatus(msg, isError){
+    statusMsg.textContent = msg || '';
+    statusMsg.classList.toggle('error', !!isError);
+  }
+
+  // ---- parsing ----
+  function parseRosterText(text){
+    return text.split('\n')
+      .map(s => s.trim())
+      .filter(s => s.length > 0)
+      .slice(0, 60)
+      .map(line => {
+        const parts = line.split(/[,\t]/).map(s => s.trim());
+        return { kanji: parts[0] || '', furigana: parts[1] || '' };
+      })
+      .filter(s => s.kanji.length > 0);
+  }
+
+  headcountBtn.addEventListener('click', () => {
+    const n = Math.floor(Number(headcountInput.value));
+    if(!n || n < 1 || n > 60){
+      parseError.textContent = '人数を1〜60の範囲で入力してください';
+      return;
+    }
+    parseError.textContent = '';
+    const currentLines = rosterInput.value.split('\n').filter(l => l.trim().length > 0);
+    const lines = [];
+    for(let i = 0; i < n; i++){
+      lines.push(currentLines[i] !== undefined ? currentLines[i] : ('生徒' + (i + 1) + ','));
+    }
+    rosterInput.value = lines.join('\n');
+  });
+
+  applyBtn.addEventListener('click', () => {
+    const parsed = parseRosterText(rosterInput.value);
+    if(parsed.length === 0){
+      parseError.textContent = '氏名を1人以上入力してください';
+      return;
+    }
+    parseError.textContent = '';
+    roster = parsed;
+    showWorkingCards();
+    renderAll();
+  });
+
+  function showWorkingCards(){
+    rosterCard.style.display = 'block';
+    exportCard.style.display = 'block';
+    printPreview.style.display = 'block';
+    fontsizeBar.style.display = 'block';
+  }
+
+  // ---- furigana / sorting ----
+  function isHiraganaOk(furigana){
+    if(!furigana) return false;
+    return /^[ぁ-んー]+$/.test(furigana);
+  }
+
+  function toSortKey(furigana){
+    if(!furigana) return '';
+    // katakana -> hiragana, best-effort, so accidental katakana input still sorts reasonably
+    return furigana.replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60)).trim();
+  }
+
+  function compareStr(a, b){
+    if(a < b) return -1;
+    if(a > b) return 1;
+    return 0;
+  }
+
+  sortKanaBtn.addEventListener('click', () => {
+    roster.sort((s1, s2) => {
+      const k1 = toSortKey(s1.furigana) || s1.kanji;
+      const k2 = toSortKey(s2.furigana) || s2.kanji;
+      return compareStr(k1, k2);
+    });
+    renderAll();
+  });
+
+  clearRosterBtn.addEventListener('click', () => {
+    roster = [];
+    rosterCard.style.display = 'none';
+    exportCard.style.display = 'none';
+    printPreview.style.display = 'none';
+    fontsizeBar.style.display = 'none';
+  });
+
+  function moveUp(idx){
+    if(idx <= 0) return;
+    [roster[idx - 1], roster[idx]] = [roster[idx], roster[idx - 1]];
+    renderAll();
+  }
+  function moveDown(idx){
+    if(idx >= roster.length - 1) return;
+    [roster[idx + 1], roster[idx]] = [roster[idx], roster[idx + 1]];
+    renderAll();
+  }
+  function removeAt(idx){
+    roster.splice(idx, 1);
+    renderAll();
+  }
+
+  // ---- render: editable table ----
+  function renderEditTable(){
+    if(roster.length === 0){
+      editTbody.innerHTML = '<tr><td colspan="5" class="empty-state">まだ名簿がありません。</td></tr>';
+      return;
+    }
+    editTbody.innerHTML = roster.map((s, i) => {
+      const invalid = !isHiraganaOk(s.furigana);
+      return '<tr draggable="true" data-index="' + i + '" class="' + (invalid ? 'row-warn' : '') + '">'
+        + '<td class="drag-handle" title="ドラッグして並べ替え">⠿</td>'
+        + '<td class="num-cell">' + (i + 1) + '</td>'
+        + '<td>' + escapeHtml(s.kanji) + '</td>'
+        + '<td>' + escapeHtml(s.furigana) + (invalid ? ' <span class="warn-icon" title="ふりがなを確認してください">⚠️</span>' : '') + '</td>'
+        + '<td class="ops-cell">'
+        +   '<button type="button" data-action="up" ' + (i === 0 ? 'disabled' : '') + '>↑</button>'
+        +   '<button type="button" data-action="down" ' + (i === roster.length - 1 ? 'disabled' : '') + '>↓</button>'
+        +   '<button type="button" data-action="del" class="del-btn">✕</button>'
+        + '</td>'
+        + '</tr>';
+    }).join('');
+  }
+
+  function updateFuriganaWarning(){
+    const badCount = roster.filter(s => !isHiraganaOk(s.furigana)).length;
+    if(badCount > 0){
+      furiganaWarn.style.display = 'block';
+      furiganaWarn.textContent = '⚠️ ' + badCount + '件、ふりがなが未入力またはひらがな以外の文字が含まれています（該当行に⚠️マークを表示）。50音順の並びが不正確になる可能性があります。';
+    }else{
+      furiganaWarn.style.display = 'none';
+    }
+  }
+
+  editTbody.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if(!btn) return;
+    const tr = btn.closest('tr');
+    if(!tr) return;
+    const idx = Number(tr.dataset.index);
+    const action = btn.dataset.action;
+    if(action === 'up') moveUp(idx);
+    else if(action === 'down') moveDown(idx);
+    else if(action === 'del') removeAt(idx);
+  });
+
+  editTbody.addEventListener('dragstart', (e) => {
+    const tr = e.target.closest('tr[data-index]');
+    if(!tr) return;
+    dragSrcIndex = Number(tr.dataset.index);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  editTbody.addEventListener('dragover', (e) => {
+    e.preventDefault();
+  });
+  editTbody.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const tr = e.target.closest('tr[data-index]');
+    if(!tr || dragSrcIndex === null) return;
+    const destIndex = Number(tr.dataset.index);
+    if(dragSrcIndex === destIndex){ dragSrcIndex = null; return; }
+    const item = roster.splice(dragSrcIndex, 1)[0];
+    roster.splice(destIndex, 0, item);
+    dragSrcIndex = null;
+    renderAll();
+  });
+
+  // ---- render: print table (2 columns for A4 fit) ----
+  function renderPrintTable(){
+    const n = roster.length;
+    printTitle.textContent = printTitleInput.value || '学級名簿';
+    printCount.textContent = n > 0 ? ('（全' + n + '名）') : '';
+    if(n === 0){
+      printColumns.innerHTML = '<p class="empty-state">まだ名簿がありません。</p>';
+      return;
+    }
+    const half = Math.ceil(n / 2);
+    const left = roster.slice(0, half);
+    const right = roster.slice(half);
+    function rowsHtml(list, offset){
+      return list.map((s, i) => '<tr><td class="num-td">' + (offset + i + 1) + '</td><td>' + escapeHtml(s.kanji) + '</td><td>' + escapeHtml(s.furigana) + '</td></tr>').join('');
+    }
+    let html = '<table class="print-table"><thead><tr><th>番</th><th>氏名</th><th>ふりがな</th></tr></thead><tbody>' + rowsHtml(left, 0) + '</tbody></table>';
+    if(right.length > 0){
+      html += '<table class="print-table"><thead><tr><th>番</th><th>氏名</th><th>ふりがな</th></tr></thead><tbody>' + rowsHtml(right, half) + '</tbody></table>';
+    }
+    printColumns.innerHTML = html;
+  }
+
+  printTitleInput.addEventListener('input', () => {
+    printTitle.textContent = printTitleInput.value || '学級名簿';
+  });
+
+  function renderAll(){
+    renderEditTable();
+    updateFuriganaWarning();
+    renderPrintTable();
+  }
+
+  function updateFontSize(){
+    const size = document.getElementById('fontsize').value;
+    document.getElementById('print-area').style.fontSize = size + 'px';
+    document.getElementById('fontsize-hyouji').textContent = size;
+  }
+
+  printBtn.addEventListener('click', () => window.print());
+
+  // ---- CSV export ----
+  function csvEscape(str){
+    str = str == null ? '' : String(str);
+    if(/[",\n\r]/.test(str)) return '"' + str.replace(/"/g, '""') + '"';
+    return str;
+  }
+
+  csvBtn.addEventListener('click', () => {
+    if(roster.length === 0) return;
+    const header = '出席番号,氏名,ふりがな';
+    const rows = roster.map((s, i) => (i + 1) + ',' + csvEscape(s.kanji) + ',' + csvEscape(s.furigana));
+    const csv = [header].concat(rows).join('\r\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const fname = (presetNameInput.value.trim() || printTitleInput.value.trim() || '名簿');
+    a.download = fname + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  // ---- presets (save/load named rosters) ----
+  function loadPresets(){
+    try{
+      const raw = localStorage.getItem(PRESET_KEY);
+      presets = raw ? (JSON.parse(raw) || {}) : {};
+    }catch(e){ presets = {}; }
+  }
+
+  function persistPresets(){
+    localStorage.setItem(PRESET_KEY, JSON.stringify(presets));
+  }
+
+  function renderPresetSelect(selected){
+    presetSelect.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '保存済み名簿を選択…';
+    presetSelect.appendChild(placeholder);
+    Object.keys(presets).forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      if(name === selected) opt.selected = true;
+      presetSelect.appendChild(opt);
+    });
+  }
+
+  presetSelect.addEventListener('change', () => {
+    const name = presetSelect.value;
+    if(!name || !presets[name]) return;
+    roster = JSON.parse(JSON.stringify(presets[name].students || []));
+    presetNameInput.value = name;
+    showWorkingCards();
+    renderAll();
+    setStatus('「' + name + '」を読み込みました', false);
+  });
+
+  presetSaveBtn.addEventListener('click', () => {
+    if(roster.length === 0){
+      setStatus('保存する名簿がありません。先に名簿表を作ってください', true);
+      return;
+    }
+    const name = presetNameInput.value.trim();
+    if(!name){
+      setStatus('保存名を入力してください', true);
+      return;
+    }
+    presets[name] = { students: roster };
+    persistPresets();
+    renderPresetSelect(name);
+    setStatus('「' + name + '」として保存しました', false);
+  });
+
+  presetDeleteBtn.addEventListener('click', () => {
+    const name = presetSelect.value;
+    if(!name || !presets[name]) return;
+    delete presets[name];
+    persistPresets();
+    renderPresetSelect('');
+    presetNameInput.value = '';
+    setStatus('「' + name + '」を削除しました', false);
+  });
+
+  loadPresets();
+  renderPresetSelect('');
+</script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>班分けツール</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:20px 14px 60px;
+  }
+  .wrap{max-width:640px;width:100%;}
+  h1{
+    text-align:center;
+    font-size:20px;
+    color:var(--accent-dark);
+    margin:6px 0 4px;
+  }
+  .privacy-note{
+    text-align:center;
+    font-size:11px;
+    color:#8a93a3;
+    margin:0 0 20px;
+  }
+  .card{
+    background:#fff;
+    border-radius:20px;
+    padding:22px 20px;
+    box-shadow:0 4px 16px rgba(30,50,90,0.08);
+    margin-bottom:16px;
+  }
+  h2{
+    font-size:15px;
+    color:var(--accent-dark);
+    margin:0 0 14px;
+  }
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    color:#555;
+    margin-bottom:6px;
+  }
+  textarea{
+    width:100%;
+    min-height:110px;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #d8dfea;
+    font-size:15px;
+    font-family:inherit;
+    resize:vertical;
+    line-height:1.6;
+  }
+  .hint{
+    font-size:11px;
+    color:#8a93a3;
+    margin:6px 0 0;
+  }
+  .error-msg{
+    font-size:13px;
+    color:#c0392b;
+    margin:10px 0 0;
+    min-height:16px;
+  }
+  .headcount-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .headcount-row input[type="number"]{
+    width:80px;
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #d8dfea;
+    font-size:14px;
+    font-family:inherit;
+  }
+  .method-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-bottom:14px;
+    font-size:14px;
+  }
+  .method-row label{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-weight:400;
+    color:#2a2a2a;
+    margin:0;
+  }
+  .method-row input[type="number"]{
+    width:70px;
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #d8dfea;
+    font-size:14px;
+    font-family:inherit;
+    margin-left:4px;
+  }
+  button{
+    font-family:inherit;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .btn-main{
+    display:block;
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    font-size:17px;
+    font-weight:800;
+    padding:15px 40px;
+    box-shadow:0 3px 8px rgba(45,108,223,0.3);
+    margin-top:4px;
+  }
+  .btn-main:active{transform:scale(0.99);}
+  .btn-row{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+  }
+  .btn-sub{
+    flex:1;
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:10px 14px;
+  }
+  .btn-sub:hover{background:#e3e8f0;}
+  .btn-small{
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 14px;
+    white-space:nowrap;
+  }
+  .btn-small:hover{background:#e3e8f0;}
+  .btn-danger{color:#c0392b;}
+  .preset-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid #eef1f6;
+  }
+  .preset-row select,
+  .preset-row input[type="text"]{
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #d8dfea;
+    font-size:13px;
+    font-family:inherit;
+    flex:1;
+    min-width:120px;
+  }
+  .status-msg{
+    font-size:13px;
+    color:var(--accent);
+    margin-top:8px;
+    min-height:16px;
+  }
+  .status-msg.error{color:#c0392b;}
+  .warn-msg{
+    font-size:12px;
+    color:#b8860b;
+    background:#fff7e0;
+    border:1px solid #f2d98a;
+    border-radius:10px;
+    padding:8px 12px;
+    margin-bottom:14px;
+  }
+  .groups-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
+    gap:12px;
+  }
+  .group-card{
+    background:#f7f9fd;
+    border:1px solid #e2e8f2;
+    border-radius:14px;
+    padding:12px 14px;
+  }
+  .group-card h3{
+    margin:0 0 8px;
+    font-size:13px;
+    color:var(--accent-dark);
+  }
+  .group-card ul{
+    margin:0;
+    padding-left:18px;
+    font-size:14px;
+    line-height:1.7;
+  }
+  .empty-state{
+    text-align:center;
+    color:#8a93a3;
+    font-size:13px;
+    padding:30px 0;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>👥 班分けツール</h1>
+  <p class="privacy-note">入力した名簿はこの端末のブラウザ内だけで処理されます（外部サーバーへの送信はありません）。</p>
+
+  <div class="card">
+    <h2>1. 名簿を入力</h2>
+    <div class="headcount-row">
+      <label for="headcountInput" style="margin:0;">人数を指定して自動入力</label>
+      <input type="number" id="headcountInput" min="2" max="60" placeholder="例: 24">
+      <button class="btn-small" id="headcountBtn">欄を作る</button>
+    </div>
+    <label for="namesInput">名前を1行に1人ずつ入力してください</label>
+    <textarea id="namesInput">たなか
+さとう
+すずき
+やまだ
+いとう
+わたなべ
+やまもと
+なかむら</textarea>
+    <p class="hint">最大60人まで対応します。</p>
+    <div class="preset-row">
+      <select id="presetSelect"><option value="">保存済み名簿を選択…</option></select>
+      <input type="text" id="presetNameInput" placeholder="保存名（例: 3年1組）">
+      <button class="btn-small" id="presetSaveBtn">保存</button>
+      <button class="btn-small btn-danger" id="presetDeleteBtn">削除</button>
+    </div>
+    <p class="status-msg" id="statusMsg"></p>
+  </div>
+
+  <div class="card">
+    <h2>2. 分け方を指定</h2>
+    <div class="method-row">
+      <label><input type="radio" name="method" value="count" id="methodCount" checked>班の数で分ける<input type="number" id="countInput" min="2" value="4"></label>
+      <label><input type="radio" name="method" value="size" id="methodSize">1班の人数で分ける<input type="number" id="sizeInput" min="1" value="4"></label>
+    </div>
+    <label for="avoidInput">同じ班にしたくない組み合わせ（任意・1行に1組、カンマ区切り）</label>
+    <textarea id="avoidInput" style="min-height:70px;" placeholder="例：たなか,さとう"></textarea>
+    <p class="hint">できる限り離しますが、人数や条件によっては同じ班になることがあります。</p>
+    <p class="error-msg" id="errorMsg"></p>
+    <button class="btn-main" id="divideBtn">班分けする</button>
+  </div>
+
+  <div class="card" id="resultCard">
+    <div class="empty-state" id="emptyState">「班分けする」を押すとここに結果が表示されます。</div>
+  </div>
+</div>
+
+<script>
+  const namesInput = document.getElementById('namesInput');
+  const headcountInput = document.getElementById('headcountInput');
+  const headcountBtn = document.getElementById('headcountBtn');
+  const methodCount = document.getElementById('methodCount');
+  const methodSize = document.getElementById('methodSize');
+  const countInput = document.getElementById('countInput');
+  const sizeInput = document.getElementById('sizeInput');
+  const avoidInput = document.getElementById('avoidInput');
+  const divideBtn = document.getElementById('divideBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  const resultCard = document.getElementById('resultCard');
+  const presetSelect = document.getElementById('presetSelect');
+  const presetNameInput = document.getElementById('presetNameInput');
+  const presetSaveBtn = document.getElementById('presetSaveBtn');
+  const presetDeleteBtn = document.getElementById('presetDeleteBtn');
+  const statusMsg = document.getElementById('statusMsg');
+
+  const PRESET_KEY = 'group-divider-presets-v1';
+  let presets = {};
+  let lastNames = [];
+  let lastAvoidPairs = [];
+
+  function setStatus(msg, isError){
+    statusMsg.textContent = msg || '';
+    statusMsg.classList.toggle('error', !!isError);
+  }
+
+  function parseNames(){
+    return namesInput.value
+      .split('\n')
+      .map(s => s.trim())
+      .filter(s => s.length > 0)
+      .slice(0, 60);
+  }
+
+  headcountBtn.addEventListener('click', () => {
+    const n = Math.floor(Number(headcountInput.value));
+    if(!n || n < 2 || n > 60){
+      setStatus('人数を2〜60の範囲で入力してください', true);
+      return;
+    }
+    const current = parseNames();
+    const lines = [];
+    for(let i = 0; i < n; i++){
+      lines.push(current[i] || ('参加者' + (i + 1)));
+    }
+    namesInput.value = lines.join('\n');
+    setStatus('');
+  });
+
+  function computeGroupSizes(total, groupCount){
+    groupCount = Math.max(1, Math.min(groupCount, total));
+    const base = Math.floor(total / groupCount);
+    const remainder = total % groupCount;
+    const sizes = [];
+    for(let i = 0; i < groupCount; i++){
+      sizes.push(base + (i < remainder ? 1 : 0));
+    }
+    return sizes;
+  }
+
+  function parseAvoidPairs(names){
+    const nameSet = new Set(names);
+    const pairs = [];
+    avoidInput.value.split('\n').forEach((line) => {
+      const parts = line.split(/[,、]/).map(s => s.trim()).filter(s => s.length > 0);
+      if(parts.length >= 2 && nameSet.has(parts[0]) && nameSet.has(parts[1]) && parts[0] !== parts[1]){
+        pairs.push([parts[0], parts[1]]);
+      }
+    });
+    return pairs;
+  }
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function assignGroups(names, sizes){
+    const shuffled = shuffle(names);
+    const groups = [];
+    let idx = 0;
+    sizes.forEach((size) => {
+      groups.push(shuffled.slice(idx, idx + size));
+      idx += size;
+    });
+    return groups;
+  }
+
+  function countViolations(groups, avoidPairs){
+    let violations = 0;
+    const memberGroup = {};
+    groups.forEach((g, gi) => g.forEach(name => { memberGroup[name] = gi; }));
+    avoidPairs.forEach(([a, b]) => {
+      if(memberGroup[a] !== undefined && memberGroup[a] === memberGroup[b]) violations++;
+    });
+    return violations;
+  }
+
+  function divide(){
+    const names = parseNames();
+    if(names.length < 2){
+      errorMsg.textContent = '名前を2人以上入力してください';
+      return;
+    }
+    const method = methodCount.checked ? 'count' : 'size';
+    let groupCount;
+    if(method === 'count'){
+      const n = Math.floor(Number(countInput.value));
+      if(!n || n < 2 || n > names.length){
+        errorMsg.textContent = `班の数は2〜${names.length}の範囲で指定してください`;
+        return;
+      }
+      groupCount = n;
+    }else{
+      const s = Math.floor(Number(sizeInput.value));
+      if(!s || s < 1 || s > names.length){
+        errorMsg.textContent = `1班の人数は1〜${names.length}の範囲で指定してください`;
+        return;
+      }
+      groupCount = Math.ceil(names.length / s);
+    }
+    errorMsg.textContent = '';
+
+    const sizes = computeGroupSizes(names.length, groupCount);
+    const avoidPairs = parseAvoidPairs(names);
+
+    let best = null;
+    let bestViolations = Infinity;
+    const maxAttempts = avoidPairs.length > 0 ? 300 : 1;
+    for(let attempt = 0; attempt < maxAttempts; attempt++){
+      const groups = assignGroups(names, sizes);
+      const v = countViolations(groups, avoidPairs);
+      if(v < bestViolations){
+        best = groups;
+        bestViolations = v;
+      }
+      if(bestViolations === 0) break;
+    }
+
+    lastNames = names;
+    lastAvoidPairs = avoidPairs;
+    renderResult(best, sizes, bestViolations, avoidPairs);
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function renderResult(groups, sizes, violations, avoidPairs){
+    let warnHtml = '';
+    if(avoidPairs.length > 0 && violations > 0){
+      warnHtml = `<p class="warn-msg">指定した組み合わせのうち ${violations} 組は、人数の都合で同じ班になりました。</p>`;
+    }
+    const cardsHtml = groups.map((g, i) => `
+      <div class="group-card">
+        <h3>班 ${i + 1}（${g.length}人）</h3>
+        <ul>${g.map(name => `<li>${escapeHtml(name)}</li>`).join('')}</ul>
+      </div>
+    `).join('');
+
+    resultCard.innerHTML = `
+      ${warnHtml}
+      <div class="groups-grid">${cardsHtml}</div>
+      <div class="btn-row">
+        <button class="btn-sub" id="reshuffleBtn">同じ条件でもう一度分ける</button>
+      </div>
+    `;
+
+    document.getElementById('reshuffleBtn').addEventListener('click', () => {
+      const sizesNow = computeGroupSizes(lastNames.length, groups.length);
+      let best = null;
+      let bestViolations = Infinity;
+      const maxAttempts = lastAvoidPairs.length > 0 ? 300 : 1;
+      for(let attempt = 0; attempt < maxAttempts; attempt++){
+        const g = assignGroups(lastNames, sizesNow);
+        const v = countViolations(g, lastAvoidPairs);
+        if(v < bestViolations){ best = g; bestViolations = v; }
+        if(bestViolations === 0) break;
+      }
+      renderResult(best, sizesNow, bestViolations, lastAvoidPairs);
+    });
+  }
+
+  divideBtn.addEventListener('click', divide);
+
+  // preset save/load
+  function loadPresets(){
+    try{
+      const raw = localStorage.getItem(PRESET_KEY);
+      presets = raw ? (JSON.parse(raw) || {}) : {};
+    }catch(e){ presets = {}; }
+  }
+
+  function persistPresets(){
+    localStorage.setItem(PRESET_KEY, JSON.stringify(presets));
+  }
+
+  function renderPresetSelect(selected){
+    presetSelect.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '保存済み名簿を選択…';
+    presetSelect.appendChild(placeholder);
+    Object.keys(presets).forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      if(name === selected) opt.selected = true;
+      presetSelect.appendChild(opt);
+    });
+  }
+
+  presetSelect.addEventListener('change', () => {
+    const name = presetSelect.value;
+    if(!name || !presets[name]) return;
+    namesInput.value = presets[name].namesText || '';
+    presetNameInput.value = name;
+    setStatus(`「${name}」を読み込みました`, false);
+  });
+
+  presetSaveBtn.addEventListener('click', () => {
+    const name = presetNameInput.value.trim();
+    if(!name){
+      setStatus('保存名を入力してください', true);
+      return;
+    }
+    presets[name] = { namesText: namesInput.value };
+    persistPresets();
+    renderPresetSelect(name);
+    setStatus(`「${name}」として保存しました`, false);
+  });
+
+  presetDeleteBtn.addEventListener('click', () => {
+    const name = presetSelect.value;
+    if(!name || !presets[name]) return;
+    delete presets[name];
+    persistPresets();
+    renderPresetSelect('');
+    presetNameInput.value = '';
+    setStatus(`「${name}」を削除しました`, false);
+  });
+
+  loadPresets();
+  renderPresetSelect('');
+</script>
+</body>
+</html>

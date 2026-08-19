@@ -27,8 +27,8 @@
 ## 現在できること
 
 - トップページ（新ヒーロー・カテゴリーカードグリッド・ツール/記事プレビュー）
-- 自作ツールカタログ（`/tools`）：実際に動く2ツール（先生向け）＋作成予定ツールの一覧表示
-- 子ども向けツール一覧（`/kids`）：実際に動く2ツール（筆算マスター・都道府県マスターゲーム）＋作成予定
+- 自作ツールカタログ（`/tools`）：先生向け実働ツール9本（時間割自動作成／算数プリントメーカー／漢字テスト作成／座席表作成／班分けツール／授業用タイマー／抽選・あみだくじツール／名簿関連ツール／点数・平均計算）。「作成予定」ツールは現在なし
+- 子ども向けツール一覧（`/kids`）：実働ツール5本（筆算マスター・都道府県マスターゲーム・100マス計算メーカー・漢字れんしゅう・タイピングれんしゅう）
 - 授業・教材アイデア（`/lessons`）・学級経営（`/classroom`）・学校行事（`/events`）：それぞれ実記事2本ずつ
 - 教員コミュニティQ&A（`/community`）：先生が質問を投稿し、他の先生が回答できる掲示板。
   カテゴリー分け（授業／学級経営／校務・書類／保護者対応／福利厚生／その他）、匿名投稿対応。
@@ -69,7 +69,7 @@ Supabaseの「Table Editor」から手動で該当行を削除する運用です
 ## まだ実装していないこと（Phase 2残り/Phase 3）
 
 - 先生のコラム（`/column`）・忙しい先生のためのページ（`/life`）の実コンテンツ
-- 先生向け・子ども向けの新規ツール実体（漢字テスト作成、タイピング練習など。座席表作成・授業用タイマー・抽選ルーレットは実装済み）
+- 企画段階でリストアップされていたツールは全て実装済み（漢字テスト作成は1年生80字のみ対応。2〜6年生は読みデータの正確性に確信が持てる範囲でのみ今後追加予定）
 - 学年・教科フィルターUI
 - 会員登録・ログイン、お気に入り、閲覧履歴、ランキング、広告等（Phase 3以降。投稿機能はコミュニティQ&Aとして実装済み）
 
@@ -97,7 +97,18 @@ npm run dev
 | `都道府県マスターゲーム.html` | `teacher-portal/public/tools/prefecture-master-game.html` | 子ども |
 | `座席表作成.html` | `teacher-portal/public/tools/seating-chart-maker.html` | 先生 |
 | `授業用タイマー.html` | `teacher-portal/public/tools/class-timer.html` | 先生 |
-| `抽選ルーレット.html` | `teacher-portal/public/tools/lottery-roulette.html` | 先生 |
+| `抽選・あみだくじツール.html` | `teacher-portal/public/tools/lottery-tools.html` | 先生 |
+| `班分けツール.html` | `teacher-portal/public/tools/group-divider.html` | 先生 |
+| `漢字テスト作成.html` | `teacher-portal/public/tools/kanji-test-maker.html` | 先生 |
+| `100マス計算メーカー.html` | `teacher-portal/public/tools/calc-practice.html` | 子ども |
+| `名簿作成ツール.html` | `teacher-portal/public/tools/roster-tools.html` | 先生 |
+| `タイピングれんしゅう.html` | `teacher-portal/public/tools/typing-practice.html` | 子ども |
+| `漢字れんしゅう.html` | `teacher-portal/public/tools/kanji-practice.html` | 子ども |
+| `点数・平均計算ツール.html` | `teacher-portal/public/tools/score-average-calculator.html` | 先生 |
+
+> 旧`抽選ルーレット.html`・`あみだくじ.html`は`抽選・あみだくじツール.html`に統合されました（タブ切替で同じ機能を利用できます）。
+> 元の2ファイルはデスクトップに残していますが、ポータルとのハードリンクは解除済みです。まだ一般公開前のため、
+> 旧URL（`/tools/lottery-roulette`・`/tools/amidakuji`）は404になります。
 
 > Write/Editツールでの編集はハードリンクを切ってしまうことがあるため、元ファイルを編集した後は
 > `fsutil hardlink list <ファイル>` でリンクが1件しか表示されない場合、ポータル側のコピーを削除して

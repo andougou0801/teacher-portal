@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>点数・平均計算</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:20px 14px 60px;
+  }
+  .wrap{max-width:640px;width:100%;}
+  h1{
+    text-align:center;
+    font-size:20px;
+    color:var(--accent-dark);
+    margin:6px 0 4px;
+  }
+  .privacy-note{
+    text-align:center;
+    font-size:11px;
+    color:#8a93a3;
+    margin:0 0 20px;
+  }
+  .card{
+    background:#fff;
+    border-radius:20px;
+    padding:22px 20px;
+    box-shadow:0 4px 16px rgba(30,50,90,0.08);
+    margin-bottom:16px;
+  }
+  h2{
+    font-size:15px;
+    color:var(--accent-dark);
+    margin:0 0 14px;
+  }
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    color:#555;
+    margin-bottom:6px;
+  }
+  textarea{
+    width:100%;
+    min-height:150px;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #d8dfea;
+    font-size:15px;
+    font-family:inherit;
+    resize:vertical;
+    line-height:1.6;
+  }
+  .hint{
+    font-size:11px;
+    color:#8a93a3;
+    margin:6px 0 0;
+  }
+  .error-msg{
+    font-size:13px;
+    color:#c0392b;
+    margin:10px 0 0;
+    min-height:16px;
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+    flex-wrap:wrap;
+  }
+  .row input[type="number"],
+  .row input[type="text"]{
+    width:100px;
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #d8dfea;
+    font-size:14px;
+    font-family:inherit;
+  }
+  button{
+    font-family:inherit;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .btn-main{
+    display:block;
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    font-size:17px;
+    font-weight:800;
+    padding:15px 40px;
+    box-shadow:0 3px 8px rgba(45,108,223,0.3);
+  }
+  .btn-main:active{transform:scale(0.99);}
+  .btn-row{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+    flex-wrap:wrap;
+  }
+  .btn-sub{
+    flex:1;
+    min-width:120px;
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:10px 14px;
+  }
+  .btn-sub:hover{background:#e3e8f0;}
+  .btn-small{
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 14px;
+    white-space:nowrap;
+  }
+  .btn-small:hover{background:#e3e8f0;}
+  .btn-danger{color:#c0392b;}
+  .preset-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid #eef1f6;
+  }
+  .preset-row select,
+  .preset-row input[type="text"]{
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #d8dfea;
+    font-size:13px;
+    font-family:inherit;
+    flex:1;
+    min-width:120px;
+  }
+  .status-msg{
+    font-size:13px;
+    color:var(--accent);
+    margin-top:8px;
+    min-height:16px;
+  }
+  .status-msg.error{color:#c0392b;}
+
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(100px, 1fr));
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .stat-box{
+    background:#f7f9fd;
+    border:1px solid #e2e8f2;
+    border-radius:12px;
+    padding:10px 8px;
+    text-align:center;
+  }
+  .stat-box .label{font-size:11px;color:#8a93a3;margin-bottom:4px;}
+  .stat-box .value{font-size:18px;font-weight:800;color:var(--accent-dark);}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+  }
+  th, td{
+    border:1px solid #e2e8f2;
+    padding:8px 10px;
+    text-align:center;
+  }
+  th{
+    background:#eef3ff;
+    color:var(--accent-dark);
+    font-size:12px;
+  }
+  tbody tr:nth-child(even){background:#fafbfd;}
+  .empty-state{text-align:center;color:#8a93a3;font-size:13px;padding:30px 0;}
+
+  @media print{
+    body{background:#fff;padding:0;}
+    .no-print{display:none !important;}
+    .card{box-shadow:none;border-radius:0;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🧮 点数・平均計算</h1>
+  <p class="privacy-note">入力したデータはこの端末のブラウザ内だけで処理されます（外部サーバーへの送信はありません）。</p>
+
+  <div class="card no-print">
+    <h2>点数の入力</h2>
+    <label for="scoresInput">氏名と点数を1行に1人ずつ「氏名,点数」の形式で入力してください</label>
+    <textarea id="scoresInput" placeholder="たなか,85
+さとう,92
+すずき,78">たなか,85
+さとう,92
+すずき,78
+やまだ,64
+いとう,90
+わたなべ,73</textarea>
+    <p class="hint">カンマまたはタブ区切り。表計算ソフトからの貼り付けにも対応します。</p>
+    <div class="row">
+      <label for="maxScoreInput" style="margin:0;">満点</label>
+      <input type="number" id="maxScoreInput" value="100" min="1">
+    </div>
+    <p class="error-msg" id="errorMsg"></p>
+    <button class="btn-main" id="calcBtn">集計する</button>
+    <div class="preset-row">
+      <select id="presetSelect"><option value="">保存済みデータを選択…</option></select>
+      <input type="text" id="presetNameInput" placeholder="保存名（例: 1学期 算数テスト）">
+      <button class="btn-small" id="presetSaveBtn">保存</button>
+      <button class="btn-small btn-danger" id="presetDeleteBtn">削除</button>
+    </div>
+    <p class="status-msg" id="statusMsg"></p>
+  </div>
+
+  <div class="card" id="resultCard">
+    <div class="empty-state" id="emptyState">「集計する」を押すとここに結果が表示されます。</div>
+  </div>
+
+  <div class="btn-row no-print" id="printRow" style="display:none;">
+    <button class="btn-sub" id="printBtn">🖨 印刷する</button>
+  </div>
+</div>
+
+<script>
+  const scoresInput = document.getElementById('scoresInput');
+  const maxScoreInput = document.getElementById('maxScoreInput');
+  const calcBtn = document.getElementById('calcBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  const resultCard = document.getElementById('resultCard');
+  const printRow = document.getElementById('printRow');
+  const printBtn = document.getElementById('printBtn');
+  const presetSelect = document.getElementById('presetSelect');
+  const presetNameInput = document.getElementById('presetNameInput');
+  const presetSaveBtn = document.getElementById('presetSaveBtn');
+  const presetDeleteBtn = document.getElementById('presetDeleteBtn');
+  const statusMsg = document.getElementById('statusMsg');
+
+  const PRESET_KEY = 'score-average-calculator-presets-v1';
+  let presets = {};
+
+  function setStatus(msg, isError){
+    statusMsg.textContent = msg || '';
+    statusMsg.classList.toggle('error', !!isError);
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function parseEntries(){
+    return scoresInput.value
+      .split('\n')
+      .map(line => line.split(/[,\t]/).map(s => s.trim()).filter(s => s.length > 0))
+      .filter(parts => parts.length >= 2)
+      .map(parts => ({ name: parts[0], score: Number(parts[1]) }))
+      .filter(e => e.name.length > 0 && Number.isFinite(e.score));
+  }
+
+  function mean(arr){ return arr.reduce((a, b) => a + b, 0) / arr.length; }
+
+  function median(sortedScores){
+    const n = sortedScores.length;
+    const mid = Math.floor(n / 2);
+    return n % 2 === 0 ? (sortedScores[mid - 1] + sortedScores[mid]) / 2 : sortedScores[mid];
+  }
+
+  function stdev(arr, avg){
+    const variance = arr.reduce((sum, x) => sum + (x - avg) * (x - avg), 0) / arr.length;
+    return Math.sqrt(variance);
+  }
+
+  function computeRanks(entries){
+    // entries must already be sorted descending by score
+    let rank = 1;
+    entries.forEach((e, i) => {
+      if(i > 0 && e.score === entries[i - 1].score){
+        e.rank = entries[i - 1].rank;
+      }else{
+        e.rank = i + 1;
+      }
+    });
+    return entries;
+  }
+
+  function calculate(){
+    const entries = parseEntries();
+    const maxScore = Number(maxScoreInput.value) || null;
+
+    if(entries.length === 0){
+      errorMsg.textContent = '「氏名,点数」の形式で1件以上入力してください';
+      return;
+    }
+    if(entries.some(e => maxScore && e.score > maxScore)){
+      errorMsg.textContent = `満点（${maxScore}）を超える点数が入力されています`;
+      return;
+    }
+    errorMsg.textContent = '';
+
+    const scores = entries.map(e => e.score);
+    const avg = mean(scores);
+    const sd = stdev(scores, avg);
+    const sortedScores = scores.slice().sort((a, b) => a - b);
+    const med = median(sortedScores);
+    const max = Math.max(...scores);
+    const min = Math.min(...scores);
+
+    const ranked = entries.slice().sort((a, b) => b.score - a.score);
+    computeRanks(ranked);
+    ranked.forEach(e => {
+      e.hensachi = sd === 0 ? 50 : 50 + (10 * (e.score - avg)) / sd;
+    });
+
+    renderResult({ ranked, avg, sd, med, max, min, count: entries.length, maxScore });
+  }
+
+  function renderResult({ ranked, avg, sd, med, max, min, count, maxScore }){
+    const statHtml = `
+      <div class="stat-grid">
+        <div class="stat-box"><div class="label">人数</div><div class="value">${count}人</div></div>
+        <div class="stat-box"><div class="label">平均点</div><div class="value">${avg.toFixed(1)}</div></div>
+        <div class="stat-box"><div class="label">最高点</div><div class="value">${max}</div></div>
+        <div class="stat-box"><div class="label">最低点</div><div class="value">${min}</div></div>
+        <div class="stat-box"><div class="label">中央値</div><div class="value">${med}</div></div>
+        <div class="stat-box"><div class="label">標準偏差</div><div class="value">${sd.toFixed(1)}</div></div>
+      </div>
+    `;
+    const rowsHtml = ranked.map(e => `
+      <tr>
+        <td>${e.rank}</td>
+        <td style="text-align:left;">${escapeHtml(e.name)}</td>
+        <td>${e.score}${maxScore ? ' / ' + maxScore : ''}</td>
+        <td>${e.hensachi.toFixed(1)}</td>
+      </tr>
+    `).join('');
+
+    resultCard.innerHTML = `
+      ${statHtml}
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>順位</th><th style="text-align:left;">氏名</th><th>点数</th><th>偏差値</th></tr></thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </div>
+    `;
+    printRow.style.display = 'flex';
+  }
+
+  calcBtn.addEventListener('click', calculate);
+  printBtn.addEventListener('click', () => window.print());
+
+  // preset save/load
+  function loadPresets(){
+    try{
+      const raw = localStorage.getItem(PRESET_KEY);
+      presets = raw ? (JSON.parse(raw) || {}) : {};
+    }catch(e){ presets = {}; }
+  }
+  function persistPresets(){ localStorage.setItem(PRESET_KEY, JSON.stringify(presets)); }
+  function renderPresetSelect(selected){
+    presetSelect.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '保存済みデータを選択…';
+    presetSelect.appendChild(placeholder);
+    Object.keys(presets).forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      if(name === selected) opt.selected = true;
+      presetSelect.appendChild(opt);
+    });
+  }
+  presetSelect.addEventListener('change', () => {
+    const name = presetSelect.value;
+    if(!name || !presets[name]) return;
+    scoresInput.value = presets[name].scoresText || '';
+    maxScoreInput.value = presets[name].maxScore || 100;
+    presetNameInput.value = name;
+    setStatus(`「${name}」を読み込みました`, false);
+  });
+  presetSaveBtn.addEventListener('click', () => {
+    const name = presetNameInput.value.trim();
+    if(!name){ setStatus('保存名を入力してください', true); return; }
+    presets[name] = { scoresText: scoresInput.value, maxScore: maxScoreInput.value };
+    persistPresets();
+    renderPresetSelect(name);
+    setStatus(`「${name}」として保存しました`, false);
+  });
+  presetDeleteBtn.addEventListener('click', () => {
+    const name = presetSelect.value;
+    if(!name || !presets[name]) return;
+    delete presets[name];
+    persistPresets();
+    renderPresetSelect('');
+    presetNameInput.value = '';
+    setStatus(`「${name}」を削除しました`, false);
+  });
+  loadPresets();
+  renderPresetSelect('');
+</script>
+</body>
+</html>

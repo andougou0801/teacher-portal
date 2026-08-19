@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>抽選・あみだくじツール</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:20px 14px 60px;
+  }
+  body.big-mode{padding:0;background:#fff;}
+  .wrap{max-width:520px;width:100%;}
+  h1{
+    text-align:center;
+    font-size:20px;
+    color:var(--accent-dark);
+    margin:6px 0 4px;
+  }
+  .privacy-note{
+    text-align:center;
+    font-size:11px;
+    color:#8a93a3;
+    margin:0 0 18px;
+  }
+  .card{
+    background:#fff;
+    border-radius:20px;
+    padding:22px 20px;
+    box-shadow:0 4px 16px rgba(30,50,90,0.08);
+    margin-bottom:16px;
+  }
+  h2{
+    font-size:15px;
+    color:var(--accent-dark);
+    margin:0 0 14px;
+  }
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    color:#555;
+    margin-bottom:6px;
+  }
+  textarea{
+    width:100%;
+    min-height:100px;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #d8dfea;
+    font-size:15px;
+    font-family:inherit;
+    resize:vertical;
+    line-height:1.6;
+  }
+  .hint{
+    font-size:11px;
+    color:#8a93a3;
+    margin:6px 0 0;
+  }
+  .error-msg{
+    font-size:13px;
+    color:#c0392b;
+    margin:10px 0 0;
+    min-height:16px;
+  }
+  .headcount-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+    flex-wrap:wrap;
+  }
+  .headcount-row input[type="number"]{
+    width:80px;
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #d8dfea;
+    font-size:14px;
+    font-family:inherit;
+  }
+  button{
+    font-family:inherit;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .btn-main{
+    display:block;
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    font-size:17px;
+    font-weight:800;
+    padding:15px 40px;
+    box-shadow:0 3px 8px rgba(45,108,223,0.3);
+  }
+  .btn-main:active{transform:scale(0.98);}
+  .btn-main:disabled{opacity:0.5;cursor:default;}
+  .btn-row{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+    flex-wrap:wrap;
+  }
+  .btn-sub{
+    flex:1;
+    min-width:120px;
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:10px 14px;
+  }
+  .btn-sub:hover{background:#e3e8f0;}
+  .btn-sub.active{background:var(--accent);color:#fff;}
+  .btn-small{
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 14px;
+    white-space:nowrap;
+  }
+  .btn-small:hover{background:#e3e8f0;}
+  .btn-danger{color:#c0392b;}
+  .preset-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid #eef1f6;
+  }
+  .preset-row select,
+  .preset-row input[type="text"]{
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #d8dfea;
+    font-size:13px;
+    font-family:inherit;
+    flex:1;
+    min-width:120px;
+  }
+  .status-msg{
+    font-size:13px;
+    color:var(--accent);
+    margin-top:8px;
+    min-height:16px;
+  }
+  .status-msg.error{color:#c0392b;}
+
+  .tab-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .tab-btn{
+    flex:1;
+    background:#eef1f6;
+    color:#555;
+    font-size:14px;
+    font-weight:800;
+    padding:12px 8px;
+  }
+  .tab-btn.active{background:var(--accent);color:#fff;box-shadow:0 3px 8px rgba(45,108,223,0.3);}
+  .mode-panel{display:none;}
+  .mode-panel.active{display:block;}
+
+  .toolbar-row{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .icon-toggle{
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 14px;
+  }
+  .icon-toggle.on{background:#fff7e0;border:1px solid #f2d98a;color:#8a6d00;}
+
+  /* roulette */
+  .wheel-area{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    margin:6px 0 18px;
+  }
+  .pointer{
+    position:absolute;
+    top:-6px;
+    left:50%;
+    transform:translateX(-50%);
+    width:0;height:0;
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-top:22px solid var(--accent-dark);
+    z-index:2;
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  }
+  canvas{
+    border-radius:50%;
+    box-shadow:0 4px 20px rgba(30,50,90,0.18);
+    transition:transform 4s cubic-bezier(.17,.67,.16,1);
+  }
+  .controls{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .checkbox-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    color:#555;
+  }
+  .result{
+    text-align:center;
+    margin-top:16px;
+    min-height:34px;
+  }
+  .result .name{
+    display:inline-block;
+    background:#fff7e0;
+    border:2px solid #f2d98a;
+    color:#8a6d00;
+    font-size:22px;
+    font-weight:800;
+    padding:8px 24px;
+    border-radius:16px;
+  }
+  .history-list{
+    margin-top:16px;
+    font-size:13px;
+    color:#3a4152;
+  }
+  .history-list .history-title{
+    font-size:12px;
+    font-weight:700;
+    color:#8a93a3;
+    margin-bottom:6px;
+  }
+  .history-list ol{margin:0;padding-left:20px;}
+  .history-list li{padding:2px 0;}
+
+  /* amidakuji */
+  .cols2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  @media (max-width:480px){
+    .cols2{grid-template-columns:1fr;}
+  }
+  .ladder-scroll{overflow-x:auto;padding-bottom:6px;}
+  .ladder-outer{display:inline-block;min-width:100%;}
+  .name-row, .result-row{display:flex;}
+  .name-cell, .result-cell{
+    flex:none;
+    text-align:center;
+    font-size:13px;
+    font-weight:700;
+    color:#333;
+    padding:6px 4px;
+  }
+  .name-cell{cursor:pointer;border-radius:10px;transition:background 0.15s;}
+  .name-cell:hover{background:#eef3ff;}
+  .name-cell.done{color:var(--accent-dark);}
+  .result-cell .cover{
+    display:inline-block;background:#eef1f6;color:#9aa3b2;
+    border-radius:8px;padding:3px 8px;font-size:12px;
+  }
+  .result-cell .revealed{
+    display:inline-block;background:#fff7e0;border:1px solid #f2d98a;color:#8a6d00;
+    border-radius:8px;padding:3px 8px;font-size:12px;font-weight:800;
+  }
+  .log-list{margin-top:14px;font-size:13px;color:#3a4152;}
+  .log-list div{padding:6px 0;border-bottom:1px dashed #eef1f6;}
+  .log-list div:last-child{border-bottom:none;}
+  .empty-state{text-align:center;color:#8a93a3;font-size:13px;padding:30px 0;}
+
+  /* big display mode: applied to <body>, scales up whichever mode is active so it's readable
+     from the back of a classroom when projected */
+  body.big-mode .wrap{max-width:none;}
+  body.big-mode .card:not(.big-target){display:none;}
+  body.big-mode .card.big-target{
+    box-shadow:none;border-radius:0;min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;padding:40px 20px;
+  }
+  body.big-mode h1, body.big-mode .privacy-note, body.big-mode .tab-row{display:none;}
+  body.big-mode canvas{width:min(70vw,520px);height:min(70vw,520px);}
+  body.big-mode .result .name{font-size:min(9vw,64px);padding:20px 40px;}
+  body.big-mode .name-cell, body.big-mode .result-cell{font-size:min(4vw,26px);}
+  body.big-mode .result-cell .cover, body.big-mode .result-cell .revealed{font-size:min(3vw,20px);padding:8px 16px;}
+  body.big-mode .history-list, body.big-mode .log-list{display:none;}
+  body.big-mode .btn-row, body.big-mode .checkbox-row{display:none;}
+  .exit-big-btn{
+    position:fixed;top:16px;right:16px;z-index:20;
+    background:#2a2a2a;color:#fff;font-size:13px;font-weight:700;
+    padding:10px 16px;opacity:0.85;display:none;
+  }
+  body.big-mode .exit-big-btn{display:block;}
+</style>
+</head>
+<body>
+<button class="exit-big-btn" id="exitBigBtn">✕ 大きく表示を終了</button>
+<div class="wrap">
+  <h1>🎲 抽選・あみだくじツール</h1>
+  <p class="privacy-note">入力した名簿はこの端末のブラウザ内だけで処理されます（外部サーバーへの送信はありません）。</p>
+
+  <div class="card">
+    <h2>名簿</h2>
+    <div class="headcount-row">
+      <label for="headcountInput" style="margin:0;">人数を指定して自動入力</label>
+      <input type="number" id="headcountInput" min="2" max="20" placeholder="例: 5">
+      <button class="btn-small" id="headcountBtn">欄を作る</button>
+    </div>
+    <label for="namesInput">名前を1行に1人ずつ入力してください</label>
+    <textarea id="namesInput">たなか
+さとう
+すずき
+やまだ
+いとう
+わたなべ</textarea>
+    <p class="hint">ルーレットは最大20人、あみだくじは最大10人まで対応します。</p>
+    <div class="preset-row">
+      <select id="presetSelect"><option value="">保存済みリストを選択…</option></select>
+      <input type="text" id="presetNameInput" placeholder="保存名（例: 3年1組）">
+      <button class="btn-small" id="presetSaveBtn">保存</button>
+      <button class="btn-small btn-danger" id="presetDeleteBtn">削除</button>
+    </div>
+    <p class="status-msg" id="statusMsg"></p>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" id="tabRouletteBtn">🎯 ひとりを選ぶ（ルーレット）</button>
+    <button class="tab-btn" id="tabAmidaBtn">🪜 全員に割り振る（あみだくじ）</button>
+  </div>
+
+  <div class="toolbar-row">
+    <button class="icon-toggle" id="soundToggleBtn">🔈 音: オフ</button>
+    <button class="icon-toggle" id="bigModeBtn">🔍 大きく表示</button>
+  </div>
+
+  <!-- ルーレット -->
+  <div class="mode-panel active" id="panelRoulette">
+    <div class="card big-target">
+      <div class="wheel-area">
+        <div class="pointer"></div>
+        <canvas id="wheel" width="280" height="280"></canvas>
+      </div>
+      <div class="controls">
+        <button class="btn-main" id="spinBtn">スタート</button>
+        <div class="checkbox-row">
+          <input type="checkbox" id="excludeCheck">
+          <label for="excludeCheck" style="display:inline;font-weight:400;margin:0;">選ばれた人を次回から外す</label>
+        </div>
+        <button class="btn-small" id="resetBtn">リストと履歴を元に戻す</button>
+      </div>
+      <div class="result" id="rouletteResult"></div>
+      <div class="history-list" id="historyList" style="display:none;">
+        <div class="history-title">これまでの結果</div>
+        <ol id="historyOl"></ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- あみだくじ -->
+  <div class="mode-panel" id="panelAmida">
+    <div class="card">
+      <div class="cols2">
+        <div>
+          <p class="hint" style="margin:0 0 6px;">名前は上の名簿を使います</p>
+        </div>
+        <div>
+          <label for="resultsInput">結果（下に並べる項目）</label>
+          <textarea id="resultsInput" style="min-height:100px;">あたり
+はずれ
+はずれ
+はずれ
+はずれ
+はずれ</textarea>
+        </div>
+      </div>
+      <p class="hint">名前と結果は同じ行数にしてください（2〜10人）。</p>
+      <p class="error-msg" id="amidaError"></p>
+      <button class="btn-main" id="buildBtn">あみだくじを作る</button>
+    </div>
+    <div class="card big-target" id="ladderCard">
+      <div class="empty-state" id="emptyState">「あみだくじを作る」を押すとここにくじが表示されます。</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ---------- 共通: 名簿・保存 ---------- */
+  const namesInput = document.getElementById('namesInput');
+  const resultsInput = document.getElementById('resultsInput');
+  const headcountInput = document.getElementById('headcountInput');
+  const headcountBtn = document.getElementById('headcountBtn');
+  const presetSelect = document.getElementById('presetSelect');
+  const presetNameInput = document.getElementById('presetNameInput');
+  const presetSaveBtn = document.getElementById('presetSaveBtn');
+  const presetDeleteBtn = document.getElementById('presetDeleteBtn');
+  const statusMsg = document.getElementById('statusMsg');
+  const excludeCheck = document.getElementById('excludeCheck');
+
+  const PRESET_KEY = 'lottery-tools-presets-v1';
+  let presets = {};
+
+  function setStatus(msg, isError){
+    statusMsg.textContent = msg || '';
+    statusMsg.classList.toggle('error', !!isError);
+  }
+
+  function parseLines(el, max){
+    return el.value.split('\n').map(s => s.trim()).filter(s => s.length > 0).slice(0, max || 999);
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  headcountBtn.addEventListener('click', () => {
+    const n = Math.floor(Number(headcountInput.value));
+    if(!n || n < 2 || n > 20){
+      setStatus('人数を2〜20の範囲で入力してください', true);
+      return;
+    }
+    const curNames = parseLines(namesInput);
+    const curResults = parseLines(resultsInput);
+    const nameLines = [];
+    const resultLines = [];
+    for(let i = 0; i < n; i++){
+      nameLines.push(curNames[i] || ('参加者' + (i + 1)));
+      resultLines.push(curResults[i] || ('結果' + (i + 1)));
+    }
+    namesInput.value = nameLines.join('\n');
+    resultsInput.value = resultLines.join('\n');
+    setStatus('');
+    namesInput.dispatchEvent(new Event('input'));
+  });
+
+  function loadPresets(){
+    try{
+      const raw = localStorage.getItem(PRESET_KEY);
+      presets = raw ? (JSON.parse(raw) || {}) : {};
+    }catch(e){ presets = {}; }
+  }
+  function persistPresets(){ localStorage.setItem(PRESET_KEY, JSON.stringify(presets)); }
+  function renderPresetSelect(selected){
+    presetSelect.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '保存済みリストを選択…';
+    presetSelect.appendChild(placeholder);
+    Object.keys(presets).forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      if(name === selected) opt.selected = true;
+      presetSelect.appendChild(opt);
+    });
+  }
+  presetSelect.addEventListener('change', () => {
+    const name = presetSelect.value;
+    if(!name || !presets[name]) return;
+    namesInput.value = presets[name].namesText || '';
+    resultsInput.value = presets[name].resultsText || '';
+    excludeCheck.checked = !!presets[name].exclude;
+    presetNameInput.value = name;
+    setStatus(`「${name}」を読み込みました`, false);
+    namesInput.dispatchEvent(new Event('input'));
+  });
+  presetSaveBtn.addEventListener('click', () => {
+    const name = presetNameInput.value.trim();
+    if(!name){ setStatus('保存名を入力してください', true); return; }
+    presets[name] = { namesText: namesInput.value, resultsText: resultsInput.value, exclude: excludeCheck.checked };
+    persistPresets();
+    renderPresetSelect(name);
+    setStatus(`「${name}」として保存しました`, false);
+  });
+  presetDeleteBtn.addEventListener('click', () => {
+    const name = presetSelect.value;
+    if(!name || !presets[name]) return;
+    delete presets[name];
+    persistPresets();
+    renderPresetSelect('');
+    presetNameInput.value = '';
+    setStatus(`「${name}」を削除しました`, false);
+  });
+  loadPresets();
+  renderPresetSelect('');
+
+  /* ---------- 共通: タブ切替 ---------- */
+  const tabRouletteBtn = document.getElementById('tabRouletteBtn');
+  const tabAmidaBtn = document.getElementById('tabAmidaBtn');
+  const panelRoulette = document.getElementById('panelRoulette');
+  const panelAmida = document.getElementById('panelAmida');
+
+  function switchTab(mode){
+    const isRoulette = mode === 'roulette';
+    tabRouletteBtn.classList.toggle('active', isRoulette);
+    tabAmidaBtn.classList.toggle('active', !isRoulette);
+    panelRoulette.classList.toggle('active', isRoulette);
+    panelAmida.classList.toggle('active', !isRoulette);
+  }
+  tabRouletteBtn.addEventListener('click', () => switchTab('roulette'));
+  tabAmidaBtn.addEventListener('click', () => switchTab('amida'));
+
+  /* ---------- 共通: 音・大きく表示 ---------- */
+  const soundToggleBtn = document.getElementById('soundToggleBtn');
+  const bigModeBtn = document.getElementById('bigModeBtn');
+  const exitBigBtn = document.getElementById('exitBigBtn');
+  let soundEnabled = localStorage.getItem('lottery-tools-sound-v1') === '1';
+
+  function renderSoundBtn(){
+    soundToggleBtn.textContent = soundEnabled ? '🔊 音: オン' : '🔈 音: オフ';
+    soundToggleBtn.classList.toggle('on', soundEnabled);
+  }
+  soundToggleBtn.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('lottery-tools-sound-v1', soundEnabled ? '1' : '0');
+    renderSoundBtn();
+  });
+  renderSoundBtn();
+
+  function beep(freq, duration){
+    if(!soundEnabled) return;
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration / 1000);
+      osc.start();
+      osc.stop(ctx.currentTime + duration / 1000);
+    }catch(e){ /* audio not available; fail silently */ }
+  }
+
+  function setBigMode(on){
+    document.body.classList.toggle('big-mode', on);
+    bigModeBtn.textContent = on ? '🔍 大きく表示中' : '🔍 大きく表示';
+    bigModeBtn.classList.toggle('on', on);
+  }
+  bigModeBtn.addEventListener('click', () => setBigMode(true));
+  exitBigBtn.addEventListener('click', () => setBigMode(false));
+
+  /* ---------- ルーレット ---------- */
+  const canvas = document.getElementById('wheel');
+  const ctx = canvas.getContext('2d');
+  const spinBtn = document.getElementById('spinBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const rouletteResult = document.getElementById('rouletteResult');
+  const historyList = document.getElementById('historyList');
+  const historyOl = document.getElementById('historyOl');
+
+  const colors = ['#2d6cdf','#43a047','#fb8c00','#8e24aa','#e53935','#00897b','#c0ca33','#5c6bc0','#f4511e','#039be5'];
+
+  let entries = [];
+  let currentRotation = 0;
+  let spinning = false;
+  let history = [];
+
+  function parseEntries(){ return parseLines(namesInput, 20); }
+
+  function drawWheel(list){
+    const size = canvas.width;
+    const cx = size/2, cy = size/2, r = size/2 - 4;
+    ctx.clearRect(0,0,size,size);
+    if(list.length === 0){
+      ctx.beginPath();
+      ctx.arc(cx,cy,r,0,Math.PI*2);
+      ctx.fillStyle = '#eef1f6';
+      ctx.fill();
+      ctx.fillStyle = '#8a93a3';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('リストが空です', cx, cy);
+      return;
+    }
+    const sliceAngle = (Math.PI*2) / list.length;
+    list.forEach((name, i) => {
+      const start = i * sliceAngle;
+      const end = start + sliceAngle;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r,start,end);
+      ctx.closePath();
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fill();
+      ctx.save();
+      ctx.translate(cx,cy);
+      ctx.rotate(start + sliceAngle/2);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 13px sans-serif';
+      const label = name.length > 6 ? name.slice(0,6) + '…' : name;
+      ctx.fillText(label, r - 12, 5);
+      ctx.restore();
+    });
+  }
+
+  function resetWheel(){
+    entries = parseEntries();
+    currentRotation = 0;
+    canvas.style.transition = 'none';
+    canvas.style.transform = 'rotate(0deg)';
+    drawWheel(entries);
+    rouletteResult.innerHTML = '';
+    spinBtn.disabled = false;
+    history = [];
+    renderHistory();
+    requestAnimationFrame(() => { canvas.style.transition = 'transform 4s cubic-bezier(.17,.67,.16,1)'; });
+  }
+
+  function renderHistory(){
+    if(history.length === 0){
+      historyList.style.display = 'none';
+      return;
+    }
+    historyList.style.display = 'block';
+    historyOl.innerHTML = history.map(name => `<li>${escapeHtml(name)}</li>`).join('');
+  }
+
+  function spin(){
+    if(spinning) return;
+    entries = entries.length > 0 ? entries : parseEntries();
+    if(entries.length === 0){
+      rouletteResult.innerHTML = '<span style="color:#c0392b;font-size:13px;">名前を1つ以上入力してください</span>';
+      return;
+    }
+    spinning = true;
+    spinBtn.disabled = true;
+    rouletteResult.innerHTML = '';
+
+    const sliceAngleDeg = 360 / entries.length;
+    const winnerIndex = Math.floor(Math.random() * entries.length);
+    const winnerCenterDeg = (winnerIndex * sliceAngleDeg) + sliceAngleDeg/2;
+    const baseTarget = (270 - winnerCenterDeg + 360) % 360;
+    const extraSpins = 5 + Math.floor(Math.random()*3);
+    const finalRotation = currentRotation - (currentRotation % 360) + extraSpins*360 + baseTarget;
+
+    currentRotation = finalRotation;
+    canvas.style.transform = 'rotate(' + finalRotation + 'deg)';
+
+    let finished = false;
+    const onDone = () => {
+      if(finished) return;
+      finished = true;
+      canvas.removeEventListener('transitionend', onDone);
+      spinning = false;
+      spinBtn.disabled = false;
+      const winner = entries[winnerIndex];
+      rouletteResult.innerHTML = '<span class="name">🎉 ' + escapeHtml(winner) + '</span>';
+      beep(880, 250);
+      history.unshift(winner);
+      renderHistory();
+      if(excludeCheck.checked){
+        entries.splice(winnerIndex, 1);
+      }
+    };
+    canvas.addEventListener('transitionend', onDone);
+    setTimeout(onDone, 4200);
+  }
+
+  spinBtn.addEventListener('click', () => {
+    if(entries.length === 0){
+      entries = parseEntries();
+      drawWheel(entries);
+    }
+    spin();
+  });
+  resetBtn.addEventListener('click', resetWheel);
+  namesInput.addEventListener('input', () => {
+    if(!spinning){
+      entries = parseEntries();
+      currentRotation = 0;
+      canvas.style.transition = 'none';
+      canvas.style.transform = 'rotate(0deg)';
+      drawWheel(entries);
+      rouletteResult.innerHTML = '';
+      requestAnimationFrame(() => { canvas.style.transition = 'transform 4s cubic-bezier(.17,.67,.16,1)'; });
+    }
+  });
+  entries = parseEntries();
+  drawWheel(entries);
+
+  /* ---------- あみだくじ ---------- */
+  const headcountBtn2 = headcountBtn; // shared button already wired above
+  const buildBtn = document.getElementById('buildBtn');
+  const amidaError = document.getElementById('amidaError');
+  const ladderCard = document.getElementById('ladderCard');
+
+  const COL_W = 60;
+  const ROW_H = 22;
+  const PAD_TOP = 10;
+  const PAD_BOTTOM = 10;
+
+  let amidaNames = [];
+  let amidaResults = [];
+  let rungs = [];
+  let rowCount = 0;
+
+  function generateRungs(n){
+    const rc = Math.max(6, n * 3);
+    const rowsArr = [];
+    for(let r = 0; r < rc; r++){
+      const rowRungs = [];
+      let c = 0;
+      while(c < n - 1){
+        if(Math.random() < 0.35){
+          rowRungs.push(c);
+          c += 2;
+        }else{
+          c += 1;
+        }
+      }
+      rowsArr.push(rowRungs);
+    }
+    const total = rowsArr.reduce((sum, row) => sum + row.length, 0);
+    if(total === 0 && n >= 2){
+      rowsArr[Math.floor(rc / 2)].push(0);
+    }
+    return rowsArr;
+  }
+  function hasRung(row, col){ return rungs[row] && rungs[row].includes(col); }
+  function colX(i){ return COL_W / 2 + i * COL_W; }
+
+  function simulate(startCol){
+    let cur = startCol;
+    const points = [{ x: colX(cur), y: PAD_TOP }];
+    for(let r = 0; r < rowCount; r++){
+      const y = PAD_TOP + (r + 0.5) * ROW_H;
+      if(cur > 0 && hasRung(r, cur - 1)){
+        points.push({ x: colX(cur), y });
+        cur -= 1;
+        points.push({ x: colX(cur), y });
+      }else if(cur < amidaNames.length - 1 && hasRung(r, cur)){
+        points.push({ x: colX(cur), y });
+        cur += 1;
+        points.push({ x: colX(cur), y });
+      }
+    }
+    points.push({ x: colX(cur), y: PAD_TOP + rowCount * ROW_H + PAD_BOTTOM });
+    return { finalCol: cur, points };
+  }
+
+  function buildLadder(){
+    amidaNames = parseLines(namesInput);
+    amidaResults = parseLines(resultsInput);
+    if(amidaNames.length < 2 || amidaResults.length < 2){
+      amidaError.textContent = '名前・結果をそれぞれ2件以上入力してください';
+      return;
+    }
+    if(amidaNames.length !== amidaResults.length){
+      amidaError.textContent = `名前(${amidaNames.length}件)と結果(${amidaResults.length}件)の行数を揃えてください`;
+      return;
+    }
+    if(amidaNames.length > 10){
+      amidaError.textContent = '10人までにしてください';
+      return;
+    }
+    amidaError.textContent = '';
+    rowCount = Math.max(6, amidaNames.length * 3);
+    rungs = generateRungs(amidaNames.length);
+    renderLadder();
+  }
+
+  function renderLadder(){
+    const n = amidaNames.length;
+    const width = COL_W * n;
+    const height = PAD_TOP + rowCount * ROW_H + PAD_BOTTOM;
+
+    let svgLines = '';
+    for(let i = 0; i < n; i++){
+      const x = colX(i);
+      svgLines += `<line x1="${x}" y1="${PAD_TOP}" x2="${x}" y2="${height - PAD_BOTTOM}" stroke="#c7d0de" stroke-width="2"/>`;
+    }
+    for(let r = 0; r < rowCount; r++){
+      const y = PAD_TOP + (r + 0.5) * ROW_H;
+      (rungs[r] || []).forEach((c) => {
+        svgLines += `<line x1="${colX(c)}" y1="${y}" x2="${colX(c + 1)}" y2="${y}" stroke="#c7d0de" stroke-width="2"/>`;
+      });
+    }
+
+    const nameCells = amidaNames.map((name, i) =>
+      `<div class="name-cell" style="width:${COL_W}px" data-col="${i}">${escapeHtml(name)}</div>`
+    ).join('');
+    const resultCells = amidaResults.map(() =>
+      `<div class="result-cell" style="width:${COL_W}px"><span class="cover">？</span></div>`
+    ).join('');
+
+    ladderCard.innerHTML = `
+      <div class="ladder-scroll">
+        <div class="ladder-outer">
+          <div class="name-row">${nameCells}</div>
+          <svg width="${width}" height="${height}" id="ladderSvg">${svgLines}<polyline id="traceLine" points="" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="result-row">${resultCells}</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-sub" id="revealAllBtn">すべて表示</button>
+        <button class="btn-sub" id="reshuffleBtn">くじを作り直す</button>
+      </div>
+      <div class="log-list" id="amidaLogList"></div>
+    `;
+
+    ladderCard.querySelectorAll('.name-cell').forEach((cell) => {
+      cell.addEventListener('click', () => revealFor(Number(cell.dataset.col)));
+    });
+    document.getElementById('revealAllBtn').addEventListener('click', () => {
+      for(let i = 0; i < n; i++) revealFor(i, true);
+    });
+    document.getElementById('reshuffleBtn').addEventListener('click', () => {
+      rungs = generateRungs(amidaNames.length);
+      renderLadder();
+    });
+  }
+
+  function revealFor(startCol, skipTrace){
+    const nameCell = ladderCard.querySelector(`.name-cell[data-col="${startCol}"]`);
+    if(nameCell && nameCell.classList.contains('done')) return;
+
+    const { finalCol, points } = simulate(startCol);
+    if(nameCell) nameCell.classList.add('done');
+    const resultCell = ladderCard.querySelectorAll('.result-cell')[finalCol];
+    if(resultCell){
+      resultCell.innerHTML = `<span class="revealed">${escapeHtml(amidaResults[finalCol])}</span>`;
+    }
+    beep(660, 200);
+
+    if(!skipTrace){
+      const traceLine = document.getElementById('traceLine');
+      if(traceLine){
+        const pointsStr = points.map(p => `${p.x},${p.y}`).join(' ');
+        traceLine.setAttribute('points', pointsStr);
+        const len = points.reduce((sum, p, i) => {
+          if(i === 0) return 0;
+          const prev = points[i - 1];
+          return sum + Math.abs(p.x - prev.x) + Math.abs(p.y - prev.y);
+        }, 0) || 1;
+        traceLine.style.strokeDasharray = len;
+        traceLine.style.strokeDashoffset = len;
+        traceLine.style.transition = 'none';
+        traceLine.getBoundingClientRect();
+        traceLine.style.transition = 'stroke-dashoffset 0.6s ease';
+        traceLine.style.strokeDashoffset = 0;
+      }
+    }
+
+    const logList = document.getElementById('amidaLogList');
+    if(logList){
+      const entry = document.createElement('div');
+      entry.textContent = `${amidaNames[startCol]} → ${amidaResults[finalCol]}`;
+      logList.appendChild(entry);
+    }
+  }
+
+  buildBtn.addEventListener('click', buildLadder);
+</script>
+</body>
+</html>

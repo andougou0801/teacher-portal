@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>タイピングれんしゅう</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:20px 14px 60px;
+  }
+  .wrap{max-width:560px;width:100%;}
+  h1{
+    text-align:center;
+    font-size:21px;
+    color:var(--accent-dark);
+    margin:6px 0 4px;
+  }
+  .privacy-note{
+    text-align:center;
+    font-size:11px;
+    color:#8a93a3;
+    margin:0 0 18px;
+  }
+  .card{
+    background:#fff;
+    border-radius:20px;
+    padding:22px 20px;
+    box-shadow:0 4px 16px rgba(30,50,90,0.08);
+    margin-bottom:16px;
+  }
+  h2{
+    font-size:16px;
+    color:var(--accent-dark);
+    margin:0 0 10px;
+  }
+  p.lead{
+    font-size:13.5px;
+    color:#666;
+    line-height:1.9;
+    margin:0 0 18px;
+  }
+  button{
+    font-family:inherit;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .btn-main{
+    display:block;
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    font-size:16px;
+    font-weight:800;
+    padding:16px 20px;
+    box-shadow:0 3px 8px rgba(45,108,223,0.3);
+    text-align:center;
+  }
+  .btn-main:active{transform:scale(0.98);}
+  .btn-main.challenge{background:#e08a3c;box-shadow:0 3px 8px rgba(224,138,60,0.3);}
+  .btn-main + .btn-main{margin-top:12px;}
+  .btn-small{
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:9px 16px;
+    white-space:nowrap;
+  }
+  .btn-small:hover{background:#e3e8f0;}
+  .btn-sub{
+    flex:1;
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:14px;
+    font-weight:700;
+    padding:13px 14px;
+  }
+  .btn-sub:hover{background:#e3e8f0;}
+  .btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .toolbar-row{display:flex;justify-content:center;gap:8px;margin-top:16px;}
+  .icon-toggle{
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 14px;
+  }
+  .icon-toggle.on{background:#fff7e0;border:1px solid #f2d98a;color:#8a6d00;}
+
+  .best-scores{
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid #eef1f6;
+    font-size:12.5px;
+    color:#8a93a3;
+    line-height:1.9;
+    text-align:center;
+  }
+  .best-scores b{color:var(--accent-dark);}
+
+  /* --- game screen --- */
+  .game-topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+    font-size:13px;
+    font-weight:800;
+    color:#8a93a3;
+  }
+  .game-topbar .timer{color:#e08a3c;font-size:16px;}
+  .game-topbar .timer.hurry{color:#d64545;animation:pulse 0.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+  .category-tag{
+    text-align:center;
+    font-size:12px;
+    font-weight:700;
+    color:#8a93a3;
+    margin-bottom:6px;
+  }
+  .kana-display{
+    text-align:center;
+    font-size:min(11vw,52px);
+    font-weight:800;
+    letter-spacing:2px;
+    padding:20px 6px;
+    line-height:1.3;
+    word-break:keep-all;
+  }
+  .kana-display .kchar{
+    color:#2a2a2a;
+    transition:color 0.15s, transform 0.15s;
+    display:inline-block;
+  }
+  .kana-display .kchar.done{
+    color:#2e9e6b;
+  }
+  .kana-display .kchar.active{
+    color:var(--accent);
+    text-decoration:underline;
+    text-decoration-thickness:4px;
+    text-underline-offset:6px;
+    text-decoration-color:#cfe0ff;
+  }
+  .kana-display.word-complete .kchar{
+    color:#2e9e6b;
+    transform:scale(1.12);
+  }
+
+  #romajiInput{
+    display:block;
+    width:100%;
+    text-align:center;
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:2px;
+    padding:16px 10px;
+    border-radius:16px;
+    border:3px solid #d8dfea;
+    font-family:inherit;
+    color:var(--accent-dark);
+    background:#f8faff;
+  }
+  #romajiInput:focus{outline:none;border-color:var(--accent);}
+  #romajiInput.shake{
+    animation:shakeAnim 0.35s;
+    border-color:#d64545;
+    background:#fff2f2;
+  }
+  @keyframes shakeAnim{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-8px);}
+    40%{transform:translateX(8px);}
+    60%{transform:translateX(-6px);}
+    80%{transform:translateX(6px);}
+  }
+
+  .feedback-row{
+    text-align:center;
+    min-height:28px;
+    margin-top:12px;
+    font-size:15px;
+    font-weight:800;
+    color:#2e9e6b;
+  }
+
+  .game-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:14px;
+  }
+  .score-mini{font-size:13px;color:#8a93a3;font-weight:700;}
+
+  /* --- result screen --- */
+  .result-hero{text-align:center;padding:6px 0 14px;}
+  .result-hero .big-emoji{font-size:48px;}
+  .result-hero .msg{font-size:16px;font-weight:800;color:var(--accent-dark);margin-top:6px;line-height:1.7;}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+  .stat-box{background:#f6f8fd;border-radius:14px;padding:14px;text-align:center;}
+  .stat-box b{display:block;font-size:24px;color:var(--accent-dark);}
+  .stat-box span{font-size:11.5px;color:#888;line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⌨️ タイピングれんしゅう</h1>
+  <p class="privacy-note">この学習記録はこの端末のブラウザ内だけに保存されます（外部サーバーへの送信はありません）。</p>
+
+  <!-- スタート画面 -->
+  <div class="card" id="startCard">
+    <h2>あそびかたをえらぼう</h2>
+    <p class="lead">ひらがなのことばが出てくるよ。ローマ字でにゅうりょくして、ぜんぶ緑色になったらせいかい！<br>キーボードで練習してみよう。</p>
+    <button class="btn-main" id="practiceStartBtn">📝 れんしゅうモード（10問）</button>
+    <button class="btn-main challenge" id="challengeStartBtn">⏱️ 60びょうチャレンジ</button>
+    <div class="toolbar-row">
+      <button class="icon-toggle" id="soundToggleBtn">🔈 音: オフ</button>
+    </div>
+    <div class="best-scores" id="bestScores"></div>
+  </div>
+
+  <!-- ゲーム画面 -->
+  <div class="card" id="gameCard" style="display:none;">
+    <div class="game-topbar">
+      <span id="progressLabel"></span>
+      <span class="timer" id="timerLabel"></span>
+    </div>
+    <div class="category-tag" id="categoryTag"></div>
+    <div class="kana-display" id="kanaDisplay"></div>
+    <input type="text" id="romajiInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="ここにローマ字を入力してね">
+    <div class="feedback-row" id="feedbackRow"></div>
+    <div class="game-footer">
+      <span class="score-mini" id="scoreMini"></span>
+      <button class="btn-small" id="skipBtn">つぎへ（スキップ）</button>
+    </div>
+  </div>
+
+  <!-- けっか画面 -->
+  <div class="card" id="resultCard" style="display:none;">
+    <div class="result-hero">
+      <div class="big-emoji" id="resultEmoji">🎉</div>
+      <div class="msg" id="resultMsg"></div>
+    </div>
+    <div class="stat-grid" id="resultStats"></div>
+    <div class="btn-row">
+      <button class="btn-sub" id="retryBtn">もういちど</button>
+      <button class="btn-sub" id="backBtn">モードをえらびなおす</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   ローマ字変換テーブル（複数のつづり方に対応）
+   ========================================================= */
+const KANA_MAP = {
+  'あ':['a'],'い':['i'],'う':['u'],'え':['e'],'お':['o'],
+  'か':['ka'],'き':['ki'],'く':['ku'],'け':['ke'],'こ':['ko'],
+  'さ':['sa'],'し':['shi','si'],'す':['su'],'せ':['se'],'そ':['so'],
+  'た':['ta'],'ち':['chi','ti'],'つ':['tsu','tu'],'て':['te'],'と':['to'],
+  'な':['na'],'に':['ni'],'ぬ':['nu'],'ね':['ne'],'の':['no'],
+  'は':['ha'],'ひ':['hi'],'ふ':['fu','hu'],'へ':['he'],'ほ':['ho'],
+  'ま':['ma'],'み':['mi'],'む':['mu'],'め':['me'],'も':['mo'],
+  'や':['ya'],'ゆ':['yu'],'よ':['yo'],
+  'ら':['ra'],'り':['ri'],'る':['ru'],'れ':['re'],'ろ':['ro'],
+  'わ':['wa'],'を':['wo','o'],
+  'が':['ga'],'ぎ':['gi'],'ぐ':['gu'],'げ':['ge'],'ご':['go'],
+  'ざ':['za'],'じ':['ji','zi'],'ず':['zu'],'ぜ':['ze'],'ぞ':['zo'],
+  'だ':['da'],'ぢ':['ji','di'],'づ':['zu','du'],'で':['de'],'ど':['do'],
+  'ば':['ba'],'び':['bi'],'ぶ':['bu'],'べ':['be'],'ぼ':['bo'],
+  'ぱ':['pa'],'ぴ':['pi'],'ぷ':['pu'],'ぺ':['pe'],'ぽ':['po'],
+  'きゃ':['kya'],'きゅ':['kyu'],'きょ':['kyo'],
+  'ぎゃ':['gya'],'ぎゅ':['gyu'],'ぎょ':['gyo'],
+  'しゃ':['sha','sya'],'しゅ':['shu','syu'],'しょ':['sho','syo'],
+  'じゃ':['ja','zya'],'じゅ':['ju','zyu'],'じょ':['jo','zyo'],
+  'ちゃ':['cha','tya'],'ちゅ':['chu','tyu'],'ちょ':['cho','tyo'],
+  'にゃ':['nya'],'にゅ':['nyu'],'にょ':['nyo'],
+  'ひゃ':['hya'],'ひゅ':['hyu'],'ひょ':['hyo'],
+  'びゃ':['bya'],'びゅ':['byu'],'びょ':['byo'],
+  'ぴゃ':['pya'],'ぴゅ':['pyu'],'ぴょ':['pyo'],
+  'みゃ':['mya'],'みゅ':['myu'],'みょ':['myo'],
+  'りゃ':['rya'],'りゅ':['ryu'],'りょ':['ryo'],
+};
+const YOUON_SMALL = new Set(['ゃ','ゅ','ょ']);
+
+/* かな文字列 → 「モーラ（拍）」の配列に分割（拗音はまとめる） */
+function tokenizeMora(kana){
+  const chars = Array.from(kana);
+  const units = [];
+  let i = 0;
+  while(i < chars.length){
+    const c = chars[i];
+    const next = chars[i+1];
+    if(next && YOUON_SMALL.has(next) && KANA_MAP[c+next]){
+      units.push(c+next);
+      i += 2;
+    }else{
+      units.push(c);
+      i += 1;
+    }
+  }
+  return units;
+}
+
+/* モーラの配列 → 「セグメント」の配列（促音・撥音のルールを織り込み済み） */
+function buildSegments(kana){
+  const units = tokenizeMora(kana);
+  const segments = [];
+  let i = 0;
+  while(i < units.length){
+    const u = units[i];
+    const nextUnit = units[i+1];
+    if(u === 'っ' && nextUnit && nextUnit !== 'ん' && nextUnit !== 'っ' && KANA_MAP[nextUnit]){
+      // 促音（小さい「っ」）: 次の音の子音を重ねる（がっこう → ga+kko+u）
+      const doubled = KANA_MAP[nextUnit].map(o => o[0] + o);
+      segments.push({ kanaSpan: u + nextUnit, options: doubled });
+      i += 2;
+    }else if(u === 'ん'){
+      // 撥音（ん）: 次の音が母音・「ん」・な行/や行で始まる場合はあいまいさをさけるため「nn」必須
+      let options;
+      if(!nextUnit){
+        options = ['n','nn'];
+      }else{
+        const nextOpts = nextUnit === 'ん' ? ['n','nn'] : (KANA_MAP[nextUnit] || ['']);
+        const needsDouble = nextOpts.some(o => /^[aiueon]/.test(o));
+        options = needsDouble ? ['nn'] : ['n','nn'];
+      }
+      segments.push({ kanaSpan: u, options });
+      i += 1;
+    }else if(u === 'っ'){
+      // フォールバック（今の単語リストでは使われない想定）
+      segments.push({ kanaSpan: u, options: ['ltsu','xtsu'] });
+      i += 1;
+    }else{
+      const opts = KANA_MAP[u];
+      segments.push({ kanaSpan: u, options: opts ? opts.slice() : [u] });
+      i += 1;
+    }
+  }
+  return segments;
+}
+
+/* 入力されたローマ字（半角小文字のみ）を評価する
+   status: 'ok'（ここまで正しい） | 'error'（まちがい）
+   confirmedChars: 確定したかな文字数
+   segIndex: 現在入力中のセグメント番号
+   complete: 単語が完成したか */
+function evaluateTyped(typed, segments){
+  let pos = 0;
+  let segIdx = 0;
+  let confirmedChars = 0;
+  let status = 'ok';
+
+  while(segIdx < segments.length){
+    const seg = segments[segIdx];
+    const remaining = typed.slice(pos);
+    if(remaining.length === 0) break;
+
+    const exact = seg.options.filter(o => o === remaining);
+    const extendable = seg.options.filter(o => o.length > remaining.length && o.startsWith(remaining));
+    const overflow = seg.options.filter(o => o.length < remaining.length && remaining.startsWith(o));
+    const isLastSeg = segIdx === segments.length - 1;
+
+    if(exact.length && extendable.length && !isLastSeg){
+      // 例: 「ん」の次に母音以外が続く場合、n だけでも正しいが nn まで打てるので確定を待つ
+      status = 'ok';
+      break;
+    }
+    if(exact.length){
+      confirmedChars += seg.kanaSpan.length;
+      pos += exact[0].length;
+      segIdx += 1;
+      continue;
+    }
+    if(overflow.length){
+      const longest = overflow.reduce((a,b) => a.length >= b.length ? a : b);
+      confirmedChars += seg.kanaSpan.length;
+      pos += longest.length;
+      segIdx += 1;
+      continue;
+    }
+    if(extendable.length){
+      status = 'ok';
+      break;
+    }
+    status = 'error';
+    break;
+  }
+
+  if(status === 'ok' && segIdx === segments.length && pos < typed.length){
+    status = 'error'; // 単語完成後に余分な文字が入力された
+  }
+  const complete = status === 'ok' && segIdx === segments.length && pos === typed.length;
+  return { status, confirmedChars, segIndex: segIdx, complete };
+}
+
+/* =========================================================
+   単語リスト（カテゴリごとに追加しやすい構成）
+   ========================================================= */
+const WORD_CATEGORIES = [
+  { name: 'どうぶつ', emoji: '🐾', words: ['いぬ','ねこ','うさぎ','ぞう','きりん','ぱんだ','さる','うま','きつね','かえる','ちょうちょ','くじら'] },
+  { name: 'がっこう', emoji: '🏫', words: ['がっこう','つくえ','いす','きょうかしょ','こくばん','たいいく','きゅうしょく','とけい','はさみ','くつ','ぼうし','えんぴつ'] },
+  { name: 'たべもの', emoji: '🍎', words: ['りんご','ばなな','みかん','すいか','いちご','ぶどう','おにぎり','たまご','にんじん','やさい','おちゃ','なっとう'] },
+  { name: 'いろ', emoji: '🎨', words: ['あか','あお','きいろ','みどり','しろ','くろ'] },
+  { name: 'しぜん', emoji: '🌱', words: ['そら','くも','つき','ほし','やま','うみ','はな','ゆき'] },
+  { name: 'のりもの', emoji: '🚃', words: ['きっぷ','でんしゃ','ひこうき','ふね','くるま'] },
+  { name: 'おんがく', emoji: '🎵', words: ['らっぱ','たいこ','ふえ'] },
+];
+
+const ALL_WORDS = [];
+WORD_CATEGORIES.forEach(cat => {
+  cat.words.forEach(kana => {
+    ALL_WORDS.push({
+      kana,
+      category: cat.name,
+      emoji: cat.emoji,
+      segments: buildSegments(kana),
+    });
+  });
+});
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* =========================================================
+   音（Web Audio、外部ファイルなし）
+   ========================================================= */
+const soundToggleBtn = document.getElementById('soundToggleBtn');
+let soundEnabled = localStorage.getItem('typing-practice-sound-v1') === '1';
+
+function renderSoundBtn(){
+  soundToggleBtn.textContent = soundEnabled ? '🔊 音: オン' : '🔈 音: オフ';
+  soundToggleBtn.classList.toggle('on', soundEnabled);
+}
+soundToggleBtn.addEventListener('click', () => {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem('typing-practice-sound-v1', soundEnabled ? '1' : '0');
+  renderSoundBtn();
+});
+renderSoundBtn();
+
+function beep(freq, duration, type){
+  if(!soundEnabled) return;
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.value = freq;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.13, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration / 1000);
+    osc.start();
+    osc.stop(ctx.currentTime + duration / 1000);
+  }catch(e){ /* 音が使えない環境では何もしない */ }
+}
+function beepTick(){ beep(720, 70, 'sine'); }
+function beepWrong(){ beep(220, 160, 'square'); }
+function beepWordDone(){
+  beep(660, 130, 'sine');
+  setTimeout(() => beep(880, 180, 'sine'), 110);
+}
+
+/* =========================================================
+   ベストスコア保存
+   ========================================================= */
+const BEST_KEY = 'typing-practice-best-v1';
+function loadBest(){
+  try{ return JSON.parse(localStorage.getItem(BEST_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveBest(best){ localStorage.setItem(BEST_KEY, JSON.stringify(best)); }
+function renderBestScores(){
+  const best = loadBest();
+  const parts = [];
+  if(best.practiceBestAvgSec != null){
+    parts.push(`れんしゅう：1問平均 <b>${best.practiceBestAvgSec.toFixed(1)}秒</b>`);
+  }
+  if(best.challengeBestWords != null){
+    parts.push(`チャレンジ：<b>${best.challengeBestWords}問</b>（${best.challengeBestCpm}文字/分）`);
+  }
+  const el = document.getElementById('bestScores');
+  el.innerHTML = parts.length ? 'これまでのベスト<br>' + parts.join('　/　') : '';
+}
+renderBestScores();
+
+/* =========================================================
+   画面切り替え
+   ========================================================= */
+const startCard = document.getElementById('startCard');
+const gameCard = document.getElementById('gameCard');
+const resultCard = document.getElementById('resultCard');
+function showScreen(name){
+  startCard.style.display = name === 'start' ? 'block' : 'none';
+  gameCard.style.display = name === 'game' ? 'block' : 'none';
+  resultCard.style.display = name === 'result' ? 'block' : 'none';
+}
+
+/* =========================================================
+   ゲーム本体
+   ========================================================= */
+const progressLabel = document.getElementById('progressLabel');
+const timerLabel = document.getElementById('timerLabel');
+const categoryTag = document.getElementById('categoryTag');
+const kanaDisplay = document.getElementById('kanaDisplay');
+const romajiInput = document.getElementById('romajiInput');
+const feedbackRow = document.getElementById('feedbackRow');
+const scoreMini = document.getElementById('scoreMini');
+const skipBtn = document.getElementById('skipBtn');
+
+let mode = null;              // 'practice' | 'challenge'
+let queue = [];                // 出題予定の単語配列
+let queuePos = 0;
+let currentWord = null;
+let lastValidTyped = '';
+let wordStartTime = 0;
+let roundStartTime = 0;
+let correctCount = 0;
+let skipCount = 0;
+let totalTypedChars = 0;
+let wordTimes = [];
+let challengeTimer = null;
+let challengeSecondsLeft = 60;
+let advancing = false;
+
+function pickPracticeQueue(){
+  return shuffle(ALL_WORDS).slice(0, 10);
+}
+function refillChallengeQueue(){
+  const shuffled = shuffle(ALL_WORDS);
+  if(currentWord && shuffled.length && shuffled[0].kana === currentWord.kana){
+    // 直前と同じ単語が連続しないようにする
+    [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
+  }
+  queue = queue.concat(shuffled);
+}
+
+function startPractice(){
+  mode = 'practice';
+  queue = pickPracticeQueue();
+  queuePos = 0;
+  correctCount = 0;
+  skipCount = 0;
+  totalTypedChars = 0;
+  wordTimes = [];
+  roundStartTime = Date.now();
+  showScreen('game');
+  timerLabel.textContent = '';
+  loadWord();
+}
+
+function startChallenge(){
+  mode = 'challenge';
+  queue = [];
+  refillChallengeQueue();
+  queuePos = 0;
+  correctCount = 0;
+  skipCount = 0;
+  totalTypedChars = 0;
+  wordTimes = [];
+  challengeSecondsLeft = 60;
+  roundStartTime = Date.now();
+  showScreen('game');
+  updateTimerLabel();
+  clearInterval(challengeTimer);
+  challengeTimer = setInterval(() => {
+    challengeSecondsLeft -= 1;
+    updateTimerLabel();
+    if(challengeSecondsLeft <= 0){
+      clearInterval(challengeTimer);
+      finishRound();
+    }
+  }, 1000);
+  loadWord();
+}
+
+function updateTimerLabel(){
+  timerLabel.textContent = '⏱️ のこり ' + challengeSecondsLeft + '秒';
+  timerLabel.classList.toggle('hurry', challengeSecondsLeft <= 10);
+}
+
+function loadWord(){
+  advancing = false;
+  if(mode === 'practice' && queuePos >= queue.length){
+    finishRound();
+    return;
+  }
+  if(mode === 'challenge'){
+    if(queuePos >= queue.length) refillChallengeQueue();
+  }
+  currentWord = queue[queuePos];
+  lastValidTyped = '';
+  wordStartTime = Date.now();
+  romajiInput.value = '';
+  romajiInput.disabled = false;
+  feedbackRow.textContent = '';
+  kanaDisplay.classList.remove('word-complete');
+  categoryTag.textContent = currentWord.emoji + ' ' + currentWord.category;
+
+  if(mode === 'practice'){
+    progressLabel.textContent = (queuePos + 1) + ' / ' + queue.length + '問';
+    scoreMini.textContent = 'せいかい ' + correctCount + '問';
+  }else{
+    progressLabel.textContent = 'できた: ' + correctCount + '問';
+    scoreMini.textContent = '';
+  }
+  renderKana(0, 0);
+  romajiInput.focus();
+}
+
+function renderKana(confirmedChars, segIndex){
+  const chars = Array.from(currentWord.kana);
+  const segs = currentWord.segments;
+  let activeStart = -1, activeEnd = -1;
+  if(segIndex < segs.length){
+    activeStart = confirmedChars;
+    activeEnd = confirmedChars + segs[segIndex].kanaSpan.length;
+  }
+  kanaDisplay.innerHTML = chars.map((c, i) => {
+    let cls = 'kchar';
+    if(i < confirmedChars) cls += ' done';
+    else if(i >= activeStart && i < activeEnd) cls += ' active';
+    return `<span class="${cls}">${c}</span>`;
+  }).join('');
+}
+
+function handleWordComplete(){
+  advancing = true;
+  romajiInput.disabled = true;
+  kanaDisplay.classList.add('word-complete');
+  const elapsedSec = (Date.now() - wordStartTime) / 1000;
+  wordTimes.push(elapsedSec);
+  totalTypedChars += lastValidTyped.length;
+  correctCount += 1;
+  beepWordDone();
+  const praises = ['やった！','せいかい！','すごい！','ばっちり！','ナイス！'];
+  feedbackRow.textContent = praises[Math.floor(Math.random() * praises.length)] + ' ' + elapsedSec.toFixed(1) + '秒';
+  queuePos += 1;
+  setTimeout(() => {
+    if(mode === 'practice' && queuePos >= queue.length){
+      finishRound();
+    }else{
+      loadWord();
+    }
+  }, 550);
+}
+
+function handleSkip(){
+  if(advancing) return;
+  skipCount += 1;
+  queuePos += 1;
+  feedbackRow.textContent = 'つぎの問題にすすむよ';
+  if(mode === 'practice' && queuePos >= queue.length){
+    finishRound();
+  }else{
+    loadWord();
+  }
+}
+skipBtn.addEventListener('click', handleSkip);
+
+romajiInput.addEventListener('input', () => {
+  if(advancing) return;
+  const raw = romajiInput.value.toLowerCase().replace(/[^a-z]/g, '');
+  const result = evaluateTyped(raw, currentWord.segments);
+  if(result.status === 'error'){
+    romajiInput.value = lastValidTyped;
+    romajiInput.classList.remove('shake');
+    void romajiInput.offsetWidth; // reflow でアニメーションを再スタート
+    romajiInput.classList.add('shake');
+    beepWrong();
+    return;
+  }
+  lastValidTyped = raw;
+  romajiInput.value = raw;
+  renderKana(result.confirmedChars, result.segIndex);
+  if(result.confirmedChars > 0 && result.confirmedChars < Array.from(currentWord.kana).length){
+    // セグメントを1つ確定するごとに軽い音（連打を避けるため長さの変化時だけ）
+  }
+  if(result.complete){
+    handleWordComplete();
+  }
+});
+romajiInput.addEventListener('keydown', () => { romajiInput.classList.remove('shake'); });
+
+/* =========================================================
+   けっか画面
+   ========================================================= */
+function tierMessage(cpm){
+  if(cpm >= 150) return { emoji: '🌟', msg: 'はやい！タイピングめいじん級だね！' };
+  if(cpm >= 100) return { emoji: '😄', msg: 'とてもじょうずにタイピングできたね！' };
+  if(cpm >= 60) return { emoji: '😊', msg: 'いいちょうし！だんだんはやくなってきたよ！' };
+  return { emoji: '💪', msg: 'よくがんばったね！つづけて練習しよう！' };
+}
+
+function finishRound(){
+  clearInterval(challengeTimer);
+  const totalSec = (Date.now() - roundStartTime) / 1000;
+  const cpm = totalSec > 0 ? Math.round(totalTypedChars / (totalSec / 60)) : 0;
+  const avgSec = wordTimes.length ? (wordTimes.reduce((a,b)=>a+b,0) / wordTimes.length) : 0;
+
+  const best = loadBest();
+  let isNewBest = false;
+  if(mode === 'practice' && wordTimes.length >= 5){
+    if(best.practiceBestAvgSec == null || avgSec < best.practiceBestAvgSec){
+      best.practiceBestAvgSec = avgSec;
+      isNewBest = true;
+    }
+  }
+  if(mode === 'challenge'){
+    if(best.challengeBestWords == null || correctCount > best.challengeBestWords ||
+       (correctCount === best.challengeBestWords && cpm > (best.challengeBestCpm || 0))){
+      best.challengeBestWords = correctCount;
+      best.challengeBestCpm = cpm;
+      isNewBest = true;
+    }
+  }
+  saveBest(best);
+  renderBestScores();
+
+  const tier = tierMessage(cpm);
+  document.getElementById('resultEmoji').textContent = tier.emoji;
+  document.getElementById('resultMsg').textContent = tier.msg + (isNewBest ? '（新記録！）' : '');
+
+  const statGrid = document.getElementById('resultStats');
+  if(mode === 'practice'){
+    statGrid.innerHTML = `
+      <div class="stat-box"><b>${correctCount}</b><span>せいかいした数</span></div>
+      <div class="stat-box"><b>${avgSec.toFixed(1)}秒</b><span>1問あたりの平均</span></div>
+      <div class="stat-box"><b>${cpm}</b><span>1分あたりの文字数</span></div>
+      <div class="stat-box"><b>${skipCount}</b><span>スキップした数</span></div>
+    `;
+  }else{
+    statGrid.innerHTML = `
+      <div class="stat-box"><b>${correctCount}</b><span>できた問題数</span></div>
+      <div class="stat-box"><b>${cpm}</b><span>1分あたりの文字数</span></div>
+      <div class="stat-box"><b>60秒</b><span>チャレンジ時間</span></div>
+      <div class="stat-box"><b>${skipCount}</b><span>スキップした数</span></div>
+    `;
+  }
+  showScreen('result');
+}
+
+document.getElementById('practiceStartBtn').addEventListener('click', startPractice);
+document.getElementById('challengeStartBtn').addEventListener('click', startChallenge);
+document.getElementById('retryBtn').addEventListener('click', () => {
+  if(mode === 'practice') startPractice(); else startChallenge();
+});
+document.getElementById('backBtn').addEventListener('click', () => {
+  clearInterval(challengeTimer);
+  showScreen('start');
+});
+</script>
+</body>
+</html>

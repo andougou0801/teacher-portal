@@ -72,6 +72,11 @@
       margin-top: -8px;
       margin-bottom: 14px;
     }
+    .no-print .overflow-warning {
+      color: #c0392b;
+      font-weight: bold;
+      margin-top: 10px;
+    }
     .checkbox-row {
       display: flex;
       flex-wrap: wrap;
@@ -232,18 +237,12 @@
       #a4-frame {
         width: auto;
         aspect-ratio: auto;
+        height: 257mm;
         overflow: visible;
         padding: 0;
         margin: 0;
         box-shadow: none;
         border-radius: 0;
-      }
-      #print-area {
-        height: auto;
-      }
-      .page-footer {
-        position: static;
-        margin-top: 20px;
       }
       #title-hyouji {
         border-bottom: 3px solid #000;
@@ -401,6 +400,7 @@
     <button onclick="tsukuru()">問題を作る</button>
     <button onclick="window.print()">印刷する</button>
     <button onclick="hozonJikkou()">保存する</button>
+    <p class="setsumei overflow-warning" id="overflow-warning" style="display:none;">⚠ 問題数または文字の大きさが多く、1ページに収まっていません。問題数を減らすか、文字の大きさを小さくしてください（このままでは印刷時に点数欄などと重なります）。</p>
 
     <hr>
   </div>
@@ -1161,6 +1161,31 @@
         gyouSuu = 1;
       }
       mondaiWaku.style.gridTemplateRows = "repeat(" + gyouSuu + ", auto)";
+
+      hamidashiKakunin();
+    }
+
+    function hamidashiKakunin() {
+      // 画面上の枠は aspect-ratio で作っているため印刷時（@page margin:20mm を差し引いた実寸
+      // 257mm）より高さに余裕がある。画面の見た目だけで判定すると「画面では収まっているのに
+      // 印刷するとはみ出す」ケースを見逃すため、印刷時と同じ実寸に一時的に切り替えてから
+      // 判定し、直後に元の見た目へ戻す。
+      let frame = document.getElementById("a4-frame");
+      let printArea = document.getElementById("print-area");
+      let warning = document.getElementById("overflow-warning");
+      if (!frame || !printArea || !warning) {
+        return;
+      }
+      let motoNoCss = frame.style.cssText;
+      frame.style.width = "auto";
+      frame.style.aspectRatio = "auto";
+      frame.style.height = "257mm";
+      frame.style.overflow = "visible";
+      frame.style.padding = "0";
+      frame.style.margin = "0";
+      let hamidashiteiru = printArea.scrollHeight > printArea.clientHeight + 2;
+      frame.style.cssText = motoNoCss;
+      warning.style.display = hamidashiteiru ? "block" : "none";
     }
 
     function fontSizeUpdate() {
@@ -1169,6 +1194,7 @@
       document.getElementById("fontsize-hyouji").textContent = size;
       document.getElementById("fontsize2").value = size;
       document.getElementById("fontsize2-hyouji").textContent = size;
+      hamidashiKakunin();
     }
 
     function fontSizeUpdate2() {
@@ -1177,6 +1203,7 @@
       document.getElementById("fontsize2-hyouji").textContent = size;
       document.getElementById("fontsize").value = size;
       document.getElementById("fontsize-hyouji").textContent = size;
+      hamidashiKakunin();
     }
 
     async function purintoCanvasSakusei() {

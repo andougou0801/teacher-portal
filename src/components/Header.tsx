@@ -27,7 +27,7 @@ export default function Header() {
           href="/about"
           className="rounded-full bg-cta px-4 py-2 text-sm font-bold text-white hover:bg-cta-dark"
         >
-          教員登録（無料）
+          サイトについて
         </Link>
         <MobileNav />
       </div>

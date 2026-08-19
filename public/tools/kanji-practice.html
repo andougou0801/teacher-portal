@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>漢字れんしゅう</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+    --good:#2ecc71;
+    --good-dark:#1e9e56;
+    --soft:#ff9f43;
+    --soft-dark:#e08329;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#fff9ec 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    padding:16px 12px 44px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wrap{max-width:520px;width:100%;margin:0 auto;}
+  h1{
+    text-align:center;
+    font-size:26px;
+    color:var(--accent-dark);
+    margin:6px 0 14px;
+  }
+  .card{
+    background:#fff;
+    border-radius:24px;
+    padding:22px 18px;
+    box-shadow:0 4px 18px rgba(30,50,90,0.10);
+    margin-bottom:16px;
+    position:relative;
+  }
+  .privacy-note{
+    text-align:center;
+    font-size:11px;
+    color:#9aa2b2;
+    margin:0 4px 10px;
+    line-height:1.6;
+  }
+  button{font-family:inherit;border:none;cursor:pointer;}
+
+  /* ---- sound toggle ---- */
+  .sound-btn{
+    position:absolute;
+    top:16px;
+    right:16px;
+    background:#f4f7fc;
+    border-radius:50%;
+    width:42px;
+    height:42px;
+    font-size:19px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* ---- start screen ---- */
+  .lead{
+    text-align:center;
+    font-size:15px;
+    color:#5a6376;
+    margin:0 0 18px;
+    font-weight:700;
+  }
+  .section-label{
+    font-size:13px;
+    font-weight:800;
+    color:#8a93a3;
+    margin:0 0 8px 2px;
+  }
+  .mode-btn{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    width:100%;
+    background:#f4f7fc;
+    border:3px solid transparent;
+    border-radius:18px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    text-align:left;
+  }
+  .mode-btn.active{border-color:var(--accent);background:#eaf1ff;}
+  .mode-icon{font-size:32px;flex-shrink:0;}
+  .mode-title{font-size:18px;font-weight:800;color:#2a2a2a;}
+  .mode-sub{font-size:12px;color:#7a8296;margin-top:3px;}
+  .count-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .count-btn{
+    flex:1;
+    background:#f4f7fc;
+    border:3px solid transparent;
+    border-radius:16px;
+    padding:14px 4px;
+    font-size:16px;
+    font-weight:800;
+    color:#3a4152;
+  }
+  .count-btn.active{border-color:var(--accent);background:#eaf1ff;color:var(--accent-dark);}
+  .btn-main{
+    display:block;
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    font-size:22px;
+    font-weight:800;
+    padding:18px 40px;
+    border-radius:20px;
+    box-shadow:0 4px 10px rgba(45,108,223,0.32);
+  }
+  .btn-main:active{transform:scale(0.98);}
+  .best-streak{
+    text-align:center;
+    font-size:13px;
+    color:#8a93a3;
+    margin-top:14px;
+    font-weight:700;
+  }
+
+  /* ---- game screen ---- */
+  .top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:14px;
+    font-weight:800;
+    color:var(--accent-dark);
+    margin-bottom:10px;
+  }
+  .streak-pill{
+    background:#fff2e0;
+    color:var(--soft-dark);
+    border-radius:999px;
+    padding:4px 12px;
+    font-size:13px;
+  }
+  .quit-btn{
+    background:none;
+    color:#b7bec9;
+    font-size:13px;
+    font-weight:700;
+    padding:4px 6px;
+  }
+  .progress-outer{
+    height:14px;
+    border-radius:8px;
+    background:#eef1f6;
+    overflow:hidden;
+    margin-bottom:20px;
+  }
+  .progress-inner{
+    height:100%;
+    background:var(--good);
+    border-radius:8px;
+    transition:width .35s ease;
+  }
+  .q-card{
+    text-align:center;
+    padding:18px 6px 6px;
+  }
+  .q-instr{
+    font-size:14px;
+    font-weight:800;
+    color:#8a93a3;
+    margin:0 0 10px;
+  }
+  .q-word{
+    font-size:clamp(56px,18vw,96px);
+    font-weight:700;
+    color:#2a2a2a;
+    line-height:1.1;
+    margin:6px 0;
+  }
+  .q-yomi{
+    font-size:clamp(34px,10vw,48px);
+    font-weight:800;
+    color:var(--accent-dark);
+    line-height:1.2;
+    margin:6px 0;
+  }
+  .q-hint{
+    font-size:16px;
+    color:#7a8296;
+    margin:4px 0 6px;
+    min-height:22px;
+  }
+  .hint-btn{
+    background:#f4f7fc;
+    color:#5a6376;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 16px;
+    border-radius:14px;
+    margin:6px auto 4px;
+    display:inline-block;
+  }
+  .answer-input{
+    width:100%;
+    font-size:30px;
+    text-align:center;
+    padding:14px 10px;
+    border-radius:16px;
+    border:3px solid #d8dfea;
+    font-family:inherit;
+    margin:14px 0;
+  }
+  .answer-input:focus{outline:none;border-color:var(--accent);}
+  .choice-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:16px 0 4px;
+  }
+  .choice-btn{
+    background:#f4f7fc;
+    border:4px solid transparent;
+    border-radius:20px;
+    font-size:clamp(40px,13vw,64px);
+    font-weight:700;
+    padding:18px 4px;
+    color:#2a2a2a;
+  }
+  .choice-btn.correct{background:var(--good);border-color:var(--good-dark);color:#fff;}
+  .choice-btn.wrong{background:var(--soft);border-color:var(--soft-dark);color:#fff;}
+  .choice-btn[disabled]{opacity:1;}
+  .feedback{
+    min-height:40px;
+    font-size:19px;
+    font-weight:800;
+    margin:10px 0 4px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .feedback.good{color:var(--good-dark);}
+  .feedback.soft{color:var(--soft-dark);}
+  .next-btn{
+    display:block;
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    font-size:18px;
+    font-weight:800;
+    padding:14px 30px;
+    border-radius:16px;
+    margin-top:6px;
+  }
+
+  /* ---- result screen ---- */
+  .result-emoji{font-size:64px;text-align:center;margin:4px 0 6px;}
+  .result-title{font-size:22px;font-weight:800;text-align:center;color:var(--accent-dark);margin:0 0 18px;}
+  .stat-line{
+    display:flex;
+    justify-content:space-between;
+    font-size:15px;
+    font-weight:700;
+    color:#3a4152;
+    padding:10px 4px;
+    border-bottom:1px dashed #eef1f6;
+  }
+  .stat-line span:last-child{color:var(--accent-dark);}
+  .record-badge{
+    text-align:center;
+    background:#fff2e0;
+    color:var(--soft-dark);
+    font-weight:800;
+    font-size:14px;
+    border-radius:14px;
+    padding:10px;
+    margin:14px 0;
+  }
+  .result-btn-row{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .result-btn-row .btn-main{font-size:16px;padding:14px 10px;}
+  .btn-ghost{
+    flex:1;
+    background:#f4f7fc;
+    color:#3a4152;
+    font-size:16px;
+    font-weight:800;
+    padding:14px 10px;
+    border-radius:20px;
+  }
+
+  /* ---- milestone overlay ---- */
+  #milestoneOverlay{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+    z-index:50;
+    opacity:0;
+  }
+  #milestoneOverlay.show{
+    animation:milestonePop 1.3s ease forwards;
+  }
+  .milestone-box{
+    background:rgba(45,108,223,0.94);
+    color:#fff;
+    font-size:22px;
+    font-weight:800;
+    padding:20px 34px;
+    border-radius:24px;
+    text-align:center;
+    box-shadow:0 8px 24px rgba(30,50,90,0.3);
+  }
+  @keyframes milestonePop{
+    0%{opacity:0;transform:scale(0.7);}
+    15%{opacity:1;transform:scale(1.05);}
+    25%{transform:scale(1);}
+    80%{opacity:1;}
+    100%{opacity:0;}
+  }
+
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🈶 かんじれんしゅう</h1>
+
+  <!-- ============ START SCREEN ============ -->
+  <div class="card" id="startScreen">
+    <button class="sound-btn" id="soundBtn">🔊</button>
+    <p class="lead">いちねんせいの かんじで あそぼう！</p>
+
+    <p class="section-label">あそびかたを えらんでね</p>
+    <button class="mode-btn active" id="modeSelectBtn" data-mode="select">
+      <span class="mode-icon">👆</span>
+      <span>
+        <span class="mode-title">かんじを えらぶ</span><br>
+        <span class="mode-sub">よみを みて、あう かんじを タップ</span>
+      </span>
+    </button>
+    <button class="mode-btn" id="modeYomiBtn" data-mode="yomi">
+      <span class="mode-icon">✏️</span>
+      <span>
+        <span class="mode-title">よみを かく</span><br>
+        <span class="mode-sub">かんじを みて、よみを にゅうりょく</span>
+      </span>
+    </button>
+
+    <p class="section-label">なんもん やる？</p>
+    <div class="count-row" id="countRow">
+      <button class="count-btn active" data-count="10">10もん</button>
+      <button class="count-btn" data-count="20">20もん</button>
+      <button class="count-btn" data-count="80">ぜんぶ</button>
+    </div>
+
+    <button class="btn-main" id="startBtn">▶ はじめる</button>
+    <p class="best-streak" id="bestStreakLine"></p>
+  </div>
+
+  <p class="privacy-note">この学習きろくは、この端末（たんまつ）の中だけに ほぞんされます。外部への送信は ありません。</p>
+
+  <!-- ============ GAME SCREEN ============ -->
+  <div class="card hidden" id="gameScreen">
+    <div class="top-row">
+      <span id="streakPillWrap"><span class="streak-pill" id="streakPill" style="display:none;">🔥 <span id="streakNum">0</span></span></span>
+      <span>できた <span id="correctNum">0</span></span>
+      <button class="quit-btn" id="quitBtn">やめる</button>
+    </div>
+    <div class="progress-outer"><div class="progress-inner" id="progressInner" style="width:0%;"></div></div>
+
+    <div class="q-card">
+      <p class="q-instr" id="qInstr"></p>
+      <div id="qPromptArea"></div>
+      <p class="q-hint" id="qHint"></p>
+      <button class="hint-btn hidden" id="hintBtn">💡 ヒント</button>
+
+      <div id="yomiInputArea" class="hidden">
+        <input type="text" id="answerInput" class="answer-input" placeholder="ひらがなで こたえてね" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <button class="btn-main" id="answerBtn">こたえる</button>
+      </div>
+
+      <div id="choiceArea" class="choice-grid hidden"></div>
+
+      <p class="feedback" id="feedback"></p>
+      <button class="next-btn hidden" id="nextBtn">つぎへ ▶</button>
+    </div>
+  </div>
+
+  <!-- ============ RESULT SCREEN ============ -->
+  <div class="card hidden" id="resultScreen">
+    <div class="result-emoji" id="resultEmoji">🎉</div>
+    <p class="result-title" id="resultTitle">よくがんばったね！</p>
+    <div class="stat-line"><span>できた かんじ</span><span id="statMastered"></span></div>
+    <div class="stat-line"><span>1かいで できた</span><span id="statFirstTry"></span></div>
+    <div class="stat-line"><span>さいこう れんぞく</span><span id="statBestStreak"></span></div>
+    <p class="record-badge hidden" id="recordBadge">🏆 あたらしい きろく！</p>
+    <div class="result-btn-row">
+      <button class="btn-ghost" id="backBtn">さいしょから</button>
+      <button class="btn-main" id="retryBtn">もういちど</button>
+    </div>
+  </div>
+</div>
+
+<div id="milestoneOverlay"><div class="milestone-box" id="milestoneBox"></div></div>
+
+<script>
+  /* =========================================================
+     1年生 教育漢字 80字のデータ
+     出典：漢字テスト作成.html（kanji-test-maker.html）で
+     文部科学省の学年別漢字配当表をもとに個別に検証済みの配列を
+     そのまま流用しています（文字・よみ・例語・ヒントの内容は
+     一切変更していません）。誤りが再混入しないよう、値は
+     ここで再入力せず、検証済みデータをコピーしたものです。
+     ========================================================= */
+  const KANJI_ROWS = [
+    ["一","一つ","ひとつ","「1」のかず"],
+    ["右","右","みぎ","みぎての ほう"],
+    ["雨","雨","あめ","そらから ふる みず"],
+    ["円","円","えん","おかねの たんい（1円、10円など）"],
+    ["王","王","おう","おうさまの こと"],
+    ["音","音","おと","みみで きこえる もの"],
+    ["下","下","した","したの ほう"],
+    ["火","火","ひ","もえて あつい もの"],
+    ["花","花","はな","さく きれいな もの"],
+    ["貝","貝","かい","うみに いる いきもの"],
+    ["学","学校","がっこう","べんきょうを する ところ"],
+    ["気","気","き","きもちの こと"],
+    ["九","九つ","ここのつ","「9」のかず"],
+    ["休","休む","やすむ","やすみを とること"],
+    ["玉","玉","たま","まるい かたちの もの"],
+    ["金","お金","おかね","かいものに つかう もの"],
+    ["空","空","そら","うえに ひろがる ところ"],
+    ["月","月","つき","よるに でる まるい もの"],
+    ["犬","犬","いぬ","わんわんと なく どうぶつ"],
+    ["見","見る","みる","めで みること"],
+    ["五","五つ","いつつ","「5」のかず"],
+    ["口","口","くち","たべたり はなしたり する ところ"],
+    ["校","小学校","しょうがっこう","1ねんせいが かよう がっこう"],
+    ["左","左","ひだり","ひだりての ほう"],
+    ["三","三つ","みっつ","「3」のかず"],
+    ["山","山","やま","たかく なっている ところ"],
+    ["子","子","こ","こどもの こと"],
+    ["四","四つ","よっつ","「4」のかず"],
+    ["糸","糸","いと","ぬうときに つかう ほそい もの"],
+    ["字","文字","もじ","かいた もの"],
+    ["耳","耳","みみ","おとを きく ところ"],
+    ["七","七つ","ななつ","「7」のかず"],
+    ["車","車","くるま","はしる のりもの"],
+    ["手","手","て","ものを もつ ところ"],
+    ["十","十","とお","「10」のかず"],
+    ["出","出る","でる","そとへ いくこと"],
+    ["女","女の子","おんなのこ","おんなの こども"],
+    ["小","小さい","ちいさい","サイズが ちいさいこと"],
+    ["上","上","うえ","うえの ほう"],
+    ["森","森","もり","きが たくさん あるところ"],
+    ["人","人","ひと","ひとの こと"],
+    ["水","水","みず","のむ つめたい もの"],
+    ["正","正しい","ただしい","まちがって いないこと"],
+    ["生","生まれる","うまれる","あかちゃんが うまれること"],
+    ["青","青い","あおい","そらの ような いろ"],
+    ["夕","夕日","ゆうひ","ゆうがたの たいよう"],
+    ["石","石","いし","かたい もの"],
+    ["赤","赤い","あかい","りんごの ような いろ"],
+    ["千","千","せん","「1000」のかず"],
+    ["川","川","かわ","みずが ながれる ところ"],
+    ["先","先生","せんせい","おしえて くれる ひと"],
+    ["早","早い","はやい","じかんが はやいこと"],
+    ["草","草","くさ","にわに はえる みどりの もの"],
+    ["足","足","あし","あるくときに つかう ところ"],
+    ["村","村","むら","ひとが すんでいる ところ"],
+    ["大","大きい","おおきい","サイズが おおきいこと"],
+    ["男","男の子","おとこのこ","おとこの こども"],
+    ["竹","竹","たけ","まっすぐ のびる しょくぶつ"],
+    ["中","中","なか","まんなかの ほう"],
+    ["虫","虫","むし","ちいさい いきもの"],
+    ["町","町","まち","ひとが おおい ところ"],
+    ["天","天気","てんき","そらの ようす"],
+    ["田","田","た","おこめを つくる ところ"],
+    ["土","土","つち","じめんの こと"],
+    ["二","二つ","ふたつ","「2」のかず"],
+    ["日","日","ひ","たいようの こと"],
+    ["入","入る","はいる","なかに いくこと"],
+    ["年","年","とし","1ねんかんの こと"],
+    ["白","白い","しろい","ゆきの ような いろ"],
+    ["八","八つ","やっつ","「8」のかず"],
+    ["百","百","ひゃく","「100」のかず"],
+    ["文","文","ぶん","かいた ぶんしょうの こと"],
+    ["木","木","き","にわに はえる おおきな しょくぶつ"],
+    ["本","本","ほん","よむ もの"],
+    ["名","名","な","よびなの こと"],
+    ["目","目","め","みるための ところ"],
+    ["立","立つ","たつ","たちあがること"],
+    ["力","力","ちから","ちからを だすこと"],
+    ["林","林","はやし","きが はえている ところ"],
+    ["六","六つ","むっつ","「6」のかず"]
+  ];
+  const ENTRIES = KANJI_ROWS.map(row => ({ char: row[0], word: row[1], yomi: row[2], hint: row[3] }));
+
+  /* ---------- utilities ---------- */
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function toHiragana(s){
+    return String(s || '').replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
+  }
+  function normalizeAnswer(s){
+    return toHiragana(String(s || '')).trim().replace(/\s+/g, '');
+  }
+
+  /* ---------- sound ---------- */
+  const SOUND_KEY = 'kanji-practice-sound-v1';
+  let soundEnabled = localStorage.getItem(SOUND_KEY) !== '0';
+  const soundBtn = document.getElementById('soundBtn');
+  function renderSoundBtn(){ soundBtn.textContent = soundEnabled ? '🔊' : '🔇'; }
+  soundBtn.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem(SOUND_KEY, soundEnabled ? '1' : '0');
+    renderSoundBtn();
+  });
+  renderSoundBtn();
+
+  let sharedCtx = null;
+  function beep(freq, duration, delay, vol){
+    if(!soundEnabled) return;
+    try{
+      if(!sharedCtx) sharedCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = sharedCtx;
+      const start = ctx.currentTime + (delay || 0) / 1000;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(vol || 0.13, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + duration / 1000);
+      osc.start(start);
+      osc.stop(start + duration / 1000);
+    }catch(e){ /* audio not available; fail silently */ }
+  }
+  function playCorrect(){ beep(880, 120, 0); beep(1175, 160, 90); }
+  function playWrong(){ beep(320, 260, 0, 0.09); }
+  function playMilestone(){ beep(660, 110, 0); beep(880, 110, 100); beep(1175, 220, 200); }
+  function playComplete(){ beep(660, 130, 0); beep(880, 130, 120); beep(1046, 130, 240); beep(1318, 260, 360); }
+
+  /* ---------- best streak (local only) ---------- */
+  const BEST_KEY = 'kanji-practice-best-streak-v1';
+  function getBestStreak(){ return Number(localStorage.getItem(BEST_KEY)) || 0; }
+  function setBestStreak(n){ localStorage.setItem(BEST_KEY, String(n)); }
+
+  /* ---------- screens ---------- */
+  const startScreen = document.getElementById('startScreen');
+  const gameScreen = document.getElementById('gameScreen');
+  const resultScreen = document.getElementById('resultScreen');
+  function showScreen(el){
+    [startScreen, gameScreen, resultScreen].forEach(s => s.classList.add('hidden'));
+    el.classList.remove('hidden');
+  }
+
+  /* ---------- start screen controls ---------- */
+  let selectedMode = 'select';
+  let selectedCount = 10;
+
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedMode = btn.getAttribute('data-mode');
+    });
+  });
+  document.querySelectorAll('.count-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedCount = Number(btn.getAttribute('data-count'));
+    });
+  });
+  function renderBestStreakLine(){
+    const best = getBestStreak();
+    document.getElementById('bestStreakLine').textContent =
+      best > 0 ? ('さいこう れんぞく きろく：🔥 ' + best) : '';
+  }
+  renderBestStreakLine();
+
+  document.getElementById('startBtn').addEventListener('click', () => startGame(selectedMode, selectedCount));
+  document.getElementById('quitBtn').addEventListener('click', () => {
+    showScreen(startScreen);
+    renderBestStreakLine();
+  });
+
+  /* ---------- game state ---------- */
+  let mode, totalOriginal, queue, currentIdx, currentChoices;
+  let correctCount, streak, sessionBestStreak, firstTryCorrect, missedOnce;
+  let awaitingNext = false;
+
+  const qInstr = document.getElementById('qInstr');
+  const qPromptArea = document.getElementById('qPromptArea');
+  const qHint = document.getElementById('qHint');
+  const hintBtn = document.getElementById('hintBtn');
+  const yomiInputArea = document.getElementById('yomiInputArea');
+  const answerInput = document.getElementById('answerInput');
+  const answerBtn = document.getElementById('answerBtn');
+  const choiceArea = document.getElementById('choiceArea');
+  const feedback = document.getElementById('feedback');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressInner = document.getElementById('progressInner');
+  const streakPill = document.getElementById('streakPill');
+  const streakNum = document.getElementById('streakNum');
+  const correctNum = document.getElementById('correctNum');
+
+  function startGame(m, count){
+    mode = m;
+    totalOriginal = Math.min(count, ENTRIES.length);
+    queue = shuffle(ENTRIES.map((_, i) => i)).slice(0, totalOriginal);
+    correctCount = 0;
+    streak = 0;
+    sessionBestStreak = 0;
+    firstTryCorrect = 0;
+    missedOnce = new Set();
+    awaitingNext = false;
+    showScreen(gameScreen);
+    updateTopRow();
+    nextQuestion();
+  }
+
+  function updateTopRow(){
+    correctNum.textContent = String(correctCount);
+    streakNum.textContent = String(streak);
+    streakPill.style.display = streak >= 2 ? 'inline-flex' : 'none';
+    const inFlight = (currentIdx !== null && currentIdx !== undefined) ? 1 : 0;
+    const doneCount = totalOriginal - (queue.length + inFlight);
+    const pct = totalOriginal > 0 ? Math.max(0, Math.min(100, Math.round((doneCount / totalOriginal) * 100))) : 0;
+    progressInner.style.width = pct + '%';
+  }
+
+  // A few hint strings (e.g. 円="おかねの たんい（1円、10円など）") legitimately contain
+  // the target kanji itself. That's fine in yomi-input mode (the kanji is already the
+  // prompt there), but in select mode showing it would hand over the answer — mask it.
+  function maskHintForSelect(entry){
+    if(entry.hint.indexOf(entry.char) === -1) return entry.hint;
+    return entry.hint.split(entry.char).join('〇');
+  }
+
+  function pickDistractors(excludeIdx, n){
+    const pool = ENTRIES.map((_, i) => i).filter(i => i !== excludeIdx);
+    return shuffle(pool).slice(0, n);
+  }
+
+  function nextQuestion(){
+    awaitingNext = false;
+    feedback.textContent = '';
+    feedback.className = 'feedback';
+    nextBtn.classList.add('hidden');
+    hintBtn.classList.add('hidden');
+    hintBtn.textContent = '💡 ヒント';
+    qHint.textContent = '';
+    qHint.dataset.revealed = '';
+
+    if(queue.length === 0){
+      finishGame();
+      return;
+    }
+    currentIdx = queue.shift();
+    updateTopRow();
+    const entry = ENTRIES[currentIdx];
+
+    if(mode === 'yomi'){
+      qInstr.textContent = 'よみを ひらがなで かいてね';
+      qPromptArea.innerHTML = '';
+      const wordEl = document.createElement('div');
+      wordEl.className = 'q-word';
+      wordEl.textContent = entry.word;
+      qPromptArea.appendChild(wordEl);
+      yomiInputArea.classList.remove('hidden');
+      choiceArea.classList.add('hidden');
+      choiceArea.innerHTML = '';
+      answerInput.value = '';
+      answerInput.disabled = false;
+      answerBtn.disabled = false;
+      hintBtn.classList.remove('hidden');
+      hintBtn.onclick = () => {
+        qHint.textContent = entry.hint;
+      };
+      setTimeout(() => answerInput.focus(), 30);
+    } else {
+      qInstr.textContent = 'この よみかたの かんじは どれかな？';
+      qPromptArea.innerHTML = '';
+      const yomiEl = document.createElement('div');
+      yomiEl.className = 'q-yomi';
+      yomiEl.textContent = entry.yomi;
+      qPromptArea.appendChild(yomiEl);
+      qHint.textContent = maskHintForSelect(entry);
+      yomiInputArea.classList.add('hidden');
+      choiceArea.classList.remove('hidden');
+      choiceArea.innerHTML = '';
+
+      const distractors = pickDistractors(currentIdx, 3);
+      currentChoices = shuffle([currentIdx, ...distractors]);
+      currentChoices.forEach(idx => {
+        const b = document.createElement('button');
+        b.className = 'choice-btn';
+        b.textContent = ENTRIES[idx].char;
+        b.addEventListener('click', () => handleChoiceClick(idx, b));
+        choiceArea.appendChild(b);
+      });
+    }
+  }
+
+  function requeueWrong(idx){
+    const insertAt = Math.min(queue.length, 2 + Math.floor(Math.random() * 3));
+    queue.splice(insertAt, 0, idx);
+  }
+
+  function afterAnswer(isCorrect, entry){
+    if(isCorrect){
+      correctCount++;
+      streak++;
+      if(streak > sessionBestStreak) sessionBestStreak = streak;
+      if(!missedOnce.has(currentIdx)) firstTryCorrect++;
+      feedback.className = 'feedback good';
+      feedback.textContent = '⭕ せいかい！';
+      playCorrect();
+      if(streak > 0 && streak % 5 === 0) showMilestone(streak + 'れんぞく せいかい！🎉');
+    } else {
+      missedOnce.add(currentIdx);
+      streak = 0;
+      requeueWrong(currentIdx);
+      feedback.className = 'feedback soft';
+      feedback.textContent = '🌱 おしい！ こたえは「' + (mode === 'yomi' ? entry.yomi : entry.char) + '」';
+      playWrong();
+    }
+    updateTopRow();
+    nextBtn.classList.remove('hidden');
+    awaitingNext = true;
+  }
+
+  function submitYomiAnswer(){
+    if(awaitingNext) return;
+    const entry = ENTRIES[currentIdx];
+    answerInput.disabled = true;
+    answerBtn.disabled = true;
+    const isCorrect = normalizeAnswer(answerInput.value) === normalizeAnswer(entry.yomi);
+    afterAnswer(isCorrect, entry);
+  }
+  answerBtn.addEventListener('click', submitYomiAnswer);
+  answerInput.addEventListener('keydown', e => { if(e.key === 'Enter') submitYomiAnswer(); });
+
+  function handleChoiceClick(idx, btnEl){
+    if(awaitingNext) return;
+    const entry = ENTRIES[currentIdx];
+    const buttons = Array.from(choiceArea.children);
+    buttons.forEach(b => b.disabled = true);
+    const isCorrect = idx === currentIdx;
+    if(isCorrect){
+      btnEl.classList.add('correct');
+    } else {
+      btnEl.classList.add('wrong');
+      const correctBtn = buttons[currentChoices.indexOf(currentIdx)];
+      if(correctBtn) correctBtn.classList.add('correct');
+    }
+    afterAnswer(isCorrect, entry);
+  }
+
+  nextBtn.addEventListener('click', nextQuestion);
+
+  function showMilestone(text){
+    const overlay = document.getElementById('milestoneOverlay');
+    document.getElementById('milestoneBox').textContent = text;
+    overlay.classList.remove('show');
+    void overlay.offsetWidth;
+    overlay.classList.add('show');
+    playMilestone();
+  }
+
+  /* ---------- result screen ---------- */
+  function finishGame(){
+    const best = getBestStreak();
+    const newRecord = sessionBestStreak > best;
+    if(newRecord) setBestStreak(sessionBestStreak);
+    playComplete();
+
+    document.getElementById('resultEmoji').textContent = missedOnce.size === 0 ? '🏅' : '🎉';
+    document.getElementById('resultTitle').textContent =
+      missedOnce.size === 0 ? 'ぜんぶ いっかいで せいかい！すごい！' : 'よくがんばったね！';
+    document.getElementById('statMastered').textContent = totalOriginal + 'こ';
+    document.getElementById('statFirstTry').textContent = firstTryCorrect + 'こ';
+    document.getElementById('statBestStreak').textContent = '🔥 ' + sessionBestStreak;
+    document.getElementById('recordBadge').classList.toggle('hidden', !newRecord);
+
+    showScreen(resultScreen);
+  }
+
+  document.getElementById('retryBtn').addEventListener('click', () => startGame(mode, totalOriginal));
+  document.getElementById('backBtn').addEventListener('click', () => {
+    showScreen(startScreen);
+    renderBestStreakLine();
+  });
+</script>
+</body>
+</html>
