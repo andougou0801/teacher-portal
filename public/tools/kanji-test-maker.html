@@ -343,6 +343,11 @@
     font-size:0.7em;
     color:#777;
   }
+  .masu-ruby rt{
+    font-size:0.55em;
+    color:var(--accent-dark);
+    font-weight:700;
+  }
   .q-boxes{
     display:inline-flex;
     margin-inline-start:4px;
@@ -491,7 +496,9 @@
     <div class="custom-fields" id="customKakiFields">
       <label for="customTarget">空欄にする漢字</label>
       <input type="text" id="customTarget" style="width:100%;" placeholder="例：天気">
-      <p class="hint">文章の中で最初に出てくる「天気」の部分が、マス目の空欄になります。</p>
+      <label for="customKakiYomi" style="margin-top:10px;">その読み方（ひらがな）</label>
+      <input type="text" id="customKakiYomi" style="width:100%;" placeholder="例：てんき">
+      <p class="hint">文章の中で最初に出てくる「天気」の部分がマス目の空欄になり、読み方が問題文に表示されます（読み方がないと生徒が何を書けばよいか分かりません）。</p>
     </div>
     <div class="custom-fields hidden" id="customYomiFields">
       <label for="customYomiTarget">読みを問う言葉</label>
@@ -1985,6 +1992,7 @@
   const customYomiFields = document.getElementById('customYomiFields');
   const customSentence = document.getElementById('customSentence');
   const customTarget = document.getElementById('customTarget');
+  const customKakiYomi = document.getElementById('customKakiYomi');
   const customYomiTarget = document.getElementById('customYomiTarget');
   const customYomiAnswer = document.getElementById('customYomiAnswer');
   const customErrorMsg = document.getElementById('customErrorMsg');
@@ -2044,6 +2052,7 @@
     }
     if(format === 'kaki'){
       const target = customTarget.value.trim();
+      const kakiYomi = customKakiYomi.value.trim();
       if(!target){
         customErrorMsg.textContent = '空欄にする漢字を入力してください';
         return;
@@ -2052,8 +2061,13 @@
         customErrorMsg.textContent = `文章の中に「${target}」が見つかりません`;
         return;
       }
-      customQuestions.push({ type: 'kaki', sentence, target });
+      if(!kakiYomi){
+        customErrorMsg.textContent = 'その読み方（ひらがな）を入力してください（読み方がないと生徒が解けません）';
+        return;
+      }
+      customQuestions.push({ type: 'kaki', sentence, target, yomi: kakiYomi });
       customTarget.value = '';
+      customKakiYomi.value = '';
     }else{
       const target = customYomiTarget.value.trim();
       const yomiAns = customYomiAnswer.value.trim();
@@ -2087,8 +2101,8 @@
     }
     customQuestionList.innerHTML = customQuestions.map((q, i) => {
       const preview = q.type === 'kaki'
-        ? escapeHtml(q.sentence).replace(escapeHtml(q.target), '【' + escapeHtml(q.target) + '】')
-        : escapeHtml(q.sentence) + '（' + escapeHtml(q.target) + '＝' + escapeHtml(q.yomi) + '）';
+        ? escapeHtml(q.sentence).replace(escapeHtml(q.target), '【' + escapeHtml(q.target) + '＝' + escapeHtml(q.yomi || '') + '】')
+        : escapeHtml(q.sentence) + '（' + escapeHtml(q.target) + '＝' + escapeHtml(q.yomi || '') + '）';
       return '<div class="custom-q-row"><span class="q-preview">' + (i + 1) + '. <b>[' + (q.type === 'kaki' ? '書き取り' : '読み方') + ']</b> ' + preview + '</span>'
         + '<button class="btn-small btn-danger" data-idx="' + i + '">削除</button></div>';
     }).join('');
@@ -2111,10 +2125,13 @@
       const after = q.sentence.slice(idx + q.target.length);
       if(q.type === 'kaki'){
         const boxesHtml = [...q.target].map(ch => masuHtml(ch, withAns)).join('');
+        // ふりがなと同じ<ruby>を使うと、ブラウザが縦書きでも自動的にマス目の
+        // 横（右側）に読みを添えてくれる。
+        const rubyBlank = '<ruby class="masu-ruby">' + boxesHtml + '<rt>' + escapeHtml(q.yomi || '') + '</rt></ruby>';
         html += '<div class="q-item kaki">'
           + '<div class="q-head">'
           + '<span class="q-num">' + num + '</span>'
-          + '<span class="custom-sentence">' + escapeHtml(before) + boxesHtml + escapeHtml(after) + '</span>'
+          + '<span class="custom-sentence">' + escapeHtml(before) + rubyBlank + escapeHtml(after) + '</span>'
           + '</div></div>';
       }else{
         html += '<div class="q-item yomi">'
