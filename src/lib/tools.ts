@@ -60,7 +60,7 @@ export const tools: Tool[] = [
     slug: "kanji-test-maker",
     name: "漢字テスト作成",
     description:
-      "学年を選ぶだけで、読み方・書き取りの漢字テストと解答を自動作成。印刷してすぐ使えます（まずは1年生80字に対応）。",
+      "学年を選ぶだけで、読み方・書き取りの漢字テストと解答を自動作成。印刷してすぐ使えます（小学1〜6年生の教育漢字1026字すべてに対応）。",
     icon: "🈁",
     tags: ["国語", "無料"],
     audience: "teacher",
@@ -141,7 +141,7 @@ export const tools: Tool[] = [
     slug: "kanji-practice",
     name: "漢字れんしゅう",
     description:
-      "1年生の漢字80字を、選んで答える／読みを書くの2モードで練習できる子ども向けドリルです。間違えた漢字は自動的に後でもう一度出題され、連続正解やごほうび演出で楽しく続けられます。",
+      "小学1〜6年生の教育漢字1026字を、選んで答える／読みを書くの2モードで練習できる子ども向けドリルです。学年を選んで挑戦でき、間違えた漢字は自動的に後でもう一度出題され、連続正解やごほうび演出で楽しく続けられます。",
     icon: "🈶",
     tags: ["国語", "無料"],
     audience: "student",
@@ -161,12 +161,12 @@ export const tools: Tool[] = [
   },
   {
     slug: "calc-practice",
-    name: "100マス計算メーカー",
+    name: "100マス計算プリントメーカー",
     description:
       "たし算・ひき算・かけ算の100マス計算プリントを自動作成。数字の範囲やレイアウトを選んで印刷、Wordファイルでの保存にも対応。",
     icon: "➕",
     tags: ["算数", "無料"],
-    audience: "student",
+    audience: "teacher",
     status: "live",
     file: "/tools/calc-practice.html",
     mobileNote:
