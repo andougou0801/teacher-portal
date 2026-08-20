@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { articles } from "@/lib/articles";
 import { icebreakers } from "@/lib/icebreakers";
+import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
   title: "授業・教材アイデア | 全国教員支援ポータル（仮称）",
@@ -49,7 +50,7 @@ export default function LessonsPage() {
           <Link
             key={lesson.slug}
             href={`/articles/${lesson.slug}`}
-            className="rounded-2xl border border-line bg-white p-5"
+            className={`rounded-2xl border border-line border-l-4 bg-white p-5 ${getCategoryBorderColor(lesson.subject ?? lesson.category)}`}
           >
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[13px] font-extrabold tracking-wide text-accent">

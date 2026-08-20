@@ -4,6 +4,9 @@ import { tools } from "@/lib/tools";
 import { articles } from "@/lib/articles";
 import { officialLinks } from "@/lib/officialLinks";
 import { aiGuides } from "@/lib/aiGuides";
+import { icebreakers } from "@/lib/icebreakers";
+import { categories } from "@/lib/categories";
+import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
   title: "検索結果 | 全国教員支援ポータル（仮称）",
@@ -31,12 +34,16 @@ export default async function SearchPage(props: PageProps<"/search">) {
   const matchedGuides = aiGuides.filter((guide) =>
     matches(query, guide.title, guide.summary, guide.tool),
   );
+  const matchedIcebreakers = icebreakers.filter((ib) =>
+    matches(query, ib.title, ib.category, ib.place, ...ib.steps),
+  );
   const hasQuery = query.trim().length > 0;
   const totalResults =
     matchedTools.length +
     matchedArticles.length +
     matchedLinks.length +
-    matchedGuides.length;
+    matchedGuides.length +
+    matchedIcebreakers.length;
   const hasResults = totalResults > 0;
 
   return (
@@ -71,9 +78,28 @@ export default async function SearchPage(props: PageProps<"/search">) {
       </h1>
 
       {!hasResults && (
-        <p className="text-center text-sm text-muted">
-          該当する結果が見つかりませんでした。別のキーワードでお試しください。
-        </p>
+        <div className="mx-auto max-w-lg text-center">
+          <p className="text-sm text-muted">
+            「{query}」に該当する結果が見つかりませんでした。キーワードを短くする、
+            またはひらがな・カタカナで試すと見つかることがあります。
+          </p>
+          <p className="mt-6 mb-3 text-sm font-bold text-navy">
+            またはカテゴリーから探してみませんか？
+          </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {categories
+              .filter((category) => category.status === "live")
+              .map((category) => (
+                <Link
+                  key={category.slug}
+                  href={category.href}
+                  className="rounded-full border border-line bg-white px-3.5 py-2 text-sm font-bold text-navy hover:border-accent"
+                >
+                  {category.icon} {category.label}
+                </Link>
+              ))}
+          </div>
+        </div>
       )}
 
       {matchedTools.length > 0 && (
@@ -86,7 +112,7 @@ export default async function SearchPage(props: PageProps<"/search">) {
               <Link
                 key={tool.slug}
                 href={`/tools/${tool.slug}`}
-                className="rounded-2xl border border-line bg-white p-4"
+                className={`rounded-2xl border border-line border-l-4 bg-white p-4 ${getCategoryBorderColor(tool.tags[0])}`}
               >
                 <div className="text-2xl">{tool.icon}</div>
                 <h3 className="mt-2 text-sm font-bold">
@@ -114,13 +140,37 @@ export default async function SearchPage(props: PageProps<"/search">) {
               <Link
                 key={article.slug}
                 href={`/articles/${article.slug}`}
-                className="rounded-2xl border border-line bg-white p-4"
+                className={`rounded-2xl border border-line border-l-4 bg-white p-4 ${getCategoryBorderColor(article.category)}`}
               >
                 <div className="text-[13px] font-extrabold tracking-wide text-accent">
                   {article.category}
                 </div>
                 <h3 className="mt-1 text-sm font-bold">{article.title}</h3>
                 <p className="mt-1 text-sm text-muted">{article.summary}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {matchedIcebreakers.length > 0 && (
+        <div className="mb-10">
+          <h2 className="mb-3 text-sm font-bold text-navy">
+            アイスブレイク（{matchedIcebreakers.length}件）
+          </h2>
+          <div className="grid gap-3 md:grid-cols-3">
+            {matchedIcebreakers.map((ib) => (
+              <Link
+                key={ib.slug}
+                href={`/lessons/icebreakers/${ib.slug}`}
+                className={`rounded-2xl border border-line border-l-4 bg-white p-4 ${getCategoryBorderColor(ib.category)}`}
+              >
+                <h3 className="text-sm font-bold">
+                  {ib.emoji} {ib.title}
+                </h3>
+                <p className="mt-1 text-sm text-muted">
+                  ⏱ {ib.duration}・👥 {ib.groupSize}
+                </p>
               </Link>
             ))}
           </div>

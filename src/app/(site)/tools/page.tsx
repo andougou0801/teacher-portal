@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { tools } from "@/lib/tools";
+import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
   title: "先生の便利ツール | 全国教員支援ポータル（仮称）",
@@ -28,7 +29,7 @@ export default function ToolsPage() {
         {liveTools.map((tool) => (
           <div
             key={tool.slug}
-            className="flex flex-col overflow-hidden rounded-2xl border border-line bg-white"
+            className={`flex flex-col overflow-hidden rounded-2xl border border-line border-l-4 bg-white ${getCategoryBorderColor(tool.tags[0])}`}
           >
             <div className="flex h-24 items-center justify-center bg-gradient-to-br from-[#EAF2FA] to-[#DCE6F1] text-3xl text-navy">
               {tool.icon}

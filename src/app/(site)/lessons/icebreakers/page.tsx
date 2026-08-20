@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import IcebreakerScene from "@/components/IcebreakerScene";
 import { icebreakers, icebreakerCategories } from "@/lib/icebreakers";
+import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
   title: "アイスブレイク大特集 | 全国教員支援ポータル（仮称）",
-  description:
-    "時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集（全30種類）。",
+  description: `時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集（全${icebreakers.length}種類）。`,
 };
 
 export default function IcebreakersPage() {
@@ -37,7 +37,7 @@ export default function IcebreakersPage() {
                 <Link
                   key={ib.slug}
                   href={`/lessons/icebreakers/${ib.slug}`}
-                  className="overflow-hidden rounded-2xl border border-line bg-white"
+                  className={`overflow-hidden rounded-2xl border border-line border-l-4 bg-white ${getCategoryBorderColor(ib.category)}`}
                 >
                   <div className="h-28">
                     <IcebreakerScene type={ib.scene} />

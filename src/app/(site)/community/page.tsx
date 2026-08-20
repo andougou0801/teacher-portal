@@ -14,6 +14,8 @@ type QuestionRow = {
   answers: { count: number }[];
 };
 
+const REPORT_HIDE_THRESHOLD = 3;
+
 function formatDate(iso: string) {
   const d = new Date(iso);
   return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
@@ -21,6 +23,7 @@ function formatDate(iso: string) {
 
 export default function CommunityPage() {
   const [questions, setQuestions] = useState<QuestionRow[] | null>(null);
+  const [reportCounts, setReportCounts] = useState<Record<string, number>>({});
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>("すべて");
 
@@ -42,6 +45,18 @@ export default function CommunityPage() {
       return;
     }
     setQuestions((data as QuestionRow[]) ?? []);
+
+    // reportsテーブルが未作成（マイグレーション未実行）でも質問一覧自体は
+    // 表示できるよう、通報件数の取得は失敗しても無視する。
+    const { data: reportRows } = await supabase.from("reports").select("question_id");
+    if (reportRows) {
+      const counts: Record<string, number> = {};
+      for (const row of reportRows as { question_id: string | null }[]) {
+        if (!row.question_id) continue;
+        counts[row.question_id] = (counts[row.question_id] ?? 0) + 1;
+      }
+      setReportCounts(counts);
+    }
   }, []);
 
   useEffect(() => {
@@ -202,26 +217,35 @@ export default function CommunityPage() {
           )}
 
           <div className="flex flex-col gap-3">
-            {filtered?.map((q) => (
-              <Link
-                key={q.id}
-                href={`/community/${q.id}`}
-                className="rounded-2xl border border-line bg-white p-4"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy">
-                    {q.category}
-                  </span>
-                  <span className="shrink-0 rounded-lg bg-background px-2.5 py-1 text-[13px] font-bold text-navy">
-                    回答 {q.answers?.[0]?.count ?? 0}
-                  </span>
-                </div>
-                <h3 className="my-1.5 text-sm font-bold">{q.question}</h3>
-                <div className="text-[13px] text-muted">
-                  {q.nickname || "名無しの先生"}・{formatDate(q.created_at)}
-                </div>
-              </Link>
-            ))}
+            {filtered?.map((q) => {
+              const isHidden = (reportCounts[q.id] ?? 0) >= REPORT_HIDE_THRESHOLD;
+              return (
+                <Link
+                  key={q.id}
+                  href={`/community/${q.id}`}
+                  className="rounded-2xl border border-line bg-white p-4"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy">
+                      {q.category}
+                    </span>
+                    <span className="shrink-0 rounded-lg bg-background px-2.5 py-1 text-[13px] font-bold text-navy">
+                      回答 {q.answers?.[0]?.count ?? 0}
+                    </span>
+                  </div>
+                  {isHidden ? (
+                    <p className="my-1.5 text-sm text-warn">
+                      🚩 複数の通報があったため、内容を確認中です
+                    </p>
+                  ) : (
+                    <h3 className="my-1.5 text-sm font-bold">{q.question}</h3>
+                  )}
+                  <div className="text-[13px] text-muted">
+                    {q.nickname || "名無しの先生"}・{formatDate(q.created_at)}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </>
       )}

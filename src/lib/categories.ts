@@ -62,7 +62,7 @@ export const categories: Category[] = [
     icon: "✏️",
     description: "学級経営や授業実践について、運営者自身の視点で発信するコラム。",
     href: "/column",
-    status: "coming-soon",
+    status: "live",
   },
   {
     slug: "life",

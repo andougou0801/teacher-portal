@@ -4,6 +4,9 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabaseClient";
+import ReportButton from "@/components/ReportButton";
+
+const REPORT_HIDE_THRESHOLD = 3;
 
 type Question = {
   id: string;
@@ -31,6 +34,7 @@ export default function QuestionDetailPage() {
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [answers, setAnswers] = useState<Answer[] | null>(null);
+  const [reportCounts, setReportCounts] = useState<Record<string, number>>({});
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const [formNickname, setFormNickname] = useState("");
@@ -55,6 +59,18 @@ export default function QuestionDetailPage() {
     }
     setQuestion(q as Question);
     setAnswers((a as Answer[]) ?? []);
+
+    // reportsテーブルが未作成でもページ自体は表示できるよう、失敗は無視する。
+    const { data: reportRows } = await supabase.from("reports").select("question_id, answer_id");
+    if (reportRows) {
+      const counts: Record<string, number> = {};
+      for (const row of reportRows as { question_id: string | null; answer_id: string | null }[]) {
+        const key = row.question_id ?? row.answer_id;
+        if (!key) continue;
+        counts[key] = (counts[key] ?? 0) + 1;
+      }
+      setReportCounts(counts);
+    }
   }, [id]);
 
   useEffect(() => {
@@ -121,9 +137,18 @@ export default function QuestionDetailPage() {
             <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy">
               {question.category}
             </span>
-            <h1 className="my-2 text-lg font-bold">{question.question}</h1>
-            <div className="text-[13px] text-muted">
-              {question.nickname || "名無しの先生"}・{formatDate(question.created_at)}
+            {(reportCounts[question.id] ?? 0) >= REPORT_HIDE_THRESHOLD ? (
+              <p className="my-2 text-lg font-bold text-warn">
+                🚩 複数の通報があったため、内容を確認中です
+              </p>
+            ) : (
+              <h1 className="my-2 text-lg font-bold">{question.question}</h1>
+            )}
+            <div className="flex items-center justify-between">
+              <div className="text-[13px] text-muted">
+                {question.nickname || "名無しの先生"}・{formatDate(question.created_at)}
+              </div>
+              <ReportButton questionId={question.id} />
             </div>
           </div>
 
@@ -133,9 +158,18 @@ export default function QuestionDetailPage() {
           <div className="flex flex-col gap-3">
             {answers?.map((a) => (
               <div key={a.id} className="rounded-2xl border border-line bg-white p-4">
-                <p className="text-sm leading-loose whitespace-pre-wrap">{a.answer}</p>
-                <div className="mt-2 text-[13px] text-muted">
-                  {a.nickname || "名無しの先生"}・{formatDate(a.created_at)}
+                {(reportCounts[a.id] ?? 0) >= REPORT_HIDE_THRESHOLD ? (
+                  <p className="text-sm text-warn">
+                    🚩 複数の通報があったため、内容を確認中です
+                  </p>
+                ) : (
+                  <p className="text-sm leading-loose whitespace-pre-wrap">{a.answer}</p>
+                )}
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="text-[13px] text-muted">
+                    {a.nickname || "名無しの先生"}・{formatDate(a.created_at)}
+                  </div>
+                  <ReportButton answerId={a.id} />
                 </div>
               </div>
             ))}
