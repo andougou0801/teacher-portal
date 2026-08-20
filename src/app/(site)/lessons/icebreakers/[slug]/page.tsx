@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import IcebreakerScene from "@/components/IcebreakerScene";
 import { icebreakers, getIcebreakerBySlug } from "@/lib/icebreakers";
+import FavoriteButton from "@/components/FavoriteButton";
 
 export function generateStaticParams() {
   return icebreakers.map((ib) => ({ slug: ib.slug }));
@@ -41,11 +42,15 @@ export default async function IcebreakerDetailPage(
         <IcebreakerScene type={ib.scene} />
       </div>
 
-      <span className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy">
+      <Link
+        href={`/tags/${encodeURIComponent(ib.category)}`}
+        className="inline-block rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy hover:bg-accent hover:text-white"
+      >
         {ib.category}
-      </span>
-      <h1 className="mt-2 mb-4 text-2xl font-bold">
+      </Link>
+      <h1 className="mt-2 mb-4 flex items-center gap-2 text-2xl font-bold">
         {ib.emoji} {ib.title}
+        <FavoriteButton kind="icebreaker" slug={ib.slug} />
       </h1>
 
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">

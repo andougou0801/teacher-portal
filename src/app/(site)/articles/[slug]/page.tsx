@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { articles, getArticleBySlug } from "@/lib/articles";
 import { getToolBySlug } from "@/lib/tools";
 import { getIcebreakerBySlug } from "@/lib/icebreakers";
+import FavoriteButton from "@/components/FavoriteButton";
 
 export function generateStaticParams() {
   return articles.map((article) => ({ slug: article.slug }));
@@ -46,16 +47,25 @@ export default async function ArticlePage(
             {article.month}
           </span>
         )}
-        <span className="text-[13px] font-extrabold tracking-wide text-accent">
+        <Link
+          href={`/tags/${encodeURIComponent(article.category)}`}
+          className="text-[13px] font-extrabold tracking-wide text-accent hover:underline"
+        >
           {article.category}
-        </span>
+        </Link>
         {article.subject && (
-          <span className="rounded-full bg-[#EAF2FA] px-2 py-0.5 text-[13px] font-bold text-navy">
+          <Link
+            href={`/tags/${encodeURIComponent(article.subject)}`}
+            className="rounded-full bg-[#EAF2FA] px-2 py-0.5 text-[13px] font-bold text-navy hover:bg-accent hover:text-white"
+          >
             {article.subject}
-          </span>
+          </Link>
         )}
       </div>
-      <h1 className="mt-2 mb-3 text-2xl font-bold">{article.title}</h1>
+      <h1 className="mt-2 mb-3 flex items-center gap-2 text-2xl font-bold">
+        {article.title}
+        <FavoriteButton kind="article" slug={article.slug} />
+      </h1>
       <div className="mb-8 text-sm text-muted">
         {article.author}・{article.publishedAt}・{article.readTime}
       </div>

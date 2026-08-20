@@ -4,4 +4,5 @@ export const navItems = [
   { href: "/kids", label: "子ども向け" },
   { href: "/lessons", label: "授業・教材" },
   { href: "/community", label: "Q&A" },
+  { href: "/favorites", label: "⭐お気に入り" },
 ];

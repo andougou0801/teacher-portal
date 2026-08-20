@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { tools, getToolBySlug } from "@/lib/tools";
 import CopyEmbedLinkButton from "@/components/CopyEmbedLinkButton";
+import FavoriteButton from "@/components/FavoriteButton";
 
 export function generateStaticParams() {
   return tools
@@ -30,16 +32,18 @@ export default async function ToolPage(props: PageProps<"/tools/[slug]">) {
       <div>
         <div className="flex flex-wrap gap-1.5">
           {tool.tags.map((tag) => (
-            <span
+            <Link
               key={tag}
-              className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy"
+              href={`/tags/${encodeURIComponent(tag)}`}
+              className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy hover:bg-accent hover:text-white"
             >
               {tag}
-            </span>
+            </Link>
           ))}
         </div>
-        <h1 className="mt-2 text-2xl font-bold">
+        <h1 className="mt-2 flex items-center gap-2 text-2xl font-bold">
           {tool.icon} {tool.name}
+          <FavoriteButton kind="tool" slug={tool.slug} />
         </h1>
         <p className="mt-1 text-sm text-muted">{tool.description}</p>
         {tool.status === "live" ? (

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { tools } from "@/lib/tools";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
+import FavoriteButton from "@/components/FavoriteButton";
 
 export const metadata: Metadata = {
   title: "先生の便利ツール | 全国教員支援ポータル（仮称）",
@@ -31,18 +32,24 @@ export default function ToolsPage() {
             key={tool.slug}
             className={`flex flex-col overflow-hidden rounded-2xl border border-line border-l-4 bg-white ${getCategoryBorderColor(tool.tags[0])}`}
           >
-            <div className="flex h-24 items-center justify-center bg-gradient-to-br from-[#EAF2FA] to-[#DCE6F1] text-3xl text-navy">
+            <div className="relative flex h-24 items-center justify-center bg-gradient-to-br from-[#EAF2FA] to-[#DCE6F1] text-3xl text-navy">
               {tool.icon}
+              <FavoriteButton
+                kind="tool"
+                slug={tool.slug}
+                className="absolute top-1 right-1 bg-white/70"
+              />
             </div>
             <div className="flex flex-1 flex-col gap-2 p-4">
               <div className="flex flex-wrap gap-1.5">
                 {tool.tags.map((tag) => (
-                  <span
+                  <Link
                     key={tag}
-                    className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy"
+                    href={`/tags/${encodeURIComponent(tag)}`}
+                    className="rounded-full bg-[#EAF2FA] px-2.5 py-0.5 text-[13px] font-bold text-navy hover:bg-accent hover:text-white"
                   >
                     {tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
               <h3 className="text-sm font-bold">{tool.name}</h3>
