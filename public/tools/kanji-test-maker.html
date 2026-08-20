@@ -198,6 +198,16 @@
     margin-top:10px;
     display:none;
   }
+  .overflow-warning{
+    font-size:13px;
+    color:#c0392b;
+    font-weight:700;
+    background:#fff0f0;
+    border:1px solid #f2c6c6;
+    border-radius:10px;
+    padding:8px 12px;
+    margin-top:14px;
+  }
   .dirty-warning.show{display:block;}
   .toggle-row{
     display:flex;
@@ -225,7 +235,7 @@
   }
 
   /* ---- print preview area（A4横・縦書き） ---- */
-  .preview-wrap{max-width:1100px;margin:0 auto;}
+  .preview-wrap{max-width:640px;margin:0 auto;}
   #a4-frame{
     width:297mm;
     aspect-ratio:297/210;
@@ -288,12 +298,12 @@
     flex:1;
     min-height:0;
     font-size:calc(var(--masu-mm) * 0.6);
-    line-height:2.1;
+    line-height:1.5;
   }
   .q-item{
     display:inline-block;
     border-left:1px dashed #d8dfea;
-    padding:0 14px;
+    padding:0 6px;
     height:100%;
     vertical-align:top;
   }
@@ -301,14 +311,13 @@
     border-left:none;
   }
   .q-head{
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
+    display:block;
     height:100%;
   }
   .q-num{
     display:inline-block;
     min-height:1.6em;
+    margin-block-end:6px;
     font-weight:700;
   }
   .word-disp{
@@ -335,9 +344,8 @@
     color:#777;
   }
   .q-boxes{
-    margin-block-start:6px;
-    display:flex;
-    flex-wrap:wrap;
+    display:inline-flex;
+    margin-inline-start:4px;
   }
   .masu{
     display:inline-flex;
@@ -520,22 +528,6 @@
   </div>
 </div>
 
-<div class="preview-wrap">
-  <div id="a4-frame">
-    <div id="print-area">
-      <div class="page-header">
-        <div class="hizuke-ran"><span class="kaku-sen-s"></span>年<span class="kaku-sen-s"></span>組<span class="kaku-sen-s"></span>番　名前<span class="kaku-sen-l"></span></div>
-      </div>
-      <h2 id="title-hyouji"></h2>
-      <p id="instruction-hyouji"></p>
-      <div id="mondai"></div>
-      <div class="page-footer">
-        <div class="tensuu-ran"><span class="kaku-sen"></span>点</div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="wrap no-print">
   <div class="card">
     <label style="margin-bottom:10px;">マスの大きさ（ノートの方眼に合わせて選べます。書き取りのマス目・まわりの文字の大きさが連動して変わります）</label>
@@ -550,6 +542,23 @@
     <div class="toggle-row">
       <input type="checkbox" id="masuCenterLine" checked>
       <label for="masuCenterLine" style="margin:0;">マスの中央に点線を入れる</label>
+    </div>
+    <p class="overflow-warning" id="overflowWarning" style="display:none;">⚠ 問題数またはマスの大きさが多く、1ページ（横向きA4）に収まっていません。問題数を減らすか、マスを小さくしてください（このままでは印刷時に文字が縮小されたり、切れたりすることがあります）。</p>
+  </div>
+</div>
+
+<div class="preview-wrap">
+  <div id="a4-frame">
+    <div id="print-area">
+      <div class="page-header">
+        <div class="hizuke-ran"><span class="kaku-sen-s"></span>年<span class="kaku-sen-s"></span>組<span class="kaku-sen-s"></span>番　名前<span class="kaku-sen-l"></span></div>
+      </div>
+      <h2 id="title-hyouji"></h2>
+      <p id="instruction-hyouji"></p>
+      <div id="mondai"></div>
+      <div class="page-footer">
+        <div class="tensuu-ran"><span class="kaku-sen"></span>点</div>
+      </div>
     </div>
   </div>
 </div>
@@ -1832,13 +1841,42 @@
           + '<span class="q-num">' + num + '</span>'
           + '<span class="q-yomi">' + escapeHtml(q.entry.yomi) + '</span>'
           + '<span class="q-hint">（' + escapeHtml(maskHintForKaki(q.entry)) + '）</span>'
+          + '<span class="q-boxes">' + boxesHtml + '</span>'
           + '</div>'
-          + '<div class="q-boxes">' + boxesHtml + '</div>'
           + '</div>';
       }
     });
 
     document.getElementById('mondai').innerHTML = html || '<p style="color:#8a93a3;font-size:13px;">「テストを作る」を押すと、ここに問題が表示されます。</p>';
+    hamidashiKakunin();
+  }
+
+  // A4横向き＋縦書きなので、はみ出しは「高さ」ではなく「幅（列の合計）」で起こる。
+  // 画面上のプレビュー枠は aspect-ratio で作っているため印刷時の実寸（267mm×180mm、
+  // @page margin:15mm を差し引いた値）より余裕があることがあるので、印刷時と同じ
+  // 実寸に一時的に切り替えてから列の合計幅を測り、直後に元の見た目へ戻す。
+  function hamidashiKakunin(){
+    const frame = document.getElementById('a4-frame');
+    const printArea = document.getElementById('print-area');
+    const warning = document.getElementById('overflowWarning');
+    if(!frame || !printArea || !warning) return;
+    const items = document.querySelectorAll('.q-item');
+    if(items.length === 0){
+      warning.style.display = 'none';
+      return;
+    }
+    const motoNoCss = frame.style.cssText;
+    frame.style.width = '267mm';
+    frame.style.height = '180mm';
+    frame.style.aspectRatio = 'auto';
+    frame.style.overflow = 'visible';
+    frame.style.padding = '0';
+    frame.style.margin = '0';
+    let total = 0;
+    items.forEach(el => { total += el.getBoundingClientRect().width; });
+    const printAreaWidth = printArea.getBoundingClientRect().width;
+    frame.style.cssText = motoNoCss;
+    warning.style.display = (total > printAreaWidth + 2) ? 'block' : 'none';
   }
 
   showAnswer.addEventListener('change', render);
@@ -1848,6 +1886,11 @@
   function masuSizeUpdate(){
     const mm = document.querySelector('input[name="masuSize"]:checked').value;
     document.documentElement.style.setProperty('--masu-mm', mm + 'mm');
+    if(currentMode === 'auto'){
+      hamidashiKakunin();
+    }else{
+      renderCustomPrint();
+    }
   }
   document.querySelectorAll('input[name="masuSize"]').forEach(el => {
     el.addEventListener('change', masuSizeUpdate);
@@ -2086,6 +2129,7 @@
     document.getElementById('title-hyouji').textContent = customTitleInput.value || 'オリジナルもんだい';
     document.getElementById('instruction-hyouji').textContent = '◆　じぶんで つくった もんだいです。';
     document.getElementById('mondai').innerHTML = html || '<p style="color:#8a93a3;font-size:13px;">「この問題を追加する」を押すと、ここに表示されます。</p>';
+    hamidashiKakunin();
   }
 
   customShowAnswer.addEventListener('change', renderCustomPrint);

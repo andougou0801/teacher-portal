@@ -180,7 +180,6 @@
     }
     #mondai {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       grid-auto-flow: column;
       column-gap: 30px;
       row-gap: 8px;
@@ -274,6 +273,15 @@
 
     <label>プリントのタイトル：<input type="text" id="title" value="計算プリント"></label>
     <label>問題数：<input type="number" id="mondaisu" value="10" min="1" max="50"></label>
+    <label>問題を並べる列数：
+      <select id="retsuu" onchange="hyouji()">
+        <option value="1">1列</option>
+        <option value="2" selected>2列</option>
+        <option value="3">3列</option>
+        <option value="4">4列</option>
+      </select>
+    </label>
+    <div class="setsumei">※ 列数を増やすほど1ページに多くの問題を並べられます。文字が小さくなりすぎる場合は「文字の大きさ」で調整してください。</div>
 
     <label>計算の種類（複数選べます）：</label>
     <div class="checkbox-row">
@@ -1156,10 +1164,12 @@
       let mondaiWaku = document.getElementById("mondai");
       mondaiWaku.innerHTML = mondaiHTML;
 
-      let gyouSuu = Math.ceil(genzaiNoMondai.length / 2);
+      let retsuu = Number(document.getElementById("retsuu").value) || 2;
+      let gyouSuu = Math.ceil(genzaiNoMondai.length / retsuu);
       if (gyouSuu < 1) {
         gyouSuu = 1;
       }
+      mondaiWaku.style.gridTemplateColumns = "repeat(" + retsuu + ", 1fr)";
       mondaiWaku.style.gridTemplateRows = "repeat(" + gyouSuu + ", auto)";
 
       hamidashiKakunin();
