@@ -291,7 +291,7 @@
 
   <div class="input-row">
     <label>問題数：<input type="number" id="mondaisu" value="10" min="1" max="30" style="width:60px;"></label>
-    <label><input type="checkbox" id="showAnswer"> こたえを表示する（先生用の解答プリントになります）</label>
+    <label><input type="checkbox" id="showAnswer" onchange="mondaiSaihyouji()"> こたえを表示する（先生用の解答プリントになります）</label>
   </div>
 
   <button type="button" onclick="mondaiSakusei()">文章題を作成する</button>
@@ -311,6 +311,7 @@
   <div id="print-area">
     <div id="title-hyouji"></div>
     <div class="name-row">
+      <span>年　<span class="uketuke">&nbsp;</span></span>
       <span>組　<span class="uketuke">&nbsp;</span></span>
       <span>名前　<span class="uketuke">&nbsp;</span></span>
     </div>
@@ -970,13 +971,14 @@ function unitAllToggle(value) {
   renderUnitList();
 }
 
+let currentProblems = [];
+
 function mondaiSakusei() {
   let grade = currentGrade();
   let units = GRADE_UNITS[grade].filter(function (u) { return selectedUnits[u.id] !== false; });
   if (units.length === 0) { alert("単元を1つ以上選んでください。"); return; }
 
   let count = Math.max(1, Math.min(30, Number(document.getElementById("mondaisu").value) || 10));
-  let showAnswer = document.getElementById("showAnswer").checked;
   let title = document.getElementById("title").value || "文章問題プリント";
 
   // 選んだ単元を均等に使うため、シャッフルした単元リストを繰り返し使う
@@ -985,10 +987,14 @@ function mondaiSakusei() {
   for (let i = 0; i < count; i++) { order.push(shuffled[i % shuffled.length]); }
 
   document.getElementById("title-hyouji").textContent = title + "（" + grade + "年生）";
+  currentProblems = order.map(function (unit) { return unit.gen(); });
+  mondaiSaihyouji();
+}
 
+function mondaiSaihyouji() {
+  let showAnswer = document.getElementById("showAnswer").checked;
   let html = "";
-  order.forEach(function (unit, idx) {
-    let q = unit.gen();
+  currentProblems.forEach(function (q, idx) {
     let num = idx + 1;
     let shikiPart = showAnswer ? escapeHtml(q.shiki) : '<span class="blank-line blank-shiki">&nbsp;</span>';
     let kotaePart = showAnswer ? '<span class="kotae-fill">' + q.answerHTML + '</span>' : '<span class="blank-line blank-kotae">&nbsp;</span>';
