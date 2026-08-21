@@ -60,11 +60,19 @@ export default function KidsPage() {
                 ✓ 開発者本人による自作ツール
               </div>
             </div>
-            <Link
-              href={`/tools/${tool.slug}`}
+            <a
+              href={`/embed/tools/${tool.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-cta py-3 text-center text-sm font-bold text-white hover:bg-cta-dark"
             >
-              ツールを開く
+              ツールを開く（新しいタブ）
+            </a>
+            <Link
+              href={`/tools/${tool.slug}`}
+              className="border-t border-line py-2 text-center text-[13px] font-bold text-accent hover:bg-background"
+            >
+              くわしく見る
             </Link>
           </div>
         ))}

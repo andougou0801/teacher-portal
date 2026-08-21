@@ -59,23 +59,30 @@ export default async function ToolPage(props: PageProps<"/tools/[slug]">) {
           </div>
         )}
         {tool.status === "live" && tool.file && (
-          <div className="mt-3">
-            <CopyEmbedLinkButton slug={tool.slug} />
-            <p className="mt-1.5 text-sm text-muted">
-              コピーしたURLはヘッダーなしでツールだけが開く、共有・ブックマーク用のリンクです。
-            </p>
+          <div className="mt-4 flex flex-col gap-3">
+            <a
+              href={`/embed/tools/${tool.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-cta px-6 py-3 text-center text-base font-bold text-white hover:bg-cta-dark"
+            >
+              🔗 新しいタブでツールを開く
+            </a>
+            <div>
+              <CopyEmbedLinkButton slug={tool.slug} />
+              <p className="mt-1.5 text-sm text-muted">
+                コピーしたURLはヘッダーなしでツールだけが開く、共有・ブックマーク用のリンクです。
+                デスクトップに保存しておくと、次回からすぐ開けます。
+              </p>
+            </div>
+          </div>
+        )}
+        {tool.status !== "live" && (
+          <div className="mt-4 rounded-2xl border border-dashed border-line bg-white p-10 text-center text-sm text-muted">
+            このツールはまだ準備中です。公開までしばらくお待ちください。
           </div>
         )}
       </div>
-      {tool.status === "live" && tool.file ? (
-        <div className="overflow-hidden rounded-2xl border border-line bg-white">
-          <iframe src={tool.file} title={tool.name} className="h-[80vh] w-full" />
-        </div>
-      ) : (
-        <div className="rounded-2xl border border-dashed border-line bg-white p-10 text-center text-sm text-muted">
-          このツールはまだ準備中です。公開までしばらくお待ちください。
-        </div>
-      )}
     </section>
   );
 }
