@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>文章問題メーカー</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 24px;
+  }
+  .no-print {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    max-width: 760px;
+    margin: 0 auto 24px auto;
+  }
+  .no-print h1 {
+    color: #2d6cdf;
+    font-size: 22px;
+    margin-top: 0;
+  }
+  .no-print label {
+    display: block;
+    margin-bottom: 14px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #444;
+  }
+  .no-print input[type="text"],
+  .no-print input[type="number"],
+  .no-print select {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-left: 8px;
+  }
+  .no-print button {
+    background-color: #2d6cdf;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 8px;
+    margin-top: 8px;
+  }
+  .no-print button:hover { background-color: #1f54b8; }
+  .no-print button.sub-btn {
+    background-color: #eef2fb;
+    color: #2d6cdf;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .no-print button.sub-btn:hover { background-color: #dde6fa; }
+  .no-print hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 20px 0;
+  }
+  .setsumei {
+    font-size: 12px;
+    color: #888;
+    font-weight: normal;
+    margin-top: -8px;
+    margin-bottom: 14px;
+  }
+  .overflow-warning {
+    font-size: 13px;
+    color: #c0392b;
+    font-weight: bold;
+    background: #fff0f0;
+    border: 1px solid #f2c6c6;
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-top: 14px;
+  }
+  .grade-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .grade-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 0;
+    font-weight: normal;
+    background: #f4f6f8;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .grade-row input[type="radio"]:checked + span,
+  .grade-row label:has(input:checked) {
+    color: #2d6cdf;
+    font-weight: bold;
+  }
+  #unit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  #unit-list label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+    font-weight: normal;
+    font-size: 13px;
+    background: #f9fafc;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+  #unit-list .domain-tag {
+    font-size: 11px;
+    color: #888;
+    background: #eef2fb;
+    border-radius: 6px;
+    padding: 1px 6px;
+    margin-left: auto;
+  }
+  .input-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .input-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0;
+    font-weight: bold;
+  }
+  .fontsize-bar {
+    max-width: 210mm;
+    margin: 16px auto 0 auto;
+    text-align: center;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  .fontsize-bar label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #444;
+  }
+  #a4-frame {
+    width: 210mm;
+    aspect-ratio: 210 / 297;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 20mm;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    position: relative;
+  }
+  #print-area {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+    font-size: 15px;
+  }
+  #title-hyouji {
+    text-align: center;
+    font-size: 20px;
+    border-bottom: 3px solid #2d6cdf;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+  }
+  .name-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  .name-row span.uketuke {
+    display: inline-block;
+    min-width: 6em;
+    border-bottom: 1px solid #666;
+  }
+  #mondai-list { }
+  .q-block {
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed #cfd8e8;
+  }
+  .q-block:last-child { border-bottom: none; }
+  .q-text {
+    margin: 0 0 3px 0;
+    line-height: 1.4;
+  }
+  .q-num {
+    display: inline-block;
+    min-width: 1.6em;
+    font-weight: bold;
+    color: #2d6cdf;
+  }
+  .q-answer-row {
+    margin: 0;
+    padding-left: 1.6em;
+    line-height: 1.5;
+  }
+  .blank-line {
+    display: inline-block;
+    border-bottom: 1.5px solid #666;
+    min-height: 1.2em;
+    vertical-align: bottom;
+    margin: 0 4px;
+  }
+  .blank-shiki { width: 8em; }
+  .blank-kotae { width: 4.5em; }
+  .kotae-fill {
+    display: inline-block;
+    color: #1f54b8;
+    font-weight: bold;
+    margin: 0 4px;
+    border-bottom: 1.5px solid #666;
+    text-align: center;
+    min-width: 2em;
+  }
+  .bunsuu {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    line-height: 1.15;
+    margin: 0 3px;
+    font-size: 0.92em;
+  }
+  .bunshi { padding: 0 4px; }
+  .bunbo { padding: 0 4px; border-top: 1.6px solid #000; }
+  .taibunsuu {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    vertical-align: middle;
+    margin: 0 2px;
+  }
+
+  @media print {
+    .no-print, .fontsize-bar { display: none; }
+    body { background: #fff; padding: 0; }
+    #a4-frame {
+      width: auto;
+      aspect-ratio: auto;
+      height: 257mm;
+      overflow: visible;
+      padding: 0;
+      margin: 0;
+      box-shadow: none;
+      border-radius: 0;
+    }
+    #title-hyouji { border-bottom: 3px solid #000; }
+  }
+  @page { size: A4; margin: 20mm; }
+</style>
+</head>
+<body>
+<div class="no-print">
+  <h1>文章問題メーカー</h1>
+  <p class="setsumei">学年を選ぶと、学習指導要領（算数）に沿った単元が表示されます。単元は複数選べます。選んだ単元からランダムに文章題を自動作成します（外部送信は一切ありません）。</p>
+
+  <label>プリントのタイトル：<input type="text" id="title" value="文章問題プリント" style="width:220px;"></label>
+
+  <label>学年：</label>
+  <div class="grade-row" id="grade-row"></div>
+
+  <label style="margin-top:14px;">単元（複数選べます）：
+    <button type="button" class="sub-btn" onclick="unitAllToggle(true)">すべて選択</button>
+    <button type="button" class="sub-btn" onclick="unitAllToggle(false)">すべて解除</button>
+  </label>
+  <div id="unit-list"></div>
+
+  <div class="input-row">
+    <label>問題数：<input type="number" id="mondaisu" value="10" min="1" max="30" style="width:60px;"></label>
+    <label><input type="checkbox" id="showAnswer"> こたえを表示する（先生用の解答プリントになります）</label>
+  </div>
+
+  <button type="button" onclick="mondaiSakusei()">文章題を作成する</button>
+  <button type="button" onclick="window.print()">印刷する</button>
+  <button type="button" onclick="pdfHozon()">PDFとして保存</button>
+  <p class="overflow-warning" id="overflow-warning" style="display:none;">⚠ 問題数または文字の大きさが多く、1ページに収まっていません。問題数を減らすか、文字の大きさを小さくしてください。</p>
+</div>
+
+<div class="fontsize-bar">
+  <label>文字の大きさ：
+    <input type="range" id="fontsize" min="12" max="20" value="15" oninput="fontSizeUpdate()">
+    <span id="fontsize-hyouji">15</span>px
+  </label>
+</div>
+
+<div id="a4-frame">
+  <div id="print-area">
+    <div id="title-hyouji"></div>
+    <div class="name-row">
+      <span>組　<span class="uketuke">&nbsp;</span></span>
+      <span>名前　<span class="uketuke">&nbsp;</span></span>
+    </div>
+    <div id="mondai-list"></div>
+  </div>
+</div>
+
+<script>
+/* ===== ユーティリティ ===== */
+function ri(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function pick(arr) { return arr[ri(0, arr.length - 1)]; }
+function pickTwoNames() {
+  let a = pick(NAMES);
+  let b = pick(NAMES);
+  let guard = 0;
+  while (b === a && guard < 20) { b = pick(NAMES); guard++; }
+  return [a, b];
+}
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a || 1; }
+function reduceFrac(num, den) { let g = gcd(num, den); return [num / g, den / g]; }
+function fracHTML(num, den) { return '<span class="bunsuu"><span class="bunshi">' + num + '</span><span class="bunbo">' + den + '</span></span>'; }
+function mixedHTML(whole, num, den) {
+  if (num === 0) return String(whole);
+  if (whole === 0) return fracHTML(num, den);
+  return '<span class="taibunsuu">' + whole + fracHTML(num, den) + '</span>';
+}
+function roundToPlace(num, place) { return Math.round(num / place) * place; }
+function factorial(n) { let r = 1; for (let i = 2; i <= n; i++) r *= i; return r; }
+function combination(n, r) { return factorial(n) / (factorial(r) * factorial(n - r)); }
+function round2(num) { return Math.round(num * 100) / 100; }
+function fmtNum(num) {
+  if (Number.isInteger(num)) return String(num);
+  return String(Math.round(num * 100) / 100);
+}
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+const NAMES = ["ゆうと", "はると", "そうた", "みなと", "りく", "かい", "こうき", "たいち", "いつき", "れん",
+  "さくら", "ゆい", "みお", "あかり", "かえで", "めい", "つむぎ", "あおい", "ひなた", "なぎさ"];
+
+const ITEMS = [
+  { n: "りんご", c: "こ" }, { n: "みかん", c: "こ" }, { n: "いちご", c: "こ" }, { n: "もも", c: "こ" },
+  { n: "おはじき", c: "こ" }, { n: "あめ", c: "こ" }, { n: "クッキー", c: "まい" }, { n: "おりがみ", c: "まい" },
+  { n: "シール", c: "まい" }, { n: "色紙", c: "まい" }, { n: "えんぴつ", c: "本" }, { n: "色えんぴつ", c: "本" },
+  { n: "花", c: "本" }, { n: "ジュース", c: "本" }, { n: "ノート", c: "さつ" }, { n: "図かん", c: "さつ" },
+  { n: "ビー玉", c: "こ" }, { n: "風船", c: "こ" }, { n: "金魚", c: "ひき" }, { n: "うさぎ", c: "ひき" }
+];
+function pickItem() { return pick(ITEMS); }
+const PLACES = ["こうえん", "がっこう", "としょかん", "たいいくかん", "ちょう内会館"];
+
+/* ===== 学年ごとの単元定義 =====
+   text: 問題文（HTML可）／ answerHTML: こたえ（HTML可）／ shiki: 式（解答用の参考、プレーンテキスト）
+*/
+const GRADE_UNITS = {
+  1: [
+    { id: "g1-add-nocarry", name: "たし算（くり上がりなし）", domain: "数と計算", gen: g1AddNoCarry },
+    { id: "g1-add-carry", name: "たし算（くり上がりあり）", domain: "数と計算", gen: g1AddCarry },
+    { id: "g1-sub-nocarry", name: "ひき算（くり下がりなし）", domain: "数と計算", gen: g1SubNoCarry },
+    { id: "g1-sub-carry", name: "ひき算（くり下がりあり）", domain: "数と計算", gen: g1SubCarry },
+    { id: "g1-three-numbers", name: "3つのかずのけいさん", domain: "数と計算", gen: g1ThreeNumbers },
+  ],
+  2: [
+    { id: "g2-add-hissan", name: "たし算の筆算（2けた・3けた）", domain: "数と計算", gen: g2AddHissan },
+    { id: "g2-sub-hissan", name: "ひき算の筆算（2けた・3けた）", domain: "数と計算", gen: g2SubHissan },
+    { id: "g2-kakezan", name: "かけ算（九九）", domain: "数と計算", gen: g2Kakezan },
+    { id: "g2-length", name: "長さ（cm・m）", domain: "量と測定", gen: g2Length },
+    { id: "g2-kasa", name: "かさ（dL・L）", domain: "量と測定", gen: g2Kasa },
+    { id: "g2-jikoku", name: "時こくと時間", domain: "量と測定", gen: g2Jikoku },
+  ],
+  3: [
+    { id: "g3-kakezan-hissan", name: "かけ算の筆算（2〜3けた×1けた）", domain: "数と計算", gen: g3KakezanHissan },
+    { id: "g3-warizan-noamari", name: "わり算（あまりなし）", domain: "数と計算", gen: g3WarizanNoAmari },
+    { id: "g3-warizan-amari", name: "わり算（あまりあり）", domain: "数と計算", gen: g3WarizanAmari },
+    { id: "g3-ookii-kazu", name: "大きい数", domain: "数と計算", gen: g3OokiiKazu },
+    { id: "g3-shousuu", name: "小数のたし算・ひき算", domain: "数と計算", gen: g3Shousuu },
+    { id: "g3-bunsuu", name: "分数（同分母）のたし算・ひき算", domain: "数と計算", gen: g3Bunsuu },
+    { id: "g3-omosa", name: "重さ（g・kg）", domain: "量と測定", gen: g3Omosa },
+    { id: "g3-jikan", name: "時間の計算（分・秒）", domain: "量と測定", gen: g3Jikan },
+  ],
+  4: [
+    { id: "g4-warizan-hissan", name: "わり算の筆算（2けたでわる）", domain: "数と計算", gen: g4WarizanHissan },
+    { id: "g4-kakudo", name: "角度", domain: "図形", gen: g4Kakudo },
+    { id: "g4-gaisuu", name: "がい数（概数）", domain: "数と計算", gen: g4Gaisuu },
+    { id: "g4-shousuu-kakewari", name: "小数のかけ算・わり算", domain: "数と計算", gen: g4ShousuuKakewari },
+    { id: "g4-bunsuu", name: "分数のたし算・ひき算（帯分数）", domain: "数と計算", gen: g4Bunsuu },
+    { id: "g4-menseki", name: "面積（長方形・正方形）", domain: "図形", gen: g4Menseki },
+    { id: "g4-tanniatari", name: "単位量あたりの大きさ", domain: "数量関係", gen: g4TanniAtari },
+  ],
+  5: [
+    { id: "g5-shousuu-kakewari", name: "小数のかけ算・わり算", domain: "数と計算", gen: g5ShousuuKakewari },
+    { id: "g5-bunsuu-ihoubo", name: "分数のたし算・ひき算（異分母）", domain: "数と計算", gen: g5BunsuuIhoubo },
+    { id: "g5-bunsuu-seisuu", name: "分数×整数・分数÷整数", domain: "数と計算", gen: g5BunsuuSeisuu },
+    { id: "g5-wariai", name: "割合（百分率）", domain: "数量関係", gen: g5Wariai },
+    { id: "g5-hayasa", name: "速さ", domain: "量と測定", gen: g5Hayasa },
+    { id: "g5-tanniatari", name: "単位量あたりの大きさ", domain: "数量関係", gen: g5TanniAtari },
+    { id: "g5-menseki", name: "図形の面積（三角形・平行四辺形）", domain: "図形", gen: g5Menseki },
+    { id: "g5-taiseki", name: "体積（直方体・立方体）", domain: "量と測定", gen: g5Taiseki },
+  ],
+  6: [
+    { id: "g6-bunsuu-kake", name: "分数×分数", domain: "数と計算", gen: g6BunsuuKake },
+    { id: "g6-bunsuu-wari", name: "分数÷分数", domain: "数と計算", gen: g6BunsuuWari },
+    { id: "g6-hi", name: "比", domain: "数量関係", gen: g6Hi },
+    { id: "g6-kakudaizu", name: "拡大図・縮図", domain: "図形", gen: g6Kakudaizu },
+    { id: "g6-en-menseki", name: "円の面積", domain: "図形", gen: g6EnMenseki },
+    { id: "g6-kakuchuu-taiseki", name: "角柱・円柱の体積", domain: "図形", gen: g6KakuchuuTaiseki },
+    { id: "g6-hirei", name: "比例", domain: "数量関係", gen: g6Hirei },
+    { id: "g6-baainokazu", name: "場合の数", domain: "数量関係", gen: g6BaaiNoKazu },
+  ],
+};
+
+/* ===== 学年1 ===== */
+function g1AddNoCarry() {
+  let a = ri(1, 8), b = ri(1, 9 - a);
+  let item = pickItem();
+  let [n1, n2] = pickTwoNames();
+  let text = pick([
+    n1 + "さんは" + item.n + "を" + a + item.c + "、" + n2 + "さんは" + item.n + "を" + b + item.c + "もっています。2人あわせて" + item.n + "は何" + item.c + "ですか。",
+    pick(PLACES) + "に" + item.n + "が" + a + item.c + "ありました。あとから" + b + item.c + "もってきました。ぜんぶで何" + item.c + "になりましたか。",
+  ]);
+  return { text, answerHTML: (a + b) + item.c, shiki: a + "+" + b + "=" + (a + b) };
+}
+function g1AddCarry() {
+  let s = ri(11, 18);
+  let a = ri(Math.max(2, s - 9), Math.min(9, s - 2));
+  let b = s - a;
+  let item = pickItem();
+  let [n1, n2] = pickTwoNames();
+  let text = pick([
+    n1 + "さんは" + item.n + "を" + a + item.c + "、" + n2 + "さんは" + item.n + "を" + b + item.c + "もっています。2人あわせて" + item.n + "は何" + item.c + "ですか。",
+    pick(PLACES) + "に" + item.n + "が" + a + item.c + "ありました。あとから" + b + item.c + "もってきました。ぜんぶで何" + item.c + "になりましたか。",
+  ]);
+  return { text, answerHTML: s + item.c, shiki: a + "+" + b + "=" + s };
+}
+function g1SubNoCarry() {
+  let a = ri(11, 19);
+  let onesDigit = a % 10;
+  let b = ri(1, Math.max(1, onesDigit));
+  let item = pickItem();
+  let [n1, n2] = pickTwoNames();
+  let text = pick([
+    pick(PLACES) + "に" + item.n + "が" + a + item.c + "ありました。" + b + item.c + "つかうと、のこりは何" + item.c + "ですか。",
+    n1 + "さんは" + item.n + "を" + a + item.c + "もっていました。" + n2 + "さんに" + b + item.c + "あげました。のこりは何" + item.c + "ですか。",
+  ]);
+  return { text, answerHTML: (a - b) + item.c, shiki: a + "-" + b + "=" + (a - b) };
+}
+function g1SubCarry() {
+  let a = ri(11, 17);
+  let onesDigit = a % 10;
+  let b = ri(onesDigit + 1, 9);
+  let item = pickItem();
+  let [n1, n2] = pickTwoNames();
+  let text = pick([
+    pick(PLACES) + "に" + item.n + "が" + a + item.c + "ありました。" + b + item.c + "つかうと、のこりは何" + item.c + "ですか。",
+    n1 + "さんは" + item.n + "を" + a + item.c + "もっていました。" + n2 + "さんに" + b + item.c + "あげました。のこりは何" + item.c + "ですか。",
+  ]);
+  return { text, answerHTML: (a - b) + item.c, shiki: a + "-" + b + "=" + (a - b) };
+}
+function g1ThreeNumbers() {
+  let a = ri(3, 10), b = ri(1, 8);
+  let mid = a + b;
+  let c = ri(1, Math.min(8, mid - 1));
+  let text = "バスに" + a + "人のっていました。バスていで" + b + "人のってきました。そのあと" + c + "人おりました。今、バスに何人のっていますか。";
+  return { text, answerHTML: (mid - c) + "人", shiki: a + "+" + b + "-" + c + "=" + (mid - c) };
+}
+
+/* ===== 学年2 ===== */
+function g2AddHissan() {
+  let threeDigit = Math.random() < 0.35;
+  let a, b;
+  if (threeDigit) { a = ri(120, 600); b = ri(110, 399); } else { a = ri(15, 89); b = ri(12, 89); }
+  let item = pickItem();
+  let [n1, n2] = pickTwoNames();
+  let text = n1 + "さんは" + item.n + "を" + a + item.c + "、" + n2 + "さんは" + item.n + "を" + b + item.c + "もっています。2人あわせて" + item.n + "は何" + item.c + "ですか。";
+  return { text, answerHTML: (a + b) + item.c, shiki: a + "+" + b + "=" + (a + b) };
+}
+function g2SubHissan() {
+  let threeDigit = Math.random() < 0.35;
+  let a, b;
+  if (threeDigit) { a = ri(300, 800); b = ri(110, a - 100); } else { a = ri(40, 99); b = ri(11, a - 10); }
+  let item = pickItem();
+  let text = pick(PLACES) + "に" + item.n + "が" + a + item.c + "ありました。" + b + item.c + "つかうと、のこりは何" + item.c + "ですか。";
+  return { text, answerHTML: (a - b) + item.c, shiki: a + "-" + b + "=" + (a - b) };
+}
+function g2Kakezan() {
+  let a = ri(1, 9), b = ri(1, 9);
+  let item = pickItem();
+  let text = pick([
+    "1つのはこに" + item.n + "が" + a + item.c + "ずつ入っています。はこが" + b + "こあります。" + item.n + "はぜんぶで何" + item.c + "ですか。",
+    item.n + "を1人に" + a + item.c + "ずつ、" + b + "人に配ります。" + item.n + "はぜんぶで何" + item.c + "いりますか。",
+  ]);
+  return { text, answerHTML: (a * b) + item.c, shiki: a + "×" + b + "=" + (a * b) };
+}
+function g2Length() {
+  let useM = Math.random() < 0.5;
+  let tani = useM ? "m" : "cm";
+  let a = useM ? ri(3, 15) : ri(30, 95);
+  let b = useM ? ri(2, a - 1) : ri(10, a - 5);
+  let add = Math.random() < 0.5;
+  let text, answer, shiki;
+  if (add) {
+    text = "赤いテープの長さは" + a + tani + "です。青いテープの長さは" + b + tani + "です。2本をあわせると何" + tani + "になりますか。";
+    answer = a + b; shiki = a + "+" + b + "=" + answer;
+  } else {
+    text = a + tani + "のリボンから" + b + tani + "使いました。のこりは何" + tani + "ですか。";
+    answer = a - b; shiki = a + "-" + b + "=" + answer;
+  }
+  return { text, answerHTML: answer + tani, shiki };
+}
+function g2Kasa() {
+  let useL = Math.random() < 0.5;
+  let tani = useL ? "L" : "dL";
+  let a = ri(4, 9);
+  let b = ri(1, a - 1);
+  let add = Math.random() < 0.5;
+  let text, answer, shiki;
+  if (add) {
+    text = "やかんに水が" + a + tani + "あります。" + b + tani + "たすと、あわせて何" + tani + "になりますか。";
+    answer = a + b; shiki = a + "+" + b + "=" + answer;
+  } else {
+    text = "水とうに麦茶が" + a + tani + "あります。コップに" + b + tani + "注ぐと、のこりは何" + tani + "ですか。";
+    answer = a - b; shiki = a + "-" + b + "=" + answer;
+  }
+  return { text, answerHTML: answer + tani, shiki };
+}
+function g2Jikoku() {
+  let startH = ri(7, 9);
+  let startM = pick([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]);
+  let durM = pick([5, 10, 15, 20, 25, 30, 35, 40, 45]);
+  let totalM = startM + durM;
+  let endH = startH + Math.floor(totalM / 60);
+  let endM = totalM % 60;
+  let endText = endM === 0 ? (endH + "時") : (endH + "時" + endM + "分");
+  let text = "ゆうとさんは" + startH + "時" + (startM === 0 ? "" : startM + "分") + "に家を出て、" + durM + "分あるくと学校につきます。学校につくのは何時何分ですか。";
+  return { text, answerHTML: endText, shiki: startH + "時" + startM + "分 + " + durM + "分 = " + endText };
+}
+
+/* ===== 学年3 ===== */
+function g3KakezanHissan() {
+  let threeDigit = Math.random() < 0.4;
+  let a = threeDigit ? ri(120, 480) : ri(12, 89);
+  let b = ri(2, 9);
+  let item = pickItem();
+  let text = "1つのはこに" + item.n + "が" + a + item.c + "ずつ入っています。はこが" + b + "こあります。" + item.n + "はぜんぶで何" + item.c + "ですか。";
+  return { text, answerHTML: (a * b) + item.c, shiki: a + "×" + b + "=" + (a * b) };
+}
+function g3WarizanNoAmari() {
+  let b = ri(2, 9), q = ri(2, 9);
+  let a = b * q;
+  let item = pickItem();
+  let askPeople = Math.random() < 0.5;
+  let text = askPeople
+    ? (item.n + "が" + a + item.c + "あります。1人に" + b + item.c + "ずつ配ると、何人に配れますか。")
+    : (item.n + "が" + a + item.c + "あります。" + b + "人で同じ数ずつ分けると、1人分は何" + item.c + "になりますか。");
+  return { text, answerHTML: q + (askPeople ? "人" : item.c), shiki: a + "÷" + b + "=" + q };
+}
+function g3WarizanAmari() {
+  let b = ri(2, 9), q = ri(2, 9), r = ri(1, b - 1);
+  let a = b * q + r;
+  let item = pickItem();
+  let text = item.n + "が" + a + item.c + "あります。" + b + "人で同じ数ずつ分けると、1人分は何" + item.c + "で、何" + item.c + "あまりますか。";
+  return { text, answerHTML: q + item.c + "あまり" + r + item.c, shiki: a + "÷" + b + "=" + q + "あまり" + r };
+}
+function g3OokiiKazu() {
+  let a = ri(100, 900) * 100;
+  let b = ri(10, 90) * 100;
+  let add = Math.random() < 0.5;
+  let text, answer, shiki;
+  if (add) {
+    text = "町の人口は" + a + "人です。となりの町の人口は" + b + "人です。2つの町をあわせると人口は何人になりますか。";
+    answer = a + b; shiki = a + "+" + b + "=" + answer;
+  } else {
+    text = "ある工場で去年" + a + "こ製品を作りました。今年は去年より" + b + "こ少なく作りました。今年作った数は何こですか。";
+    answer = a - b; shiki = a + "-" + b + "=" + answer;
+  }
+  return { text, answerHTML: answer + (add ? "人" : "こ"), shiki };
+}
+function g3Shousuu() {
+  let a = round2(ri(15, 99) / 10);
+  let b = round2(ri(10, 89) / 10);
+  if (b > a) { [a, b] = [b, a]; }
+  let tani = pick(["L", "m", "kg"]);
+  let add = Math.random() < 0.5;
+  let text, answer, shiki;
+  if (add) {
+    text = "水が" + a + tani + "あります。" + b + tani + "たすと、あわせて何" + tani + "になりますか。";
+    answer = round2(a + b); shiki = a + "+" + b + "=" + answer;
+  } else {
+    text = "テープが" + a + tani + "あります。" + b + tani + "使うと、のこりは何" + tani + "ですか。";
+    answer = round2(a - b); shiki = a + "-" + b + "=" + answer;
+  }
+  return { text, answerHTML: fmtNum(answer) + tani, shiki };
+}
+function g3Bunsuu() {
+  let denom = pick([3, 4, 5, 6, 7, 8]);
+  let numA = ri(1, denom - 1);
+  let add = Math.random() < 0.5;
+  let numB, text, answerNum;
+  if (add) {
+    numB = ri(1, denom - numA);
+    answerNum = numA + numB;
+    text = "赤いテープの長さは" + fracHTML(numA, denom) + "mです。青いテープの長さは" + fracHTML(numB, denom) + "mです。あわせて何mですか。";
+  } else {
+    numB = ri(1, numA);
+    answerNum = numA - numB;
+    text = "リボンが" + fracHTML(numA, denom) + "mありました。" + fracHTML(numB, denom) + "m使うと、のこりは何mですか。";
+  }
+  let answerHTML = (answerNum === 0 ? "0" : fracHTML(answerNum, denom)) + "m";
+  return { text, answerHTML, shiki: numA + "/" + denom + (add ? "+" : "-") + numB + "/" + denom + "=" + answerNum + "/" + denom };
+}
+function g3Omosa() {
+  let useKg = Math.random() < 0.5;
+  let tani = useKg ? "kg" : "g";
+  let a = useKg ? ri(4, 9) : ri(300, 900);
+  let b = useKg ? ri(1, a - 1) : ri(50, a - 50);
+  let add = Math.random() < 0.5;
+  let text, answer, shiki;
+  if (add) {
+    text = "赤いふくろの重さは" + a + tani + "です。青いふくろの重さは" + b + tani + "です。あわせて何" + tani + "ですか。";
+    answer = a + b; shiki = a + "+" + b + "=" + answer;
+  } else {
+    text = "荷物の重さが" + a + tani + "あります。" + b + tani + "分をおろすと、のこりは何" + tani + "ですか。";
+    answer = a - b; shiki = a + "-" + b + "=" + answer;
+  }
+  return { text, answerHTML: answer + tani, shiki };
+}
+function g3Jikan() {
+  let a = ri(1, 10);
+  let text = pick(NAMES) + "さんは" + a + "分間なわとびをしました。これは何秒間ですか。";
+  return { text, answerHTML: (a * 60) + "秒", shiki: a + "分×60＝" + (a * 60) + "秒" };
+}
+
+/* ===== 学年4 ===== */
+function g4WarizanHissan() {
+  let b = ri(11, 29);
+  let q = ri(2, 9);
+  let withAmari = Math.random() < 0.5;
+  let r = withAmari ? ri(1, b - 1) : 0;
+  let a = b * q + r;
+  let item = pickItem();
+  if (withAmari) {
+    let text = item.n + "が" + a + item.c + "あります。" + b + item.c + "ずつ箱に入れると、何箱できて何" + item.c + "あまりますか。";
+    return { text, answerHTML: q + "箱あまり" + r + item.c, shiki: a + "÷" + b + "=" + q + "あまり" + r };
+  }
+  let text = item.n + "が" + a + item.c + "あります。" + b + "人で同じ数ずつ分けると、1人分は何" + item.c + "ですか。";
+  return { text, answerHTML: q + item.c, shiki: a + "÷" + b + "=" + q };
+}
+function g4Kakudo() {
+  let type = Math.random() < 0.5;
+  if (type) {
+    let a = ri(20, 150), b = ri(10, Math.max(10, 170 - a));
+    let text = "1つの角が" + a + "°、もう1つの角が" + b + "°です。2つの角をあわせると何°になりますか。";
+    return { text, answerHTML: (a + b) + "°", shiki: a + "+" + b + "=" + (a + b) };
+  }
+  let total = ri(90, 180);
+  let part = ri(10, total - 10);
+  let text = total + "°の角を2つに分けました。1つが" + part + "°のとき、もう1つは何°ですか。";
+  return { text, answerHTML: (total - part) + "°", shiki: total + "-" + part + "=" + (total - part) };
+}
+function g4Gaisuu() {
+  let a = ri(1000, 9999);
+  let place = pick([100, 1000]);
+  let placeName = place === 100 ? "百" : "千";
+  let rounded = roundToPlace(a, place);
+  let text = "ある本屋にある本の数は" + a + "さつです。" + placeName + "の位までのがい数で表すと、何さつになりますか。";
+  return { text, answerHTML: rounded + "さつ", shiki: a + "を" + placeName + "の位までのがい数にすると" + rounded };
+}
+function g4ShousuuKakewari() {
+  let type = Math.random() < 0.5;
+  if (type) {
+    let a = round2(ri(15, 99) / 10);
+    let b = ri(2, 9);
+    let text = "1本" + a + "Lのジュースが" + b + "本あります。ぜんぶで何Lですか。";
+    return { text, answerHTML: fmtNum(round2(a * b)) + "L", shiki: a + "×" + b + "=" + round2(a * b) };
+  }
+  let q = round2(ri(10, 50) / 10);
+  let b = ri(2, 5);
+  let a = round2(q * b);
+  let text = a + "mのリボンを" + b + "人で同じ長さずつ分けます。1人分は何mですか。";
+  return { text, answerHTML: fmtNum(q) + "m", shiki: a + "÷" + b + "=" + q };
+}
+function g4Bunsuu() {
+  let denom = pick([3, 4, 5, 6, 7, 8]);
+  let wholeA = ri(0, 2), numA = ri(1, denom - 1);
+  let wholeB = ri(0, 2), numB = ri(1, denom - 1);
+  let add = Math.random() < 0.5;
+  let text, resultWhole, resultNum;
+  if (add) {
+    let total = (wholeA * denom + numA) + (wholeB * denom + numB);
+    resultWhole = Math.floor(total / denom); resultNum = total % denom;
+    text = "赤いリボンを" + mixedHTML(wholeA, numA, denom) + "m、青いリボンを" + mixedHTML(wholeB, numB, denom) + "m使いました。あわせて何m使いましたか。";
+  } else {
+    let totalA = wholeA * denom + numA;
+    let totalB = wholeB * denom + numB;
+    if (totalB > totalA) { [totalA, totalB] = [totalB, totalA]; }
+    let diff = totalA - totalB;
+    resultWhole = Math.floor(diff / denom); resultNum = diff % denom;
+    let dispA = { w: Math.floor(totalA / denom), n: totalA % denom };
+    let dispB = { w: Math.floor(totalB / denom), n: totalB % denom };
+    text = "テープが" + mixedHTML(dispA.w, dispA.n, denom) + "mありました。" + mixedHTML(dispB.w, dispB.n, denom) + "m使うと、のこりは何mですか。";
+  }
+  let shikiKotae = resultNum === 0 ? String(resultWhole) : (resultWhole === 0 ? (resultNum + "/" + denom) : (resultWhole + "と" + resultNum + "/" + denom));
+  return { text, answerHTML: mixedHTML(resultWhole, resultNum, denom) + "m", shiki: "（帯分数の" + (add ? "たし算" : "ひき算") + "）答え：" + shikiKotae };
+}
+function g4Menseki() {
+  let square = Math.random() < 0.5;
+  if (square) {
+    let side = ri(3, 20);
+    let text = "1辺が" + side + "cmの正方形の花だんがあります。この花だんの面積は何cm²ですか。";
+    return { text, answerHTML: (side * side) + "cm²", shiki: side + "×" + side + "=" + (side * side) };
+  }
+  let w = ri(3, 20), h = ri(3, 20);
+  while (h === w) { h = ri(3, 20); }
+  let text = "たて" + h + "cm、よこ" + w + "cmの長方形の紙があります。この紙の面積は何cm²ですか。";
+  return { text, answerHTML: (w * h) + "cm²", shiki: h + "×" + w + "=" + (w * h) };
+}
+function g4TanniAtari() {
+  let area = pick([2, 4, 5, 8, 10]);
+  let people = area * ri(4, 15);
+  let text = "面積" + area + "m²の教室に" + people + "人います。1m²あたり何人いますか。";
+  return { text, answerHTML: (people / area) + "人", shiki: people + "÷" + area + "=" + (people / area) };
+}
+
+/* ===== 学年5 ===== */
+function g5ShousuuKakewari() {
+  let type = Math.random() < 0.5;
+  if (type) {
+    let a = round2(ri(15, 90) / 10);
+    let b = round2(ri(15, 90) / 10);
+    let text = "1mの重さが" + a + "kgの鉄のぼうがあります。この鉄のぼう" + b + "m分の重さは何kgですか。";
+    return { text, answerHTML: fmtNum(round2(a * b)) + "kg", shiki: a + "×" + b + "=" + round2(a * b) };
+  }
+  let b = round2(ri(15, 40) / 10);
+  let q = round2(ri(10, 40) / 10);
+  let a = round2(b * q);
+  let text = a + "Lのペンキで、かべを" + b + "m²ぬれます。1m²あたり何Lのペンキが必要ですか。";
+  return { text, answerHTML: fmtNum(q) + "L", shiki: a + "÷" + b + "=" + q };
+}
+function g5BunsuuIhoubo() {
+  let denomA = pick([2, 3, 4, 5, 6]);
+  let denomB = pick([2, 3, 4, 5, 6, 7, 8]);
+  while (denomB === denomA) { denomB = pick([2, 3, 4, 5, 6, 7, 8]); }
+  let numA = ri(1, denomA - 1);
+  let numB = ri(1, denomB - 1);
+  let lcm = (denomA * denomB) / gcd(denomA, denomB);
+  let convA = numA * (lcm / denomA);
+  let convB = numB * (lcm / denomB);
+  let add = Math.random() < 0.5;
+  let text, resultNumRaw;
+  if (add) {
+    resultNumRaw = convA + convB;
+    text = "赤いテープの長さは" + fracHTML(numA, denomA) + "mです。青いテープの長さは" + fracHTML(numB, denomB) + "mです。あわせて何mですか。";
+  } else {
+    if (convB > convA) { [convA, convB] = [convB, convA]; [numA, numB] = [numB, numA]; [denomA, denomB] = [denomB, denomA]; }
+    resultNumRaw = convA - convB;
+    text = "テープが" + fracHTML(numA, denomA) + "mありました。" + fracHTML(numB, denomB) + "m使うと、のこりは何mですか。";
+  }
+  let [rn, rd] = resultNumRaw === 0 ? [0, 1] : reduceFrac(resultNumRaw, lcm);
+  let answerHTML = (resultNumRaw === 0 ? "0" : fracHTML(rn, rd)) + "m";
+  return { text, answerHTML, shiki: numA + "/" + denomA + (add ? "+" : "-") + numB + "/" + denomB + "=" + rn + "/" + rd };
+}
+function g5BunsuuSeisuu() {
+  let denom = pick([2, 3, 4, 5, 6, 7]);
+  let num = ri(1, denom - 1);
+  let intN = ri(2, 6);
+  let mul = Math.random() < 0.5;
+  if (mul) {
+    let [rn, rd] = reduceFrac(num * intN, denom);
+    let text = "1dLで" + fracHTML(num, denom) + "m²ぬれるペンキがあります。" + intN + "dLでは何m²ぬれますか。";
+    return { text, answerHTML: fracHTML(rn, rd) + "m²", shiki: num + "/" + denom + "×" + intN + "=" + rn + "/" + rd };
+  }
+  let [rn, rd] = reduceFrac(num, denom * intN);
+  let text = fracHTML(num, denom) + "Lのジュースを" + intN + "人で同じ量ずつ分けます。1人分は何Lですか。";
+  return { text, answerHTML: fracHTML(rn, rd) + "L", shiki: num + "/" + denom + "÷" + intN + "=" + rn + "/" + rd };
+}
+function g5Wariai() {
+  let base = ri(2, 9) * 100;
+  let percent = pick([10, 20, 30, 40, 50, 60, 70, 80, 90]);
+  let part = base * percent / 100;
+  let text = "定員" + base + "人の学級で、" + percent + "％の人が委員会活動をしています。委員会活動をしている人は何人ですか。";
+  return { text, answerHTML: part + "人", shiki: base + "×" + percent + "÷100=" + part };
+}
+function g5Hayasa() {
+  let time = ri(2, 8);
+  let speed = ri(20, 80);
+  let distance = time * speed;
+  let type = ri(0, 2);
+  if (type === 0) {
+    let text = distance + "kmの道のりを" + time + "時間で走る自動車があります。この自動車の時速は何kmですか。";
+    return { text, answerHTML: speed + "km", shiki: distance + "÷" + time + "=" + speed };
+  }
+  if (type === 1) {
+    let text = "時速" + speed + "kmで走る自動車が、" + time + "時間走ると何km進みますか。";
+    return { text, answerHTML: distance + "km", shiki: speed + "×" + time + "=" + distance };
+  }
+  let text = distance + "kmの道のりを、時速" + speed + "kmの自動車で走ると何時間かかりますか。";
+  return { text, answerHTML: time + "時間", shiki: distance + "÷" + speed + "=" + time };
+}
+function g5TanniAtari() {
+  let price = ri(2, 9) * 10;
+  let count = ri(2, 9);
+  let total = price * count;
+  let text = "えんぴつ" + count + "本の代金は" + total + "円でした。えんぴつ1本の値段は何円ですか。";
+  return { text, answerHTML: price + "円", shiki: total + "÷" + count + "=" + price };
+}
+function g5Menseki() {
+  let sankaku = Math.random() < 0.5;
+  if (sankaku) {
+    let base = ri(4, 20);
+    let height = ri(4, 20);
+    if ((base * height) % 2 !== 0) { height += 1; }
+    let text = "底辺" + base + "cm、高さ" + height + "cmの三角形があります。この三角形の面積は何cm²ですか。";
+    return { text, answerHTML: ((base * height) / 2) + "cm²", shiki: base + "×" + height + "÷2=" + ((base * height) / 2) };
+  }
+  let base = ri(4, 20), height = ri(4, 20);
+  let text = "底辺" + base + "cm、高さ" + height + "cmの平行四辺形があります。この平行四辺形の面積は何cm²ですか。";
+  return { text, answerHTML: (base * height) + "cm²", shiki: base + "×" + height + "=" + (base * height) };
+}
+function g5Taiseki() {
+  let cube = Math.random() < 0.5;
+  if (cube) {
+    let side = ri(2, 15);
+    let text = "1辺が" + side + "cmの立方体の形をした水そうがあります。この水そうの容積は何cm³ですか。";
+    return { text, answerHTML: (side ** 3) + "cm³", shiki: side + "×" + side + "×" + side + "=" + (side ** 3) };
+  }
+  let w = ri(2, 15), h = ri(2, 15), d = ri(2, 15);
+  let text = "たて" + d + "cm、よこ" + w + "cm、高さ" + h + "cmの直方体の形をした箱があります。この箱の体積は何cm³ですか。";
+  return { text, answerHTML: (w * h * d) + "cm³", shiki: d + "×" + w + "×" + h + "=" + (w * h * d) };
+}
+
+/* ===== 学年6 ===== */
+function g6BunsuuKake() {
+  let n1 = ri(1, 8), d1 = ri(n1 + 1, 9);
+  let n2 = ri(1, 8), d2 = ri(n2 + 1, 9);
+  let [rn, rd] = reduceFrac(n1 * n2, d1 * d2);
+  let text = "1dLで" + fracHTML(n1, d1) + "m²ぬれるペンキがあります。" + fracHTML(n2, d2) + "dLでは何m²ぬれますか。";
+  return { text, answerHTML: fracHTML(rn, rd) + "m²", shiki: n1 + "/" + d1 + "×" + n2 + "/" + d2 + "=" + rn + "/" + rd };
+}
+function g6BunsuuWari() {
+  let n1 = ri(1, 8), d1 = ri(n1 + 1, 9);
+  let n2 = ri(1, 8), d2 = ri(n2 + 1, 9);
+  let [rn, rd] = reduceFrac(n1 * d2, d1 * n2);
+  let text = fracHTML(n1, d1) + "Lのペンキで" + fracHTML(n2, d2) + "m²ぬれます。1Lでは何m²ぬれますか。";
+  return { text, answerHTML: fracHTML(rn, rd) + "m²", shiki: n1 + "/" + d1 + "÷" + n2 + "/" + d2 + "=" + rn + "/" + rd };
+}
+function g6Hi() {
+  let ratioA = ri(2, 9), ratioB = ri(2, 9);
+  while (gcd(ratioA, ratioB) !== 1) { ratioA = ri(2, 9); ratioB = ri(2, 9); }
+  let unitVal = ri(2, 10);
+  let total = unitVal * (ratioA + ratioB);
+  let partA = unitVal * ratioA;
+  let text = "赤いリボンと青いリボンの長さの比は" + ratioA + "：" + ratioB + "です。2本のリボンの長さの合計が" + total + "cmのとき、赤いリボンの長さは何cmですか。";
+  return { text, answerHTML: partA + "cm", shiki: total + "×" + ratioA + "/" + (ratioA + ratioB) + "=" + partA };
+}
+function g6Kakudaizu() {
+  let enlarge = Math.random() < 0.5;
+  if (enlarge) {
+    let factor = ri(2, 4);
+    let orig = ri(2, 10);
+    let text = "もとの図形の辺の長さが" + orig + "cmです。" + factor + "倍の拡大図をかくと、その辺の長さは何cmになりますか。";
+    return { text, answerHTML: (orig * factor) + "cm", shiki: orig + "×" + factor + "=" + (orig * factor) };
+  }
+  let factor = pick([2, 3, 4, 5]);
+  let orig = ri(1, 10) * factor;
+  let text = "もとの図形の辺の長さが" + orig + "cmです。" + factor + "分の1の縮図をかくと、その辺の長さは何cmになりますか。";
+  return { text, answerHTML: (orig / factor) + "cm", shiki: orig + "÷" + factor + "=" + (orig / factor) };
+}
+function g6EnMenseki() {
+  let radius = ri(2, 15);
+  let answer = round2(radius * radius * 3.14);
+  let text = "半径" + radius + "cmの円の形をした花だんがあります。円周率を3.14として、この花だんの面積は何cm²ですか。";
+  return { text, answerHTML: fmtNum(answer) + "cm²", shiki: radius + "×" + radius + "×3.14=" + answer };
+}
+function g6KakuchuuTaiseki() {
+  let enChuu = Math.random() < 0.5;
+  if (enChuu) {
+    let radius = ri(2, 10), height = ri(3, 15);
+    let baseArea = round2(radius * radius * 3.14);
+    let answer = round2(baseArea * height);
+    let text = "底面の半径が" + radius + "cm、高さが" + height + "cmの円柱があります。円周率を3.14として、この円柱の体積は何cm³ですか。";
+    return { text, answerHTML: fmtNum(answer) + "cm³", shiki: baseArea + "×" + height + "=" + answer };
+  }
+  let base = ri(4, 12), h = ri(4, 12);
+  if ((base * h) % 2 !== 0) { h += 1; }
+  let baseArea = (base * h) / 2;
+  let height = ri(3, 15);
+  let answer = baseArea * height;
+  let text = "底面が底辺" + base + "cm、高さ" + h + "cmの三角形で、柱の高さが" + height + "cmの三角柱があります。この三角柱の体積は何cm³ですか。";
+  return { text, answerHTML: answer + "cm³", shiki: baseArea + "×" + height + "=" + answer };
+}
+function g6Hirei() {
+  let type = Math.random() < 0.5;
+  if (type) {
+    let unitPrice = ri(20, 200);
+    let count = ri(2, 9);
+    let text = "1本" + unitPrice + "円のジュースを" + count + "本買います。代金は何円ですか。";
+    return { text, answerHTML: (unitPrice * count) + "円", shiki: unitPrice + "×" + count + "=" + (unitPrice * count) };
+  }
+  let rate = ri(30, 90);
+  let time = ri(2, 10);
+  let text = "1分間に" + rate + "mずつ進む人が、" + time + "分間歩くと何m進みますか。";
+  return { text, answerHTML: (rate * time) + "m", shiki: rate + "×" + time + "=" + (rate * time) };
+}
+function g6BaaiNoKazu() {
+  let type = Math.random() < 0.5;
+  if (type) {
+    let n = ri(3, 4);
+    let names = NAMES.slice(0, n);
+    let text = names.join("、") + "の" + n + "人でリレーの走る順番を決めます。順番は全部で何通りありますか。";
+    return { text, answerHTML: factorial(n) + "通り", shiki: n + "×" + (n - 1) + "×...=" + factorial(n) };
+  }
+  let colors = ["赤", "青", "黄", "緑"];
+  let text = colors.join("、") + "の4色から2色を選んで旗を作ります。色の組み合わせは何通りありますか。";
+  return { text, answerHTML: combination(4, 2) + "通り", shiki: "4×3÷2=" + combination(4, 2) };
+}
+
+/* ===== 画面制御 ===== */
+let selectedUnits = {};
+
+function initGradeRow() {
+  let row = document.getElementById("grade-row");
+  let html = "";
+  for (let g = 1; g <= 6; g++) {
+    html += '<label><input type="radio" name="grade" value="' + g + '"' + (g === 1 ? " checked" : "") + ' onchange="gradeChanged()"><span>' + g + '年生</span></label>';
+  }
+  row.innerHTML = html;
+}
+
+function currentGrade() {
+  let el = document.querySelector('input[name="grade"]:checked');
+  return el ? Number(el.value) : 1;
+}
+
+function gradeChanged() {
+  renderUnitList();
+}
+
+function renderUnitList() {
+  let grade = currentGrade();
+  let units = GRADE_UNITS[grade];
+  let container = document.getElementById("unit-list");
+  let html = "";
+  units.forEach(function (u) {
+    let checked = selectedUnits[u.id] !== false;
+    html += '<label><input type="checkbox" data-unit-id="' + u.id + '" ' + (checked ? "checked" : "") + ' onchange="unitToggled(this)"> ' + u.name + '<span class="domain-tag">' + u.domain + '</span></label>';
+  });
+  container.innerHTML = html;
+}
+
+function unitToggled(el) {
+  selectedUnits[el.getAttribute("data-unit-id")] = el.checked;
+}
+
+function unitAllToggle(value) {
+  let grade = currentGrade();
+  GRADE_UNITS[grade].forEach(function (u) { selectedUnits[u.id] = value; });
+  renderUnitList();
+}
+
+function mondaiSakusei() {
+  let grade = currentGrade();
+  let units = GRADE_UNITS[grade].filter(function (u) { return selectedUnits[u.id] !== false; });
+  if (units.length === 0) { alert("単元を1つ以上選んでください。"); return; }
+
+  let count = Math.max(1, Math.min(30, Number(document.getElementById("mondaisu").value) || 10));
+  let showAnswer = document.getElementById("showAnswer").checked;
+  let title = document.getElementById("title").value || "文章問題プリント";
+
+  // 選んだ単元を均等に使うため、シャッフルした単元リストを繰り返し使う
+  let order = [];
+  let shuffled = units.slice().sort(function () { return Math.random() - 0.5; });
+  for (let i = 0; i < count; i++) { order.push(shuffled[i % shuffled.length]); }
+
+  document.getElementById("title-hyouji").textContent = title + "（" + grade + "年生）";
+
+  let html = "";
+  order.forEach(function (unit, idx) {
+    let q = unit.gen();
+    let num = idx + 1;
+    let shikiPart = showAnswer ? escapeHtml(q.shiki) : '<span class="blank-line blank-shiki">&nbsp;</span>';
+    let kotaePart = showAnswer ? '<span class="kotae-fill">' + q.answerHTML + '</span>' : '<span class="blank-line blank-kotae">&nbsp;</span>';
+    html += '<div class="q-block">'
+      + '<p class="q-text"><span class="q-num">' + num + '.</span>' + q.text + '</p>'
+      + '<p class="q-answer-row">しき（ ' + shikiPart + ' ）　　答え（ ' + kotaePart + ' ）</p>'
+      + '</div>';
+  });
+  document.getElementById("mondai-list").innerHTML = html;
+  hamidashiKakunin();
+}
+
+function fontSizeUpdate() {
+  let size = document.getElementById("fontsize").value;
+  document.getElementById("print-area").style.fontSize = size + "px";
+  document.getElementById("fontsize-hyouji").textContent = size;
+  hamidashiKakunin();
+}
+
+function hamidashiKakunin() {
+  let frame = document.getElementById("a4-frame");
+  let printArea = document.getElementById("print-area");
+  let warning = document.getElementById("overflow-warning");
+  if (!frame || !printArea || !warning) return;
+  let motoNoCss = frame.style.cssText;
+  frame.style.width = "auto";
+  frame.style.aspectRatio = "auto";
+  frame.style.height = "257mm";
+  frame.style.overflow = "visible";
+  frame.style.padding = "0";
+  frame.style.margin = "0";
+  let hamidashiteiru = printArea.scrollHeight > printArea.clientHeight + 2;
+  frame.style.cssText = motoNoCss;
+  warning.style.display = hamidashiteiru ? "block" : "none";
+}
+
+async function pdfHozon() {
+  let taishou = document.getElementById("print-area");
+  let canvas = await html2canvas(taishou, {
+    backgroundColor: "#ffffff",
+    scrollX: -window.scrollX,
+    scrollY: -window.scrollY,
+    windowWidth: document.documentElement.scrollWidth,
+    windowHeight: document.documentElement.scrollHeight,
+    scale: 2
+  });
+  let imgData = canvas.toDataURL("image/png");
+  let jsPDFKurasu = window.jspdf.jsPDF;
+  let pdf = new jsPDFKurasu({ orientation: "portrait", unit: "mm", format: "a4" });
+  let pdfHaba = 210;
+  let pdfTakasa = (canvas.height * pdfHaba) / canvas.width;
+  if (pdfTakasa > 297) pdfTakasa = 297;
+  pdf.addImage(imgData, "PNG", 0, 0, pdfHaba, pdfTakasa);
+  pdf.save((document.getElementById("title").value || "文章問題プリント") + ".pdf");
+}
+
+initGradeRow();
+renderUnitList();
+mondaiSakusei();
+</script>
+</body>
+</html>

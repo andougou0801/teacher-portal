@@ -160,6 +160,19 @@ export const tools: Tool[] = [
     file: "/tools/typing-practice.html",
   },
   {
+    slug: "word-problem-maker",
+    name: "文章問題メーカー",
+    description:
+      "学年（1〜6年生）と単元を選ぶだけで、学習指導要領に沿った算数の文章題プリントを自動作成。式・答えを書く欄付きで印刷でき、先生用の解答プリントにも切り替えられます。",
+    icon: "📖",
+    tags: ["算数", "無料"],
+    audience: "teacher",
+    status: "live",
+    file: "/tools/word-problem-maker.html",
+    mobileNote:
+      "印刷プレビューはA4サイズ基準のため、スマートフォンでは横スクロールしてご確認ください。PCでの利用を推奨します。",
+  },
+  {
     slug: "calc-practice",
     name: "100マス計算プリントメーカー",
     description:
