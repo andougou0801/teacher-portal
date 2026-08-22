@@ -36,7 +36,8 @@ export const tools: Tool[] = [
   {
     slug: "prefecture-master-game",
     name: "都道府県マスターゲーム",
-    description: "日本の都道府県の位置・名前をゲーム感覚で楽しく覚えられます。",
+    description:
+      "日本の都道府県の位置・名前をゲーム感覚で楽しく覚えられます。地形・気候、食料生産、工業の3テーマクイズに加え、県庁所在地クイズ、間違えた県だけを復習できるモードにも対応。",
     icon: "🗾",
     tags: ["社会", "無料"],
     audience: "student",

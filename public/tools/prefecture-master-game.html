@@ -51,6 +51,7 @@
   .mode-btn[data-mode="B"]{border-color:#caffbf;}
   .mode-btn[data-mode="C"]{border-color:#ffd6a5;}
   .mode-btn[data-mode="D"]{border-color:#b8c0f0;}
+  .mode-btn[data-mode="E"]{border-color:#f5c6a5;}
   .mode-btn[data-mode="R"]{border-color:#ffc6ff;}
 
   .btn-primary{width:100%;padding:15px;border:none;border-radius:16px;background:var(--accent);color:#fff;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.12);}
@@ -106,7 +107,9 @@
   .mode-tag.B{background:#4caf50;}
   .mode-tag.C{background:#e08a3c;}
   .mode-tag.D{background:#5c6bc0;}
+  .mode-tag.E{background:#c0742f;}
   .mode-tag.R{background:#9c5fc4;}
+  .mode-tag.W{background:#e05a5a;}
   .q-progress{font-size:13px;font-weight:800;color:#888;}
   .question-card{background:var(--accent-soft);border:2px solid #cdeadd;border-radius:16px;padding:16px;font-size:15px;line-height:2.3;font-weight:700;color:#2c5c46;margin-bottom:12px;}
 
@@ -165,6 +168,7 @@
       <p class="lead rb">社会科で学んだ「地形・気候」「食料生産」「工業・交通」のヒントから、日本地図の中のこたえの都道府県をタップして見つけよう!正解するとその県が地図に色づき、図鑑がうまっていくよ。</p>
       <div class="mode-grid">
         <div class="mode-btn" data-mode="D"><div class="emoji">🔤</div><div class="txt"><b class="rb">県名クイズ：これはどこかな？</b><span class="rb">都道府県の名前を見て地図でさがす（低学年にもおすすめ）</span></div></div>
+        <div class="mode-btn" data-mode="E"><div class="emoji">🏛️</div><div class="txt"><b class="rb">県庁所在地クイズ</b><span class="rb">市の名前から、どの都道府県かをさがす</span></div></div>
         <div class="mode-btn" data-mode="A"><div class="emoji">⛰️</div><div class="txt"><b class="rb">モードA：地形と気候の冒険</b><span class="rb">山脈・平野・気候から都道府県をさがす</span></div></div>
         <div class="mode-btn" data-mode="B"><div class="emoji">🌾</div><div class="txt"><b class="rb">モードB：食料生産・特産品ハンター</b><span class="rb">農業・水産業・特産品のヒントでさがす</span></div></div>
         <div class="mode-btn" data-mode="C"><div class="emoji">🚢</div><div class="txt"><b class="rb">モードC：工業生産とつながる交通網</b><span class="rb">工業地帯・港・貿易のヒントでさがす</span></div></div>
@@ -172,6 +176,7 @@
       </div>
       <button class="btn-primary" id="btn-start" style="margin-top:6px;">えらんだモードでスタート！</button>
       <button class="btn-secondary rb" id="btn-atlas">📖 開拓図鑑をひらく（進み具合を見る）</button>
+      <button class="btn-secondary rb" id="btn-review">🔁 苦手な県を復習する（0県）</button>
       <details class="teacher-note">
         <summary>👩‍🏫 先生方へ（活用のヒント）</summary>
         <ul>
@@ -186,8 +191,8 @@
   <!-- ===== REGION PICK (mode D) ===== -->
   <div id="screen-region" class="hidden">
     <div class="card">
-      <h2 class="section-title rb">🔤 県名クイズ：地方をえらぼう</h2>
-      <p class="lead rb">「〇〇県はどこかな？」を見て、地図の中からタップしてこたえよう。</p>
+      <h2 class="section-title rb" id="region-title">🔤 県名クイズ：地方をえらぼう</h2>
+      <p class="lead rb" id="region-lead">「〇〇県はどこかな？」を見て、地図の中からタップしてこたえよう。</p>
       <div class="region-grid" id="region-grid"></div>
       <button class="btn-secondary" id="btn-region-back">もどる</button>
     </div>
@@ -316,7 +321,12 @@ var FURIGANA = {
 "暖流":"だんりゅう","対馬海流":"つしまかいりゅう","渥美半島":"あつみはんとう","半島":"はんとう","温室":"おんしつ","施設園芸":"しせつえんげい","立地":"りっち",
 "近郊農業":"きんこうのうぎょう","扇状地":"せんじょうち","製鉄業":"せいてつぎょう","発展":"はってん","地域":"ちいき","内陸":"ないりく","石油化学":"せきゆかがく",
 "東京湾":"とうきょうわん","工業地域":"こうぎょうちいき","工業地帯":"こうぎょうちたい","魚沼産":"うおぬまさん","牧之原台地":"まきのはらだいち","小麦":"こむぎ","解":"と",
-"見つける":"みつける","出":"で","名前":"なまえ"
+"見つける":"みつける","出":"で","名前":"なまえ",
+"松島":"まつしま","房総":"ぼうそう","鎌倉":"かまくら","和牛":"わぎゅう","京野菜":"きょうやさい",
+"柿":"かき","宍道湖":"しんじこ","小豆島":"しょうどしま","有明海":"ありあけかい","鹿島":"かしま","臨海":"りんかい",
+"洋食器":"ようしょっき","精密機械":"せいみつきかい","刃物":"はもの","四日市":"よっかいち","観光":"かんこう",
+"苦手":"にがて","復習":"ふくしゅう","市":"し","再挑戦":"さいちょうせん","記録":"きろく","有数":"ゆうすう",
+"中央":"ちゅうおう","高地":"こうち","両方":"りょうほう"
 };
 var FURIGANA_KEYS = Object.keys(FURIGANA).map(function(k){ return {key:k, len:Array.from(k).length, reading:FURIGANA[k]}; }).sort(function(a,b){return b.len-a.len;});
 
@@ -418,7 +428,25 @@ A:[
  {a:"yamanashi",q:"富士山のふもとに広がり、盆地の気候をいかしてぶどうやももの栽培がさかんな県はどこ？"},
  {a:"tokyo",q:"日本で一番大きい平野「関東平野」の中心にあり、日本の政治や経済の中心地はどこ？"},
  {a:"iwate",q:"冬の寒さが厳しい奥羽山脈の東側にあり、三陸海岸にはリアス海岸が広がる県はどこ？"},
- {a:"okayama",q:"中国山地と四国山地にはさまれ、雨が少なく水不足に悩まされることもある瀬戸内海に面した県はどこ？"}
+ {a:"okayama",q:"中国山地と四国山地にはさまれ、雨が少なく水不足に悩まされることもある瀬戸内海に面した県はどこ？"},
+ {a:"akita",q:"冬に雪が多い日本海側の気候で、あきたこまちなどおいしいお米づくりがさかんな県はどこ？"},
+ {a:"miyagi",q:"松島など美しい海岸線があり、夏に雨の多い太平洋側の気候の東北地方の県はどこ？"},
+ {a:"ibaraki",q:"関東平野の一部が広がる太平洋側の気候で、納豆でも有名な県はどこ？"},
+ {a:"tochigi",q:"内陸性の気候で夏と冬の気温差が大きく、いちごの生産量が日本一の県はどこ？"},
+ {a:"chiba",q:"房総半島が太平洋につき出し、比較的あたたかい太平洋側の気候の県はどこ？"},
+ {a:"kanagawa",q:"太平洋側の気候で一年を通じてあたたかく、鎌倉など歴史ある町もある県はどこ？"},
+ {a:"toyama",q:"日本海側の気候で雪が多く、立山連峰などの高い山々に囲まれている県はどこ？"},
+ {a:"ishikawa",q:"日本海側の気候で雪が多く、輪島塗などの伝統工芸でも有名な県はどこ？"},
+ {a:"shizuoka",q:"太平洋側の気候で温暖、富士山と茶畑の景色でも有名な県はどこ？"},
+ {a:"aichi",q:"太平洋側の気候で、自動車工業がとてもさかんな中部地方の県はどこ？"},
+ {a:"mie",q:"太平洋側の気候で、真珠の養殖で有名な英虞湾がある県はどこ？"},
+ {a:"hyogo",q:"瀬戸内海側と日本海側、両方の気候の顔を持つめずらしい県はどこ？"},
+ {a:"tottori",q:"日本海側の気候で、日本最大級の砂丘がある県はどこ？"},
+ {a:"shimane",q:"日本海側の気候で、出雲大社がある県はどこ？"},
+ {a:"hiroshima",q:"雨が少ない瀬戸内の気候で、かきの養殖がさかんな県はどこ？"},
+ {a:"ehime",q:"温暖で雨の少ない瀬戸内の気候で、みかんの生産がさかんな県はどこ？"},
+ {a:"miyazaki",q:"あたたかい太平洋側の気候で、きゅうりなどの促成栽培がさかんな県はどこ？"},
+ {a:"yamanashi",q:"中央高地の気候で盆地が広がり、ぶどうやももの生産がさかんな県はどこ？"}
 ],
 B:[
  {a:"gunma",q:"夏の涼しい気候をいかして、キャベツなどの高原野菜をたくさん栽培している、山地が多い県はどこ？"},
@@ -434,7 +462,30 @@ B:[
  {a:"aichi",q:"電照菊の生産で知られ、渥美半島などで温室メロンをはじめとした施設園芸がさかんな県はどこ？"},
  {a:"chiba",q:"落花生の生産量が日本一で、東京に近い立地をいかした近郊農業がさかんな県はどこ？"},
  {a:"yamanashi",q:"ぶどうとももの生産量が日本一の、盆地の扇状地をいかした果樹栽培がさかんな県はどこ？"},
- {a:"miyagi",q:"気仙沼港などでまぐろ・かつおの水あげ量が多い、東北地方にある県はどこ？"}
+ {a:"miyagi",q:"気仙沼港などでまぐろ・かつおの水あげ量が多い、東北地方にある県はどこ？"},
+ {a:"iwate",q:"わかめの養殖や、おいしい和牛の飼育でも知られる、面積が北海道に次いで広い県はどこ？"},
+ {a:"akita",q:"あきたこまちなど、おいしいお米の産地として知られる東北地方の県はどこ？"},
+ {a:"fukushima",q:"ももの生産量が全国トップクラスで、猪苗代湖もある東北地方の県はどこ？"},
+ {a:"ibaraki",q:"白菜やメロンの生産量が日本一クラスで、納豆でも有名な県はどこ？"},
+ {a:"tochigi",q:"いちごの生産量が日本一で、かんぴょうの生産でも知られる県はどこ？"},
+ {a:"fukui",q:"コシヒカリ発祥の地のひとつで、えちぜんがになど冬の味覚でも有名な県はどこ？"},
+ {a:"nagano",q:"夏でも涼しい気候をいかしたレタスなどの高原野菜づくりが日本一さかんな県はどこ？"},
+ {a:"gifu",q:"ひだぎゅうとよばれるブランドのぎゅうにくや、美濃和紙でも知られる県はどこ？"},
+ {a:"mie",q:"まつさかぎゅうとよばれる有名なブランドのぎゅうにくの産地の県はどこ？"},
+ {a:"shiga",q:"おうみぎゅうとよばれるブランドのぎゅうにくでも知られる、日本一大きい湖がある県はどこ？"},
+ {a:"kyoto",q:"京野菜とよばれる伝統的な野菜づくりでも知られる、昔の都がある府はどこ？"},
+ {a:"nara",q:"柿の生産量が全国有数で、東大寺の大仏でも有名な県はどこ？"},
+ {a:"shimane",q:"宍道湖のしじみ漁で知られ、出雲大社もある県はどこ？"},
+ {a:"hiroshima",q:"かきの養殖生産量が日本一で、瀬戸内海に面した県はどこ？"},
+ {a:"tokushima",q:"すだちの生産量が日本一で、阿波おどりでも有名な県はどこ？"},
+ {a:"kagawa",q:"小豆島のオリーブ生産量が日本一で、讃岐うどんでも有名な県はどこ？"},
+ {a:"ehime",q:"みかんの生産量が全国トップクラスの県はどこ？"},
+ {a:"kochi",q:"なすやゆずの生産がさかんで、黒潮の影響であたたかい県はどこ？"},
+ {a:"saga",q:"有明海でのりの養殖がさかんで、有田焼などの焼き物でも知られる県はどこ？"},
+ {a:"kumamoto",q:"トマトの生産量が全国トップクラスで、集積回路の生産でも知られる県はどこ？"},
+ {a:"oita",q:"かぼすの生産量が日本一で、温泉の数と量も日本一の県はどこ？"},
+ {a:"kagoshima",q:"さつまいもの産地として知られ、シラス台地が広がる県はどこ？"},
+ {a:"okinawa",q:"さとうきびの生産量が日本一で、パイナップルの産地でもある県はどこ？"}
 ],
 C:[
  {a:"aichi",q:"世界に輸出する自動車をたくさんつくる大きな工場があり、日本一の生産額をほこる中京工業地帯が広がる県はどこ？"},
@@ -448,7 +499,23 @@ C:[
  {a:"shizuoka",q:"楽器やオートバイの生産で知られ、東海工業地域が広がる県はどこ？"},
  {a:"hyogo",q:"阪神工業地帯の一部で、神戸港での貿易がさかんな県はどこ？"},
  {a:"hiroshima",q:"自動車工業がさかんで、工業地域が広がる中国地方の県はどこ？"},
- {a:"gunma",q:"輸送用機械（自動車部品など）の生産がさかんな、関東地方の内陸にある県はどこ？"}
+ {a:"gunma",q:"輸送用機械（自動車部品など）の生産がさかんな、関東地方の内陸にある県はどこ？"},
+ {a:"ibaraki",q:"鹿島臨海工業地域が広がり、鉄鋼業や石油化学工業がさかんな県はどこ？"},
+ {a:"tochigi",q:"自動車関連の工業がさかんな、関東地方の内陸にある県はどこ？"},
+ {a:"saitama",q:"京浜工業地帯の一部として内陸型の工業が発展した、東京のベッドタウンでもある県はどこ？"},
+ {a:"niigata",q:"金属製のスプーンやフォークなど、洋食器の生産がさかんな県はどこ？"},
+ {a:"toyama",q:"アルミニウムを使った製品や、くすりづくりの工業がさかんな県はどこ？"},
+ {a:"fukui",q:"めがねフレームの生産で全国のほとんどを占める県はどこ？"},
+ {a:"nagano",q:"夏でも涼しい高地にあり、時計やカメラなどの精密機械工業がさかんな県はどこ？"},
+ {a:"gifu",q:"焼き物や刃物づくりなど、伝統的な工業がさかんな県はどこ？"},
+ {a:"mie",q:"石油化学工業がさかんな四日市市がある県はどこ？"},
+ {a:"yamaguchi",q:"石油化学工業やセメント工業がさかんで、本州の一番西にある県はどこ？"},
+ {a:"tokushima",q:"LEDを作る世界的な会社の本社があり、鳴門のうずしおでも有名な県はどこ？"},
+ {a:"ehime",q:"タオルの生産や造船業がさかんな、瀬戸内海に面した県はどこ？"},
+ {a:"nagasaki",q:"造船業がさかんで、島の数が日本一多い県はどこ？"},
+ {a:"saga",q:"有田焼などの焼き物の産地として知られる県はどこ？"},
+ {a:"oita",q:"温泉の数と量が日本一で、石油化学工業もさかんな県はどこ？"},
+ {a:"okinawa",q:"美しい海を生かした観光業がさかんで、日本の一番南にある県はどこ？"}
 ]
 };
 
@@ -468,16 +535,28 @@ function rankFor(count){
 
 var discovered = new Set(JSON.parse(localStorage.getItem("pref_discovered")||"[]"));
 var totalScore = parseInt(localStorage.getItem("pref_score")||"0",10);
+var weakPrefs = new Set(JSON.parse(localStorage.getItem("pref_weak")||"[]"));
 
 function saveProgress(){
   localStorage.setItem("pref_discovered", JSON.stringify(Array.from(discovered)));
   localStorage.setItem("pref_score", String(totalScore));
+  localStorage.setItem("pref_weak", JSON.stringify(Array.from(weakPrefs)));
 }
 
 function updateHeader(){
   var r = rankFor(discovered.size);
   document.getElementById("hdr-rank").innerHTML = r.emoji+" "+toRuby(r.name);
   document.getElementById("hdr-progress").innerHTML = toRuby(discovered.size+"/47県");
+  updateReviewButton();
+}
+
+function updateReviewButton(){
+  var btn = document.getElementById("btn-review");
+  if(!btn) return;
+  var n = weakPrefs.size;
+  btn.innerHTML = toRuby("🔁 苦手な県を復習する（"+n+"県）");
+  btn.disabled = (n===0);
+  btn.style.opacity = (n===0) ? "0.5" : "1";
 }
 
 document.querySelectorAll(".rb").forEach(function(el){
@@ -757,7 +836,7 @@ var selectedMode = "A";
 document.querySelectorAll(".mode-btn").forEach(function(btn){
   btn.addEventListener("click", function(){
     var m = btn.getAttribute("data-mode");
-    if(m==="D"){ openRegionPicker(); return; }
+    if(m==="D"||m==="E"){ openRegionPicker(m); return; }
     document.querySelectorAll(".mode-btn").forEach(function(b){b.style.outline="";});
     selectedMode = m;
     btn.style.outline = "3px solid #ffd23f";
@@ -769,14 +848,20 @@ document.getElementById("btn-start").addEventListener("click", function(){ start
 document.getElementById("btn-atlas").addEventListener("click", function(){ openAtlas(); });
 document.getElementById("btn-atlas-back").addEventListener("click", function(){ showScreen("home"); updateHeader(); });
 document.getElementById("btn-region-back").addEventListener("click", function(){ showScreen("home"); });
+document.getElementById("btn-review").addEventListener("click", function(){
+  if(weakPrefs.size===0) return;
+  startQuiz("W");
+});
 
-function openRegionPicker(){
+function openRegionPicker(mode){
+  document.getElementById("region-title").innerHTML = mode==="E" ? toRuby("🏛️ 県庁所在地クイズ：地方をえらぼう") : toRuby("🔤 県名クイズ：地方をえらぼう");
+  document.getElementById("region-lead").innerHTML = mode==="E" ? toRuby("市の名前を見て、どの都道府県かを地図の中からタップしてこたえよう。") : toRuby("「〇〇県はどこかな？」を見て、地図の中からタップしてこたえよう。");
   var grid = document.getElementById("region-grid");
   grid.innerHTML = "";
   var allBtn = document.createElement("button");
   allBtn.className = "region-btn all";
   allBtn.innerHTML = "<b>🌏 全国チャレンジ</b><span>47問</span>";
-  allBtn.addEventListener("click", function(){ startQuiz("D","ALL"); });
+  allBtn.addEventListener("click", function(){ startQuiz(mode,"ALL"); });
   grid.appendChild(allBtn);
   REGION_ORDER.forEach(function(r){
     var count = PREFS.filter(function(p){return p.region===r;}).length;
@@ -784,7 +869,7 @@ function openRegionPicker(){
     btn.className = "region-btn";
     btn.style.borderColor = REGION_COLOR[r];
     btn.innerHTML = "<b>"+toRuby(r)+"</b><span>"+count+"問</span>";
-    btn.addEventListener("click", function(){ startQuiz("D", r); });
+    btn.addEventListener("click", function(){ startQuiz(mode, r); });
     grid.appendChild(btn);
   });
   showScreen("region");
@@ -815,7 +900,7 @@ function shuffle(arr){
   for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
   return a;
 }
-var MODE_LABEL = {A:"地形と気候の冒険",B:"食料生産・特産品ハンター",C:"工業生産とつながる交通網",D:"県名クイズ",R:"まぜまぜチャレンジ"};
+var MODE_LABEL = {A:"地形と気候の冒険",B:"食料生産・特産品ハンター",C:"工業生産とつながる交通網",D:"県名クイズ",E:"県庁所在地クイズ",R:"まぜまぜチャレンジ",W:"にがてな県の復習"};
 
 function startQuiz(mode, regionFilter){
   var pool;
@@ -823,9 +908,17 @@ function startQuiz(mode, regionFilter){
     pool = shuffle(QUESTIONS.A.map(function(q){return Object.assign({mode:"A"},q);})
       .concat(QUESTIONS.B.map(function(q){return Object.assign({mode:"B"},q);}))
       .concat(QUESTIONS.C.map(function(q){return Object.assign({mode:"C"},q);}))).slice(0,15);
-  } else if(mode==="D"){
+  } else if(mode==="D"||mode==="E"){
     var list = PREFS.filter(function(p){ return regionFilter==="ALL" || p.region===regionFilter; });
-    pool = shuffle(list.map(function(p){ return {mode:"D", a:p.id, q:p.name+"は　どこかな？"}; }));
+    pool = shuffle(list.map(function(p){
+      var qText = mode==="E" ? (p.capital+"は　どこの都道府県の　県庁所在地かな？") : (p.name+"は　どこかな？");
+      return {mode:mode, a:p.id, q:qText};
+    }));
+  } else if(mode==="W"){
+    pool = shuffle(Array.from(weakPrefs).map(function(id){
+      var p = PREF_BY_ID[id];
+      return {mode:"W", a:id, q:p.name+"は　どこかな？"};
+    }));
   } else {
     pool = shuffle(QUESTIONS[mode].map(function(q){return Object.assign({mode:mode},q);}));
   }
@@ -883,6 +976,7 @@ function onMapClickInQuiz(id, groups){
     quiz.score += pts;
     totalScore += pts;
     quiz.correctCount++;
+    if(quiz.wrongAttempts===0){ weakPrefs.delete(id); }
     refreshMapColors(groups);
     el.g.classList.add("flash-correct");
     saveProgress();
@@ -890,6 +984,9 @@ function onMapClickInQuiz(id, groups){
     showAnswerModal(true, false, pts);
   } else {
     quiz.wrongAttempts++;
+    weakPrefs.add(q.a);
+    saveProgress();
+    updateReviewButton();
     el.g.classList.add("flash-wrong");
     setTimeout(function(){ el.g.classList.remove("flash-wrong"); }, 500);
     showWrongToast(id);
