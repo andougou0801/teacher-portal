@@ -5,7 +5,13 @@ export const metadata: Metadata = {
   description: "休暇や育児・介護に関する制度の名前と意味を、パッと見てわかる形でまとめたページ。",
 };
 
-type SubItem = { name: string; article: string; duration: string };
+type SubItem = {
+  name: string;
+  article: string;
+  duration: string;
+  note?: string;
+  common?: boolean;
+};
 
 type Term = {
   name: string;
@@ -23,26 +29,122 @@ type TermGroup = {
 // 国家公務員の休暇制度（人事院規則15-14）をもとにした一覧。
 // 地方公務員（教員含む）の条例も、通常この基準に準じて定められているが、
 // 正式な条文番号・日数は自治体の条例で確認する必要がある。
+// common: true は、多くの人が働く中で実際に使う場面がある休暇（黄色マーカー表示）。
 const tokubetsuKyukaItems: SubItem[] = [
-  { name: "公民権行使（選挙の投票など）", article: "第22条1項1号", duration: "必要と認められる期間" },
-  { name: "官公署への出頭", article: "第22条1項2号", duration: "必要と認められる期間" },
-  { name: "骨髄移植のためのドナー登録・提供", article: "第22条1項3号", duration: "必要と認められる期間" },
-  { name: "ボランティア活動", article: "第22条1項4号", duration: "1年に5日以内" },
-  { name: "結婚", article: "第22条1項5号", duration: "連続5暦日以内（結婚の5日前〜結婚後1か月まで）" },
-  { name: "出生サポート（不妊治療の通院等）", article: "第22条1項5号の2", duration: "1年に5日以内（体外受精・顕微授精は10日）" },
-  { name: "産前休暇", article: "第22条1項6号", duration: "6週間（多胎妊娠は14週間）" },
-  { name: "産後休暇", article: "第22条1項7号", duration: "8週間" },
-  { name: "保育時間（生後1年未満の子の授乳等）", article: "第22条1項8号", duration: "1日2回、各30分以内" },
-  { name: "妻の出産に伴う休暇", article: "第22条1項9号", duration: "2日以内" },
-  { name: "男性の育児参加のための休暇", article: "第22条1項10号", duration: "5日以内" },
-  { name: "子の看護（就学前の子の病気・予防接種等）", article: "第22条1項11号", duration: "1年に5日以内（子2人以上は10日）" },
-  { name: "短期の介護", article: "第22条1項12号", duration: "1年に5日以内（要介護者2人以上は10日）" },
-  { name: "忌引（親族が亡くなったとき）", article: "第22条1項13号", duration: "親族との続柄により日数が異なる" },
-  { name: "父母の追悼（祥月命日など）", article: "第22条1項14号", duration: "1日以内（父母の死後15年まで）" },
-  { name: "夏季休暇", article: "第22条1項15号", duration: "7〜9月の間で連続3日以内" },
-  { name: "現住居の滅失・破損（災害等）", article: "第22条1項16号", duration: "連続7暦日以内" },
-  { name: "出勤困難（交通機関の途絶等）", article: "第22条1項17号", duration: "必要と認められる期間" },
-  { name: "退勤途上の危険回避（災害等）", article: "第22条1項18号", duration: "必要と認められる期間" },
+  {
+    name: "公民権行使（選挙の投票など）",
+    article: "第22条1項1号",
+    duration: "必要と認められる期間",
+    note: "選挙の投票や、裁判員として裁判所に行く場合など、国民としての権利を行使するための休暇です。",
+  },
+  {
+    name: "官公署への出頭",
+    article: "第22条1項2号",
+    duration: "必要と認められる期間",
+    note: "裁判の証人・鑑定人として呼ばれたときなど、法令により役所や裁判所に出向く義務があるときの休暇です。",
+  },
+  {
+    name: "骨髄移植のためのドナー登録・提供",
+    article: "第22条1項3号",
+    duration: "必要と認められる期間",
+    note: "骨髄移植等のドナー（提供者）として、骨髄液の提供や、そのための検査・入院をするときの休暇です。",
+  },
+  {
+    name: "ボランティア活動",
+    article: "第22条1項4号",
+    duration: "1年に5日以内",
+    note: "「本当にあるの？」と思われがちですが、実在する休暇です。ただし何でも使えるわけではなく、報酬を得ずに行う社会貢献活動（被災地でのボランティアや、社会福祉施設での活動など）が対象で、多くの場合、社会福祉協議会など活動を仲介する団体からの証明が必要です。",
+  },
+  {
+    name: "結婚",
+    article: "第22条1項5号",
+    duration: "連続5暦日以内（結婚の5日前〜結婚後1か月まで）",
+    common: true,
+  },
+  {
+    name: "出生サポート（不妊治療の通院等）",
+    article: "第22条1項5号の2",
+    duration: "1年に5日以内（体外受精・顕微授精は10日）",
+    common: true,
+  },
+  {
+    name: "産前休暇",
+    article: "第22条1項6号",
+    duration: "6週間（多胎妊娠は14週間）",
+    common: true,
+  },
+  {
+    name: "産後休暇",
+    article: "第22条1項7号",
+    duration: "8週間",
+    common: true,
+  },
+  {
+    name: "保育時間（生後1年未満の子の授乳等）",
+    article: "第22条1項8号",
+    duration: "1日2回、各30分以内",
+    note: "生後1年に達しない子を育てている職員が、授乳や搾乳などのために勤務時間中に取れる短い休暇です。",
+  },
+  {
+    name: "妻の出産に伴う休暇",
+    article: "第22条1項9号",
+    duration: "2日以内",
+    common: true,
+  },
+  {
+    name: "男性の育児参加のための休暇",
+    article: "第22条1項10号",
+    duration: "5日以内",
+    common: true,
+  },
+  {
+    name: "子の看護（就学前の子の病気・予防接種等）",
+    article: "第22条1項11号",
+    duration: "1年に5日以内（子2人以上は10日）",
+    common: true,
+  },
+  {
+    name: "短期の介護",
+    article: "第22条1項12号",
+    duration: "1年に5日以内（要介護者2人以上は10日）",
+    common: true,
+  },
+  {
+    name: "忌引（親族が亡くなったとき）",
+    article: "第22条1項13号",
+    duration: "親族との続柄により日数が異なる",
+    common: true,
+  },
+  {
+    name: "父母の追悼（祥月命日など）",
+    article: "第22条1項14号",
+    duration: "1日以内（父母の死後15年まで）",
+    note: "父母が亡くなった後、命日（祥月命日）などに法要のため休むための休暇です。",
+  },
+  {
+    name: "夏季休暇",
+    article: "第22条1項15号",
+    duration: "7〜9月の間で連続3日以内",
+    common: true,
+  },
+  {
+    name: "現住居の滅失・破損（災害等）",
+    article: "第22条1項16号",
+    duration: "連続7暦日以内",
+    note: "地震・火災・水害などで自宅に住めなくなったとき、片付けや住まい探しのために取れる休暇です。",
+  },
+  {
+    name: "出勤困難（交通機関の途絶等）",
+    article: "第22条1項17号",
+    duration: "必要と認められる期間",
+    note: "台風・大雪・公共交通機関の運休など、通勤そのものが困難・危険なときに、出勤しなくても欠勤扱いにならない休暇です。",
+  },
+  {
+    name: "退勤途上の危険回避（災害等）",
+    article: "第22条1項18号",
+    duration: "必要と認められる期間",
+    note: "勤務中に台風・大雨・地震などが発生し、帰り道が危険な状態になったとき、無理に帰宅せず、安全になるまで待機したり早めに退勤したりできる休暇です（17号「出勤困難」の帰り道バージョンです）。",
+  },
 ];
 
 const termGroups: TermGroup[] = [
@@ -156,11 +258,18 @@ export default function LifePage() {
                       <summary className="cursor-pointer text-sm font-bold text-accent">
                         特別休暇の種類を全て見る（{term.subItems.length}種類）
                       </summary>
-                      <div className="mt-2 flex flex-col gap-2">
+                      <p className="mt-3 mb-2 text-[13px] text-muted">
+                        🟡 黄色マーカーは、多くの人が働く中で実際に使う場面がある休暇です。
+                      </p>
+                      <div className="flex flex-col gap-2">
                         {term.subItems.map((item) => (
                           <div
                             key={item.name}
-                            className="rounded-xl border border-line bg-background p-3"
+                            className={`rounded-xl border p-3 ${
+                              item.common
+                                ? "border-warn-line bg-warn-bg"
+                                : "border-line bg-background"
+                            }`}
                           >
                             <div className="flex flex-wrap items-baseline justify-between gap-2">
                               <span className="text-sm font-bold">{item.name}</span>
@@ -169,6 +278,11 @@ export default function LifePage() {
                               </span>
                             </div>
                             <p className="mt-0.5 text-sm text-muted">{item.duration}</p>
+                            {item.note && (
+                              <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
+                                {item.note}
+                              </p>
+                            )}
                           </div>
                         ))}
                       </div>
