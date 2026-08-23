@@ -5,37 +5,73 @@ export const metadata: Metadata = {
   description: "休暇や育児・介護に関する制度の名前と意味を、パッと見てわかる形でまとめたページ。",
 };
 
+type SubItem = { name: string; article: string; duration: string };
+
+type Term = {
+  name: string;
+  description: string;
+  subItems?: SubItem[];
+};
+
 type TermGroup = {
   icon: string;
   groupTitle: string;
   groupNote?: string;
-  terms: { name: string; description: string }[];
+  terms: Term[];
 };
+
+// 国家公務員の休暇制度（人事院規則15-14）をもとにした一覧。
+// 地方公務員（教員含む）の条例も、通常この基準に準じて定められているが、
+// 正式な条文番号・日数は自治体の条例で確認する必要がある。
+const tokubetsuKyukaItems: SubItem[] = [
+  { name: "公民権行使（選挙の投票など）", article: "第22条1項1号", duration: "必要と認められる期間" },
+  { name: "官公署への出頭", article: "第22条1項2号", duration: "必要と認められる期間" },
+  { name: "骨髄移植のためのドナー登録・提供", article: "第22条1項3号", duration: "必要と認められる期間" },
+  { name: "ボランティア活動", article: "第22条1項4号", duration: "1年に5日以内" },
+  { name: "結婚", article: "第22条1項5号", duration: "連続5暦日以内（結婚の5日前〜結婚後1か月まで）" },
+  { name: "出生サポート（不妊治療の通院等）", article: "第22条1項5号の2", duration: "1年に5日以内（体外受精・顕微授精は10日）" },
+  { name: "産前休暇", article: "第22条1項6号", duration: "6週間（多胎妊娠は14週間）" },
+  { name: "産後休暇", article: "第22条1項7号", duration: "8週間" },
+  { name: "保育時間（生後1年未満の子の授乳等）", article: "第22条1項8号", duration: "1日2回、各30分以内" },
+  { name: "妻の出産に伴う休暇", article: "第22条1項9号", duration: "2日以内" },
+  { name: "男性の育児参加のための休暇", article: "第22条1項10号", duration: "5日以内" },
+  { name: "子の看護（就学前の子の病気・予防接種等）", article: "第22条1項11号", duration: "1年に5日以内（子2人以上は10日）" },
+  { name: "短期の介護", article: "第22条1項12号", duration: "1年に5日以内（要介護者2人以上は10日）" },
+  { name: "忌引（親族が亡くなったとき）", article: "第22条1項13号", duration: "親族との続柄により日数が異なる" },
+  { name: "父母の追悼（祥月命日など）", article: "第22条1項14号", duration: "1日以内（父母の死後15年まで）" },
+  { name: "夏季休暇", article: "第22条1項15号", duration: "7〜9月の間で連続3日以内" },
+  { name: "現住居の滅失・破損（災害等）", article: "第22条1項16号", duration: "連続7暦日以内" },
+  { name: "出勤困難（交通機関の途絶等）", article: "第22条1項17号", duration: "必要と認められる期間" },
+  { name: "退勤途上の危険回避（災害等）", article: "第22条1項18号", duration: "必要と認められる期間" },
+];
 
 const termGroups: TermGroup[] = [
   {
     icon: "🌴",
     groupTitle: "休みたいときに使える休暇の種類",
+    groupNote:
+      "以下は国家公務員の基準（人事院規則15-14）をもとにした一覧です。教員も含めた地方公務員は、通常これに準じた条例が自治体ごとに定められていますが、条文番号や日数が異なる場合があるので、正確なところは勤務先の条例でご確認ください。",
     terms: [
       {
         name: "年次有給休暇（年休）",
         description:
-          "理由を問わず、自分の都合で自由に取得できる休暇です。「休みたいから休む」で使えるのはこれです。多くの自治体で、常勤の教職員には年間20日前後が付与されます（前年の残日数を一部繰り越せる場合もあります）。",
+          "理由を問わず、自分の都合で自由に取得できる休暇です。「休みたいから休む」で使えるのはこれです。国家公務員の基準では年20日（人事院規則15-14 第18〜20条）で、多くの自治体もこれに準じています。",
       },
       {
         name: "病気休暇",
         description:
-          "本人がケガや病気で療養が必要なときに取る休暇です。年休とは別枠で、医師の診断書などが必要になることが多く、年休より要件が厳しめです。",
+          "本人がケガや病気で療養が必要なときに取る休暇です（人事院規則15-14 第21条）。私傷病・妊産疾病は原則連続90日まで、生理日の就業困難や公務・通勤上の傷病、勤務軽減措置も同じ条文でまとめて定められています。年休とは別枠で、医師の診断書などが必要になることが多いです。",
       },
       {
         name: "特別休暇",
         description:
-          "結婚・忌引（親族が亡くなったとき）・出産の付き添い・生理休暇・公務中のケガなど、特別な事情があるときに認められる休暇です。年休や病気休暇とは別枠で、種類・日数は自治体の条例で定められています。",
+          "結婚・忌引・出産・介護・災害など、特別な事情があるときに認められる休暇です（人事院規則15-14 第22条）。実は下記のように号（条文の中の項目番号）ごとに細かく種類が分かれています。号をタップすると詳細が開きます。",
+        subItems: tokubetsuKyukaItems,
       },
       {
-        name: "介護休暇",
+        name: "介護休暇・介護時間",
         description:
-          "家族の介護が必要になったときに取れる休暇です。対象になる家族の範囲や取得できる期間は、育児関連の制度と同様に定めがあります。",
+          "家族の介護が必要になったときに取れる制度です。「介護休暇」はまとまった期間仕事を休む制度（通算6か月以内、3回まで分割可）、「介護時間」は働きながら1日2時間まで勤務時間を短くできる制度（連続3年以内）で、それぞれ別に定められています。",
       },
     ],
   },
@@ -115,6 +151,29 @@ export default function LifePage() {
                   <p className="mt-1 text-sm leading-relaxed text-muted">
                     {term.description}
                   </p>
+                  {term.subItems && (
+                    <details className="mt-3">
+                      <summary className="cursor-pointer text-sm font-bold text-accent">
+                        特別休暇の種類を全て見る（{term.subItems.length}種類）
+                      </summary>
+                      <div className="mt-2 flex flex-col gap-2">
+                        {term.subItems.map((item) => (
+                          <div
+                            key={item.name}
+                            className="rounded-xl border border-line bg-background p-3"
+                          >
+                            <div className="flex flex-wrap items-baseline justify-between gap-2">
+                              <span className="text-sm font-bold">{item.name}</span>
+                              <span className="text-[13px] text-muted">
+                                人規15-14 {item.article}
+                              </span>
+                            </div>
+                            <p className="mt-0.5 text-sm text-muted">{item.duration}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
                 </div>
               ))}
             </div>
