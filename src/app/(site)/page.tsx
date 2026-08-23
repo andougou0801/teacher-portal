@@ -175,16 +175,23 @@ export default function Home() {
           <div className="text-xs font-bold tracking-widest text-accent uppercase">
             Community
           </div>
-          <h2 className="mt-2 mb-2 text-2xl font-bold">教員コミュニティ</h2>
+          <h2 className="mt-2 mb-2 text-2xl font-bold">💬 先生の「困った」Q&A・コミュニティ</h2>
           <p className="mx-auto max-w-lg text-sm text-muted">
-            準備中です。相談・情報交換の掲示板を今後実装していきます。
+            気になることを気軽に質問して、他の先生から回答をもらえる掲示板です。
+            ニックネームだけで投稿でき、会員登録は不要です。
           </p>
         </div>
-        <div className="rounded-2xl border border-line bg-white p-8 text-center text-sm text-muted">
-          コミュニティ機能は現在準備中です。
+        <div className="rounded-2xl border border-line bg-white p-8 text-center">
+          <p className="text-sm text-muted">
+            授業の悩み、学級経営、保護者対応、校務のちょっとした疑問まで。
+            一人で抱え込まず、全国の先生に聞いてみませんか？
+          </p>
           <div className="mt-4">
-            <Link href="/community" className="font-bold text-accent hover:underline">
-              コミュニティページ（準備中）を見る →
+            <Link
+              href="/community"
+              className="inline-block rounded-full bg-cta px-6 py-2.5 text-sm font-bold text-white hover:bg-cta-dark"
+            >
+              Q&Aコミュニティを見る →
             </Link>
           </div>
         </div>
