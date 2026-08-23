@@ -35,7 +35,7 @@ export default function Footer() {
         ))}
       </div>
       <div className="text-center">
-        © 2026 全国教員支援ポータル（仮称）・個人プロジェクトとして開発中
+        © 2026 全国教員支援ポータル・個人プロジェクトとして開発中
       </div>
     </footer>
   );

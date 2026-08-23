@@ -16,7 +16,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const tool = getToolBySlug(slug);
-  return { title: tool ? `${tool.name} | 全国教員支援ポータル（仮称）` : "ツール" };
+  return { title: tool ? `${tool.name} | 全国教員支援ポータル` : "ツール" };
 }
 
 export default async function ToolPage(props: PageProps<"/tools/[slug]">) {

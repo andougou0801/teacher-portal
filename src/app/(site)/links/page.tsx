@@ -6,7 +6,7 @@ import {
 } from "@/lib/officialLinks";
 
 export const metadata: Metadata = {
-  title: "便利な公式サイト集 | 全国教員支援ポータル（仮称）",
+  title: "便利な公式サイト集 | 全国教員支援ポータル",
   description:
     "文部科学省・NHK for Schoolなど、教員が必要とする公式サイトをまとめて紹介します。",
 };

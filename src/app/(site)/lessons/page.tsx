@@ -5,7 +5,7 @@ import { icebreakers } from "@/lib/icebreakers";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
-  title: "授業・教材アイデア | 全国教員支援ポータル（仮称）",
+  title: "授業・教材アイデア | 全国教員支援ポータル",
   description: "「明日の授業に使える」教科別・場面別のアイデア集。",
 };
 

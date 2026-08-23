@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "このサイトについて | 全国教員支援ポータル（仮称）",
+  title: "このサイトについて | 全国教員支援ポータル",
 };
 
 const roadmap = [

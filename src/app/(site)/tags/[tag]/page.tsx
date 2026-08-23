@@ -10,7 +10,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { tag } = await props.params;
   const decoded = decodeURIComponent(tag);
-  return { title: `「${decoded}」の一覧 | 全国教員支援ポータル（仮称）` };
+  return { title: `「${decoded}」の一覧 | 全国教員支援ポータル` };
 }
 
 export default async function TagPage(props: PageProps<"/tags/[tag]">) {

@@ -5,7 +5,7 @@ import { getCategoryBorderColor } from "@/lib/categoryColor";
 import FavoriteButton from "@/components/FavoriteButton";
 
 export const metadata: Metadata = {
-  title: "子どもの便利ツール | 全国教員支援ポータル（仮称）",
+  title: "子どもの便利ツール | 全国教員支援ポータル",
   description:
     "漢字・計算・タイピングなど、子どもが学校や家庭で使える学習ツールをまとめるページです。",
 };

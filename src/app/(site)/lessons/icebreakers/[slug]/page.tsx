@@ -15,7 +15,7 @@ export async function generateMetadata(
   const { slug } = await props.params;
   const ib = getIcebreakerBySlug(slug);
   return {
-    title: ib ? `${ib.title} | 全国教員支援ポータル（仮称）` : "アイスブレイク",
+    title: ib ? `${ib.title} | 全国教員支援ポータル` : "アイスブレイク",
   };
 }
 

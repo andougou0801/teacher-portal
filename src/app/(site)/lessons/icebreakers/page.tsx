@@ -5,7 +5,7 @@ import { icebreakers, icebreakerCategories } from "@/lib/icebreakers";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
-  title: "アイスブレイク大特集 | 全国教員支援ポータル（仮称）",
+  title: "アイスブレイク大特集 | 全国教員支援ポータル",
   description: `時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集（全${icebreakers.length}種類）。`,
 };
 

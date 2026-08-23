@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { articles } from "@/lib/articles";
 
 export const metadata: Metadata = {
-  title: "先生のコラム | 全国教員支援ポータル（仮称）",
+  title: "先生のコラム | 全国教員支援ポータル",
   description: "サイト運営者の視点で教育について発信するコラムページ。",
 };
 

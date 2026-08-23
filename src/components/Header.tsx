@@ -9,7 +9,7 @@ export default function Header() {
         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-base font-extrabold text-navy">
           先
         </span>
-        全国教員支援ポータル（仮称）
+        全国教員支援ポータル
       </Link>
       <nav className="hidden gap-7 text-sm md:flex">
         {navItems.map((item) => (

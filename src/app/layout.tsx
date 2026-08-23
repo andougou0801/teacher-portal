@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "全国教員支援ポータル（仮称）",
+  title: "全国教員支援ポータル",
   description:
     "現場発の自作ツール・実践記事・教員コミュニティを1つにまとめた、全国の教員のための支援ポータルサイト。",
 };

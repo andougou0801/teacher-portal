@@ -4,7 +4,7 @@ import { articles } from "@/lib/articles";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
-  title: "学級経営・子ども対応 | 全国教員支援ポータル（仮称）",
+  title: "学級経営・子ども対応 | 全国教員支援ポータル",
   description: "教員が日々困りやすい学級経営・子ども対応の場面別ページ。",
 };
 

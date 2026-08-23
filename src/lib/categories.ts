@@ -70,7 +70,7 @@ export const categories: Category[] = [
     icon: "💼",
     description: "福利厚生・休暇・手当など、先生自身の生活を支える制度情報。",
     href: "/life",
-    status: "coming-soon",
+    status: "live",
   },
   {
     slug: "ai",

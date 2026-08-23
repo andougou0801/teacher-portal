@@ -17,7 +17,7 @@ export async function generateMetadata(
   const article = getArticleBySlug(slug);
   return {
     title: article
-      ? `${article.title} | 全国教員支援ポータル（仮称）`
+      ? `${article.title} | 全国教員支援ポータル`
       : "記事",
   };
 }

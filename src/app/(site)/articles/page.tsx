@@ -4,7 +4,7 @@ import { articles } from "@/lib/articles";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
-  title: "記事・コラム | 全国教員支援ポータル（仮称）",
+  title: "記事・コラム | 全国教員支援ポータル",
 };
 
 export default function ArticlesPage() {

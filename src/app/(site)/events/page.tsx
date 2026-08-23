@@ -4,7 +4,7 @@ import { articles } from "@/lib/articles";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
-  title: "学校行事・年間行事 | 全国教員支援ポータル（仮称）",
+  title: "学校行事・年間行事 | 全国教員支援ポータル",
   description: "時期ごとに必要な情報を探せる、年間行事の準備ガイド。",
 };
 

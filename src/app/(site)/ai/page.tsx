@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { aiGuides } from "@/lib/aiGuides";
 
 export const metadata: Metadata = {
-  title: "先生のAI活用 | 全国教員支援ポータル（仮称）",
+  title: "先生のAI活用 | 全国教員支援ポータル",
   description: "生成AIを授業準備や校務に活かすための入門ガイド。",
 };
 

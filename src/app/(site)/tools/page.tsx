@@ -5,7 +5,7 @@ import { getCategoryBorderColor } from "@/lib/categoryColor";
 import FavoriteButton from "@/components/FavoriteButton";
 
 export const metadata: Metadata = {
-  title: "先生の便利ツール | 全国教員支援ポータル（仮称）",
+  title: "先生の便利ツール | 全国教員支援ポータル",
   description: "採点・プリント作成・時間割など、教員の仕事をすぐ効率化できるツール一覧。",
 };
 

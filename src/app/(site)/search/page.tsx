@@ -9,7 +9,7 @@ import { categories } from "@/lib/categories";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
-  title: "検索結果 | 全国教員支援ポータル（仮称）",
+  title: "検索結果 | 全国教員支援ポータル",
 };
 
 function matches(query: string, ...fields: string[]) {
