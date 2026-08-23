@@ -2,48 +2,79 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "忙しい先生のためのページ | 全国教員支援ポータル",
-  description: "福利厚生・休暇・手当など、先生自身の生活を支える制度への入り口をまとめたページ。",
+  description: "休暇や育児・介護に関する制度の名前と意味を、パッと見てわかる形でまとめたページ。",
 };
 
-type LifeLink = {
+type TermGroup = {
   icon: string;
-  title: string;
-  description: string;
-  linkName: string;
-  url: string;
+  groupTitle: string;
+  groupNote?: string;
+  terms: { name: string; description: string }[];
 };
 
-const lifeLinks: LifeLink[] = [
+const termGroups: TermGroup[] = [
   {
     icon: "🌴",
-    title: "休暇制度",
-    description:
-      "年次休暇・病気休暇・特別休暇（結婚・忌引・出産補助など）といった、教職員が使える休暇の種類は自治体の規則で定められています。",
+    groupTitle: "休みたいときに使える休暇の種類",
+    terms: [
+      {
+        name: "年次有給休暇（年休）",
+        description:
+          "理由を問わず、自分の都合で自由に取得できる休暇です。「休みたいから休む」で使えるのはこれです。多くの自治体で、常勤の教職員には年間20日前後が付与されます（前年の残日数を一部繰り越せる場合もあります）。",
+      },
+      {
+        name: "病気休暇",
+        description:
+          "本人がケガや病気で療養が必要なときに取る休暇です。年休とは別枠で、医師の診断書などが必要になることが多く、年休より要件が厳しめです。",
+      },
+      {
+        name: "特別休暇",
+        description:
+          "結婚・忌引（親族が亡くなったとき）・出産の付き添い・生理休暇・公務中のケガなど、特別な事情があるときに認められる休暇です。年休や病気休暇とは別枠で、種類・日数は自治体の条例で定められています。",
+      },
+      {
+        name: "介護休暇",
+        description:
+          "家族の介護が必要になったときに取れる休暇です。対象になる家族の範囲や取得できる期間は、育児関連の制度と同様に定めがあります。",
+      },
+    ],
+  },
+  {
+    icon: "👶",
+    groupTitle: "育児・介護と仕事を両立するための制度",
+    groupNote:
+      "似た名前の制度が多く混同しやすいので、代表的な3つの違いをまとめました。",
+    terms: [
+      {
+        name: "育児休業",
+        description:
+          "子が3歳になるまで取得できる、仕事を完全に休む制度です。ただし育児休業手当金（給与の代わりに支給されるお金）が出るのは、原則子が1歳になるまで（両親で交代して取る「パパ・ママプラス」を使うと1歳2か月まで）という点に注意が必要です。",
+      },
+      {
+        name: "育児短時間勤務（育短）",
+        description:
+          "子が小学校に入学するまでの間、常勤のまま1日の勤務時間そのものを短くできる制度です。原則1年以内の単位で申請しますが、間隔をあけて申請し直せば、通算で最大2年ほど利用できます。",
+      },
+      {
+        name: "部分休業（部分休）",
+        description:
+          "子が小学校に入学するまでの間、1日2時間を超えない範囲で（30分単位で）勤務時間を短くできる制度です。育短と似ていますが、短くできる時間の上限や仕組みが異なります。休んだ時間分は給与から差し引かれ、ボーナスの査定にも影響することがあります。",
+      },
+    ],
+  },
+];
+
+const officialLinksForLife = [
+  {
     linkName: "岐阜県教育委員会「教職員の働き方改革」",
     url: "https://www.pref.gifu.lg.jp/site/edu/16206.html",
   },
   {
-    icon: "👶",
-    title: "育児・介護に関する制度",
-    description:
-      "育児休業・育児短時間勤務・育児休業支援手当金・介護休暇など、子育てや家族の介護と仕事を両立するための制度です。",
-    linkName: "公立学校共済組合 岐阜支部",
-    url: "https://www.kouritu.or.jp/gifu/about/index.html",
-  },
-  {
-    icon: "🏥",
-    title: "共済組合の各種給付",
-    description:
-      "医療費の給付、健康診断・保健指導、出産・弔慰金など、公立学校共済組合を通じて受けられる保障です。",
-    linkName: "公立学校共済組合 岐阜支部",
+    linkName: "公立学校共済組合 岐阜支部（医療費・出産・弔慰金などの給付）",
     url: "https://www.kouritu.or.jp/gifu/",
   },
   {
-    icon: "🤝",
-    title: "教職員互助会の福利厚生事業",
-    description:
-      "共済組合とは別に、教職員互助会が独自に行っている福利厚生事業（生活支援・レクリエーション等）があります。",
-    linkName: "岐阜県教職員互助会",
+    linkName: "岐阜県教職員互助会（共済組合とは別の福利厚生事業）",
     url: "https://www.gikyogo.jp/",
   },
 ];
@@ -57,43 +88,65 @@ export default function LifePage() {
         </div>
         <h1 className="mt-2 mb-2 text-2xl font-bold">💼 忙しい先生のためのページ</h1>
         <p className="mx-auto max-w-lg text-sm text-muted">
-          「先生の仕事」だけでなく「先生自身の生活」を支える制度への入り口をまとめました。
-          まずは岐阜県のケースを例に、どんな制度があるかを紹介しています。
+          「これって何のこと？」を、困ったときにパッと見てわかるようにまとめました。
         </p>
       </div>
 
       <div className="mb-6 rounded-2xl border border-warn-line bg-warn-bg p-4 text-sm text-warn">
-        休暇の日数・手当の金額・対象条件などの具体的な内容は、都道府県・市区町村ごとに異なります。
-        このページは「こういう制度がある」という入り口の紹介にとどめ、正確な最新情報は必ず
-        リンク先の公式サイトや、お勤め先の教育委員会・共済組合にご確認ください。
+        ここでは、制度の名前と大まかな意味を紹介しています。日数・金額・対象条件の
+        正確な数字は都道府県・市区町村によって異なるため、実際に使うときは
+        お勤め先の教育委員会・共済組合に必ずご確認ください。
       </div>
 
-      <div className="flex flex-col gap-4">
-        {lifeLinks.map((item) => (
-          <div key={item.title} className="rounded-2xl border border-line bg-white p-5">
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">{item.icon}</span>
-              <div className="flex-1">
-                <h2 className="text-base font-bold">{item.title}</h2>
-                <p className="mt-1 text-sm text-muted">{item.description}</p>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 inline-block text-sm font-bold text-accent hover:underline"
-                >
-                  {item.linkName}を見る →
-                </a>
-              </div>
+      <div className="flex flex-col gap-8">
+        {termGroups.map((group) => (
+          <div key={group.groupTitle}>
+            <h2 className="mb-1 flex items-center gap-2 text-base font-bold">
+              <span>{group.icon}</span>
+              {group.groupTitle}
+            </h2>
+            {group.groupNote && (
+              <p className="mb-3 text-sm text-muted">{group.groupNote}</p>
+            )}
+            <div className="flex flex-col gap-3">
+              {group.terms.map((term) => (
+                <div key={term.name} className="rounded-2xl border border-line bg-white p-4">
+                  <h3 className="text-sm font-bold text-navy">{term.name}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted">
+                    {term.description}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         ))}
       </div>
 
-      <p className="mt-8 text-center text-sm text-muted">
-        岐阜県以外の先生は、お住まいの都道府県・市区町村名＋「教職員 共済組合」または
-        「教職員 互助会」で検索すると、同じような制度の窓口が見つかります。
-      </p>
+      <div className="mt-10 rounded-2xl border border-line bg-white p-5">
+        <h2 className="mb-3 text-sm font-bold text-navy">
+          正確な日数・金額・手続きを知りたいとき
+        </h2>
+        <p className="mb-3 text-sm text-muted">
+          岐阜県のケースを例に、公式の窓口をまとめています。
+        </p>
+        <div className="flex flex-col gap-2">
+          {officialLinksForLife.map((link) => (
+            <a
+              key={link.url}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-bold text-accent hover:underline"
+            >
+              {link.linkName} →
+            </a>
+          ))}
+        </div>
+        <p className="mt-4 text-sm text-muted">
+          岐阜県以外の先生は、お住まいの都道府県・市区町村名＋「教職員 共済組合」または
+          「教職員 互助会」で検索すると、同じような制度の窓口が見つかります。
+        </p>
+      </div>
     </section>
   );
 }
