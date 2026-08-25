@@ -460,10 +460,11 @@ function decPointColIndex(maxPlace, leftOffset){
 function decTotalCols(maxPlace, scale, leftOffset){
   return leftOffset+(maxPlace+scale+1)+(scale>0?1:0);
 }
-function colTemplate(totalCols, pointCol){
+function colTemplate(totalCols, pointCols){
+  const set = Array.isArray(pointCols) ? new Set(pointCols) : new Set(pointCols!=null ? [pointCols] : []);
   const parts=[];
   for(let i=1;i<=totalCols;i++){
-    parts.push(i===pointCol ? 'var(--pw)' : 'var(--cs)');
+    parts.push(set.has(i) ? 'var(--pw)' : 'var(--cs)');
   }
   return parts.join(' ');
 }
@@ -497,114 +498,7 @@ function renderDecimalScratchRow(grid,row,maxPlace,scale,leftOffset){
   }
 }
 
-/* ---------------- generators ---------------- */
-const ADD_SPECS={
-  1:{da:[10,99],   db:[1,9],    carry:'none'},
-  2:{da:[10,99],   db:[1,9],    carry:'some'},
-  3:{da:[10,99],   db:[10,99],  carry:'none'},
-  4:{da:[10,99],   db:[10,99],  carry:'some'},
-  5:{da:[100,999], db:[100,999],carry:'none'},
-  6:{da:[100,999], db:[100,999],carry:'some'},
-  7:{da:[1000,9999],db:[100,999],carry:'some'},
-  8:{da:[1000,9999],db:[1000,9999],carry:'many'}
-};
-function genAddition(level){
-  const s=ADD_SPECS[level];
-  let a,b,tries=0,ok=false;
-  while(!ok && tries<600){
-    tries++;
-    a=randInt(s.da[0],s.da[1]); b=randInt(s.db[0],s.db[1]);
-    const c=countCarries(a,b);
-    ok = s.carry==='none' ? c===0 : s.carry==='many' ? c>=2 : c>=1;
-  }
-  return {a,b};
-}
-
-const SUB_SPECS={
-  1:{da:[10,99],   db:[1,9],    borrow:'none'},
-  2:{da:[10,99],   db:[1,9],    borrow:'some'},
-  3:{da:[10,99],   db:[10,99],  borrow:'none'},
-  4:{da:[10,99],   db:[10,99],  borrow:'some'},
-  5:{da:[100,999], db:[100,999],borrow:'none'},
-  6:{da:[100,999], db:[100,999],borrow:'some'},
-  7:{da:[1000,9999],db:[100,999],borrow:'some'},
-  8:{da:[1000,9999],db:[1000,9999],borrow:'many'}
-};
-function genSubtraction(level){
-  const s=SUB_SPECS[level];
-  let a,b,tries=0,ok=false;
-  while(!ok && tries<600){
-    tries++;
-    a=randInt(s.da[0],s.da[1]);
-    const bmax=Math.min(s.db[1], a-1);
-    if(bmax<s.db[0]) continue;
-    b=randInt(s.db[0], bmax);
-    const c=countBorrows(a,b);
-    ok = s.borrow==='none' ? c===0 : s.borrow==='many' ? c>=2 : c>=1;
-  }
-  return {a,b};
-}
-
-const MUL_SPECS={
-  1:{da:[10,99],    singleB:true, carry:'none'},
-  2:{da:[10,99],    singleB:true, carry:'some'},
-  3:{da:[100,999],  singleB:true, carry:'none'},
-  4:{da:[100,999],  singleB:true, carry:'some'},
-  5:{da:[1000,9999],singleB:true, carry:'some'},
-  6:{da:[10,99],    singleB:false},
-  7:{da:[100,999],  singleB:false},
-  8:{da:[1000,9999],singleB:false}
-};
-function genMultiplication(level){
-  const s=MUL_SPECS[level];
-  let a,b,tries=0,ok=false;
-  while(!ok && tries<600){
-    tries++;
-    a=randInt(s.da[0],s.da[1]);
-    b = s.singleB ? randInt(2,9) : randInt(11,99);
-    if(s.singleB && s.carry){
-      const c=countCarriesMul(a,b);
-      ok = s.carry==='none' ? c===0 : c>=1;
-    } else {
-      ok=true;
-    }
-  }
-  return {a,b};
-}
-
-const DIV_SPECS={
-  1:{range:[10,99],    divisor:[2,9],  remainder:false},
-  2:{range:[10,99],    divisor:[2,9],  remainder:true},
-  3:{range:[100,999],  divisor:[2,9],  remainder:false},
-  4:{range:[100,999],  divisor:[2,9],  remainder:true},
-  5:{range:[1000,9999],divisor:[2,9],  remainder:false},
-  6:{range:[1000,9999],divisor:[2,9],  remainder:true},
-  7:{range:[100,999],  divisor:[11,99],remainder:false},
-  8:{range:[100,999],  divisor:[11,99],remainder:true}
-};
-function genDivision(level){
-  const s=DIV_SPECS[level];
-  let divisor,dividend,tries=0,ok=false;
-  while(!ok && tries<800){
-    tries++;
-    divisor=randInt(s.divisor[0], s.divisor[1]);
-    if(s.remainder){
-      dividend=randInt(s.range[0], s.range[1]);
-      if(dividend<=divisor) continue;
-      if(dividend%divisor===0) continue;
-    } else {
-      const qMin=Math.max(1, Math.ceil(s.range[0]/divisor));
-      const qMax=Math.floor(s.range[1]/divisor);
-      if(qMax<qMin) continue;
-      const q=randInt(qMin,qMax);
-      dividend=divisor*q;
-    }
-    ok=true;
-  }
-  return {dividend,divisor};
-}
-
-/* ---------------- decimal generators ---------------- */
+/* ---------------- decimal helpers used by generators ---------------- */
 function randomDecimal(intMin,intMax,decPlaces){
   const whole=randInt(intMin,intMax);
   let decStr='';
@@ -617,37 +511,269 @@ function computeDecimalResult(a,b,op){
   const rInt = op==='add' ? aInt+bInt : aInt-bInt;
   return formatScaledInt(rInt,scale);
 }
-function randDecPlacesPair(maxDec){
-  let a,b;
-  do{ a=randInt(0,maxDec); b=randInt(0,maxDec); } while(a===0 && b===0);
-  return [a,b];
-}
-function genDecimalAddition(){
-  const [decA,decB]=randDecPlacesPair(2);
-  const a=randomDecimal(1,9,decA);
-  const b=randomDecimal(1,9,decB);
-  return {a,b};
-}
-function genDecimalSubtraction(){
-  const [decA,decB]=randDecPlacesPair(2);
+
+/* ---------------- addition: 10 levels ---------------- */
+function genAddition(level){
+  if(level>=6) return genDecimalAddition(level);
   let a,b,tries=0,ok=false;
+  while(!ok && tries<600){
+    tries++;
+    if(level===1){
+      if(Math.random()<0.5){ a=randInt(10,99); b=randInt(1,9); }
+      else { a=randInt(10,99); b=randInt(10,99); }
+      ok = countCarries(a,b)===0;
+    } else if(level===2){
+      a=randInt(10,99); b=randInt(10,99);
+      ok = countCarries(a,b)===1;
+    } else if(level===3){
+      if(Math.random()<0.5){ a=randInt(100,999); b=randInt(10,99); }
+      else { a=randInt(100,999); b=randInt(100,999); }
+      ok = countCarries(a,b)===0;
+    } else if(level===4){
+      a=randInt(100,999); b=randInt(100,999);
+      ok = countCarries(a,b)>=2;
+    } else {
+      if(Math.random()<0.5){ a=randInt(1000,9999); b=randInt(100,9999); }
+      else { a=randInt(10000,99999); b=randInt(1000,99999); }
+      ok = countCarries(a,b)>=2;
+    }
+  }
+  return {a,b,kind:'int'};
+}
+function genDecimalAddition(level){
+  let a,b,decA,decB;
+  if(level===6){ decA=1; decB=1; a=randomDecimal(1,9,decA); b=randomDecimal(1,9,decB); }
+  else if(level===7){ decA=2; decB=2; a=randomDecimal(0,9,decA); b=randomDecimal(0,9,decB); }
+  else if(level===8){ [decA,decB]=Math.random()<0.5?[1,2]:[2,1]; a=randomDecimal(1,9,decA); b=randomDecimal(1,9,decB); }
+  else if(level===9){
+    if(Math.random()<0.5){ decA=0; decB=randInt(1,2); } else { decA=randInt(1,2); decB=0; }
+    a=randomDecimal(1,9,decA); b=randomDecimal(1,9,decB);
+  } else { decA=randInt(2,3); decB=randInt(2,3); a=randomDecimal(1,99,decA); b=randomDecimal(1,99,decB); }
+  return {a,b,kind:'dec'};
+}
+
+/* ---------------- subtraction: 10 levels ---------------- */
+function genSubtraction(level){
+  if(level>=6) return genDecimalSubtraction(level);
+  let a,b,tries=0,ok=false;
+  while(!ok && tries<600){
+    tries++;
+    if(level===1){
+      if(Math.random()<0.5){ a=randInt(10,99); b=randInt(1,9); if(b>a-1) continue; }
+      else { a=randInt(10,99); const bmax=Math.min(99,a-1); if(bmax<10) continue; b=randInt(10,bmax); }
+      ok = countBorrows(a,b)===0;
+    } else if(level===2){
+      a=randInt(10,99);
+      const bmax=Math.min(99,a-1);
+      if(bmax<10) continue;
+      b=randInt(10,bmax);
+      ok = countBorrows(a,b)===1;
+    } else if(level===3){
+      if(Math.random()<0.5){ a=randInt(100,999); const bmax=Math.min(99,a-1); if(bmax<10) continue; b=randInt(10,bmax); }
+      else { a=randInt(100,999); const bmax=Math.min(999,a-1); if(bmax<100) continue; b=randInt(100,bmax); }
+      ok = countBorrows(a,b)===0;
+    } else if(level===4){
+      a=randInt(100,999);
+      if(Math.floor(a/10)%10===0) continue;
+      const bmax=Math.min(999,a-1);
+      if(bmax<100) continue;
+      b=randInt(100,bmax);
+      ok = countBorrows(a,b)>=2;
+    } else {
+      const hundreds=randInt(1,9), ones=randInt(0,9);
+      a = hundreds*100 + ones;
+      const bmax=Math.min(999,a-1);
+      if(bmax<100) continue;
+      b=randInt(100,bmax);
+      ok = (a%10) < (b%10);
+    }
+  }
+  return {a,b,kind:'int'};
+}
+function genDecimalSubtraction(level){
+  let a,b,decA,decB,tries=0,ok=false;
   while(!ok && tries<300){
     tries++;
-    a=randomDecimal(3,9,decA);
-    b=randomDecimal(1,8,decB);
+    if(level===6){ decA=1; decB=1; a=randomDecimal(2,9,decA); b=randomDecimal(1,8,decB); }
+    else if(level===7){ decA=2; decB=2; a=randomDecimal(1,9,decA); b=randomDecimal(1,8,decB); }
+    else if(level===8){ decA=1; decB=2; a=randomDecimal(2,9,decA); b=randomDecimal(1,8,decB); }
+    else if(level===9){ decA=0; decB=randInt(1,2); a=randomDecimal(2,9,decA); b=randomDecimal(1,8,decB); }
+    else { decA=randInt(2,3); decB=randInt(2,3); a=randomDecimal(10,99,decA); b=randomDecimal(1,90,decB); }
     const scale=Math.max(decA,decB);
     if(toScaledInt(a,scale)>toScaledInt(b,scale)) ok=true;
   }
-  return {a,b};
+  return {a,b,kind:'dec'};
 }
-function genDecimalMultiplication(){
-  const [decA,decB]=randDecPlacesPair(1);
-  const a=randomDecimal(1,9,decA);
-  const b=randomDecimal(1,9,decB);
-  return {a,b};
-}
-function genDecimalDivision(){
+
+/* ---------------- multiplication: 10 levels ---------------- */
+function genMultiplication(level){
+  if(level>=7) return genDecimalMultiplication(level);
   let a,b,tries=0,ok=false;
+  while(!ok && tries<600){
+    tries++;
+    if(level===1){ a=randInt(10,99); b=randInt(2,9); ok = countCarriesMul(a,b)===0; }
+    else if(level===2){ a=randInt(10,99); b=randInt(2,9); ok = countCarriesMul(a,b)>=1; }
+    else if(level===3){ a=randInt(100,999); b=randInt(2,9); ok = countCarriesMul(a,b)>=1; }
+    else if(level===4){ a=randInt(10,99); b=randInt(2,9)*10; ok=true; }
+    else if(level===5){ a=randInt(10,99); b=randInt(11,99); if(b%10===0) continue; ok=true; }
+    else { a=randInt(100,999); b=randInt(11,99); ok=true; }
+  }
+  return {a,b,kind:'int'};
+}
+function genDecimalMultiplication(level){
+  let a,b,decA,decB,tries=0,ok=false;
+  while(!ok && tries<300){
+    tries++;
+    if(level===7){
+      if(Math.random()<0.5){ decA=randInt(1,2); decB=0; } else { decA=0; decB=randInt(1,2); }
+      a=randomDecimal(1,9,decA); b=randomDecimal(1,9,decB);
+      ok=true;
+    } else if(level===8){
+      decA=1; decB=1;
+      a=randomDecimal(1,9,decA); b=randomDecimal(1,9,decB);
+      ok=true;
+    } else if(level===9){
+      decA=2; decB = Math.random()<0.5 ? 0 : 1;
+      a=randomDecimal(0,9,decA);
+      b = decB===0 ? String(randInt(2,9)) : randomDecimal(1,9,decB);
+      const Aint=toScaledInt(a,decA), Bint=toScaledInt(b,decB);
+      if(Aint===0) continue;
+      ok = (Aint*Bint)%10===0;
+    } else {
+      a=`0.${randInt(1,9)}${randInt(0,9)}`;
+      b=`0.${randInt(1,9)}`;
+      ok=true;
+    }
+  }
+  const needsSimplify = level>=9;
+  let simplifiedAnswer=null;
+  if(needsSimplify){
+    const sA=decLen(a), sB=decLen(b), cs=sA+sB;
+    const raw=toScaledInt(a,sA)*toScaledInt(b,sB);
+    let simp=formatScaledInt(raw,cs);
+    if(simp.includes('.')){ simp=simp.replace(/0+$/,'').replace(/\.$/,''); }
+    simplifiedAnswer=simp;
+  }
+  return {a,b,kind:'dec',needsSimplify,simplifiedAnswer};
+}
+
+/* ---------------- division: 10 levels ---------------- */
+function simulateDivisionSteps(dividend,divisor){
+  const ddigits=String(dividend).split('').map(Number);
+  const n=ddigits.length;
+  let partial=0, started=false;
+  const steps=[];
+  for(let i=0;i<n;i++){
+    partial=partial*10+ddigits[i];
+    const qd=Math.floor(partial/divisor);
+    if(qd>0||started){
+      started=true;
+      const product=qd*divisor, diff=partial-product;
+      steps.push({partialBefore:partial,qd,diff});
+      partial=diff;
+    }
+  }
+  return {steps, remainder:partial};
+}
+function checkTrialQuotient(dividend,divisor,wantAllCorrect){
+  const {steps}=simulateDivisionSteps(dividend,divisor);
+  if(steps.length===0) return false;
+  const divisorLead=Math.floor(divisor/10)||divisor;
+  const roundedDivisor=divisorLead*10;
+  let allCorrect=true, anyWrong=false;
+  for(const st of steps){
+    let trial=Math.floor(st.partialBefore/roundedDivisor);
+    trial=Math.min(9,Math.max(0,trial));
+    if(trial!==st.qd){ allCorrect=false; anyWrong=true; }
+  }
+  return wantAllCorrect ? allCorrect : anyWrong;
+}
+function genDivision(level){
+  if(level===8) return genDivisionContinue();
+  if(level>=9) return genDecimalDivision(level);
+  let divisor,dividend,tries=0,ok=false;
+  while(!ok && tries<1200){
+    tries++;
+    if(level===1){
+      divisor=randInt(2,9);
+      const tensDigit=randInt(1,9), onesDigit=randInt(0,9);
+      if(tensDigit%divisor!==0 || onesDigit%divisor!==0) continue;
+      if(Math.floor(tensDigit/divisor)===0) continue;
+      dividend=tensDigit*10+onesDigit;
+      ok=true;
+    } else if(level===2){
+      divisor=randInt(2,9);
+      dividend=randInt(10,99);
+      const q=Math.floor(dividend/divisor), r=dividend%divisor;
+      if(r===0 || q<10) continue;
+      ok=true;
+    } else if(level===3){
+      divisor=randInt(2,9);
+      dividend=randInt(10,99);
+      if(dividend%divisor!==0) continue;
+      const tensDigit=Math.floor(dividend/10);
+      if(tensDigit%divisor===0) continue;
+      if(Math.floor(tensDigit/divisor)===0) continue;
+      ok=true;
+    } else if(level===4){
+      divisor=randInt(2,9);
+      dividend=randInt(100,999);
+      if(Math.floor(dividend/100)<divisor) continue;
+      ok=true;
+    } else if(level===5){
+      divisor=randInt(2,9);
+      dividend=randInt(100,999);
+      if(Math.floor(dividend/100)>=divisor) continue;
+      ok=true;
+    } else if(level===6){
+      divisor=randInt(11,99);
+      const dmax=Math.min(999,divisor*9+(divisor-1));
+      if(dmax<=divisor) continue;
+      dividend=randInt(divisor+1,dmax);
+      if(!checkTrialQuotient(dividend,divisor,true)) continue;
+      ok=true;
+    } else {
+      divisor=randInt(11,99);
+      const dmax=Math.min(999,divisor*9+(divisor-1));
+      if(dmax<=divisor) continue;
+      dividend=randInt(divisor+1,dmax);
+      if(!checkTrialQuotient(dividend,divisor,false)) continue;
+      ok=true;
+    }
+  }
+  return {dividend,divisor,kind:'int'};
+}
+function genDivisionContinue(){
+  const niceDivisors=[2,4,5,8,16,20,25];
+  let divisor,dividend,tries=0,ok=false;
+  while(!ok && tries<300){
+    tries++;
+    divisor=niceDivisors[randInt(0,niceDivisors.length-1)];
+    dividend=randInt(Math.max(divisor+1,2),99);
+    if(dividend%divisor===0) continue;
+    ok=true;
+  }
+  return {dividend,divisor,kind:'continue'};
+}
+function genDecimalDivision(level){
+  let a,b,tries=0,ok=false;
+  if(level===9){
+    const niceDivisors=[2,4,5,8];
+    while(!ok && tries<300){
+      tries++;
+      const shiftedDivisor=niceDivisors[randInt(0,niceDivisors.length-1)];
+      const scaleB=randInt(1,2);
+      const bScaledStr=String(shiftedDivisor).padStart(scaleB+1,'0');
+      b = bScaledStr.slice(0,bScaledStr.length-scaleB)+'.'+bScaledStr.slice(bScaledStr.length-scaleB);
+      const aWhole=randInt(1,9);
+      let aDec=''; for(let i=0;i<scaleB;i++) aDec+=randInt(0,9);
+      a = `${aWhole}.${aDec}`;
+      const aInt=toScaledInt(a,scaleB);
+      if(aInt===0) continue;
+      ok=true;
+    }
+    return {a,b,kind:'div-dec-exact'};
+  }
   while(!ok && tries<300){
     tries++;
     const divisorWhole=randInt(0,1);
@@ -657,89 +783,117 @@ function genDecimalDivision(){
     const q=Math.floor(aInt/bInt);
     if(aInt>bInt && aInt%bInt!==0 && q>=1 && q<=9) ok=true;
   }
-  return {a,b};
+  return {a,b,kind:'div-dec-remainder'};
 }
 
 /* ---------------- level labels ---------------- */
 const OP_META={
   add:{name:'たしざん', emoji:'➕', levels:[
-    '2けた＋1けた（くり上がりなし）','2けた＋1けた（くり上がりあり）',
-    '2けた＋2けた（くり上がりなし）','2けた＋2けた（くり上がりあり）',
-    '3けた＋3けた（くり上がりなし）','3けた＋3けた（くり上がりあり）',
-    '4けた＋3けた（くり上がりあり）','4けた＋4けた（くり上がり多数）',
-    '小数のたし算（位をそろえよう）']},
+    '2桁+1桁・2桁+2桁（くり上がりなし）',
+    '2桁+2桁（くり上がり1回）',
+    '3桁+2桁・3桁+3桁（くり上がりなし）',
+    '3桁+3桁（くり上がり複数回）',
+    '4桁以上の大きなたし算（くり上がり複数回）',
+    '小数のたし算・基礎（小数第一位）',
+    '小数のたし算・拡張（小数第二位まで）',
+    '小数のたし算（ちがう小数桁）',
+    '整数と小数のたし算',
+    '多数桁の複雑な小数のたし算']},
   sub:{name:'ひきざん', emoji:'➖', levels:[
-    '2けた－1けた（くり下がりなし）','2けた－1けた（くり下がりあり）',
-    '2けた－2けた（くり下がりなし）','2けた－2けた（くり下がりあり）',
-    '3けた－3けた（くり下がりなし）','3けた－3けた（くり下がりあり）',
-    '4けた－3けた（くり下がりあり）','4けた－4けた（くり下がり多数）',
-    '小数のひき算（位をそろえよう）']},
+    '2桁-1桁・2桁-2桁（くり下がりなし）',
+    '2桁-2桁（くり下がり1回）',
+    '3桁-2桁・3桁-3桁（くり下がりなし）',
+    '3桁-3桁（くり下がり複数回）',
+    '「0」をまたぐくり下がり',
+    '小数のひき算・基礎（小数第一位）',
+    '小数のひき算・拡張（小数第二位まで）',
+    '小数のひき算（ちがう小数桁）',
+    '整数から小数を引く筆算',
+    '多数桁の複雑な小数のひき算']},
   mul:{name:'かけざん', emoji:'✖️', levels:[
-    '2けた×1けた（くり上がりなし）','2けた×1けた（くり上がりあり）',
-    '3けた×1けた（くり上がりなし）','3けた×1けた（くり上がりあり）',
-    '4けた×1けた（くり上がりあり）','2けた×2けた',
-    '3けた×2けた','4けた×2けた',
-    '小数×小数（積の小数点に注意）']},
+    '(2桁)×1位数（くり上がりなし）',
+    '(2桁)×1位数（くり上がりあり）',
+    '(3桁)×1位数（くり上がりあり）',
+    '(2桁)×(2桁)（かける数が「何十」）',
+    '(2桁)×(2桁)の一般的な筆算',
+    '(3桁)×(2桁)の筆算',
+    '小数×整数の筆算',
+    '小数×小数の基本',
+    '小数×小数（末尾の0を消す）',
+    '小数×小数（積が1未満、0を補う）']},
   div:{name:'わりざん', emoji:'➗', levels:[
-    '2けた÷1けた（あまりなし）','2けた÷1けた（あまりあり）',
-    '3けた÷1けた（あまりなし）','3けた÷1けた（あまりあり）',
-    '4けた÷1けた（あまりなし）','4けた÷1けた（あまりあり）',
-    '3けた÷2けた（あまりなし）','3けた÷2けた（あまりあり）',
-    '小数÷小数（あまりの小数点に注意）']}
+    '(2桁)÷1位数（各桁が割り切れる）',
+    '(2桁)÷1位数（1の位にあまり）',
+    '(2桁)÷1位数（くり下ろしが必要）',
+    '(3桁)÷1位数（商が3桁）',
+    '(3桁)÷1位数（商が2桁）',
+    '2桁でわる（仮の商が1回で決定）',
+    '2桁でわる（仮の商を修正する）',
+    '整数÷整数の割り進む筆算',
+    '小数÷小数の筆算（商のみ）',
+    '小数÷小数（商とあまり）【最難関】']}
 };
 
 const TIPS={
   add:{
-    1:'いちの位から じゅんに たしていこう。',
-    2:'いちの位の こたえが 10いじょうに なったら、じゅうの位に 1くり上げよう。',
-    3:'いちの位、じゅうの位の じゅんに たしざんしよう。くり上がりは ないよ。',
-    4:'くり上がった 1を わすれずに、上の位に たしてね。',
-    5:'位を そろえて、いちの位から じゅんばんに けいさんしよう。',
-    6:'くり上がりが なんかい あっても、1つずつ ていねいに たしていこう。',
-    7:'けたが おおくても やりかたは おなじ。いちの位から じゅんに たしていこう。',
-    8:'くり上がりが おおいから、あわてずに 1つずつ たしかめよう。',
-    9:'小数点を たてに そろえて、あいている位には 0が あると かんがえて けいさんしよう！'
+    1:'いちの位、じゅうの位の じゅんに たしざんしよう。くり上がりは ないよ。',
+    2:'いちの位で 10いじょうに なったら、じゅうの位に 1くり上げよう。',
+    3:'けたが ふえても、位を そろえて じゅんに たせば くり上がりは ないよ。',
+    4:'じゅうの位、百の位と、なんかいも つづけて くり上げよう。',
+    5:'けたが おおくても やりかたは おなじ。いちの位から じゅんに たしていこう。',
+    6:'0.1の いくつ分か かんがえて、小数点を たてに そろえて たそう。',
+    7:'1/100の位まで あっても、整数と おなじ しくみで けいさんできるよ。',
+    8:'小数点を たてに そろえて、あいている位には 0が あると かんがえよう！',
+    9:'整数は 小数点いかが「00」と かんがえて、位を そろえて けいさんしよう。',
+    10:'整数部分・小数部分の けたが ちがっても、位を そろえれば だいじょうぶ。'
   },
   sub:{
-    1:'いちの位から じゅんに ひいていこう。くり下がりは ないよ。',
+    1:'いちの位、じゅうの位の じゅんに ひきざんしよう。くり下がりは ないよ。',
     2:'いちの位が ひけないときは、じゅうの位から 1 かりてこよう。',
-    3:'位を そろえて ひきざんしよう。くり下がりは ないよ。',
-    4:'かりた 1を わすれずに、上の位から 1 へらしてね。',
-    5:'いちの位、じゅうの位、百の位の じゅんに ひいていこう。',
-    6:'くり下がりが あっても、1つずつ ていねいに けいさんしよう。',
-    7:'けたが ちがっても、位を そろえて けいさんすれば だいじょうぶ。',
-    8:'くり下がりが おおいから、じゅんばんに ゆっくり すすめよう。',
-    9:'小数点を たてに そろえて、あいている位には 0が あると かんがえて けいさんしよう！'
+    3:'けたが ふえても、位を そろえて じゅんに ひけば くり下がりは ないよ。',
+    4:'じゅうの位、百の位と、なんかいも つづけて 1 かりてこよう。',
+    5:'となりの位が「0」で かりられない ときは、さらに上の位から かりてこよう。',
+    6:'0.1の いくつ分か かんがえて、小数点を たてに そろえて ひこう。',
+    7:'1/100の位まで あっても、整数と おなじ しくみで ひけるよ。',
+    8:'ひかれる数の あいている位に 0を じぶんで かきたして けいさんしよう。',
+    9:'整数は 小数点いかが「00」と かんがえて、くり下がりを つかおう。',
+    10:'「0をまたぐ」「小数桁がちがう」を くみあわせて、ていねいに けいさんしよう。'
   },
   mul:{
     1:'かける数を いちの位から じゅんに かけていこう。くり上がりは ないよ。',
     2:'かけた こたえが 10いじょうに なったら、上の位に くり上げよう。',
-    3:'百の位まで じゅんばんに かけざんしよう。',
-    4:'くり上がりを わすれずに、上の位に たしていこう。',
-    5:'けたが おおくても、いちの位から じゅんに かけていこう。',
-    6:'かける数の いちの位、じゅうの位の じゅんに べつべつに かけて、さいごに たしあわせよう。',
-    7:'だんずつ かけて、位を 1つずつ ずらして たしあわせよう。',
-    8:'けたが おおくても、やりかたは おなじ。だんごとに ていねいに けいさんしよう。',
-    9:'小数点は むしして せいすうとして かけざんし、さいごに りょうほうの 小数点いかの けた数を たして こたえに 小数点を うとう！'
+    3:'百の位まで じゅんばんに、くり上がりを わすれずに かけざんしよう。',
+    4:'かける数の「0」は そのまま下に おろして、のこりの数だけ かけよう。',
+    5:'かける数を「何十」と「1けた」に分けて、2つの部分積を 1つずらして たそう。',
+    6:'だんずつ かけて、位を 1つずつ ずらして たしあわせよう。',
+    7:'整数と おなじように かけざんして、かけられる数の 小数点から 真下に 小数点を おろそう。',
+    8:'小数点は むしして 整数として かけざんし、りょうほうの 小数点いかの けた数の 合計ぶんだけ 左に 小数点を うとう！',
+    9:'小数点を うったあと、こたえの 末尾に いらない「0」が あれば けして かんたんに しよう。',
+    10:'けたが たりないときは、小数点の すぐ右に「0」を かきたして こたえを つくろう。'
   },
   div:{
-    1:'上の位から じゅんに 商を たてていこう。わりきれるよ。',
-    2:'あまりが 出たら、わる数より 小さいか かくにんしよう。',
-    3:'百の位から じゅんに 商を たてていこう。わりきれるよ。',
-    4:'さいごの あまりが わる数より 小さくなったら おわりだよ。',
-    5:'けたが おおくても、上の位から じゅんばんに もとめよう。',
-    6:'あまりが わる数より 小さいか、さいごに かくにんしよう。',
-    7:'かりに 商を たてて、大きすぎたら 1つずつ へらして ちょうせいしよう。',
-    8:'商を 修正しながら、あまりが わる数より 小さくなるまで ちょうせいしよう。',
-    9:'わる数の 小数点が なくなるように、わられる数と わる数を 同じだけ 右に ずらしてから 計算しよう。あまりの 小数点は、わられる数の もとの 小数点から そのまま 真下に おろそう！'
+    1:'十の位、一の位の じゅんに 商を たてていこう。どちらも わりきれるよ。',
+    2:'商を たてて、かけて、ひいて、さいごに あまりを だそう。',
+    3:'十の位の あまりを 一の位に おろして あわせてから、もう一度 わろう。',
+    4:'百の位、十の位、一の位と、じゅんに 3回 くりかえそう。',
+    5:'百の位に 商が たたない ときは、はじめの2けたで 商を たてはじめよう。',
+    6:'わる数を「何十」と見て 商を 見当づけよう。かければ そのまま 引けるはずだよ。',
+    7:'かりに たてた 商が 大きすぎたら、1つずつ へらして 立てなおそう。',
+    8:'わりきれなくても、一の位の右に 小数点を うって「0」を おろしながら わりすすめよう。',
+    9:'わる数の 小数点が なくなるように、わられる数と わる数を 同じだけ 右に ずらしてから 計算しよう。',
+    10:'商は 整数で止め、あまりの 小数点は、わられる数の もとの 小数点から そのまま 真下に おろそう！'
   }
 };
 
 /* ---------------- state ---------------- */
+const safeStorage={
+  get(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } },
+  set(key,val){ try{ localStorage.setItem(key,val); }catch(e){} }
+};
 const state={op:null, level:null, questionCount:0, sessionSolved:0};
 let answerCells=[];
-let muted = localStorage.getItem('hissan_muted')==='1';
-let lifetimeStars = parseInt(localStorage.getItem('hissan_stars')||'0',10);
+let muted = safeStorage.get('hissan_muted')==='1';
+let lifetimeStars = parseInt(safeStorage.get('hissan_stars')||'0',10);
 
 /* ---------------- audio ---------------- */
 let audioCtx=null;
@@ -797,6 +951,7 @@ let divRemainderLabel=null;
 function resetProblemArea(){
   answerCells=[];
   divRemainderLabel=null;
+  lastFocusedCell=null;
   const area=document.getElementById('problem-area');
   area.innerHTML='';
   document.getElementById('next-btn-wrap').style.display='none';
@@ -807,7 +962,9 @@ function buildOpGridInto(container,a,b,opChar,result,withScratch,opts){
   opts = opts || {};
   const skipOperands = !!opts.skipOperands;
   const decimalScale = opts.decimalScale || 0;
-  const da=digitsOf(a), db=digitsOf(b), dr=digitsOf(result);
+  const da=digitsOf(a), db=digitsOf(b);
+  const dr=digitsOf(result);
+  while(decimalScale>0 && dr.length<decimalScale+1) dr.push(0);
   const maxPlace=Math.max(da.length-1, db.length-1, dr.length-1);
   const leftOffset=1;
   const totalCols=leftOffset+maxPlace+1+(decimalScale>0?1:0);
@@ -864,7 +1021,9 @@ function buildMultiplicationInto(container,a,b,opts){
   const product=a*b;
   const ones=b%10, tens=Math.floor(b/10)%10;
   const partial1=a*ones, partial2=a*tens;
-  const da=digitsOf(a), db=digitsOf(b), dp=digitsOf(product);
+  const da=digitsOf(a), db=digitsOf(b);
+  const dp=digitsOf(product);
+  while(decimalScale>0 && dp.length<decimalScale+1) dp.push(0);
   const maxPlace=Math.max(da.length-1, db.length-1, dp.length-1);
   const leftOffset=1;
   const totalCols=leftOffset+maxPlace+1+(decimalScale>0?1:0);
@@ -893,11 +1052,19 @@ function buildMultiplicationInto(container,a,b,opts){
   }
   addLine(grid,row,totalCols); row++;
 
+  for(let p=1;p<=maxPlace;p++){
+    addCell(grid,{row,col:col(p), editable:true, extraClass:'scratch'});
+  }
+  row++;
   const dpart1=digitsOf(partial1);
   for(let p=0;p<dpart1.length;p++){
     const c=col(p);
     const el=addCell(grid,{row,col:c,editable:true,correct:dpart1[p]});
     answerCells.push(el);
+  }
+  row++;
+  for(let p=2;p<=maxPlace;p++){
+    addCell(grid,{row,col:col(p), editable:true, extraClass:'scratch'});
   }
   row++;
   const dpart2=digitsOf(partial2);
@@ -927,14 +1094,18 @@ function renderMultiplication(a,b){
 function buildDivisionInto(container,dividend,divisor,opts){
   opts = opts || {};
   const scale = opts.scale || 0;
+  const maxExtra = opts.continueDecimal || 0;
   const divisorLabel = opts.divisorLabel !== undefined ? opts.divisorLabel : String(divisor);
   const ddigits=String(dividend).split('').map(Number);
   const n=ddigits.length;
   let partial=0, started=false;
   const steps=[];
-  for(let i=0;i<n;i++){
+  const totalIterations = n + maxExtra;
+  for(let i=0;i<totalIterations;i++){
+    if(i>=n && partial===0) break;
     const place=n-1-i;
-    partial=partial*10+ddigits[i];
+    const digit = i<n ? ddigits[i] : 0;
+    partial=partial*10+digit;
     const qd=Math.floor(partial/divisor);
     if(qd>0||started){
       started=true;
@@ -947,14 +1118,22 @@ function buildDivisionInto(container,dividend,divisor,opts){
     }
   }
   const remainder=partial;
+  const lastDigitIndex = steps.length ? steps[steps.length-1].digitIndex : -1;
+  const usedContinuation = lastDigitIndex >= n;
   const maxPlace=n-1;
-  const cols=maxPlace+1+(scale>0?1:0);
+
+  const boundaries=[];
+  if(scale>0 && !usedContinuation) boundaries.push(scale);
+  if(usedContinuation) boundaries.push(0);
+
   const col=(place)=>{
     let idx=maxPlace-place;
-    if(scale>0 && place<scale) idx+=1;
+    for(const b of boundaries){ if(place<b) idx+=1; }
     return idx+1;
   };
-  const pointCol = scale>0 ? (maxPlace-scale)+2 : null;
+  const pointColFor=(b)=> col(b)+1;
+  const cols = maxPlace+1+boundaries.length;
+  const pointCols = boundaries.map(pointColFor);
 
   const outer=document.createElement('div');
   outer.className='div-outer';
@@ -963,7 +1142,7 @@ function buildDivisionInto(container,dividend,divisor,opts){
   const qSpacer=document.createElement('div'); qSpacer.className='div-divisor-box spacer';
   qSpacer.textContent=divisorLabel;
   const qGrid=document.createElement('div'); qGrid.className='calc-grid div-qgrid';
-  qGrid.style.gridTemplateColumns=colTemplate(cols,pointCol);
+  qGrid.style.gridTemplateColumns=colTemplate(cols,pointCols);
   qRowWrap.appendChild(qSpacer); qRowWrap.appendChild(qGrid);
 
   const mainRow=document.createElement('div'); mainRow.className='div-flexrow';
@@ -971,7 +1150,7 @@ function buildDivisionInto(container,dividend,divisor,opts){
   divisorBox.textContent=divisorLabel;
   const bracket=document.createElement('div'); bracket.className='div-bracket';
   const stepsGrid=document.createElement('div'); stepsGrid.className='calc-grid div-stepsgrid';
-  stepsGrid.style.gridTemplateColumns=colTemplate(cols,pointCol);
+  stepsGrid.style.gridTemplateColumns=colTemplate(cols,pointCols);
   bracket.appendChild(stepsGrid);
   mainRow.appendChild(divisorBox); mainRow.appendChild(bracket);
 
@@ -983,8 +1162,12 @@ function buildDivisionInto(container,dividend,divisor,opts){
     const place=n-1-i;
     addCell(stepsGrid,{row:srow,col:col(place),digit:ddigits[i]});
   }
-  if(scale>0){
-    addCell(stepsGrid,{row:srow,col:pointCol,digit:'.',extraClass:'point'});
+  if(scale>0 && !usedContinuation){
+    addCell(stepsGrid,{row:srow,col:pointColFor(scale),digit:'.',extraClass:'point'});
+  }
+  if(usedContinuation){
+    addCell(stepsGrid,{row:srow,col:pointColFor(0),digit:'.',extraClass:'point'});
+    addCell(qGrid,{row:1,col:pointColFor(0),digit:'.',extraClass:'point'});
   }
   srow++;
 
@@ -1014,9 +1197,10 @@ function buildDivisionInto(container,dividend,divisor,opts){
       answerCells.push(el);
     });
     const nextIndex=step.digitIndex+1;
-    if(nextIndex<n){
+    if(nextIndex<=lastDigitIndex){
       const bdPlace=step.place-1;
-      const el=addCell(stepsGrid,{row:srow,col:col(bdPlace),editable:true,correct:ddigits[nextIndex]});
+      const bdDigit = nextIndex<n ? ddigits[nextIndex] : 0;
+      const el=addCell(stepsGrid,{row:srow,col:col(bdPlace),editable:true,correct:bdDigit});
       answerCells.push(el);
     }
     srow++;
@@ -1024,16 +1208,33 @@ function buildDivisionInto(container,dividend,divisor,opts){
 
   container.appendChild(outer);
 
-  const remLabel=document.createElement('div');
-  remLabel.className='div-remainder-label';
-  remLabel.textContent = remainder>0 ? `あまり ${remainder}` : 'わりきれた！ぴったり！';
-  outer.appendChild(remLabel);
-  divRemainderLabel=remLabel;
+  if(!usedContinuation){
+    const remLabel=document.createElement('div');
+    remLabel.className='div-remainder-label';
+    remLabel.textContent = remainder>0 ? `あまり ${remainder}` : 'わりきれた！ぴったり！';
+    outer.appendChild(remLabel);
+    divRemainderLabel=remLabel;
+  } else {
+    divRemainderLabel=null;
+  }
   return {remainder, divisor};
 }
 function renderDivision(dividend,divisor){
   const area=resetProblemArea();
   buildDivisionInto(area,dividend,divisor);
+}
+function renderDivisionContinue(dividend,divisor){
+  const area=resetProblemArea();
+  const stack=document.createElement('div');
+  stack.style.cssText='display:flex;flex-direction:column;align-items:center;';
+  area.appendChild(stack);
+  const capWrap=document.createElement('div');
+  capWrap.textContent='わりきれなくても、一の位の右に小数点をうって「0」をおろしながら、あまりが0になるまで わりすすめよう。';
+  capWrap.style.cssText='font-size:13px;color:#888;font-weight:800;margin-bottom:10px;max-width:320px;text-align:center;';
+  stack.appendChild(capWrap);
+  const calcWrap=document.createElement('div');
+  stack.appendChild(calcWrap);
+  buildDivisionInto(calcWrap, dividend, divisor, {continueDecimal:4});
 }
 
 /* ---------------- decimal renderers ---------------- */
@@ -1047,9 +1248,7 @@ function renderDecimalAddSub(a,b,opChar,resultStr){
   grid.className='calc-grid';
   grid.style.gridTemplateColumns=colTemplate(totalCols, scale>0?decPointColIndex(maxPlace,leftOffset):null);
   let row=1;
-  if(opChar==='＋'){
-    renderDecimalScratchRow(grid,row,maxPlace,scale,leftOffset); row++;
-  }
+  renderDecimalScratchRow(grid,row,maxPlace,scale,leftOffset); row++;
   renderDecimalStaticRow(grid,row,a,maxPlace,scale,leftOffset); row++;
   addCell(grid,{row,col:1,digit:opChar,extraClass:'op'});
   renderDecimalStaticRow(grid,row,b,maxPlace,scale,leftOffset); row++;
@@ -1058,7 +1257,7 @@ function renderDecimalAddSub(a,b,opChar,resultStr){
   area.appendChild(grid);
 }
 
-function renderDecimalMultiplication(aStr,bStr){
+function renderDecimalMultiplication(aStr,bStr,needsSimplify,simplifiedAnswer){
   const area=resetProblemArea();
   const scaleA=decLen(aStr), scaleB=decLen(bStr), combinedScale=scaleA+scaleB;
   const Aint=toScaledInt(aStr,scaleA), Bint=toScaledInt(bStr,scaleB);
@@ -1082,9 +1281,49 @@ function renderDecimalMultiplication(aStr,bStr){
   const calcWrap=document.createElement('div');
   stack.appendChild(calcWrap);
   buildMultiplicationInto(calcWrap, Aint, Bint, {skipOperands:true, decimalScale:combinedScale});
+
+  if(needsSimplify){
+    const simpWrap=document.createElement('div');
+    simpWrap.style.cssText='margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:6px;';
+    const simpLabel=document.createElement('div');
+    simpLabel.textContent='いらない0をけして、かんたんにすると？';
+    simpLabel.style.cssText='font-size:13px;color:#888;font-weight:800;';
+    simpWrap.appendChild(simpLabel);
+    const simpGrid=document.createElement('div');
+    simpGrid.className='calc-grid';
+    const chars=simplifiedAnswer.split('');
+    const pointIdx = chars.indexOf('.');
+    simpGrid.style.gridTemplateColumns=colTemplate(chars.length, pointIdx>=0?pointIdx+1:null);
+    chars.forEach((ch,i)=>{
+      if(ch==='.'){ addCell(simpGrid,{row:1,col:i+1,digit:'.',extraClass:'point'}); }
+      else { const el=addCell(simpGrid,{row:1,col:i+1,editable:true,correct:ch}); answerCells.push(el); }
+    });
+    simpWrap.appendChild(simpGrid);
+    stack.appendChild(simpWrap);
+  }
 }
 
-function renderDecimalDivision(aStr,bStr){
+function renderDecimalDivisionExact(aStr,bStr){
+  const area=resetProblemArea();
+  const scale=decLen(bStr);
+  const Aint=toScaledInt(aStr,scale);
+  const Bint=toScaledInt(bStr,scale);
+
+  const stack=document.createElement('div');
+  stack.style.cssText='display:flex;flex-direction:column;align-items:center;';
+  area.appendChild(stack);
+
+  const capWrap=document.createElement('div');
+  capWrap.textContent=`わる数「${bStr}」の小数点が消えるように、わる数とわられる数を同じだけ右にずらしてから計算しよう。わりきれるまで わりすすめよう。`;
+  capWrap.style.cssText='font-size:13px;color:#888;font-weight:800;margin-bottom:10px;max-width:320px;text-align:center;';
+  stack.appendChild(capWrap);
+
+  const calcWrap=document.createElement('div');
+  stack.appendChild(calcWrap);
+  buildDivisionInto(calcWrap, Aint, Bint, {scale, divisorLabel:bStr, continueDecimal:4});
+}
+
+function renderDecimalDivisionRemainder(aStr,bStr){
   const area=resetProblemArea();
   const scale=decLen(bStr);
   const Aint=toScaledInt(aStr,scale);
@@ -1122,9 +1361,17 @@ function renderDecimalDivision(aStr,bStr){
 }
 
 /* ---------------- interaction ---------------- */
+let lastFocusedCell=null;
 function onCellFocus(e){
   e.target.classList.remove('hint','hint2');
   e.target.placeholder='';
+  lastFocusedCell=e.target;
+}
+function pickInputTarget(){
+  if(lastFocusedCell && document.body.contains(lastFocusedCell) && !lastFocusedCell.disabled) return lastFocusedCell;
+  const t=document.activeElement;
+  if(t && t.classList && t.classList.contains('cell') && !t.disabled) return t;
+  return answerCells.find(c=>!c.classList.contains('correct'));
 }
 function focusNextCell(){
   const target=answerCells.find(c=>!c.classList.contains('correct'));
@@ -1205,7 +1452,7 @@ function showConfetti(){
 function celebrate(){
   state.sessionSolved++;
   lifetimeStars++;
-  localStorage.setItem('hissan_stars', String(lifetimeStars));
+  safeStorage.set('hissan_stars', String(lifetimeStars));
   updateStarBadge();
   if(divRemainderLabel) divRemainderLabel.classList.add('show');
   showConfetti();
@@ -1239,17 +1486,16 @@ function buildNumpad(){
   back.textContent='⌫';
   back.className='back-key';
   back.addEventListener('click',()=>{
-    const t=document.activeElement;
-    const target=(t&&t.classList&&t.classList.contains('cell')&&!t.disabled)?t:answerCells.find(c=>!c.classList.contains('correct'));
-    if(target){ target.value=''; target.focus(); }
+    const target=pickInputTarget();
+    if(target){ target.value=''; target.focus(); lastFocusedCell=target; }
   });
   pad.appendChild(back);
 }
 function enterDigit(d){
-  const t=document.activeElement;
-  const target=(t&&t.classList&&t.classList.contains('cell')&&!t.disabled)?t:answerCells.find(c=>!c.classList.contains('correct'));
+  const target=pickInputTarget();
   if(!target) return;
   target.focus();
+  lastFocusedCell=target;
   target.value=String(d);
   target.dispatchEvent(new Event('input'));
 }
@@ -1257,16 +1503,24 @@ function enterDigit(d){
 /* ---------------- flow control ---------------- */
 function newProblem(){
   const {op,level}=state;
-  if(level===9){
-    if(op==='add'){ const {a,b}=genDecimalAddition(); renderDecimalAddSub(a,b,'＋',computeDecimalResult(a,b,'add')); }
-    else if(op==='sub'){ const {a,b}=genDecimalSubtraction(); renderDecimalAddSub(a,b,'－',computeDecimalResult(a,b,'sub')); }
-    else if(op==='mul'){ const {a,b}=genDecimalMultiplication(); renderDecimalMultiplication(a,b); }
-    else if(op==='div'){ const {a,b}=genDecimalDivision(); renderDecimalDivision(a,b); }
-  } else {
-    if(op==='add'){ const {a,b}=genAddition(level); renderSimpleOpGrid(a,b,'＋',a+b,true); }
-    else if(op==='sub'){ const {a,b}=genSubtraction(level); renderSimpleOpGrid(a,b,'－',a-b,false); }
-    else if(op==='mul'){ const {a,b}=genMultiplication(level); renderMultiplication(a,b); }
-    else if(op==='div'){ const {dividend,divisor}=genDivision(level); renderDivision(dividend,divisor); }
+  if(op==='add'){
+    const r=genAddition(level);
+    if(r.kind==='dec') renderDecimalAddSub(r.a,r.b,'＋',computeDecimalResult(r.a,r.b,'add'));
+    else renderSimpleOpGrid(r.a,r.b,'＋',r.a+r.b,true);
+  } else if(op==='sub'){
+    const r=genSubtraction(level);
+    if(r.kind==='dec') renderDecimalAddSub(r.a,r.b,'－',computeDecimalResult(r.a,r.b,'sub'));
+    else renderSimpleOpGrid(r.a,r.b,'－',r.a-r.b,true);
+  } else if(op==='mul'){
+    const r=genMultiplication(level);
+    if(r.kind==='dec') renderDecimalMultiplication(r.a,r.b,r.needsSimplify,r.simplifiedAnswer);
+    else renderMultiplication(r.a,r.b);
+  } else if(op==='div'){
+    const r=genDivision(level);
+    if(r.kind==='continue') renderDivisionContinue(r.dividend,r.divisor);
+    else if(r.kind==='div-dec-exact') renderDecimalDivisionExact(r.a,r.b);
+    else if(r.kind==='div-dec-remainder') renderDecimalDivisionRemainder(r.a,r.b);
+    else renderDivision(r.dividend,r.divisor);
   }
   updateProgressUI();
   setTimeout(focusNextCell,50);
@@ -1372,7 +1626,7 @@ document.getElementById('summary-back-btn').addEventListener('click',()=>{
 
 document.getElementById('mute-btn').addEventListener('click',(e)=>{
   muted=!muted;
-  localStorage.setItem('hissan_muted', muted?'1':'0');
+  safeStorage.set('hissan_muted', muted?'1':'0');
   e.target.textContent = muted ? '🔇' : '🔊';
 });
 
