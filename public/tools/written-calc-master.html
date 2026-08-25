@@ -144,6 +144,15 @@
     width:calc(var(--cs) * 0.6);height:calc(var(--cs) * 0.6);
     font-size:14px;border:2px dashed #cfd8e3;background:#fff;color:#999;align-self:end;
   }
+  div.cell.borrowable{cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;}
+  div.cell.borrowable::after{
+    content:'';position:absolute;left:12%;right:12%;top:50%;height:3px;
+    background:#e53935;border-radius:2px;
+    transform:translateY(-50%) rotate(-28deg) scaleX(0);
+    transition:transform .15s ease;
+  }
+  div.cell.borrowable.struck::after{ transform:translateY(-50%) rotate(-28deg) scaleX(1); }
+  div.cell.borrowable.struck{ color:#b0b0b0; }
   input.cell:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(45,108,223,0.15);}
   input.cell.correct{
     background:#e9f9ee;border-color:#43a047;color:#2e7d32;
@@ -468,13 +477,18 @@ function colTemplate(totalCols, pointCols){
   }
   return parts.join(' ');
 }
-function renderDecimalStaticRow(grid,row,numStr,maxPlace,scale,leftOffset){
+function renderDecimalStaticRow(grid,row,numStr,maxPlace,scale,leftOffset,clickable){
   const hasOwnDecimal = decLen(numStr) > 0;
   for(let p=maxPlace;p>=-scale;p--){
     const col=decColIndex(p,maxPlace,scale,leftOffset);
     const d=digitAtPlace(numStr,p);
     if(d===null) addCell(grid,{row,col,extraClass:'empty'});
-    else addCell(grid,{row,col,digit:d});
+    else {
+      const el=addCell(grid,{row,col,digit:d,extraClass:clickable?'borrowable':undefined});
+      if(clickable){
+        el.addEventListener('click', ()=>{ el.classList.toggle('struck'); });
+      }
+    }
     if(scale>0 && p===0 && hasOwnDecimal){
       addCell(grid,{row,col:decPointColIndex(maxPlace,leftOffset),digit:'.',extraClass:'point'});
     }
@@ -849,10 +863,10 @@ const TIPS={
   },
   sub:{
     1:'いちの位、じゅうの位の じゅんに ひきざんしよう。くり下がりは ないよ。',
-    2:'いちの位が ひけないときは、じゅうの位から 1 かりてこよう。',
+    2:'いちの位が ひけないときは、じゅうの位から 1 かりてこよう。かりるときは、じゅうの位の数字を タップすると ななめの線が ひけるよ。かりた1は、いちの位の上の マスに かこう。',
     3:'けたが ふえても、位を そろえて じゅんに ひけば くり下がりは ないよ。',
-    4:'じゅうの位、百の位と、なんかいも つづけて 1 かりてこよう。',
-    5:'となりの位が「0」で かりられない ときは、さらに上の位から かりてこよう。',
+    4:'じゅうの位、百の位と、なんかいも つづけて 1 かりてこよう。かりた位の数字を タップすると 線が ひけるよ。',
+    5:'となりの位が「0」で かりられない ときは、さらに上の位から かりてこよう。かりた位の数字を タップすると 線が ひけるよ。',
     6:'0.1の いくつ分か かんがえて、小数点を たてに そろえて ひこう。',
     7:'1/100の位まで あっても、整数と おなじ しくみで ひけるよ。',
     8:'ひかれる数の あいている位に 0を じぶんで かきたして けいさんしよう。',
@@ -979,14 +993,20 @@ function buildOpGridInto(container,a,b,opChar,result,withScratch,opts){
   grid.style.gridTemplateColumns=colTemplate(totalCols,pointCol);
   let row=1;
   if(withScratch){
-    for(let p=1;p<=maxPlace;p++){
+    const scratchFrom = opts.scratchOnes ? 0 : 1;
+    for(let p=scratchFrom;p<=maxPlace;p++){
       addCell(grid,{row,col:col(p), editable:true, extraClass:'scratch'});
     }
     row++;
   }
   if(!skipOperands){
     for(let p=0;p<=maxPlace;p++){
-      if(p<da.length) addCell(grid,{row,col:col(p), digit:da[p]});
+      if(p<da.length){
+        const el=addCell(grid,{row,col:col(p), digit:da[p], extraClass: opts.clickableTop?'borrowable':undefined});
+        if(opts.clickableTop){
+          el.addEventListener('click', ()=>{ el.classList.toggle('struck'); });
+        }
+      }
       else addCell(grid,{row,col:col(p), extraClass:'empty'});
     }
     row++;
@@ -1008,9 +1028,9 @@ function buildOpGridInto(container,a,b,opChar,result,withScratch,opts){
   }
   container.appendChild(grid);
 }
-function renderSimpleOpGrid(a,b,opChar,result,withScratch){
+function renderSimpleOpGrid(a,b,opChar,result,withScratch,opts){
   const area=resetProblemArea();
-  buildOpGridInto(area,a,b,opChar,result,withScratch);
+  buildOpGridInto(area,a,b,opChar,result,withScratch,opts);
 }
 
 function buildMultiplicationInto(container,a,b,opts){
@@ -1247,9 +1267,10 @@ function renderDecimalAddSub(a,b,opChar,resultStr){
   const grid=document.createElement('div');
   grid.className='calc-grid';
   grid.style.gridTemplateColumns=colTemplate(totalCols, scale>0?decPointColIndex(maxPlace,leftOffset):null);
+  const isSub = opChar==='－';
   let row=1;
   renderDecimalScratchRow(grid,row,maxPlace,scale,leftOffset); row++;
-  renderDecimalStaticRow(grid,row,a,maxPlace,scale,leftOffset); row++;
+  renderDecimalStaticRow(grid,row,a,maxPlace,scale,leftOffset,isSub); row++;
   addCell(grid,{row,col:1,digit:opChar,extraClass:'op'});
   renderDecimalStaticRow(grid,row,b,maxPlace,scale,leftOffset); row++;
   addLine(grid,row,totalCols); row++;
@@ -1510,7 +1531,7 @@ function newProblem(){
   } else if(op==='sub'){
     const r=genSubtraction(level);
     if(r.kind==='dec') renderDecimalAddSub(r.a,r.b,'－',computeDecimalResult(r.a,r.b,'sub'));
-    else renderSimpleOpGrid(r.a,r.b,'－',r.a-r.b,true);
+    else renderSimpleOpGrid(r.a,r.b,'－',r.a-r.b,true,{clickableTop:true, scratchOnes:true});
   } else if(op==='mul'){
     const r=genMultiplication(level);
     if(r.kind==='dec') renderDecimalMultiplication(r.a,r.b,r.needsSimplify,r.simplifiedAnswer);
