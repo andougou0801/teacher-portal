@@ -33,12 +33,14 @@ export default async function EmbedToolPage(
         <span className="truncate text-xs font-bold">
           {tool.icon} {tool.name}
         </span>
-        <Link
-          href={`/tools/${tool.slug}`}
-          className="shrink-0 text-xs opacity-80 hover:opacity-100 hover:underline"
-        >
-          サイトで見る →
-        </Link>
+        {tool.audience === "teacher" && (
+          <Link
+            href={`/tools/${tool.slug}`}
+            className="shrink-0 text-xs opacity-80 hover:opacity-100 hover:underline"
+          >
+            サイトで見る →
+          </Link>
+        )}
       </div>
       <iframe src={tool.file} title={tool.name} className="w-full flex-1" />
     </div>
