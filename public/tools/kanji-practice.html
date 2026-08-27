@@ -97,6 +97,16 @@
     gap:10px;
     margin-bottom:20px;
   }
+  .mode-empty-note{
+    font-size:13px;
+    color:#8a6a2a;
+    background:#fff8ec;
+    border:2px dashed #f5a623;
+    border-radius:12px;
+    padding:10px 14px;
+    margin:0 0 20px;
+    line-height:1.7;
+  }
   .grade-row{
     display:grid;
     grid-template-columns:repeat(3, 1fr);
@@ -444,6 +454,20 @@
       <span>
         <span class="mode-title">ノートに かく</span><br>
         <span class="mode-sub">よみを みて、かんじを ノートに かく→じぶんで こたえあわせ</span>
+      </span>
+    </button>
+    <button class="mode-btn" id="modeOkuriganaBtn" data-mode="okurigana">
+      <span class="mode-icon">🖊️</span>
+      <span>
+        <span class="mode-title">おくりがな クイズ</span><br>
+        <span class="mode-sub">正しい おくりがなは どっちかな？（例：帰る／帰える）</span>
+      </span>
+    </button>
+    <button class="mode-btn" id="modeHomophoneBtn" data-mode="homophone">
+      <span class="mode-icon">🔀</span>
+      <span>
+        <span class="mode-title">にたかんじ クイズ</span><br>
+        <span class="mode-sub">同じ読みで ちがう かんじを えらぶ</span>
       </span>
     </button>
 
@@ -1586,6 +1610,67 @@
     }
     return { char: entry.char, word: entry.word, yomi: entry.yomi, hint: entry.hint, example: entry.example };
   }
+
+  /* ---------- 送り仮名クイズ用データ ----------
+     正しい表記(entry.word)から、「送り仮名の開始位置を1文字前にずらした」
+     典型的なまちがい（例：帰る→帰える、楽しい→楽のしい）を機械的に作る。
+     これは実際の学校でよく取り上げられる送り仮名のまちがいのパターンと一致する。
+     数字＋「つ」（一つ・二つ…）は読み方が不規則な特別枠なので対象外にする。 */
+  const OKURIGANA_EXCLUDE_CHARS = new Set(['一','二','三','四','五','六','七','八','九','十']);
+  function okuriganaInfo(entry){
+    const char = entry.char, word = entry.word, yomi = entry.yomi;
+    if(OKURIGANA_EXCLUDE_CHARS.has(char) && word.endsWith('つ')) return null;
+    const chars = [...word];
+    if(chars.length < 2 || chars[0] !== char) return null;
+    const suffix = chars.slice(1).join('');
+    if(![...suffix].every(ch => /[ぁ-ん]/.test(ch))) return null;
+    if(!yomi || !yomi.endsWith(suffix)) return null;
+    const kanjiReadingPart = yomi.slice(0, yomi.length - suffix.length);
+    if(kanjiReadingPart.length < 2) return null;
+    const wrongWord = char + kanjiReadingPart.slice(-1) + suffix;
+    if(wrongWord === word) return null;
+    return { correctWord: word, wrongWord, hint: entry.hint, example: entry.example, yomi };
+  }
+
+  /* ---------- 同じ読み・ちがう漢字クイズ用データ ----------
+     全学年ぶんの単語を読み（yomi）でグループ化し、同じ読みで書き表し方（word）が
+     2つ以上ある組み合わせ（同訓異字・同音異義語）を集める。学年をまたぐ組み合わせも
+     あるため、出題時は「選んだ学年以下」の相手だけを選択肢に使う。 */
+  const HOMOPHONE_GROUPS = (function(){
+    const byYomi = new Map();
+    GRADE_KANJI.forEach(g => {
+      entriesOf(g.grade).forEach(entry => {
+        const variants = [{ word: entry.word, yomi: entry.yomi, hint: entry.hint, example: entry.example }];
+        if(entry.word2){
+          variants.push({ word: entry.word2, yomi: entry.yomi2, hint: entry.hint2, example: entry.example });
+        }
+        variants.forEach(v => {
+          if(!v.yomi) return;
+          if(!byYomi.has(v.yomi)) byYomi.set(v.yomi, []);
+          byYomi.get(v.yomi).push({ char: entry.char, word: v.word, hint: v.hint, example: v.example, grade: g.grade });
+        });
+      });
+    });
+    const groups = new Map();
+    byYomi.forEach((list, yomi) => {
+      const seenWords = new Map();
+      list.forEach(x => { if(!seenWords.has(x.word)) seenWords.set(x.word, x); });
+      const uniqueList = Array.from(seenWords.values());
+      if(uniqueList.length >= 2) groups.set(yomi, uniqueList);
+    });
+    return groups;
+  })();
+
+  // entry（そのグレードの1字）を「正解」とみなし、既に習っている（＝選んだ学年以下の）
+  // 同じ読みの仲間が2つ以上（自分を含めて）あれば、その一覧を返す。無ければnull。
+  function homophoneCandidatesFor(entry, maxGrade){
+    const group = HOMOPHONE_GROUPS.get(entry.yomi);
+    if(!group) return null;
+    const filtered = group.filter(m => m.grade <= maxGrade);
+    if(filtered.length < 2) return null;
+    if(!filtered.some(m => m.word === entry.word)) return null;
+    return filtered;
+  }
   const GRADE_PREF_KEY = 'kanji-practice-last-grade-v1';
   function loadSelectedGrade(){
     const saved = Number(localStorage.getItem(GRADE_PREF_KEY));
@@ -1668,13 +1753,35 @@
   const leadText = document.getElementById('leadText');
 
   function countOptionsFor(total){
+    if(total <= 0) return [];
     return [...new Set([10, 20, total].filter(n => n <= total))];
+  }
+
+  // 「おくりがなクイズ」「にたかんじクイズ」は、その学年・条件に合う字だけを
+  // 出題対象にする（通常モードは学年の全字が対象）。
+  function poolIndicesForMode(m){
+    const all = ENTRIES.map((_, i) => i);
+    if(m === 'okurigana'){
+      return all.filter(i => !!okuriganaInfo(ENTRIES[i]));
+    }
+    if(m === 'homophone'){
+      return all.filter(i => !!homophoneCandidatesFor(ENTRIES[i], selectedGrade));
+    }
+    return all;
   }
 
   function renderCountRow(){
     countRow.innerHTML = '';
-    const total = ENTRIES.length;
+    const total = poolIndicesForMode(selectedMode).length;
     const opts = countOptionsFor(total);
+    if(opts.length === 0){
+      const p = document.createElement('p');
+      p.className = 'mode-empty-note';
+      p.textContent = 'この学年では まだ このモードの もんだいが ありません。学年か あそびかたを かえてみてね。';
+      countRow.appendChild(p);
+      selectedCount = 0;
+      return;
+    }
     if(!opts.includes(selectedCount)) selectedCount = opts[0];
     opts.forEach(n => {
       const b = document.createElement('button');
@@ -1717,6 +1824,7 @@
       document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       selectedMode = btn.getAttribute('data-mode');
+      renderCountRow();
     });
   });
 
@@ -1731,7 +1839,13 @@
   }
   renderBestStreakLine();
 
-  document.getElementById('startBtn').addEventListener('click', () => startGame(selectedMode, selectedCount));
+  document.getElementById('startBtn').addEventListener('click', () => {
+    if(!selectedCount){
+      alert('この学年では、このあそびかたの もんだいが まだ ありません。学年か あそびかたを かえてね。');
+      return;
+    }
+    startGame(selectedMode, selectedCount);
+  });
   document.getElementById('quitBtn').addEventListener('click', () => {
     showScreen(startScreen);
     renderBestStreakLine();
@@ -1768,8 +1882,9 @@
   function startGame(m, count){
     mode = m;
     gameGrade = selectedGrade;
-    totalOriginal = Math.min(count, ENTRIES.length);
-    queue = shuffle(ENTRIES.map((_, i) => i)).slice(0, totalOriginal);
+    const sourceIndices = poolIndicesForMode(m);
+    totalOriginal = Math.min(count, sourceIndices.length);
+    queue = shuffle(sourceIndices).slice(0, totalOriginal);
     correctCount = 0;
     streak = 0;
     sessionBestStreak = 0;
@@ -1901,6 +2016,57 @@
       };
       selfWrongBtn.onclick = () => afterAnswer(false, variant);
       selfCorrectBtn.onclick = () => afterAnswer(true, variant);
+    } else if(mode === 'okurigana'){
+      const info = okuriganaInfo(entry);
+      currentVariant = { char: entry.char, word: info.correctWord, yomi: info.yomi, hint: info.hint, example: info.example };
+      qInstr.textContent = 'おくりがなが ただしいのは どっち？';
+      qPromptArea.innerHTML = '';
+      const hintEl = document.createElement('div');
+      hintEl.className = 'q-yomi-sub';
+      hintEl.textContent = info.hint;
+      qPromptArea.appendChild(hintEl);
+      choiceArea.classList.remove('hidden');
+      const opts = shuffle([info.correctWord, info.wrongWord]);
+      opts.forEach(text => {
+        const b = document.createElement('button');
+        b.className = 'choice-btn';
+        b.textContent = text;
+        b.addEventListener('click', () => handleGenericChoiceClick(text === info.correctWord, b, info.correctWord));
+        choiceArea.appendChild(b);
+      });
+    } else if(mode === 'homophone'){
+      const candidates = homophoneCandidatesFor(entry, gameGrade);
+      const correctMember = candidates.find(m => m.word === entry.word) || candidates[0];
+      const wrongPool = candidates.filter(m => m.word !== correctMember.word);
+      const distractorCount = Math.min(3, wrongPool.length);
+      const distractors = shuffle(wrongPool).slice(0, distractorCount);
+      currentVariant = { char: correctMember.char, word: correctMember.word, yomi: entry.yomi, hint: correctMember.hint, example: correctMember.example };
+
+      qInstr.textContent = 'この ぶんに あう かんじことばは どれ？';
+      qPromptArea.innerHTML = '';
+      const exampleText = correctMember.example || entry.example || '';
+      const sentenceEl = document.createElement('div');
+      sentenceEl.className = 'q-yomi-sub';
+      if(exampleText && exampleText.includes(correctMember.word)){
+        sentenceEl.textContent = exampleText.split(correctMember.word).join('（　　　　）');
+      } else {
+        sentenceEl.textContent = '（' + (correctMember.hint || '') + '）';
+      }
+      qPromptArea.appendChild(sentenceEl);
+      const readingEl = document.createElement('div');
+      readingEl.className = 'q-yomi';
+      readingEl.textContent = entry.yomi;
+      qPromptArea.appendChild(readingEl);
+
+      choiceArea.classList.remove('hidden');
+      const opts = shuffle([correctMember, ...distractors]);
+      opts.forEach(m => {
+        const b = document.createElement('button');
+        b.className = 'choice-btn';
+        b.textContent = m.word;
+        b.addEventListener('click', () => handleGenericChoiceClick(m.word === correctMember.word, b, correctMember.word));
+        choiceArea.appendChild(b);
+      });
     } else {
       qInstr.textContent = [...variant.word].length > 1
         ? '？に はいる かんじは どれかな？'
@@ -1942,7 +2108,10 @@
       streak = 0;
       requeueWrong(currentIdx);
       feedback.className = 'feedback soft';
-      feedback.textContent = '🌱 おしい！ こたえは「' + (mode === 'yomi' ? variant.yomi : variant.char) + '」';
+      const answerDisplay = mode === 'yomi' ? variant.yomi
+        : (mode === 'okurigana' || mode === 'homophone') ? variant.word
+        : variant.char;
+      feedback.textContent = '🌱 おしい！ こたえは「' + answerDisplay + '」';
       playWrong();
     }
     if(variant.example){
@@ -1979,6 +2148,21 @@
     } else {
       btnEl.classList.add('wrong');
       const correctBtn = buttons[currentChoices.indexOf(currentIdx)];
+      if(correctBtn) correctBtn.classList.add('correct');
+    }
+    afterAnswer(isCorrect, currentVariant);
+  }
+
+  // おくりがなクイズ・にたかんじクイズ用の選択肢クリック処理（正解の文字列で判定する）。
+  function handleGenericChoiceClick(isCorrect, btnEl, correctText){
+    if(awaitingNext) return;
+    const buttons = Array.from(choiceArea.children);
+    buttons.forEach(b => b.disabled = true);
+    if(isCorrect){
+      btnEl.classList.add('correct');
+    } else {
+      btnEl.classList.add('wrong');
+      const correctBtn = buttons.find(b => b.textContent === correctText);
       if(correctBtn) correctBtn.classList.add('correct');
     }
     afterAnswer(isCorrect, currentVariant);
