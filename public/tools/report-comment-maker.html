@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>通知表所見文例集</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:20px 14px 60px;
+  }
+  .wrap{max-width:640px;width:100%;}
+  h1{
+    text-align:center;
+    font-size:20px;
+    color:var(--accent-dark);
+    margin:6px 0 4px;
+  }
+  .privacy-note{
+    text-align:center;
+    font-size:11px;
+    color:#8a93a3;
+    margin:0 0 20px;
+    line-height:1.6;
+  }
+  .card{
+    background:#fff;
+    border-radius:20px;
+    padding:22px 20px;
+    box-shadow:0 4px 16px rgba(30,50,90,0.08);
+    margin-bottom:16px;
+  }
+  h2{
+    font-size:15px;
+    color:var(--accent-dark);
+    margin:0 0 14px;
+  }
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    color:#555;
+    margin-bottom:6px;
+  }
+  input[type="text"],
+  input[type="search"],
+  select,
+  textarea{
+    width:100%;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid #d8dfea;
+    font-size:14px;
+    font-family:inherit;
+  }
+  textarea{
+    min-height:120px;
+    resize:vertical;
+    line-height:1.7;
+  }
+  .hint{
+    font-size:11px;
+    color:#8a93a3;
+    margin:6px 0 0;
+  }
+  .filter-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .filter-row > div{
+    flex:1;
+    min-width:140px;
+  }
+  .filter-row label{margin-bottom:4px;}
+  .check-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    color:#3a4152;
+    margin:4px 0 14px;
+  }
+  .check-row input{width:16px;height:16px;}
+  button{
+    font-family:inherit;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .btn-main{
+    display:block;
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    font-size:16px;
+    font-weight:800;
+    padding:14px 30px;
+    box-shadow:0 3px 8px rgba(45,108,223,0.3);
+  }
+  .btn-main:active{transform:scale(0.99);}
+  .btn-main:disabled{background:#b9c6de;box-shadow:none;cursor:not-allowed;}
+  .btn-row{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+  }
+  .btn-sub{
+    flex:1;
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:13px;
+    font-weight:700;
+    padding:10px 14px;
+  }
+  .btn-sub:hover{background:#e3e8f0;}
+  .btn-small{
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:12px;
+    font-weight:700;
+    padding:7px 12px;
+    white-space:nowrap;
+  }
+  .btn-small:hover{background:#e3e8f0;}
+  .btn-small.active{background:#fff3cd;color:#8a6d00;}
+  .btn-danger{color:#c0392b;}
+  .status-msg{
+    font-size:13px;
+    color:var(--accent);
+    margin-top:8px;
+    min-height:16px;
+  }
+  .status-msg.error{color:#c0392b;}
+  .result-count{
+    font-size:12px;
+    color:#8a93a3;
+    margin:2px 0 10px;
+  }
+  .results-panel{
+    max-height:460px;
+    overflow-y:auto;
+    padding-right:4px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .example-card{
+    background:#f7f9fd;
+    border:1px solid #e2e8f2;
+    border-radius:14px;
+    padding:12px 14px;
+  }
+  .example-tag{
+    display:inline-block;
+    font-size:10px;
+    font-weight:700;
+    color:var(--accent-dark);
+    background:#e6edfb;
+    border-radius:8px;
+    padding:2px 8px;
+    margin-bottom:6px;
+  }
+  .example-neg{
+    font-size:11px;
+    color:#b8860b;
+    margin:0 0 4px;
+  }
+  .example-text{
+    font-size:14px;
+    line-height:1.7;
+    margin:0 0 10px;
+  }
+  .example-actions{
+    display:flex;
+    gap:8px;
+    justify-content:flex-end;
+  }
+  .empty-state{
+    text-align:center;
+    color:#8a93a3;
+    font-size:13px;
+    padding:24px 0;
+  }
+  .selected-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .selected-item{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    background:#f7f9fd;
+    border:1px solid #e2e8f2;
+    border-radius:12px;
+    padding:8px 10px;
+  }
+  .selected-item .selected-num{
+    font-size:11px;
+    font-weight:800;
+    color:var(--accent-dark);
+    padding-top:6px;
+    min-width:18px;
+  }
+  .selected-item .selected-text{
+    flex:1;
+    font-size:13px;
+    line-height:1.6;
+    padding-top:4px;
+    word-break:break-all;
+  }
+  .selected-item .selected-btns{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .mini-btn{
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:11px;
+    font-weight:700;
+    border-radius:8px;
+    padding:3px 8px;
+  }
+  .mini-btn:hover{background:#e3e8f0;}
+  .mini-btn.danger{color:#c0392b;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📝 通知表所見文例集</h1>
+  <p class="privacy-note">入力した名前や作成中の所見は、この端末のブラウザ内だけで処理されます（外部サーバーへの送信はありません）。お気に入り登録もこの端末にのみ保存されます。</p>
+
+  <div class="card">
+    <h2>1. 文例をさがす</h2>
+    <div class="filter-row">
+      <div>
+        <label for="catSelect">カテゴリー</label>
+        <select id="catSelect"></select>
+      </div>
+      <div id="subjectWrap" style="display:none;">
+        <label for="subjectSelect">教科</label>
+        <select id="subjectSelect"></select>
+      </div>
+    </div>
+    <label for="searchInput">キーワード検索</label>
+    <input type="search" id="searchInput" placeholder="例：協力、粘り強い、係活動 など">
+    <div class="check-row">
+      <input type="checkbox" id="favOnlyCheck">
+      <label for="favOnlyCheck" style="margin:0;font-weight:400;">お気に入りのみ表示</label>
+    </div>
+    <p class="result-count" id="resultCount"></p>
+    <div class="results-panel" id="resultsPanel"></div>
+  </div>
+
+  <div class="card">
+    <h2>2. 作成中の所見</h2>
+    <label for="nameInput">名前（入力すると文例中の「〇〇」が置き換わります）</label>
+    <input type="text" id="nameInput" placeholder="例：山田 太郎">
+    <p class="hint" style="margin-bottom:14px;">名前を変えても、選んだ文例そのものは保持されます。何度でも置き換えできます。</p>
+
+    <label>選んだ文例（並べ替え・削除できます）</label>
+    <div class="selected-list" id="selectedList"></div>
+    <div class="empty-state" id="selectedEmpty">上の「＋ 追加」ボタンを押すと、ここに文例が追加されます。</div>
+
+    <label for="previewArea" style="margin-top:6px;">プレビュー（コピーしてご利用ください）</label>
+    <textarea id="previewArea" readonly placeholder="文例を追加するとここに反映されます"></textarea>
+    <div class="btn-row">
+      <button class="btn-sub" id="copyBtn">コピー</button>
+      <button class="btn-sub btn-danger" id="clearBtn">全てクリア</button>
+    </div>
+    <p class="status-msg" id="statusMsg"></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ---------- データ ----------
+  // [カテゴリ, 教科(教科別のみ) / null, 文例テキスト]
+  var RAW = [
+    // ① 学習面（教科共通）
+    ['gakushu', null, '〇〇さんは、どの教科にも意欲的に取り組み、着実に力を伸ばしています。'],
+    ['gakushu', null, '〇〇さんは、分からないことがあっても粘り強く考え続け、最後まで諦めずに取り組む姿が見られました。'],
+    ['gakushu', null, '〇〇さんは、基礎的な内容をしっかりと身につけ、応用問題にも積極的に挑戦しています。'],
+    ['gakushu', null, '〇〇さんは、学習した内容を日常生活と結び付けて考える力が育ってきています。'],
+    ['gakushu', null, '〇〇さんは、家庭学習にも計画的に取り組み、毎日の積み重ねを大切にしています。'],
+    ['gakushu', null, '〇〇さんは、授業中の発言が増え、自分の考えを言葉で伝える力が伸びてきました。'],
+    ['gakushu', null, '〇〇さんは、ノートを丁寧にまとめ、学習の記録を振り返りに活用しています。'],
+    ['gakushu', null, '〇〇さんは、苦手な内容にも根気強く向き合い、少しずつ自信をつけています。'],
+    ['gakushu', null, '〇〇さんは、新しい課題にも臆せず挑戦し、失敗を恐れずに取り組む姿勢が立派です。'],
+    ['gakushu', null, '〇〇さんは、友達の考えを聞きながら、自分の考えをより深めることができました。'],
+    ['gakushu', null, '〇〇さんは、学習の見通しを立てて取り組むことができ、集中力も高まってきています。'],
+    ['gakushu', null, '〇〇さんは、疑問に思ったことを進んで調べ、知識を広げようとする姿勢が見られます。'],
+    ['gakushu', null, '〇〇さんは、間違いを恐れずに発表し、その後の学習に生かすことができました。'],
+    ['gakushu', null, '〇〇さんは、テストの見直しを丁寧に行い、自分の課題を把握して次に生かしています。'],
+    ['gakushu', null, '〇〇さんは、宿題や課題に責任をもって取り組み、提出物も期限を守っています。'],
+    ['gakushu', null, '〇〇さんは、学習用具の準備や整理整頓を欠かさず行い、落ち着いて学習に取り組めています。'],
+
+    // ② 教科別学習
+    ['kyouka', '国語', '〇〇さんは、物語文の読み取りで登場人物の気持ちを豊かに想像し、自分の言葉で表現することができました。'],
+    ['kyouka', '国語', '〇〇さんは、漢字の学習に意欲的に取り組み、新出漢字を確実に覚えることができています。'],
+    ['kyouka', '国語', '〇〇さんは、音読が上手で、場面の様子を考えながら抑揚をつけて読むことができます。'],
+    ['kyouka', '国語', '〇〇さんは、作文で自分の経験を具体的に書き表し、読み手に伝わる文章を作ることができました。'],
+    ['kyouka', '国語', '〇〇さんは、説明文の要点を的確に読み取り、筆者の考えを整理してまとめることができました。'],
+    ['kyouka', '国語', '〇〇さんは、話し合いの場面で友達の意見をよく聞き、自分の考えと比べながら発言することができました。'],
+
+    ['kyouka', '算数', '〇〇さんは、計算問題に粘り強く取り組み、正確に解く力が身についてきました。'],
+    ['kyouka', '算数', '〇〇さんは、図形の学習に興味をもち、辺の長さや角度に着目して考えることができました。'],
+    ['kyouka', '算数', '〇〇さんは、文章題を解く際に図や式を用いて筋道を立てて考えることができます。'],
+    ['kyouka', '算数', '〇〇さんは、九九を確実に覚え、日常の場面でも進んで活用しようとしています。'],
+    ['kyouka', '算数', '〇〇さんは、グラフや表を読み取り、数量の関係を的確に捉えることができました。'],
+    ['kyouka', '算数', '〇〇さんは、間違えた問題を見直し、どこでつまずいたかを自分で考え直す習慣がついてきました。'],
+
+    ['kyouka', '理科', '〇〇さんは、観察や実験に意欲的に取り組み、気付いたことをノートに詳しく記録することができました。'],
+    ['kyouka', '理科', '〇〇さんは、身の回りの自然現象に興味をもち、進んで疑問をもって調べようとしています。'],
+    ['kyouka', '理科', '〇〇さんは、実験の結果から考えられることを自分の言葉で予想し、説明することができました。'],
+    ['kyouka', '理科', '〇〇さんは、植物や生き物の観察を通して、変化の様子を丁寧に記録することができました。'],
+    ['kyouka', '理科', '〇〇さんは、友達と協力しながら実験の準備や片付けを進めることができました。'],
+    ['kyouka', '理科', '〇〇さんは、学んだ内容を生活の中の現象と結び付けて考えることができるようになってきました。'],
+
+    ['kyouka', '社会', '〇〇さんは、地図やグラフの資料を活用し、地域の特色を読み取ることができました。'],
+    ['kyouka', '社会', '〇〇さんは、地域の産業や人々の暮らしについて関心をもち、進んで調べ学習に取り組みました。'],
+    ['kyouka', '社会', '〇〇さんは、歴史の学習で人物の働きや出来事のつながりを整理して理解することができました。'],
+    ['kyouka', '社会', '〇〇さんは、社会の仕組みについて自分の考えをもち、話し合いの中で発言することができました。'],
+    ['kyouka', '社会', '〇〇さんは、調べたことを新聞やまとめカードに分かりやすく整理することができました。'],
+    ['kyouka', '社会', '〇〇さんは、身近な地域の行事や暮らしに関心をもち、学習を通して理解を深めました。'],
+
+    ['kyouka', '音楽', '〇〇さんは、歌唱の学習に意欲的に取り組み、豊かな表現で歌うことができました。'],
+    ['kyouka', '音楽', '〇〇さんは、リコーダーの練習に根気強く取り組み、指使いが安定してきました。'],
+    ['kyouka', '音楽', '〇〇さんは、曲の雰囲気を感じ取り、強弱をつけて演奏を工夫することができました。'],
+    ['kyouka', '音楽', '〇〇さんは、友達と声を合わせることを意識し、合唱をより美しいものにしようと努めていました。'],
+    ['kyouka', '音楽', '〇〇さんは、音楽づくりの学習で、自分なりのリズムやメロディーを楽しんで考えることができました。'],
+
+    ['kyouka', '図工', '〇〇さんは、豊かな発想で作品づくりに取り組み、独創的な表現を楽しんでいました。'],
+    ['kyouka', '図工', '〇〇さんは、色の組み合わせを工夫し、自分らしい作品を仕上げることができました。'],
+    ['kyouka', '図工', '〇〇さんは、材料の特徴を生かしながら、丁寧に作品づくりを進めることができました。'],
+    ['kyouka', '図工', '〇〇さんは、友達の作品のよさに気付き、自分の作品づくりに生かすことができました。'],
+    ['kyouka', '図工', '〇〇さんは、鑑賞の学習で作品のよさや工夫を進んで発表することができました。'],
+
+    ['kyouka', '体育', '〇〇さんは、運動に意欲的に取り組み、体力の向上に努めることができました。'],
+    ['kyouka', '体育', '〇〇さんは、跳び箱の学習で自分の課題を見つけ、粘り強く練習に取り組みました。'],
+    ['kyouka', '体育', '〇〇さんは、チームでの作戦を友達と話し合いながら考え、ゲームに生かすことができました。'],
+    ['kyouka', '体育', '〇〇さんは、準備運動や整理運動にも真剣に取り組み、安全に気を付けて活動できました。'],
+    ['kyouka', '体育', '〇〇さんは、友達のよい動きを見て取り入れようとするなど、向上心をもって取り組みました。'],
+    ['kyouka', '体育', '〇〇さんは、勝敗にかかわらず友達と励まし合い、最後まで前向きに取り組むことができました。'],
+
+    ['kyouka', '生活科', '〇〇さんは、身近な自然や生き物に興味をもち、進んで観察することができました。'],
+    ['kyouka', '生活科', '〇〇さんは、季節の変化に気付き、気付いたことを絵や言葉で表現することができました。'],
+    ['kyouka', '生活科', '〇〇さんは、生き物の飼育や植物の栽培に責任をもって取り組むことができました。'],
+    ['kyouka', '生活科', '〇〇さんは、町探検の学習で地域の人と進んで関わり、多くの発見をすることができました。'],
+    ['kyouka', '生活科', '〇〇さんは、学習したことを生活の中で生かそうとする姿が見られました。'],
+
+    ['kyouka', '外国語活動', '〇〇さんは、外国語の学習に意欲的に取り組み、進んで英語で挨拶をすることができました。'],
+    ['kyouka', '外国語活動', '〇〇さんは、簡単な英語表現を使って友達とやり取りを楽しむことができました。'],
+    ['kyouka', '外国語活動', '〇〇さんは、外国の文化に興味をもち、学習を通して視野を広げることができました。'],
+    ['kyouka', '外国語活動', '〇〇さんは、聞き取った英語の内容を理解し、身振りを交えて反応することができました。'],
+    ['kyouka', '外国語活動', '〇〇さんは、間違いを恐れずに積極的に英語で話そうとする姿勢が見られました。'],
+
+    ['kyouka', '道徳', '〇〇さんは、道徳の学習を通して、相手の立場に立って考えることの大切さに気付くことができました。'],
+    ['kyouka', '道徳', '〇〇さんは、身近な出来事から自分の生き方について深く考えることができました。'],
+    ['kyouka', '道徳', '〇〇さんは、話し合いの中で友達の意見を尊重しながら、自分の考えを伝えることができました。'],
+    ['kyouka', '道徳', '〇〇さんは、学習したことを日常の行動に生かそうとする姿が見られました。'],
+    ['kyouka', '道徳', '〇〇さんは、正直に自分の気持ちを伝え、誠実に人と関わろうとする姿勢が育っています。'],
+
+    ['kyouka', '総合的な学習の時間', '〇〇さんは、課題を見つけて自分なりに調べ、まとめる力が身についてきました。'],
+    ['kyouka', '総合的な学習の時間', '〇〇さんは、グループでの探究活動に積極的に参加し、役割を果たすことができました。'],
+    ['kyouka', '総合的な学習の時間', '〇〇さんは、調べたことを発表する際、資料を工夫して分かりやすく伝えることができました。'],
+    ['kyouka', '総合的な学習の時間', '〇〇さんは、体験活動を通して学んだことを自分の生活と結び付けて考えることができました。'],
+    ['kyouka', '総合的な学習の時間', '〇〇さんは、友達と協力しながら課題解決に向けて粘り強く取り組むことができました。'],
+
+    // ③ 生活態度・基本的生活習慣
+    ['seikatsu', null, '〇〇さんは、時間を守り、決められたことをきちんと行うことができます。'],
+    ['seikatsu', null, '〇〇さんは、身の回りの整理整頓を心がけ、落ち着いた生活を送ることができています。'],
+    ['seikatsu', null, '〇〇さんは、挨拶や返事を明るい声でしっかりと行うことができます。'],
+    ['seikatsu', null, '〇〇さんは、忘れ物が少なく、必要な物をきちんと準備することができています。'],
+    ['seikatsu', null, '〇〇さんは、話を聞くときの姿勢がよく、集中して人の話を聞くことができます。'],
+    ['seikatsu', null, '〇〇さんは、決まりを守って生活しようとする意識が高まってきました。'],
+    ['seikatsu', null, '〇〇さんは、掃除の時間に自分の分担を最後まで責任をもって行うことができました。'],
+    ['seikatsu', null, '〇〇さんは、健康や安全に気を配りながら、規則正しい生活を送ることができています。'],
+    ['seikatsu', null, '〇〇さんは、身支度を自分で整え、進んで身の回りのことに取り組むことができます。'],
+    ['seikatsu', null, '〇〇さんは、周囲の様子をよく見て、状況に応じた行動をとることができるようになってきました。'],
+    ['seikatsu', null, '〇〇さんは、丁寧な言葉遣いを心がけ、相手を思いやった話し方ができます。'],
+    ['seikatsu', null, '〇〇さんは、給食の準備や片付けを進んで行い、当番の仕事に責任をもって取り組んでいます。'],
+    ['seikatsu', null, '〇〇さんは、自分の持ち物を大切に扱い、丁寧に管理することができています。'],
+    ['seikatsu', null, '〇〇さんは、体調管理に気を配り、元気に登校し意欲的に一日を過ごすことができています。'],
+
+    // ④ 友達関係・協調性・思いやり
+    ['tomodachi', null, '〇〇さんは、困っている友達にそっと手を差し伸べる優しさをもっています。'],
+    ['tomodachi', null, '〇〇さんは、誰とでも分け隔てなく接し、クラスの中で温かい関係を築いています。'],
+    ['tomodachi', null, '〇〇さんは、友達の気持ちを考えて行動することができ、多くの友達から信頼されています。'],
+    ['tomodachi', null, '〇〇さんは、グループ活動の中で友達の意見に耳を傾け、協力して取り組むことができました。'],
+    ['tomodachi', null, '〇〇さんは、友達のよいところを見つけて素直に伝えることができます。'],
+    ['tomodachi', null, '〇〇さんは、意見の違う友達とも冷静に話し合い、折り合いをつけることができました。'],
+    ['tomodachi', null, '〇〇さんは、新しく転入してきた友達にも積極的に声をかけ、輪を広げる手助けをしていました。'],
+    ['tomodachi', null, '〇〇さんは、友達が失敗したときにも優しく励ます姿が見られました。'],
+    ['tomodachi', null, '〇〇さんは、周りの友達を気にかけ、自然に手助けをする姿が多く見られます。'],
+    ['tomodachi', null, '〇〇さんは、相手の立場になって考えることができ、トラブルの際にも冷静に対応できました。'],
+    ['tomodachi', null, '〇〇さんは、係の仕事や遊びの場面で友達と協力し、楽しい雰囲気をつくることができました。'],
+    ['tomodachi', null, '〇〇さんは、自分と異なる考えにも耳を傾け、柔軟に受け止めることができます。'],
+    ['tomodachi', null, '〇〇さんは、友達の頑張りを認め、温かい言葉をかけることができます。'],
+    ['tomodachi', null, '〇〇さんは、クラス全体のことを考えて行動し、周りの雰囲気を明るくしてくれています。'],
+
+    // ⑤ 係活動・当番活動・委員会活動・リーダーシップ
+    ['kakari', null, '〇〇さんは、係の仕事に責任をもって取り組み、クラスのために進んで働くことができました。'],
+    ['kakari', null, '〇〇さんは、当番活動を最後まで丁寧に行い、周りから頼りにされる存在です。'],
+    ['kakari', null, '〇〇さんは、委員会活動で自分の役割を理解し、意欲的に取り組むことができました。'],
+    ['kakari', null, '〇〇さんは、班のリーダーとして、友達に声をかけながらまとめる姿が見られました。'],
+    ['kakari', null, '〇〇さんは、気付いたことを自分から進んで行動に移すことができます。'],
+    ['kakari', null, '〇〇さんは、話し合いの司会を任された際、みんなの意見を上手にまとめることができました。'],
+    ['kakari', null, '〇〇さんは、新しい係の仕事にも工夫を加え、より良くしようと努力する姿が見られました。'],
+    ['kakari', null, '〇〇さんは、周りが気付かないところにもよく気を配り、進んで仕事を見つけて取り組んでいます。'],
+    ['kakari', null, '〇〇さんは、下級生の手本となるよう、日々の当番活動に真剣に取り組んでいます。'],
+    ['kakari', null, '〇〇さんは、係活動を通してクラス全体のことを考え、みんなのために行動することができました。'],
+    ['kakari', null, '〇〇さんは、仕事を任されると最後までやり遂げようとする責任感の強さが光ります。'],
+    ['kakari', null, '〇〇さんは、友達と協力しながら係の仕事を分担し、スムーズに進めることができました。'],
+    ['kakari', null, '〇〇さんは、委員会の活動で学校全体のために働く喜びを感じている様子が見られました。'],
+    ['kakari', null, '〇〇さんは、リーダーとしてみんなを引っ張るだけでなく、一人一人の意見も大切にすることができました。'],
+
+    // ⑥ 学校行事・特別活動
+    ['gyouji', null, '〇〇さんは、運動会の練習に一生懸命取り組み、本番では持てる力を存分に発揮することができました。'],
+    ['gyouji', null, '〇〇さんは、学習発表会に向けて仲間と協力し、練習を重ねて堂々と発表することができました。'],
+    ['gyouji', null, '〇〇さんは、遠足では友達と協力しながら、決まりを守って楽しく活動することができました。'],
+    ['gyouji', null, '〇〇さんは、宿泊学習で自分のことは自分で行い、集団生活の中で成長した姿が見られました。'],
+    ['gyouji', null, '〇〇さんは、運動会の応援団として、クラスの士気を高めようと大きな声で盛り上げていました。'],
+    ['gyouji', null, '〇〇さんは、避難訓練など安全に関わる活動にも真剣に取り組むことができました。'],
+    ['gyouji', null, '〇〇さんは、卒業を祝う会の準備を仲間と協力しながら進め、行事を成功させることができました。'],
+    ['gyouji', null, '〇〇さんは、音楽会に向けて練習を重ね、本番では自信をもって演奏することができました。'],
+    ['gyouji', null, '〇〇さんは、行事の準備や片付けにも進んで取り組み、縁の下の力持ちとして活躍しました。'],
+    ['gyouji', null, '〇〇さんは、集団行動の中で周りをよく見て、規律を守って行動することができました。'],
+    ['gyouji', null, '〇〇さんは、初めての行事にも積極的に挑戦し、貴重な経験を積むことができました。'],
+    ['gyouji', null, '〇〇さんは、行事を通して友達との絆を深め、達成感を味わうことができました。'],
+    ['gyouji', null, '〇〇さんは、係や役割を任された行事の場面で、最後まで責任をもってやり遂げることができました。'],
+    ['gyouji', null, '〇〇さんは、行事を振り返る場面で自分の成長や課題に気付き、素直に言葉にすることができました。'],
+
+    // ⑦ 自主性・主体性・創意工夫
+    ['jishu', null, '〇〇さんは、自分で課題を見つけ、進んで取り組む主体性が育っています。'],
+    ['jishu', null, '〇〇さんは、指示を待たずに自分で考えて行動できる場面が増えてきました。'],
+    ['jishu', null, '〇〇さんは、工夫を凝らしたアイデアを出し、活動をより楽しいものにしてくれました。'],
+    ['jishu', null, '〇〇さんは、自分の考えをもち、それを実行に移す行動力があります。'],
+    ['jishu', null, '〇〇さんは、新しいことに興味をもち、自分から挑戦しようとする意欲にあふれています。'],
+    ['jishu', null, '〇〇さんは、うまくいかないときも自分で解決方法を考え、粘り強く取り組むことができました。'],
+    ['jishu', null, '〇〇さんは、周りに流されず、自分なりの考えをもって行動することができます。'],
+    ['jishu', null, '〇〇さんは、日々の生活の中で「もっとこうしたら良いのでは」と考え、提案する姿が見られました。'],
+    ['jishu', null, '〇〇さんは、限られた時間の中でも自分なりに工夫し、効率よく取り組むことができました。'],
+    ['jishu', null, '〇〇さんは、困難な状況でも前向きに捉え、自分にできることを考えて行動しました。'],
+    ['jishu', null, '〇〇さんは、失敗を経験にかえ、次の挑戦に生かそうとする姿勢が見られます。'],
+    ['jishu', null, '〇〇さんは、興味をもったことをとことん追求しようとする探究心をもっています。'],
+    ['jishu', null, '〇〇さんは、自分の意見をしっかりともち、必要な場面で発信することができます。'],
+    ['jishu', null, '〇〇さんは、決められたやり方だけでなく、自分なりの方法を考えて取り組む創意工夫が見られました。']
+  ];
+
+  // 前向き言い換え： [気になる行動特性, 前向きな文例]
+  var IIKAE = [
+    ['落ち着きがない', '〇〇さんは、行動力があり、様々なことに興味をもって積極的に取り組むことができます。'],
+    ['おしゃべりが多い', '〇〇さんは、明るく社交的で、友達と積極的にコミュニケーションをとることができます。'],
+    ['マイペース', '〇〇さんは、自分のペースを大切にしながら、着実に物事に取り組むことができます。'],
+    ['頑固', '〇〇さんは、自分の考えをしっかりともち、最後までやり遂げようとする芯の強さがあります。'],
+    ['飽きっぽい', '〇〇さんは、好奇心が旺盛で、様々なことに興味を広げながら取り組むことができます。'],
+    ['慎重すぎる', '〇〇さんは、物事を丁寧に確認しながら、着実に取り組む慎重さをもっています。'],
+    ['引っ込み思案', '〇〇さんは、じっくりと物事を考える思慮深さをもち、落ち着いて行動することができます。'],
+    ['わがまま', '〇〇さんは、自分の思いをはっきりと伝えることができ、自己主張の力を伸ばしています。'],
+    ['のんびりしている', '〇〇さんは、穏やかでマイペースに、自分のリズムを大切にしながら取り組んでいます。'],
+    ['すぐに手や口が出てしまう', '〇〇さんは、感情を素直に表現できる一方で、言葉で伝える力を伸ばそうと努力しています。'],
+    ['おっちょこちょい', '〇〇さんは、行動が機敏で、思い立ったらすぐに取り組む行動力があります。'],
+    ['心配性', '〇〇さんは、物事を慎重に考え、準備を怠らない丁寧さをもっています。'],
+    ['声が大きい', '〇〇さんは、はきはきとした明るい声で、自分の考えを堂々と伝えることができます。'],
+    ['融通が利かない', '〇〇さんは、決めたことを最後までやり通す誠実さと粘り強さをもっています。'],
+    ['涙もろい', '〇〇さんは、感受性が豊かで、物事に真剣に向き合う心の優しさをもっています。'],
+    ['負けず嫌いが強すぎる', '〇〇さんは、向上心が強く、目標に向けて全力で取り組むことができます。'],
+    ['人に頼りがち', '〇〇さんは、周りと協力しながら物事を進めることができる、協調性の高さをもっています。'],
+    ['単純作業に飽きやすい', '〇〇さんは、常に新しい工夫を考えながら取り組む発想力をもっています。'],
+    ['自己主張が強い', '〇〇さんは、自分の意見をしっかりと発信できる、リーダーシップの素質をもっています。'],
+    ['不器用', '〇〇さんは、一つ一つの作業に丁寧に向き合い、着実に取り組むことができます。'],
+    ['思ったことをそのまま口にしてしまう', '〇〇さんは、思ったことを素直に発言できる、正直で裏表のない性格です。'],
+    ['集中力が続かない', '〇〇さんは、興味の幅が広く、様々なことに関心を向けて取り組むことができます。']
+  ];
+
+  var CATEGORIES = [
+    { id: 'all', label: 'すべて' },
+    { id: 'gakushu', label: '① 学習面（教科共通）' },
+    { id: 'kyouka', label: '② 教科別学習' },
+    { id: 'seikatsu', label: '③ 生活態度・基本的生活習慣' },
+    { id: 'tomodachi', label: '④ 友達関係・協調性・思いやり' },
+    { id: 'kakari', label: '⑤ 係・当番・委員会活動' },
+    { id: 'gyouji', label: '⑥ 学校行事・特別活動' },
+    { id: 'jishu', label: '⑦ 自主性・主体性・創意工夫' },
+    { id: 'iikae', label: '⑧ 前向き言い換え表現' }
+  ];
+
+  var CAT_LABEL = {};
+  CATEGORIES.forEach(function(c){ CAT_LABEL[c.id] = c.label; });
+
+  var DATA = [];
+  var uid = 0;
+  RAW.forEach(function(row){
+    DATA.push({ id: uid++, cat: row[0], subject: row[1], neg: null, text: row[2] });
+  });
+  IIKAE.forEach(function(row){
+    DATA.push({ id: uid++, cat: 'iikae', subject: null, neg: row[0], text: row[1] });
+  });
+
+  var SUBJECTS = [];
+  DATA.forEach(function(item){
+    if(item.subject && SUBJECTS.indexOf(item.subject) === -1) SUBJECTS.push(item.subject);
+  });
+
+  // ---------- ストレージ ----------
+  var FAV_KEY = 'report-comment-maker-favorites-v1';
+  var DRAFT_KEY = 'report-comment-maker-draft-v1';
+
+  function loadFavorites(){
+    try{
+      var raw = localStorage.getItem(FAV_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    }catch(e){ return []; }
+  }
+  function saveFavorites(arr){
+    try{ localStorage.setItem(FAV_KEY, JSON.stringify(arr)); }catch(e){}
+  }
+  function loadDraft(){
+    try{
+      var raw = localStorage.getItem(DRAFT_KEY);
+      var obj = raw ? JSON.parse(raw) : null;
+      if(!obj || typeof obj !== 'object') return { name: '', ids: [] };
+      return { name: typeof obj.name === 'string' ? obj.name : '', ids: Array.isArray(obj.ids) ? obj.ids : [] };
+    }catch(e){ return { name: '', ids: [] }; }
+  }
+  function saveDraft(){
+    try{
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        name: nameInput.value,
+        ids: selected.map(function(s){ return s.sourceId; })
+      }));
+    }catch(e){}
+  }
+
+  var favorites = loadFavorites();
+  function isFav(id){ return favorites.indexOf(id) !== -1; }
+  function toggleFav(id){
+    var idx = favorites.indexOf(id);
+    if(idx === -1) favorites.push(id); else favorites.splice(idx, 1);
+    saveFavorites(favorites);
+  }
+
+  // ---------- DOM ----------
+  var catSelect = document.getElementById('catSelect');
+  var subjectWrap = document.getElementById('subjectWrap');
+  var subjectSelect = document.getElementById('subjectSelect');
+  var searchInput = document.getElementById('searchInput');
+  var favOnlyCheck = document.getElementById('favOnlyCheck');
+  var resultCount = document.getElementById('resultCount');
+  var resultsPanel = document.getElementById('resultsPanel');
+
+  var nameInput = document.getElementById('nameInput');
+  var selectedListEl = document.getElementById('selectedList');
+  var selectedEmpty = document.getElementById('selectedEmpty');
+  var previewArea = document.getElementById('previewArea');
+  var copyBtn = document.getElementById('copyBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var statusMsg = document.getElementById('statusMsg');
+
+  CATEGORIES.forEach(function(c){
+    var opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.label;
+    catSelect.appendChild(opt);
+  });
+
+  (function(){
+    var allOpt = document.createElement('option');
+    allOpt.value = '';
+    allOpt.textContent = 'すべての教科';
+    subjectSelect.appendChild(allOpt);
+    SUBJECTS.forEach(function(s){
+      var opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s;
+      subjectSelect.appendChild(opt);
+    });
+  })();
+
+  function escapeHtml(str){
+    var div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  }
+
+  // ---------- 検索・一覧表示 ----------
+  function getFiltered(){
+    var cat = catSelect.value;
+    var subject = subjectSelect.value;
+    var keyword = searchInput.value.trim();
+    var favOnly = favOnlyCheck.checked;
+
+    return DATA.filter(function(item){
+      if(cat !== 'all' && item.cat !== cat) return false;
+      if(cat === 'kyouka' && subject && item.subject !== subject) return false;
+      if(favOnly && !isFav(item.id)) return false;
+      if(keyword){
+        var hay = item.text + (item.neg ? item.neg : '') + (item.subject ? item.subject : '');
+        if(hay.indexOf(keyword) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderResults(){
+    var list = getFiltered();
+    resultCount.textContent = list.length + ' 件ヒット';
+
+    if(list.length === 0){
+      resultsPanel.innerHTML = '<div class="empty-state">条件に合う文例が見つかりませんでした。カテゴリーやキーワードを変えてお試しください。</div>';
+      return;
+    }
+
+    var html = list.map(function(item){
+      var tagLabel = item.cat === 'kyouka' ? item.subject : CAT_LABEL[item.cat];
+      var negHtml = item.neg ? '<p class="example-neg">「' + escapeHtml(item.neg) + '」を前向きに言い換えると…</p>' : '';
+      var favLabel = isFav(item.id) ? '★ お気に入り' : '☆ お気に入り';
+      return '' +
+        '<div class="example-card">' +
+          '<span class="example-tag">' + escapeHtml(tagLabel) + '</span>' +
+          negHtml +
+          '<p class="example-text">' + escapeHtml(item.text) + '</p>' +
+          '<div class="example-actions">' +
+            '<button type="button" class="btn-small fav-btn' + (isFav(item.id) ? ' active' : '') + '" data-id="' + item.id + '">' + favLabel + '</button>' +
+            '<button type="button" class="btn-small btn-add" data-id="' + item.id + '">＋ 追加</button>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+
+    resultsPanel.innerHTML = html;
+  }
+
+  resultsPanel.addEventListener('click', function(e){
+    var favBtn = e.target.closest('.fav-btn');
+    var addBtn = e.target.closest('.btn-add');
+    if(favBtn){
+      var id = Number(favBtn.getAttribute('data-id'));
+      toggleFav(id);
+      renderResults();
+      return;
+    }
+    if(addBtn){
+      var id2 = Number(addBtn.getAttribute('data-id'));
+      var item = DATA.filter(function(d){ return d.id === id2; })[0];
+      if(item) addToSelected(item);
+    }
+  });
+
+  catSelect.addEventListener('change', function(){
+    subjectWrap.style.display = catSelect.value === 'kyouka' ? '' : 'none';
+    if(catSelect.value !== 'kyouka') subjectSelect.value = '';
+    renderResults();
+  });
+  subjectSelect.addEventListener('change', renderResults);
+  searchInput.addEventListener('input', renderResults);
+  favOnlyCheck.addEventListener('change', renderResults);
+
+  // ---------- 作成中の所見 ----------
+  var selected = []; // { key, sourceId, text }
+  var selKey = 0;
+
+  function addToSelected(item){
+    selected.push({ key: selKey++, sourceId: item.id, text: item.text });
+    renderSelected();
+    saveDraft();
+    setStatus('文例を追加しました。', false);
+  }
+
+  function moveSelected(key, dir){
+    var idx = selected.findIndex(function(s){ return s.key === key; });
+    if(idx === -1) return;
+    var newIdx = idx + dir;
+    if(newIdx < 0 || newIdx >= selected.length) return;
+    var tmp = selected[idx];
+    selected[idx] = selected[newIdx];
+    selected[newIdx] = tmp;
+    renderSelected();
+    saveDraft();
+  }
+
+  function removeSelected(key){
+    selected = selected.filter(function(s){ return s.key !== key; });
+    renderSelected();
+    saveDraft();
+  }
+
+  function currentDisplayText(text){
+    var name = nameInput.value.trim();
+    var safeName = escapeHtml(name || '〇〇');
+    return text.split('〇〇').join(safeName);
+  }
+
+  function currentPlainText(text){
+    var name = nameInput.value.trim();
+    return text.split('〇〇').join(name || '〇〇');
+  }
+
+  function renderSelected(){
+    if(selected.length === 0){
+      selectedListEl.innerHTML = '';
+      selectedEmpty.style.display = '';
+    }else{
+      selectedEmpty.style.display = 'none';
+      selectedListEl.innerHTML = selected.map(function(s, i){
+        return '' +
+          '<div class="selected-item">' +
+            '<span class="selected-num">' + (i + 1) + '.</span>' +
+            '<span class="selected-text">' + currentDisplayText(s.text) + '</span>' +
+            '<div class="selected-btns">' +
+              '<button type="button" class="mini-btn" data-act="up" data-key="' + s.key + '"' + (i === 0 ? ' disabled' : '') + '>▲</button>' +
+              '<button type="button" class="mini-btn" data-act="down" data-key="' + s.key + '"' + (i === selected.length - 1 ? ' disabled' : '') + '>▼</button>' +
+              '<button type="button" class="mini-btn danger" data-act="del" data-key="' + s.key + '">✕</button>' +
+            '</div>' +
+          '</div>';
+      }).join('');
+    }
+    previewArea.value = selected.map(function(s){ return currentPlainText(s.text); }).join('\n\n');
+  }
+
+  selectedListEl.addEventListener('click', function(e){
+    var btn = e.target.closest('.mini-btn');
+    if(!btn) return;
+    var key = Number(btn.getAttribute('data-key'));
+    var act = btn.getAttribute('data-act');
+    if(act === 'up') moveSelected(key, -1);
+    else if(act === 'down') moveSelected(key, 1);
+    else if(act === 'del') removeSelected(key);
+  });
+
+  nameInput.addEventListener('input', function(){
+    renderSelected();
+    saveDraft();
+  });
+
+  function setStatus(msg, isError){
+    statusMsg.textContent = msg || '';
+    statusMsg.classList.toggle('error', !!isError);
+  }
+
+  copyBtn.addEventListener('click', function(){
+    if(!previewArea.value){
+      setStatus('コピーする文例がありません。', true);
+      return;
+    }
+    var text = previewArea.value;
+    var done = function(){ setStatus('コピーしました。通知表ソフトなどに貼り付けてご利用ください。', false); };
+    var fail = function(){
+      previewArea.focus();
+      previewArea.select();
+      try{
+        var ok = document.execCommand('copy');
+        if(ok) done(); else setStatus('コピーに失敗しました。テキストを選択して手動でコピーしてください。', true);
+      }catch(e){
+        setStatus('コピーに失敗しました。テキストを選択して手動でコピーしてください。', true);
+      }
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(fail);
+    }else{
+      fail();
+    }
+  });
+
+  clearBtn.addEventListener('click', function(){
+    selected = [];
+    renderSelected();
+    saveDraft();
+    setStatus('作成中の所見をクリアしました。', false);
+  });
+
+  // ---------- 初期化 ----------
+  (function init(){
+    var draft = loadDraft();
+    nameInput.value = draft.name || '';
+    draft.ids.forEach(function(sourceId){
+      var item = DATA.filter(function(d){ return d.id === sourceId; })[0];
+      if(item) selected.push({ key: selKey++, sourceId: item.id, text: item.text });
+    });
+    renderResults();
+    renderSelected();
+  })();
+})();
+</script>
+</body>
+</html>

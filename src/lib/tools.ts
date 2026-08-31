@@ -186,6 +186,17 @@ export const tools: Tool[] = [
     mobileNote:
       "印刷プレビューはA4サイズ基準のため、スマートフォンでは横スクロールしてご確認ください。PCでの利用を推奨します。",
   },
+  {
+    slug: "report-comment-maker",
+    name: "通知表所見文例集",
+    description:
+      "小学校の通知表・要録の所見欄で使える文例集（150例以上）。学習面・生活態度・友達関係・係活動・行事など観点別に検索でき、選んだ文例を組み合わせて所見文を作成できます。気になる行動特性を長所として言い換える文例も充実。名前や作成中の所見はこの端末のブラウザ内だけで処理されます。",
+    icon: "📝",
+    tags: ["学級経営", "校務効率化", "無料"],
+    audience: "teacher",
+    status: "live",
+    file: "/tools/report-comment-maker.html",
+  },
 ];
 
 export function getToolBySlug(slug: string): Tool | undefined {
