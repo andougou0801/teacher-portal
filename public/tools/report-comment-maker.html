@@ -55,6 +55,7 @@
   }
   input[type="text"],
   input[type="search"],
+  input[type="number"],
   select,
   textarea{
     width:100%;
@@ -63,37 +64,42 @@
     border:1px solid #d8dfea;
     font-size:14px;
     font-family:inherit;
+    background:#fff;
+    color:#2a2a2a;
   }
   textarea{
-    min-height:120px;
     resize:vertical;
-    line-height:1.7;
+    line-height:1.8;
   }
+  #editor{min-height:150px;}
+  #rosterInput{min-height:90px;font-size:13px;}
   .hint{
     font-size:11px;
     color:#8a93a3;
     margin:6px 0 0;
+    line-height:1.6;
   }
-  .filter-row{
+  .row{
     display:flex;
     flex-wrap:wrap;
     gap:10px;
-    margin-bottom:10px;
+    margin-bottom:12px;
   }
-  .filter-row > div{
+  .row > div{
     flex:1;
-    min-width:140px;
+    min-width:130px;
   }
-  .filter-row label{margin-bottom:4px;}
+  .row label{margin-bottom:4px;}
   .check-row{
     display:flex;
     align-items:center;
     gap:8px;
     font-size:13px;
     color:#3a4152;
-    margin:4px 0 14px;
+    margin:4px 0 10px;
   }
-  .check-row input{width:16px;height:16px;}
+  .check-row input{width:16px;height:16px;flex:none;}
+  .check-row label{margin:0;font-weight:400;}
   button{
     font-family:inherit;
     border:none;
@@ -116,9 +122,11 @@
     display:flex;
     gap:10px;
     margin-top:12px;
+    flex-wrap:wrap;
   }
   .btn-sub{
     flex:1;
+    min-width:110px;
     background:#eef1f6;
     color:#3a4152;
     font-size:13px;
@@ -144,13 +152,72 @@
     min-height:16px;
   }
   .status-msg.error{color:#c0392b;}
+
+  /* 折りたたみガイド */
+  details.guide{
+    background:#fffdf3;
+    border:1px solid #f0e4bd;
+    border-radius:16px;
+    padding:12px 16px;
+    margin-bottom:16px;
+  }
+  details.guide summary{
+    cursor:pointer;
+    font-size:14px;
+    font-weight:800;
+    color:#8a6d00;
+    list-style:none;
+  }
+  details.guide summary::-webkit-details-marker{display:none;}
+  details.guide summary::before{content:"▶ ";font-size:11px;}
+  details.guide[open] summary::before{content:"▼ ";}
+  details.guide ol{
+    margin:12px 0 2px;
+    padding-left:20px;
+    font-size:13px;
+    line-height:1.85;
+    color:#5c5230;
+  }
+  details.guide li{margin-bottom:8px;}
+  details.guide b{color:#7a5f00;}
+
+  /* 児童チップ */
+  .roster-panel{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin:10px 0 6px;
+    max-height:170px;
+    overflow-y:auto;
+  }
+  .chip{
+    background:#eef1f6;
+    color:#3a4152;
+    border:1px solid #dde3ec;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:700;
+    padding:6px 10px;
+    line-height:1.3;
+  }
+  .chip:hover{background:#e3e8f0;}
+  .chip.done{background:#e8f5ea;border-color:#c5e3cb;color:#28683a;}
+  .chip.current{background:var(--accent);border-color:var(--accent-dark);color:#fff;}
+  .chip .chip-count{font-weight:400;opacity:0.75;font-size:10px;margin-left:3px;}
+  .progress-text{
+    font-size:12px;
+    color:#8a93a3;
+    margin:4px 0 0;
+  }
+
+  /* 文例カード */
   .result-count{
     font-size:12px;
     color:#8a93a3;
     margin:2px 0 10px;
   }
   .results-panel{
-    max-height:460px;
+    max-height:440px;
     overflow-y:auto;
     padding-right:4px;
     display:flex;
@@ -163,6 +230,7 @@
     border-radius:14px;
     padding:12px 14px;
   }
+  .example-card.used{background:#fdf6f4;border-color:#f0d9d2;}
   .example-tag{
     display:inline-block;
     font-size:10px;
@@ -171,7 +239,17 @@
     background:#e6edfb;
     border-radius:8px;
     padding:2px 8px;
-    margin-bottom:6px;
+    margin:0 4px 6px 0;
+  }
+  .used-tag{
+    display:inline-block;
+    font-size:10px;
+    font-weight:700;
+    color:#a2542f;
+    background:#fbe6dc;
+    border-radius:8px;
+    padding:2px 8px;
+    margin:0 0 6px;
   }
   .example-neg{
     font-size:11px;
@@ -180,7 +258,7 @@
   }
   .example-text{
     font-size:14px;
-    line-height:1.7;
+    line-height:1.75;
     margin:0 0 10px;
   }
   .example-actions{
@@ -194,96 +272,196 @@
     font-size:13px;
     padding:24px 0;
   }
-  .selected-list{
+
+  /* 文字数カウンタ */
+  .counter{
     display:flex;
-    flex-direction:column;
-    gap:8px;
-    margin-bottom:14px;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+    margin-top:8px;
+    font-size:13px;
   }
-  .selected-item{
-    display:flex;
-    align-items:flex-start;
-    gap:8px;
-    background:#f7f9fd;
-    border:1px solid #e2e8f2;
-    border-radius:12px;
-    padding:8px 10px;
-  }
-  .selected-item .selected-num{
-    font-size:11px;
+  .counter .count-now{
+    font-size:20px;
     font-weight:800;
     color:var(--accent-dark);
-    padding-top:6px;
-    min-width:18px;
   }
-  .selected-item .selected-text{
-    flex:1;
-    font-size:13px;
-    line-height:1.6;
-    padding-top:4px;
-    word-break:break-all;
+  .counter .count-remain{font-size:12px;color:#8a93a3;font-weight:700;}
+  .counter.over .count-now{color:#c0392b;}
+  .counter.over .count-remain{color:#c0392b;}
+  .counter.near .count-now{color:#c07d00;}
+  .meter{
+    height:7px;
+    border-radius:6px;
+    background:#e8edf5;
+    overflow:hidden;
+    margin-top:6px;
   }
-  .selected-item .selected-btns{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
+  .meter span{
+    display:block;
+    height:100%;
+    width:0;
+    background:var(--accent);
+    transition:width .15s linear;
   }
-  .mini-btn{
-    background:#eef1f6;
-    color:#3a4152;
-    font-size:11px;
-    font-weight:700;
-    border-radius:8px;
-    padding:3px 8px;
+  .meter.over span{background:#c0392b;}
+  .meter.near span{background:#e0a021;}
+
+  /* チェック結果 */
+  .check-list{
+    margin:12px 0 0;
+    padding:0;
+    list-style:none;
+    font-size:12px;
+    line-height:1.65;
   }
-  .mini-btn:hover{background:#e3e8f0;}
-  .mini-btn.danger{color:#c0392b;}
+  .check-list li{
+    border-radius:10px;
+    padding:8px 11px;
+    margin-bottom:6px;
+  }
+  .check-list li.error{background:#fdecea;color:#a33024;}
+  .check-list li.warn{background:#fdf6e3;color:#8a6a13;}
+  .check-list li.ok{background:#eaf5ec;color:#2b6b3d;}
+  .check-list b{font-weight:800;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>📝 通知表所見文例集</h1>
-  <p class="privacy-note">入力した名前や作成中の所見は、この端末のブラウザ内だけで処理されます（外部サーバーへの送信はありません）。お気に入り登録もこの端末にのみ保存されます。</p>
+  <p class="privacy-note">入力した児童名・所見の文章は、この端末のブラウザ内だけで処理されます（外部サーバーへの送信はありません）。名簿もお気に入りもこの端末にのみ保存されます。</p>
+
+  <details class="guide">
+    <summary>所見を書くときのポイント（8つ）</summary>
+    <ol>
+      <li><b>具体的な事実を一つ入れる。</b>「進んで発表しました」より「話し合いで司会を務め、友達の意見をまとめました」。保護者は「見てもらえている」と感じます。</li>
+      <li><b>「変化」を書く。</b>「〜できます」より「〜できるようになってきました」。学期はじめからの伸びが伝わります。</li>
+      <li><b>課題は「今後」の形で終える。</b>「〜が課題です」で止めず、「声をかけると取り組めました」「今後も支援していきます」まで書きます。</li>
+      <li><b>他の子と比べない。</b>比較は所見に書きません。基準はその子自身の変化です。</li>
+      <li><b>断定的な否定を避ける。</b>「できない」「苦手です」は、経過と支援の言葉に置き換えます。</li>
+      <li><b>文末を変える。</b>「〜ことができました」が三回続くと単調です。「〜する姿が見られました」「〜が育っています」で変化をつけます。</li>
+      <li><b>最後に必ず、名前の漢字と文字数を確認する。</b>所見で最も多いミスは氏名の誤字と字数オーバーです。</li>
+      <li><b>健康・発達・家庭の事情は書かない。</b>記載が必要と思われる場合は、必ず管理職に相談してから判断します。</li>
+    </ol>
+  </details>
 
   <div class="card">
-    <h2>1. 文例をさがす</h2>
-    <div class="filter-row">
+    <h2>① 設定</h2>
+    <div class="row">
+      <div>
+        <label for="honorificSelect">敬称</label>
+        <select id="honorificSelect">
+          <option value="さん">〇〇さん</option>
+          <option value="くん">〇〇くん</option>
+          <option value="">〇〇（敬称なし）</option>
+        </select>
+      </div>
+      <div>
+        <label for="targetSelect">目標文字数</label>
+        <select id="targetSelect">
+          <option value="80">80字</option>
+          <option value="100">100字</option>
+          <option value="120" selected>120字</option>
+          <option value="150">150字</option>
+          <option value="180">180字</option>
+          <option value="200">200字</option>
+          <option value="250">250字</option>
+          <option value="custom">自分で入力…</option>
+        </select>
+      </div>
+      <div id="customTargetWrap" style="display:none;">
+        <label for="customTarget">字数を入力</label>
+        <input type="number" id="customTarget" min="20" max="1000" step="10" value="120">
+      </div>
+    </div>
+    <div class="check-row">
+      <input type="checkbox" id="stripCheck" checked>
+      <label for="stripCheck">2文目以降の「〜は、」（主語）を省いてつなげる</label>
+    </div>
+    <div class="check-row" style="margin-bottom:4px;">
+      <input type="checkbox" id="newlineCheck">
+      <label for="newlineCheck">文例ごとに改行を入れる（通常の通知表は改行なし）</label>
+    </div>
+
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--accent-dark);">クラス名簿を登録して、全員分を続けて書く</summary>
+      <div style="margin-top:12px;">
+        <label for="rosterInput">児童名（1行に1人ずつ貼り付け）</label>
+        <textarea id="rosterInput" placeholder="山田 太郎&#10;佐藤 花子&#10;鈴木 一郎"></textarea>
+        <div class="btn-row">
+          <button class="btn-sub" id="rosterApplyBtn">名簿を登録する</button>
+          <button class="btn-sub btn-danger" id="rosterClearBtn">名簿を削除</button>
+        </div>
+        <p class="hint">登録済みの児童の所見はそのまま残ります（同じ名前は引き継がれます）。名簿はこの端末にのみ保存されます。</p>
+      </div>
+    </details>
+
+    <div id="rosterArea" style="display:none;">
+      <div class="roster-panel" id="rosterPanel"></div>
+      <p class="progress-text" id="progressText"></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>② 文例をさがす</h2>
+    <div class="row">
       <div>
         <label for="catSelect">カテゴリー</label>
         <select id="catSelect"></select>
       </div>
-      <div id="subjectWrap" style="display:none;">
-        <label for="subjectSelect">教科</label>
-        <select id="subjectSelect"></select>
+      <div id="subWrap" style="display:none;">
+        <label for="subSelect" id="subLabel">教科</label>
+        <select id="subSelect"></select>
       </div>
     </div>
     <label for="searchInput">キーワード検索</label>
     <input type="search" id="searchInput" placeholder="例：協力、粘り強い、係活動 など">
-    <div class="check-row">
+    <div class="check-row" style="margin-top:10px;margin-bottom:4px;">
       <input type="checkbox" id="favOnlyCheck">
-      <label for="favOnlyCheck" style="margin:0;font-weight:400;">お気に入りのみ表示</label>
+      <label for="favOnlyCheck">お気に入りのみ表示</label>
+    </div>
+    <div class="check-row">
+      <input type="checkbox" id="unusedOnlyCheck">
+      <label for="unusedOnlyCheck">他の児童に使っていない文例のみ表示</label>
     </div>
     <p class="result-count" id="resultCount"></p>
     <div class="results-panel" id="resultsPanel"></div>
   </div>
 
   <div class="card">
-    <h2>2. 作成中の所見</h2>
-    <label for="nameInput">名前（入力すると文例中の「〇〇」が置き換わります）</label>
+    <h2>③ 所見をつくる</h2>
+    <label for="nameInput">児童名</label>
     <input type="text" id="nameInput" placeholder="例：山田 太郎">
-    <p class="hint" style="margin-bottom:14px;">名前を変えても、選んだ文例そのものは保持されます。何度でも置き換えできます。</p>
+    <p class="hint" style="margin-bottom:14px;">名前を入れてから文例を追加すると、「〇〇さん」の部分が置き換わった状態で入ります。</p>
 
-    <label>選んだ文例（並べ替え・削除できます）</label>
-    <div class="selected-list" id="selectedList"></div>
-    <div class="empty-state" id="selectedEmpty">上の「＋ 追加」ボタンを押すと、ここに文例が追加されます。</div>
+    <label for="editor">所見（自由に書き直せます）</label>
+    <textarea id="editor" placeholder="上の「＋ 追加」ボタンで文例を入れるか、直接入力してください"></textarea>
 
-    <label for="previewArea" style="margin-top:6px;">プレビュー（コピーしてご利用ください）</label>
-    <textarea id="previewArea" readonly placeholder="文例を追加するとここに反映されます"></textarea>
+    <div class="counter" id="counter">
+      <div><span class="count-now" id="countNow">0</span> <span style="font-size:12px;color:#8a93a3;">/ <span id="countTarget">120</span>字</span></div>
+      <div class="count-remain" id="countRemain">あと120字</div>
+    </div>
+    <div class="meter" id="meter"><span id="meterBar"></span></div>
+
+    <ul class="check-list" id="checkList"></ul>
+
     <div class="btn-row">
       <button class="btn-sub" id="copyBtn">コピー</button>
-      <button class="btn-sub btn-danger" id="clearBtn">全てクリア</button>
+      <button class="btn-sub" id="applyNameBtn">〇〇を名前に置換</button>
+      <button class="btn-sub btn-danger" id="clearBtn">この子の所見をクリア</button>
     </div>
     <p class="status-msg" id="statusMsg"></p>
+  </div>
+
+  <div class="card" id="exportCard" style="display:none;">
+    <h2>④ 全員分の書き出し</h2>
+    <p class="hint" style="margin:0 0 12px;">名簿に登録した児童の所見を、まとめて取り出せます。未記入の児童は「（未記入）」と表示されます。</p>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn-sub" id="copyAllBtn">全員分をコピー</button>
+      <button class="btn-sub" id="csvBtn">CSVで保存</button>
+    </div>
+    <p class="status-msg" id="exportMsg"></p>
   </div>
 </div>
 
@@ -292,7 +470,7 @@
   'use strict';
 
   // ---------- データ ----------
-  // [カテゴリ, 教科(教科別のみ) / null, 文例テキスト]
+  // [カテゴリ, サブ分類(なければnull), 文例テキスト]
   var RAW = [
     // ① 学習面（教科共通）
     ['gakushu', null, '〇〇さんは、どの教科にも意欲的に取り組み、着実に力を伸ばしています。'],
@@ -462,10 +640,70 @@
     ['jishu', null, '〇〇さんは、失敗を経験にかえ、次の挑戦に生かそうとする姿勢が見られます。'],
     ['jishu', null, '〇〇さんは、興味をもったことをとことん追求しようとする探究心をもっています。'],
     ['jishu', null, '〇〇さんは、自分の意見をしっかりともち、必要な場面で発信することができます。'],
-    ['jishu', null, '〇〇さんは、決められたやり方だけでなく、自分なりの方法を考えて取り組む創意工夫が見られました。']
+    ['jishu', null, '〇〇さんは、決められたやり方だけでなく、自分なりの方法を考えて取り組む創意工夫が見られました。'],
+
+    // ⑨ 課題を配慮して伝える（「〜な面もありますが、〜」の形）
+    ['kadai', '学習', '〇〇さんは、学習内容の定着に時間がかかる場面もありましたが、繰り返し取り組むことで着実に力をつけています。'],
+    ['kadai', '学習', '〇〇さんは、自分の考えを言葉にすることに難しさを感じる場面もありましたが、少しずつ発言する回数が増えてきました。'],
+    ['kadai', '学習', '〇〇さんは、集中が続きにくい場面も見られましたが、声をかけると気持ちを切り替えて取り組むことができました。'],
+    ['kadai', '学習', '〇〇さんは、計算の正確さに課題が見られる場面もありましたが、見直しの習慣が身につきつつあります。'],
+    ['kadai', '学習', '〇〇さんは、文章を書くことに難しさを感じる場面もありましたが、短い文から丁寧に取り組む姿が見られました。'],
+    ['kadai', '学習', '〇〇さんは、提出物の期限を意識することが今後の課題ですが、声をかけると自分から準備する姿が増えてきました。'],
+    ['kadai', '学習', '〇〇さんは、漢字の定着に時間がかかる面もありますが、繰り返し練習に取り組む粘り強さが育っています。'],
+    ['kadai', '学習', '〇〇さんは、学習の見通しをもつことが難しい場面もありましたが、手順を確認しながら進められるようになってきました。'],
+
+    ['kadai', '生活', '〇〇さんは、忘れ物が見られる場面もありましたが、自分で持ち物を確認しようとする姿が増えてきました。'],
+    ['kadai', '生活', '〇〇さんは、時間を意識して行動することが今後の課題ですが、周りを見ながら合わせようとする姿が見られました。'],
+    ['kadai', '生活', '〇〇さんは、気持ちの切り替えに時間がかかることもありましたが、自分から落ち着こうとする姿が見られるようになりました。'],
+    ['kadai', '生活', '〇〇さんは、整理整頓に課題が見られる場面もありましたが、声をかけると丁寧に片付けることができました。'],
+    ['kadai', '生活', '〇〇さんは、話を最後まで聞くことが難しい場面もありましたが、意識して取り組もうとする姿勢が育ってきました。'],
+    ['kadai', '生活', '〇〇さんは、活動の切り替えに時間がかかる面もありますが、見通しをもてると落ち着いて行動できています。'],
+
+    ['kadai', '友達関係', '〇〇さんは、自分の思いを強く伝えてしまう場面もありましたが、相手の気持ちを考えようとする姿が見られるようになりました。'],
+    ['kadai', '友達関係', '〇〇さんは、友達との関わりに緊張が見られる場面もありましたが、少しずつ自分から声をかけられるようになってきました。'],
+    ['kadai', '友達関係', '〇〇さんは、意見が食い違ったときに折り合いをつけることが今後の課題ですが、話し合おうとする姿勢が育っています。'],
+    ['kadai', '友達関係', '〇〇さんは、特定の友達と過ごすことが多い面もありますが、活動を通して関わりの輪が広がってきました。'],
+
+    ['kadai', '意欲・その他', '〇〇さんは、気の進まない活動に取りかかるまで時間がかかる場面もありましたが、励ますと最後までやり遂げることができました。'],
+    ['kadai', '意欲・その他', '〇〇さんは、自信をもてない様子が見られる場面もありましたが、できたことを認めると笑顔で取り組む姿が見られました。'],
+    ['kadai', '意欲・その他', '〇〇さんは、係の仕事を忘れてしまうこともありましたが、思い出すと最後まで丁寧にやり遂げることができました。'],
+    ['kadai', '意欲・その他', '〇〇さんは、失敗を気にしすぎてしまう面もありますが、挑戦しようとする気持ちが少しずつ育ってきました。'],
+    ['kadai', '意欲・その他', '〇〇さんは、発表の場面で緊張する様子も見られましたが、練習を重ねて自分の言葉で伝えることができました。'],
+    ['kadai', '意欲・その他', '〇〇さんは、欠席が続いた時期もありましたが、登校した日は意欲的に学習に取り組むことができました。'],
+
+    // ⑩ 結び・今後への期待
+    ['musubi', '1学期末', '二学期も、持ち前の明るさを生かして、さらに活躍することを期待しています。'],
+    ['musubi', '1学期末', '夏休みには、興味のあることにじっくり取り組んでほしいと思います。二学期の成長も楽しみです。'],
+    ['musubi', '1学期末', '二学期は、今学期に身につけた力を土台に、さらに大きく伸びていくことを願っています。'],
+    ['musubi', '1学期末', '二学期も、〇〇さんらしさを大切にしながら、新しいことに挑戦していってほしいと思います。'],
+    ['musubi', '1学期末', '一学期の頑張りを自信に、二学期も意欲的に取り組んでいけるよう支えていきます。'],
+    ['musubi', '1学期末', '二学期は、得意なことをさらに伸ばし、難しいことにも一歩踏み出せるよう応援していきます。'],
+
+    ['musubi', '2学期末', '三学期も、この調子で落ち着いて学習に取り組んでいってほしいと思います。'],
+    ['musubi', '2学期末', '三学期は、一年間のまとめとして、自分の成長を実感できるよう支援していきます。'],
+    ['musubi', '2学期末', '冬休みも規則正しい生活を心がけ、元気に三学期を迎えられることを願っています。'],
+    ['musubi', '2学期末', '三学期も、〇〇さんのよさが多くの場面で発揮されることを期待しています。'],
+    ['musubi', '2学期末', '二学期に大きく成長した姿を、三学期にもさらに伸ばしていけるよう見守っていきます。'],
+    ['musubi', '2学期末', '三学期は、進級に向けて自信をもって過ごせるよう、一緒に取り組んでいきたいと思います。'],
+
+    ['musubi', '3学期末・学年末', '進級後も、持ち前の優しさを生かして活躍することを期待しています。'],
+    ['musubi', '3学期末・学年末', '一年間で大きく成長しました。次の学年でも、その力を存分に発揮してほしいと思います。'],
+    ['musubi', '3学期末・学年末', '新しい学年でも、自分から進んで取り組む姿勢を大切にしていってほしいと思います。'],
+    ['musubi', '3学期末・学年末', 'この一年で身につけた力を土台に、次の学年でもさらに伸びていくことを願っています。'],
+    ['musubi', '3学期末・学年末', '一年間、本当によく頑張りました。次の学年でのさらなる活躍を楽しみにしています。'],
+    ['musubi', '3学期末・学年末', '進級後も、友達を大切にする温かい心を発揮していってほしいと思います。'],
+
+    ['musubi', '卒業（6年）', '中学校でも、〇〇さんらしさを大切にしながら、大きく成長することを願っています。'],
+    ['musubi', '卒業（6年）', '卒業後も、この一年で培った力を自信に、新しい環境で活躍することを期待しています。'],
+    ['musubi', '卒業（6年）', '中学校でも、持ち前の粘り強さを生かして、自分の道を切り拓いていってほしいと思います。'],
+
+    ['musubi', '通年', '今後も、〇〇さんのよさが十分に発揮されるよう支援していきます。'],
+    ['musubi', '通年', 'これからも、ご家庭と協力しながら成長を見守っていきたいと思います。'],
+    ['musubi', '通年', '今後の一層の成長を楽しみにしています。'],
+    ['musubi', '通年', '引き続き、〇〇さんの頑張りを近くで応援していきます。']
   ];
 
-  // 前向き言い換え： [気になる行動特性, 前向きな文例]
+  // ⑧ 前向き言い換え： [気になる行動特性, 前向きな文例]
   var IIKAE = [
     ['落ち着きがない', '〇〇さんは、行動力があり、様々なことに興味をもって積極的に取り組むことができます。'],
     ['おしゃべりが多い', '〇〇さんは、明るく社交的で、友達と積極的にコミュニケーションをとることができます。'],
@@ -475,7 +713,7 @@
     ['慎重すぎる', '〇〇さんは、物事を丁寧に確認しながら、着実に取り組む慎重さをもっています。'],
     ['引っ込み思案', '〇〇さんは、じっくりと物事を考える思慮深さをもち、落ち着いて行動することができます。'],
     ['わがまま', '〇〇さんは、自分の思いをはっきりと伝えることができ、自己主張の力を伸ばしています。'],
-    ['のんびりしている', '〇〇さんは、穏やかでマイペースに、自分のリズムを大切にしながら取り組んでいます。'],
+    ['のんびりしている', '〇〇さんは、穏やかで、自分のリズムを大切にしながら取り組んでいます。'],
     ['すぐに手や口が出てしまう', '〇〇さんは、感情を素直に表現できる一方で、言葉で伝える力を伸ばそうと努力しています。'],
     ['おっちょこちょい', '〇〇さんは、行動が機敏で、思い立ったらすぐに取り組む行動力があります。'],
     ['心配性', '〇〇さんは、物事を慎重に考え、準備を怠らない丁寧さをもっています。'],
@@ -500,81 +738,155 @@
     { id: 'kakari', label: '⑤ 係・当番・委員会活動' },
     { id: 'gyouji', label: '⑥ 学校行事・特別活動' },
     { id: 'jishu', label: '⑦ 自主性・主体性・創意工夫' },
-    { id: 'iikae', label: '⑧ 前向き言い換え表現' }
+    { id: 'iikae', label: '⑧ 前向き言い換え表現' },
+    { id: 'kadai', label: '⑨ 課題を配慮して伝える' },
+    { id: 'musubi', label: '⑩ 結び・今後への期待' }
   ];
+
+  var SUB_LABEL = { kyouka: '教科', kadai: '場面', musubi: '時期' };
 
   var CAT_LABEL = {};
   CATEGORIES.forEach(function(c){ CAT_LABEL[c.id] = c.label; });
 
-  var DATA = [];
-  var uid = 0;
-  RAW.forEach(function(row){
-    DATA.push({ id: uid++, cat: row[0], subject: row[1], neg: null, text: row[2] });
-  });
-  IIKAE.forEach(function(row){
-    DATA.push({ id: uid++, cat: 'iikae', subject: null, neg: row[0], text: row[1] });
-  });
+  // 文例テキストから安定したIDを作る（並び順を変えてもお気に入りが壊れない）
+  function hashId(s){
+    var h = 0;
+    for(var i = 0; i < s.length; i++){ h = (h * 31 + s.charCodeAt(i)) | 0; }
+    return 'e' + (h >>> 0).toString(36);
+  }
 
-  var SUBJECTS = [];
+  // 「他の児童で使用済み」判定用に、名前を含まない最長の断片を取り出す
+  function exampleBody(text){
+    var t = text.indexOf('〇〇さんは、') === 0 ? text.slice('〇〇さんは、'.length) : text;
+    var parts = t.split('〇〇さん');
+    var longest = '';
+    parts.forEach(function(p){ if(p.length > longest.length) longest = p; });
+    return longest;
+  }
+
+  var DATA = [];
+  function pushItem(cat, sub, neg, text){
+    DATA.push({ id: hashId(text), cat: cat, sub: sub, neg: neg, text: text, body: exampleBody(text) });
+  }
+  RAW.forEach(function(row){ pushItem(row[0], row[1], null, row[2]); });
+  IIKAE.forEach(function(row){ pushItem('iikae', null, row[0], row[1]); });
+
+  var SUBS = {};
   DATA.forEach(function(item){
-    if(item.subject && SUBJECTS.indexOf(item.subject) === -1) SUBJECTS.push(item.subject);
+    if(!item.sub) return;
+    if(!SUBS[item.cat]) SUBS[item.cat] = [];
+    if(SUBS[item.cat].indexOf(item.sub) === -1) SUBS[item.cat].push(item.sub);
   });
 
   // ---------- ストレージ ----------
-  var FAV_KEY = 'report-comment-maker-favorites-v1';
-  var DRAFT_KEY = 'report-comment-maker-draft-v1';
+  var FAV_KEY = 'report-comment-maker-favorites-v2';
+  var STATE_KEY = 'report-comment-maker-state-v2';
 
-  function loadFavorites(){
-    try{
-      var raw = localStorage.getItem(FAV_KEY);
-      var arr = raw ? JSON.parse(raw) : [];
-      return Array.isArray(arr) ? arr : [];
-    }catch(e){ return []; }
-  }
-  function saveFavorites(arr){
-    try{ localStorage.setItem(FAV_KEY, JSON.stringify(arr)); }catch(e){}
-  }
-  function loadDraft(){
-    try{
-      var raw = localStorage.getItem(DRAFT_KEY);
-      var obj = raw ? JSON.parse(raw) : null;
-      if(!obj || typeof obj !== 'object') return { name: '', ids: [] };
-      return { name: typeof obj.name === 'string' ? obj.name : '', ids: Array.isArray(obj.ids) ? obj.ids : [] };
-    }catch(e){ return { name: '', ids: [] }; }
-  }
-  function saveDraft(){
-    try{
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({
-        name: nameInput.value,
-        ids: selected.map(function(s){ return s.sourceId; })
-      }));
-    }catch(e){}
-  }
+  var favorites = [];
+  try{
+    var favRaw = localStorage.getItem(FAV_KEY);
+    var favArr = favRaw ? JSON.parse(favRaw) : [];
+    if(Array.isArray(favArr)) favorites = favArr;
+  }catch(e){ favorites = []; }
 
-  var favorites = loadFavorites();
+  function saveFavorites(){
+    try{ localStorage.setItem(FAV_KEY, JSON.stringify(favorites)); }catch(e){}
+  }
   function isFav(id){ return favorites.indexOf(id) !== -1; }
   function toggleFav(id){
     var idx = favorites.indexOf(id);
     if(idx === -1) favorites.push(id); else favorites.splice(idx, 1);
-    saveFavorites(favorites);
+    saveFavorites();
+  }
+
+  var state = {
+    honorific: 'さん',
+    target: 120,
+    strip: true,
+    newline: false,
+    roster: [],   // [{name, text}]
+    current: -1,  // 名簿の何人目を編集中か（-1 = 名簿を使わない単独作成）
+    soloName: '',
+    soloText: ''
+  };
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STATE_KEY);
+      if(!raw) return;
+      var o = JSON.parse(raw);
+      if(!o || typeof o !== 'object') return;
+      if(typeof o.honorific === 'string') state.honorific = o.honorific;
+      if(typeof o.target === 'number' && o.target > 0) state.target = o.target;
+      if(typeof o.strip === 'boolean') state.strip = o.strip;
+      if(typeof o.newline === 'boolean') state.newline = o.newline;
+      if(typeof o.soloName === 'string') state.soloName = o.soloName;
+      if(typeof o.soloText === 'string') state.soloText = o.soloText;
+      if(typeof o.current === 'number') state.current = o.current;
+      if(Array.isArray(o.roster)){
+        state.roster = o.roster.filter(function(c){
+          return c && typeof c.name === 'string';
+        }).map(function(c){
+          return { name: c.name, text: typeof c.text === 'string' ? c.text : '' };
+        });
+      }
+      if(state.current >= state.roster.length) state.current = state.roster.length ? 0 : -1;
+    }catch(e){}
+  }
+
+  function saveState(){
+    try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){}
   }
 
   // ---------- DOM ----------
+  var honorificSelect = document.getElementById('honorificSelect');
+  var targetSelect = document.getElementById('targetSelect');
+  var customTargetWrap = document.getElementById('customTargetWrap');
+  var customTarget = document.getElementById('customTarget');
+  var stripCheck = document.getElementById('stripCheck');
+  var newlineCheck = document.getElementById('newlineCheck');
+
+  var rosterInput = document.getElementById('rosterInput');
+  var rosterApplyBtn = document.getElementById('rosterApplyBtn');
+  var rosterClearBtn = document.getElementById('rosterClearBtn');
+  var rosterArea = document.getElementById('rosterArea');
+  var rosterPanel = document.getElementById('rosterPanel');
+  var progressText = document.getElementById('progressText');
+
   var catSelect = document.getElementById('catSelect');
-  var subjectWrap = document.getElementById('subjectWrap');
-  var subjectSelect = document.getElementById('subjectSelect');
+  var subWrap = document.getElementById('subWrap');
+  var subLabel = document.getElementById('subLabel');
+  var subSelect = document.getElementById('subSelect');
   var searchInput = document.getElementById('searchInput');
   var favOnlyCheck = document.getElementById('favOnlyCheck');
+  var unusedOnlyCheck = document.getElementById('unusedOnlyCheck');
   var resultCount = document.getElementById('resultCount');
   var resultsPanel = document.getElementById('resultsPanel');
 
   var nameInput = document.getElementById('nameInput');
-  var selectedListEl = document.getElementById('selectedList');
-  var selectedEmpty = document.getElementById('selectedEmpty');
-  var previewArea = document.getElementById('previewArea');
+  var editor = document.getElementById('editor');
+  var counter = document.getElementById('counter');
+  var countNow = document.getElementById('countNow');
+  var countTarget = document.getElementById('countTarget');
+  var countRemain = document.getElementById('countRemain');
+  var meter = document.getElementById('meter');
+  var meterBar = document.getElementById('meterBar');
+  var checkList = document.getElementById('checkList');
   var copyBtn = document.getElementById('copyBtn');
+  var applyNameBtn = document.getElementById('applyNameBtn');
   var clearBtn = document.getElementById('clearBtn');
   var statusMsg = document.getElementById('statusMsg');
+
+  var exportCard = document.getElementById('exportCard');
+  var copyAllBtn = document.getElementById('copyAllBtn');
+  var csvBtn = document.getElementById('csvBtn');
+  var exportMsg = document.getElementById('exportMsg');
+
+  function escapeHtml(str){
+    var div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  }
 
   CATEGORIES.forEach(function(c){
     var opt = document.createElement('option');
@@ -583,38 +895,80 @@
     catSelect.appendChild(opt);
   });
 
-  (function(){
+  // ---------- 名前・敬称 ----------
+  function currentName(){ return nameInput.value.trim(); }
+  function displayName(){ return (currentName() || '〇〇') + state.honorific; }
+
+  function applyName(text){
+    return text.split('〇〇さん').join(displayName());
+  }
+
+  function stripSubjectFrom(sentence){
+    var subj = displayName() + 'は、';
+    if(sentence.indexOf(subj) === 0) return sentence.slice(subj.length);
+    return sentence;
+  }
+
+  // ---------- 使用状況（他の児童との重複チェック） ----------
+  var usageIndex = {};
+  function rebuildUsage(){
+    usageIndex = {};
+    if(!state.roster.length) return;
+    DATA.forEach(function(item){
+      if(item.body.length < 8) return;
+      var hits = [];
+      state.roster.forEach(function(c){
+        if(c.text && c.text.indexOf(item.body) !== -1) hits.push(c.name);
+      });
+      if(hits.length) usageIndex[item.id] = hits;
+    });
+  }
+  // 「今編集中の児童」以外で使われているか
+  function usedByOthers(id){
+    var hits = usageIndex[id];
+    if(!hits) return [];
+    var me = state.current >= 0 ? state.roster[state.current].name : null;
+    return hits.filter(function(n){ return n !== me; });
+  }
+
+  // ---------- 文例一覧 ----------
+  function refreshSubSelect(){
+    var cat = catSelect.value;
+    var subs = SUBS[cat];
+    if(!subs || !subs.length){
+      subWrap.style.display = 'none';
+      subSelect.innerHTML = '';
+      return;
+    }
+    subWrap.style.display = '';
+    subLabel.textContent = SUB_LABEL[cat] || '分類';
+    subSelect.innerHTML = '';
     var allOpt = document.createElement('option');
     allOpt.value = '';
-    allOpt.textContent = 'すべての教科';
-    subjectSelect.appendChild(allOpt);
-    SUBJECTS.forEach(function(s){
+    allOpt.textContent = 'すべて';
+    subSelect.appendChild(allOpt);
+    subs.forEach(function(s){
       var opt = document.createElement('option');
       opt.value = s;
       opt.textContent = s;
-      subjectSelect.appendChild(opt);
+      subSelect.appendChild(opt);
     });
-  })();
-
-  function escapeHtml(str){
-    var div = document.createElement('div');
-    div.textContent = str == null ? '' : String(str);
-    return div.innerHTML;
   }
 
-  // ---------- 検索・一覧表示 ----------
   function getFiltered(){
     var cat = catSelect.value;
-    var subject = subjectSelect.value;
+    var sub = subSelect.value;
     var keyword = searchInput.value.trim();
     var favOnly = favOnlyCheck.checked;
+    var unusedOnly = unusedOnlyCheck.checked;
 
     return DATA.filter(function(item){
       if(cat !== 'all' && item.cat !== cat) return false;
-      if(cat === 'kyouka' && subject && item.subject !== subject) return false;
+      if(cat !== 'all' && sub && item.sub !== sub) return false;
       if(favOnly && !isFav(item.id)) return false;
+      if(unusedOnly && usedByOthers(item.id).length > 0) return false;
       if(keyword){
-        var hay = item.text + (item.neg ? item.neg : '') + (item.subject ? item.subject : '');
+        var hay = item.text + (item.neg || '') + (item.sub || '');
         if(hay.indexOf(keyword) === -1) return false;
       }
       return true;
@@ -630,125 +984,175 @@
       return;
     }
 
-    var html = list.map(function(item){
-      var tagLabel = item.cat === 'kyouka' ? item.subject : CAT_LABEL[item.cat];
-      var negHtml = item.neg ? '<p class="example-neg">「' + escapeHtml(item.neg) + '」を前向きに言い換えると…</p>' : '';
-      var favLabel = isFav(item.id) ? '★ お気に入り' : '☆ お気に入り';
+    resultsPanel.innerHTML = list.map(function(item){
+      var tagLabel = item.sub ? item.sub : CAT_LABEL[item.cat];
+      var others = usedByOthers(item.id);
+      var usedHtml = others.length
+        ? '<span class="used-tag">' + escapeHtml(others.slice(0, 2).join('・')) +
+          (others.length > 2 ? ' 他' + (others.length - 2) + '名' : '') + ' に使用済み</span>'
+        : '';
+      var negHtml = item.neg
+        ? '<p class="example-neg">「' + escapeHtml(item.neg) + '」を前向きに言い換えると…</p>'
+        : '';
       return '' +
-        '<div class="example-card">' +
-          '<span class="example-tag">' + escapeHtml(tagLabel) + '</span>' +
+        '<div class="example-card' + (others.length ? ' used' : '') + '">' +
+          '<span class="example-tag">' + escapeHtml(tagLabel) + '</span>' + usedHtml +
           negHtml +
-          '<p class="example-text">' + escapeHtml(item.text) + '</p>' +
+          '<p class="example-text">' + escapeHtml(applyName(item.text)) + '</p>' +
           '<div class="example-actions">' +
-            '<button type="button" class="btn-small fav-btn' + (isFav(item.id) ? ' active' : '') + '" data-id="' + item.id + '">' + favLabel + '</button>' +
-            '<button type="button" class="btn-small btn-add" data-id="' + item.id + '">＋ 追加</button>' +
+            '<button type="button" class="btn-small fav-btn' + (isFav(item.id) ? ' active' : '') + '" data-id="' + escapeHtml(item.id) + '">' +
+              (isFav(item.id) ? '★ お気に入り' : '☆ お気に入り') + '</button>' +
+            '<button type="button" class="btn-small btn-add" data-id="' + escapeHtml(item.id) + '">＋ 追加</button>' +
           '</div>' +
         '</div>';
     }).join('');
-
-    resultsPanel.innerHTML = html;
   }
 
   resultsPanel.addEventListener('click', function(e){
     var favBtn = e.target.closest('.fav-btn');
-    var addBtn = e.target.closest('.btn-add');
     if(favBtn){
-      var id = Number(favBtn.getAttribute('data-id'));
-      toggleFav(id);
+      toggleFav(favBtn.getAttribute('data-id'));
       renderResults();
       return;
     }
+    var addBtn = e.target.closest('.btn-add');
     if(addBtn){
-      var id2 = Number(addBtn.getAttribute('data-id'));
-      var item = DATA.filter(function(d){ return d.id === id2; })[0];
-      if(item) addToSelected(item);
+      var id = addBtn.getAttribute('data-id');
+      var item = null;
+      for(var i = 0; i < DATA.length; i++){ if(DATA[i].id === id){ item = DATA[i]; break; } }
+      if(item) appendExample(item);
     }
   });
 
-  catSelect.addEventListener('change', function(){
-    subjectWrap.style.display = catSelect.value === 'kyouka' ? '' : 'none';
-    if(catSelect.value !== 'kyouka') subjectSelect.value = '';
-    renderResults();
-  });
-  subjectSelect.addEventListener('change', renderResults);
+  catSelect.addEventListener('change', function(){ refreshSubSelect(); renderResults(); });
+  subSelect.addEventListener('change', renderResults);
   searchInput.addEventListener('input', renderResults);
   favOnlyCheck.addEventListener('change', renderResults);
+  unusedOnlyCheck.addEventListener('change', renderResults);
 
-  // ---------- 作成中の所見 ----------
-  var selected = []; // { key, sourceId, text }
-  var selKey = 0;
-
-  function addToSelected(item){
-    selected.push({ key: selKey++, sourceId: item.id, text: item.text });
-    renderSelected();
-    saveDraft();
+  // ---------- 所見エディタ ----------
+  function appendExample(item){
+    var sentence = applyName(item.text);
+    var cur = editor.value;
+    if(cur){
+      if(state.strip) sentence = stripSubjectFrom(sentence);
+      editor.value = cur + (state.newline ? '\n' : '') + sentence;
+    }else{
+      editor.value = sentence;
+    }
+    onEditorInput();
     setStatus('文例を追加しました。', false);
   }
 
-  function moveSelected(key, dir){
-    var idx = selected.findIndex(function(s){ return s.key === key; });
-    if(idx === -1) return;
-    var newIdx = idx + dir;
-    if(newIdx < 0 || newIdx >= selected.length) return;
-    var tmp = selected[idx];
-    selected[idx] = selected[newIdx];
-    selected[newIdx] = tmp;
-    renderSelected();
-    saveDraft();
+  function countChars(text){
+    return text.replace(/\n/g, '').length;
   }
 
-  function removeSelected(key){
-    selected = selected.filter(function(s){ return s.key !== key; });
-    renderSelected();
-    saveDraft();
+  function updateCounter(){
+    var n = countChars(editor.value);
+    var t = state.target;
+    countNow.textContent = n;
+    countTarget.textContent = t;
+    var remain = t - n;
+    countRemain.textContent = remain >= 0 ? ('あと' + remain + '字') : (Math.abs(remain) + '字オーバー');
+    var ratio = t > 0 ? n / t : 0;
+    meterBar.style.width = Math.min(ratio, 1) * 100 + '%';
+    counter.classList.toggle('over', n > t);
+    counter.classList.toggle('near', n <= t && ratio >= 0.9);
+    meter.classList.toggle('over', n > t);
+    meter.classList.toggle('near', n <= t && ratio >= 0.9);
   }
 
-  function currentDisplayText(text){
-    var name = nameInput.value.trim();
-    var safeName = escapeHtml(name || '〇〇');
-    return text.split('〇〇').join(safeName);
-  }
+  // 所見のチェック項目
+  var CHECK_RULES = [
+    { re: /〇〇/, level: 'error', msg: '<b>「〇〇」が残っています。</b>児童名に置き換えてから提出してください。' },
+    { re: /(が|は)苦手|できない|出来ない/, level: 'warn', msg: '<b>断定的な否定表現があります。</b>「〜に時間がかかる面もありますが」「〜しようとしています」など、経過と支援が伝わる形に言い換えましょう。' },
+    { re: /劣っ|劣る|ひどい|ダメ|だらしな|乱暴|怠け|自分勝手|問題児/, level: 'warn', msg: '<b>性格を断定的に評価する表現があります。</b>行動の事実と、その後の変化で書きましょう。' },
+    { re: /他の子|ほかの子|他の児童|他児|みんなより|クラスで(一番|最も)|平均より/, level: 'warn', msg: '<b>他の児童との比較が含まれています。</b>所見では比較を書きません。基準はその子自身の変化です。' },
+    { re: /障害|発達が|通院|服薬|持病|カウンセリング/, level: 'warn', msg: '<b>健康・発達に関わる記述があります。</b>記載が必要かどうか、必ず管理職に相談してください。' },
+    { re: /家庭環境|ご家庭の事情|親御|保護者の方が|家庭の問題/, level: 'warn', msg: '<b>家庭の事情に踏み込む記述があります。</b>所見には書かないのが原則です。' },
+    { re: /注意しました|叱りました|問題行動|トラブルを起こ|反省させ/, level: 'warn', msg: '<b>指導した事実だけが残る表現です。</b>その後どう変わったかまで書くと、保護者に伝わります。' }
+  ];
 
-  function currentPlainText(text){
-    var name = nameInput.value.trim();
-    return text.split('〇〇').join(name || '〇〇');
-  }
+  var REPEAT_RULES = [
+    { re: /ことができました/g, label: '「〜ことができました」', tail: true },
+    { re: /見られました/g, label: '「〜見られました」', tail: true },
+    { re: /できています/g, label: '「〜できています」', tail: true },
+    { re: /取り組/g, label: '「取り組」', tail: false },
+    { re: /意欲的/g, label: '「意欲的」', tail: false },
+    { re: /頑張/g, label: '「頑張」', tail: false }
+  ];
 
-  function renderSelected(){
-    if(selected.length === 0){
-      selectedListEl.innerHTML = '';
-      selectedEmpty.style.display = '';
-    }else{
-      selectedEmpty.style.display = 'none';
-      selectedListEl.innerHTML = selected.map(function(s, i){
-        return '' +
-          '<div class="selected-item">' +
-            '<span class="selected-num">' + (i + 1) + '.</span>' +
-            '<span class="selected-text">' + currentDisplayText(s.text) + '</span>' +
-            '<div class="selected-btns">' +
-              '<button type="button" class="mini-btn" data-act="up" data-key="' + s.key + '"' + (i === 0 ? ' disabled' : '') + '>▲</button>' +
-              '<button type="button" class="mini-btn" data-act="down" data-key="' + s.key + '"' + (i === selected.length - 1 ? ' disabled' : '') + '>▼</button>' +
-              '<button type="button" class="mini-btn danger" data-act="del" data-key="' + s.key + '">✕</button>' +
-            '</div>' +
-          '</div>';
-      }).join('');
+  function renderChecks(){
+    var text = editor.value;
+    var items = [];
+
+    if(!text.trim()){
+      checkList.innerHTML = '';
+      return;
     }
-    previewArea.value = selected.map(function(s){ return currentPlainText(s.text); }).join('\n\n');
+
+    var n = countChars(text);
+    if(n > state.target){
+      items.push({ level: 'error', msg: '<b>' + (n - state.target) + '字オーバーしています。</b>通知表の入力欄に収まらない可能性があります。' });
+    }else if(n < Math.floor(state.target * 0.6)){
+      items.push({ level: 'warn', msg: '<b>目標より短めです（' + n + '字）。</b>具体的なエピソードを一つ足すと、保護者に伝わりやすくなります。' });
+    }
+
+    CHECK_RULES.forEach(function(rule){
+      if(rule.re.test(text)) items.push({ level: rule.level, msg: rule.msg });
+    });
+
+    REPEAT_RULES.forEach(function(rule){
+      var m = text.match(rule.re);
+      if(m && m.length >= 3){
+        items.push({
+          level: 'warn',
+          msg: '<b>' + rule.label + 'が' + m.length + '回使われています。</b>' +
+            (rule.tail ? '文末が単調になります。「〜する姿が見られました」「〜が育っています」などで変化をつけましょう。'
+                       : '同じ言葉の繰り返しが目立ちます。一部を別の表現に言い換えましょう。')
+        });
+      }
+    });
+
+    if(items.length === 0){
+      items.push({ level: 'ok', msg: '気になる表現は見つかりませんでした。最後に<b>氏名の漢字</b>をもう一度お確かめください。' });
+    }
+
+    checkList.innerHTML = items.map(function(it){
+      return '<li class="' + it.level + '">' + it.msg + '</li>';
+    }).join('');
   }
 
-  selectedListEl.addEventListener('click', function(e){
-    var btn = e.target.closest('.mini-btn');
-    if(!btn) return;
-    var key = Number(btn.getAttribute('data-key'));
-    var act = btn.getAttribute('data-act');
-    if(act === 'up') moveSelected(key, -1);
-    else if(act === 'down') moveSelected(key, 1);
-    else if(act === 'del') removeSelected(key);
-  });
+  var saveTimer = null;
+  function onEditorInput(){
+    if(state.current >= 0){
+      state.roster[state.current].text = editor.value;
+    }else{
+      state.soloText = editor.value;
+    }
+    updateCounter();
+    renderChecks();
+    renderRoster();
+    if(saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){
+      saveState();
+      rebuildUsage();
+      renderResults();
+    }, 500);
+  }
+
+  editor.addEventListener('input', onEditorInput);
 
   nameInput.addEventListener('input', function(){
-    renderSelected();
-    saveDraft();
+    if(state.current >= 0){
+      state.roster[state.current].name = nameInput.value;
+      renderRoster();
+    }else{
+      state.soloName = nameInput.value;
+    }
+    renderResults();
+    saveState();
   });
 
   function setStatus(msg, isError){
@@ -756,47 +1160,230 @@
     statusMsg.classList.toggle('error', !!isError);
   }
 
-  copyBtn.addEventListener('click', function(){
-    if(!previewArea.value){
-      setStatus('コピーする文例がありません。', true);
+  // ---------- 名簿 ----------
+  function renderRoster(){
+    if(!state.roster.length){
+      rosterArea.style.display = 'none';
+      exportCard.style.display = 'none';
       return;
     }
-    var text = previewArea.value;
-    var done = function(){ setStatus('コピーしました。通知表ソフトなどに貼り付けてご利用ください。', false); };
-    var fail = function(){
-      previewArea.focus();
-      previewArea.select();
-      try{
-        var ok = document.execCommand('copy');
-        if(ok) done(); else setStatus('コピーに失敗しました。テキストを選択して手動でコピーしてください。', true);
-      }catch(e){
-        setStatus('コピーに失敗しました。テキストを選択して手動でコピーしてください。', true);
-      }
-    };
+    rosterArea.style.display = '';
+    exportCard.style.display = '';
+
+    rosterPanel.innerHTML = state.roster.map(function(c, i){
+      var n = countChars(c.text || '');
+      var cls = 'chip';
+      if(i === state.current) cls += ' current';
+      else if(n > 0) cls += ' done';
+      return '<button type="button" class="' + cls + '" data-idx="' + i + '">' +
+        escapeHtml(c.name) +
+        (n > 0 ? '<span class="chip-count">' + n + '字</span>' : '') +
+        '</button>';
+    }).join('');
+
+    var done = state.roster.filter(function(c){ return (c.text || '').trim().length > 0; }).length;
+    progressText.textContent = state.roster.length + '人中 ' + done + '人 作成済み';
+  }
+
+  rosterPanel.addEventListener('click', function(e){
+    var chip = e.target.closest('.chip');
+    if(!chip) return;
+    selectChild(Number(chip.getAttribute('data-idx')));
+  });
+
+  function selectChild(idx){
+    if(idx < 0 || idx >= state.roster.length) return;
+    state.current = idx;
+    nameInput.value = state.roster[idx].name;
+    editor.value = state.roster[idx].text || '';
+    updateCounter();
+    renderChecks();
+    renderRoster();
+    renderResults();
+    saveState();
+    setStatus(state.roster[idx].name + ' さんの所見を編集しています。', false);
+  }
+
+  rosterApplyBtn.addEventListener('click', function(){
+    var names = rosterInput.value.split('\n').map(function(s){ return s.trim(); })
+      .filter(function(s){ return s.length > 0; });
+    if(!names.length){
+      setStatus('児童名を1行に1人ずつ入力してください。', true);
+      return;
+    }
+    // 同じ名前の児童は、すでに書いた所見を引き継ぐ
+    var prev = {};
+    state.roster.forEach(function(c){ prev[c.name] = c.text; });
+    state.roster = names.map(function(n){ return { name: n, text: prev[n] || '' }; });
+    state.current = 0;
+    rosterInput.value = '';
+    selectChild(0);
+    rebuildUsage();
+    renderResults();
+    setStatus(names.length + '人の名簿を登録しました。', false);
+  });
+
+  rosterClearBtn.addEventListener('click', function(){
+    if(!state.roster.length){ setStatus('登録されている名簿はありません。', true); return; }
+    if(!window.confirm('名簿と、そこに書いた所見をすべて削除します。よろしいですか？')) return;
+    state.roster = [];
+    state.current = -1;
+    nameInput.value = state.soloName;
+    editor.value = state.soloText;
+    updateCounter();
+    renderChecks();
+    renderRoster();
+    rebuildUsage();
+    renderResults();
+    saveState();
+    setStatus('名簿を削除しました。', false);
+  });
+
+  // ---------- ボタン ----------
+  function copyText(text, okMsg, target){
+    var msgEl = target || statusMsg;
+    function done(){ msgEl.textContent = okMsg; msgEl.classList.remove('error'); }
+    function fail(){
+      msgEl.textContent = 'コピーに失敗しました。テキストを選択して手動でコピーしてください。';
+      msgEl.classList.add('error');
+    }
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text).then(done).catch(fail);
     }else{
-      fail();
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try{
+        if(document.execCommand('copy')) done(); else fail();
+      }catch(err){ fail(); }
+      document.body.removeChild(ta);
     }
+  }
+
+  copyBtn.addEventListener('click', function(){
+    if(!editor.value.trim()){ setStatus('コピーする所見がありません。', true); return; }
+    copyText(editor.value, 'コピーしました。通知表ソフトなどに貼り付けてご利用ください。');
+  });
+
+  applyNameBtn.addEventListener('click', function(){
+    if(!currentName()){ setStatus('先に児童名を入力してください。', true); return; }
+    if(editor.value.indexOf('〇〇') === -1){ setStatus('置き換える「〇〇」はありませんでした。', false); return; }
+    editor.value = editor.value.split('〇〇さん').join(displayName()).split('〇〇').join(currentName());
+    onEditorInput();
+    setStatus('「〇〇」を児童名に置き換えました。', false);
   });
 
   clearBtn.addEventListener('click', function(){
-    selected = [];
-    renderSelected();
-    saveDraft();
-    setStatus('作成中の所見をクリアしました。', false);
+    if(!editor.value){ setStatus('クリアする所見がありません。', true); return; }
+    if(!window.confirm('編集中の所見を削除します。よろしいですか？')) return;
+    editor.value = '';
+    onEditorInput();
+    setStatus('所見をクリアしました。', false);
+  });
+
+  copyAllBtn.addEventListener('click', function(){
+    if(!state.roster.length) return;
+    var text = state.roster.map(function(c){
+      return c.name + '\n' + ((c.text || '').trim() || '（未記入）');
+    }).join('\n\n');
+    copyText(text, state.roster.length + '人分をコピーしました。', exportMsg);
+  });
+
+  function csvCell(s){
+    return '"' + String(s == null ? '' : s).split('"').join('""') + '"';
+  }
+
+  csvBtn.addEventListener('click', function(){
+    if(!state.roster.length) return;
+    var lines = ['氏名,所見,文字数'];
+    state.roster.forEach(function(c){
+      var t = (c.text || '').trim();
+      lines.push([csvCell(c.name), csvCell(t), countChars(t)].join(','));
+    });
+    // ExcelがUTF-8として認識できるようBOMを付ける
+    var csv = '﻿' + lines.join('\r\n');
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var d = new Date();
+    var stamp = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2);
+    a.href = url;
+    a.download = '所見_' + stamp + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    exportMsg.classList.remove('error');
+    exportMsg.textContent = 'CSVを保存しました。Excelなどで開けます。';
+  });
+
+  // ---------- 設定の変更 ----------
+  honorificSelect.addEventListener('change', function(){
+    state.honorific = honorificSelect.value;
+    saveState();
+    renderResults();
+  });
+
+  function readTarget(){
+    if(targetSelect.value === 'custom'){
+      customTargetWrap.style.display = '';
+      var v = parseInt(customTarget.value, 10);
+      state.target = (v && v > 0) ? v : 120;
+    }else{
+      customTargetWrap.style.display = 'none';
+      state.target = parseInt(targetSelect.value, 10) || 120;
+    }
+    updateCounter();
+    renderChecks();
+    saveState();
+  }
+  targetSelect.addEventListener('change', readTarget);
+  customTarget.addEventListener('input', readTarget);
+
+  stripCheck.addEventListener('change', function(){
+    state.strip = stripCheck.checked;
+    saveState();
+  });
+  newlineCheck.addEventListener('change', function(){
+    state.newline = newlineCheck.checked;
+    saveState();
   });
 
   // ---------- 初期化 ----------
   (function init(){
-    var draft = loadDraft();
-    nameInput.value = draft.name || '';
-    draft.ids.forEach(function(sourceId){
-      var item = DATA.filter(function(d){ return d.id === sourceId; })[0];
-      if(item) selected.push({ key: selKey++, sourceId: item.id, text: item.text });
-    });
+    loadState();
+
+    honorificSelect.value = state.honorific;
+    var preset = ['80','100','120','150','180','200','250'];
+    if(preset.indexOf(String(state.target)) !== -1){
+      targetSelect.value = String(state.target);
+      customTargetWrap.style.display = 'none';
+    }else{
+      targetSelect.value = 'custom';
+      customTarget.value = state.target;
+      customTargetWrap.style.display = '';
+    }
+    stripCheck.checked = state.strip;
+    newlineCheck.checked = state.newline;
+
+    if(state.roster.length && state.current >= 0){
+      nameInput.value = state.roster[state.current].name;
+      editor.value = state.roster[state.current].text || '';
+    }else{
+      state.current = -1;
+      nameInput.value = state.soloName;
+      editor.value = state.soloText;
+    }
+
+    refreshSubSelect();
+    rebuildUsage();
+    renderRoster();
     renderResults();
-    renderSelected();
+    updateCounter();
+    renderChecks();
   })();
 })();
 </script>
