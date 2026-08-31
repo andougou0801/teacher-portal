@@ -18,7 +18,7 @@
     min-height:100vh;
     display:flex;
     justify-content:center;
-    padding:20px 14px 60px;
+    padding:20px 14px 104px;
   }
   .wrap{max-width:640px;width:100%;}
   h1{
@@ -325,6 +325,110 @@
   .check-list li.warn{background:#fdf6e3;color:#8a6a13;}
   .check-list li.ok{background:#eaf5ec;color:#2b6b3d;}
   .check-list b{font-weight:800;}
+
+  /* 画面下に固定される進行バー（文字数と児童の切り替えを常に手元に置く） */
+  .sticky-bar{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    background:rgba(255,255,255,0.97);
+    border-top:1px solid #dde3ec;
+    box-shadow:0 -2px 14px rgba(30,50,90,0.12);
+    z-index:50;
+  }
+  .sb-inner{
+    max-width:640px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 14px;
+  }
+  .sb-nav{
+    flex:none;
+    background:#eef1f6;
+    color:#3a4152;
+    font-size:12px;
+    font-weight:700;
+    border-radius:12px;
+    padding:9px 11px;
+    line-height:1.2;
+  }
+  .sb-nav:hover:not(:disabled){background:#e3e8f0;}
+  .sb-nav:disabled{opacity:.4;cursor:not-allowed;}
+  .sb-main{
+    flex:1;
+    min-width:0;
+    text-align:center;
+    background:none;
+    padding:2px 4px;
+    color:inherit;
+  }
+  .sb-name{
+    font-size:11px;
+    color:#8a93a3;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .sb-count{font-size:13px;color:#3a4152;line-height:1.4;}
+  .sb-count b{font-size:19px;font-weight:800;color:var(--accent-dark);}
+  .sb-count .sb-remain{font-size:11px;font-weight:700;color:#8a93a3;margin-left:4px;}
+  .sticky-bar.over .sb-count b,
+  .sticky-bar.over .sb-count .sb-remain{color:#c0392b;}
+  .sticky-bar.near .sb-count b,
+  .sticky-bar.near .sb-count .sb-remain{color:#c07d00;}
+
+  /* 全員分の一覧確認 */
+  .review-panel{
+    margin-top:14px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    max-height:420px;
+    overflow-y:auto;
+  }
+  .review-item{
+    background:#f7f9fd;
+    border:1px solid #e2e8f2;
+    border-radius:12px;
+    padding:10px 12px;
+  }
+  .review-item.blank{background:#fdf6e3;border-color:#f0e0b8;}
+  .review-item.dup{background:#fdf0ec;border-color:#f2d4c8;}
+  .review-head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:5px;
+    flex-wrap:wrap;
+  }
+  .review-name{
+    font-size:13px;
+    font-weight:800;
+    color:var(--accent-dark);
+    background:none;
+    padding:0;
+    text-decoration:underline;
+  }
+  .review-badge{
+    font-size:10px;
+    font-weight:700;
+    border-radius:8px;
+    padding:2px 7px;
+    background:#e6edfb;
+    color:var(--accent-dark);
+  }
+  .review-badge.warn{background:#fbe6dc;color:#a2542f;}
+  .review-badge.blank{background:#f6ecc8;color:#8a6d00;}
+  .review-text{
+    font-size:12px;
+    line-height:1.7;
+    margin:0;
+    color:#3a4152;
+    white-space:pre-wrap;
+  }
+  .review-text.empty{color:#a8b0be;}
 </style>
 </head>
 <body>
@@ -448,9 +552,14 @@
 
     <div class="btn-row">
       <button class="btn-sub" id="copyBtn">コピー</button>
+      <button class="btn-sub" id="undoBtn">一つ戻す</button>
       <button class="btn-sub" id="applyNameBtn">〇〇を名前に置換</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn-sub" id="plainStyleBtn">常体（要録用）に変換</button>
       <button class="btn-sub btn-danger" id="clearBtn">この子の所見をクリア</button>
     </div>
+    <p class="hint">「常体に変換」は、指導要録用に「〜しました」を「〜した」の形に置き換えます。変換後は「一つ戻す」で元に戻せます。</p>
     <p class="status-msg" id="statusMsg"></p>
   </div>
 
@@ -458,10 +567,23 @@
     <h2>④ 全員分の書き出し</h2>
     <p class="hint" style="margin:0 0 12px;">名簿に登録した児童の所見を、まとめて取り出せます。未記入の児童は「（未記入）」と表示されます。</p>
     <div class="btn-row" style="margin-top:0;">
+      <button class="btn-sub" id="reviewBtn">全員分を一覧で確認</button>
       <button class="btn-sub" id="copyAllBtn">全員分をコピー</button>
       <button class="btn-sub" id="csvBtn">CSVで保存</button>
     </div>
     <p class="status-msg" id="exportMsg"></p>
+    <div class="review-panel" id="reviewPanel" style="display:none;"></div>
+  </div>
+</div>
+
+<div class="sticky-bar" id="stickyBar">
+  <div class="sb-inner">
+    <button type="button" class="sb-nav" id="prevBtn" style="display:none;">◀ 前</button>
+    <button type="button" class="sb-main" id="sbMain" title="所見の入力欄へ移動します">
+      <div class="sb-name" id="sbName">児童名 未入力</div>
+      <div class="sb-count"><b id="sbNow">0</b> / <span id="sbTarget">120</span>字<span class="sb-remain" id="sbRemain"></span></div>
+    </button>
+    <button type="button" class="sb-nav" id="nextBtn" style="display:none;">次 ▶</button>
   </div>
 </div>
 
@@ -873,14 +995,27 @@
   var meterBar = document.getElementById('meterBar');
   var checkList = document.getElementById('checkList');
   var copyBtn = document.getElementById('copyBtn');
+  var undoBtn = document.getElementById('undoBtn');
   var applyNameBtn = document.getElementById('applyNameBtn');
+  var plainStyleBtn = document.getElementById('plainStyleBtn');
   var clearBtn = document.getElementById('clearBtn');
   var statusMsg = document.getElementById('statusMsg');
 
   var exportCard = document.getElementById('exportCard');
+  var reviewBtn = document.getElementById('reviewBtn');
+  var reviewPanel = document.getElementById('reviewPanel');
   var copyAllBtn = document.getElementById('copyAllBtn');
   var csvBtn = document.getElementById('csvBtn');
   var exportMsg = document.getElementById('exportMsg');
+
+  var stickyBar = document.getElementById('stickyBar');
+  var sbMain = document.getElementById('sbMain');
+  var sbName = document.getElementById('sbName');
+  var sbNow = document.getElementById('sbNow');
+  var sbTarget = document.getElementById('sbTarget');
+  var sbRemain = document.getElementById('sbRemain');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
 
   function escapeHtml(str){
     var div = document.createElement('div');
@@ -1031,7 +1166,16 @@
   unusedOnlyCheck.addEventListener('change', renderResults);
 
   // ---------- 所見エディタ ----------
+  // ボタン操作で書き換えた分だけ履歴に積む（textarea本来のCtrl+Zは効かなくなるため）
+  var undoStack = [];
+  function pushUndo(){
+    undoStack.push(editor.value);
+    if(undoStack.length > 30) undoStack.shift();
+    undoBtn.disabled = false;
+  }
+
   function appendExample(item){
+    pushUndo();
     var sentence = applyName(item.text);
     var cur = editor.value;
     if(cur){
@@ -1042,6 +1186,41 @@
     }
     onEditorInput();
     setStatus('文例を追加しました。', false);
+  }
+
+  // 敬体（〜しました）→ 常体（〜した）。指導要録用。
+  // 文末だけを対象にするため、「。」で区切ってから最後の語尾を置き換える。
+  // 長い語尾・例外を先に判定する（「できます」を「きます」より先に見ないと「でく」になる）
+  var PLAIN_RULES = [
+    [/思います$/, '思う'],
+    // 五段動詞の過去形は音便が必要（取り組みました→取り組んだ、なりました→なった）。
+    // ひらがなの「り」「み」に限定しているため、「見ました」「感じました」等の一段動詞は下の汎用ルールに回る。
+    [/りました$/, 'った'],
+    [/みました$/, 'んだ'],
+    [/ました$/, 'た'],
+    [/ています$/, 'ている'],
+    [/できます$/, 'できる'],
+    [/いきます$/, 'いく'],
+    [/あります$/, 'ある'],
+    [/られます$/, 'られる'],
+    [/します$/, 'する'],
+    [/ります$/, 'る'],
+    [/います$/, 'いる'],
+    [/みます$/, 'む'],
+    [/えます$/, 'える'],
+    [/けます$/, 'ける'],
+    [/です$/, 'である'],
+    [/ます$/, 'る']
+  ];
+
+  function toPlainStyle(text){
+    return text.split('。').map(function(s){
+      if(!s.trim()) return s;
+      for(var i = 0; i < PLAIN_RULES.length; i++){
+        if(PLAIN_RULES[i][0].test(s)) return s.replace(PLAIN_RULES[i][0], PLAIN_RULES[i][1]);
+      }
+      return s;
+    }).join('。');
   }
 
   function countChars(text){
@@ -1061,6 +1240,18 @@
     counter.classList.toggle('near', n <= t && ratio >= 0.9);
     meter.classList.toggle('over', n > t);
     meter.classList.toggle('near', n <= t && ratio >= 0.9);
+
+    // 画面下の固定バーにも同じ内容を出す（文例を選びながら字数を確認できるように）
+    sbNow.textContent = n;
+    sbTarget.textContent = t;
+    sbRemain.textContent = remain >= 0 ? ('あと' + remain) : ('+' + Math.abs(remain));
+    stickyBar.classList.toggle('over', n > t);
+    stickyBar.classList.toggle('near', n <= t && ratio >= 0.9);
+    if(state.current >= 0){
+      sbName.textContent = (state.current + 1) + '人目 / ' + state.roster.length + '人　' + state.roster[state.current].name;
+    }else{
+      sbName.textContent = currentName() || '児童名 未入力';
+    }
   }
 
   // 所見のチェック項目
@@ -1139,6 +1330,7 @@
       saveState();
       rebuildUsage();
       renderResults();
+      if(reviewPanel.style.display !== 'none') renderReview();
     }, 500);
   }
 
@@ -1188,21 +1380,41 @@
   rosterPanel.addEventListener('click', function(e){
     var chip = e.target.closest('.chip');
     if(!chip) return;
-    selectChild(Number(chip.getAttribute('data-idx')));
+    selectChild(Number(chip.getAttribute('data-idx')), true);
   });
 
-  function selectChild(idx){
+  function selectChild(idx, scroll){
     if(idx < 0 || idx >= state.roster.length) return;
     state.current = idx;
+    undoStack = [];
+    undoBtn.disabled = true;
     nameInput.value = state.roster[idx].name;
     editor.value = state.roster[idx].text || '';
     updateCounter();
     renderChecks();
     renderRoster();
     renderResults();
+    updateNav();
     saveState();
     setStatus(state.roster[idx].name + ' さんの所見を編集しています。', false);
+    if(scroll) editor.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+
+  function updateNav(){
+    var has = state.roster.length > 0;
+    prevBtn.style.display = has ? '' : 'none';
+    nextBtn.style.display = has ? '' : 'none';
+    if(!has) return;
+    prevBtn.disabled = state.current <= 0;
+    nextBtn.disabled = state.current >= state.roster.length - 1;
+  }
+
+  prevBtn.addEventListener('click', function(){ selectChild(state.current - 1, true); });
+  nextBtn.addEventListener('click', function(){ selectChild(state.current + 1, true); });
+  sbMain.addEventListener('click', function(){
+    editor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    editor.focus();
+  });
 
   rosterApplyBtn.addEventListener('click', function(){
     var names = rosterInput.value.split('\n').map(function(s){ return s.trim(); })
@@ -1220,6 +1432,8 @@
     selectChild(0);
     rebuildUsage();
     renderResults();
+    reviewPanel.style.display = 'none';
+    reviewBtn.textContent = '全員分を一覧で確認';
     setStatus(names.length + '人の名簿を登録しました。', false);
   });
 
@@ -1230,11 +1444,14 @@
     state.current = -1;
     nameInput.value = state.soloName;
     editor.value = state.soloText;
+    reviewPanel.style.display = 'none';
+    reviewBtn.textContent = '全員分を一覧で確認';
     updateCounter();
     renderChecks();
     renderRoster();
     rebuildUsage();
     renderResults();
+    updateNav();
     saveState();
     setStatus('名簿を削除しました。', false);
   });
@@ -1268,20 +1485,119 @@
     copyText(editor.value, 'コピーしました。通知表ソフトなどに貼り付けてご利用ください。');
   });
 
+  undoBtn.addEventListener('click', function(){
+    if(!undoStack.length){ setStatus('戻せる操作がありません。', true); return; }
+    editor.value = undoStack.pop();
+    undoBtn.disabled = undoStack.length === 0;
+    onEditorInput();
+    setStatus('一つ前の状態に戻しました。', false);
+  });
+
   applyNameBtn.addEventListener('click', function(){
     if(!currentName()){ setStatus('先に児童名を入力してください。', true); return; }
     if(editor.value.indexOf('〇〇') === -1){ setStatus('置き換える「〇〇」はありませんでした。', false); return; }
+    pushUndo();
     editor.value = editor.value.split('〇〇さん').join(displayName()).split('〇〇').join(currentName());
     onEditorInput();
     setStatus('「〇〇」を児童名に置き換えました。', false);
   });
 
+  plainStyleBtn.addEventListener('click', function(){
+    if(!editor.value.trim()){ setStatus('変換する所見がありません。', true); return; }
+    var converted = toPlainStyle(editor.value);
+    if(converted === editor.value){ setStatus('変換できる文末が見つかりませんでした。', false); return; }
+    pushUndo();
+    editor.value = converted;
+    onEditorInput();
+    setStatus('常体（要録用）に変換しました。不自然な箇所は手直ししてください。', false);
+  });
+
   clearBtn.addEventListener('click', function(){
     if(!editor.value){ setStatus('クリアする所見がありません。', true); return; }
     if(!window.confirm('編集中の所見を削除します。よろしいですか？')) return;
+    pushUndo();
     editor.value = '';
     onEditorInput();
-    setStatus('所見をクリアしました。', false);
+    setStatus('所見をクリアしました。「一つ戻す」で元に戻せます。', false);
+  });
+
+  // 提出前の見比べ用。空欄・字数オーバー・他の児童と同じ文を洗い出す。
+  // 児童名を取り除いてから比べる。名前が違うだけの同一文を見逃さないため。
+  function stripOwnName(sentence, name){
+    if(!name) return sentence;
+    var t = sentence.split(name + state.honorific).join('').split(name).join('');
+    return t.replace(/^は、/, '').trim();
+  }
+
+  function duplicateSentenceMap(){
+    var map = {};
+    state.roster.forEach(function(c, i){
+      (c.text || '').split('。').forEach(function(s){
+        s = stripOwnName(s.trim(), c.name);
+        if(s.length < 10) return;
+        if(!map[s]) map[s] = [];
+        if(map[s].indexOf(i) === -1) map[s].push(i);
+      });
+    });
+    var dupOf = {};
+    Object.keys(map).forEach(function(s){
+      if(map[s].length < 2) return;
+      map[s].forEach(function(i){
+        if(!dupOf[i]) dupOf[i] = [];
+        map[s].forEach(function(j){
+          if(j !== i && dupOf[i].indexOf(j) === -1) dupOf[i].push(j);
+        });
+      });
+    });
+    return dupOf;
+  }
+
+  function renderReview(){
+    var dupOf = duplicateSentenceMap();
+    reviewPanel.innerHTML = state.roster.map(function(c, i){
+      var t = (c.text || '').trim();
+      var n = countChars(t);
+      var badges = '';
+      var cls = 'review-item';
+      if(!t){
+        cls += ' blank';
+        badges += '<span class="review-badge blank">未記入</span>';
+      }else{
+        badges += '<span class="review-badge' + (n > state.target ? ' warn' : '') + '">' + n + '字</span>';
+        if(n > state.target) badges += '<span class="review-badge warn">' + (n - state.target) + '字オーバー</span>';
+      }
+      if(dupOf[i]){
+        cls += ' dup';
+        var others = dupOf[i].map(function(j){ return state.roster[j].name; });
+        badges += '<span class="review-badge warn">' +
+          escapeHtml(others.slice(0, 2).join('・')) +
+          (others.length > 2 ? ' 他' + (others.length - 2) + '名' : '') + ' と同じ文</span>';
+      }
+      return '<div class="' + cls + '">' +
+        '<div class="review-head">' +
+          '<button type="button" class="review-name" data-idx="' + i + '">' + escapeHtml(c.name) + '</button>' +
+          badges +
+        '</div>' +
+        '<p class="review-text' + (t ? '' : ' empty') + '">' + escapeHtml(t || '（未記入）') + '</p>' +
+        '</div>';
+    }).join('');
+  }
+
+  reviewBtn.addEventListener('click', function(){
+    if(reviewPanel.style.display === 'none'){
+      renderReview();
+      reviewPanel.style.display = '';
+      reviewBtn.textContent = '一覧を閉じる';
+    }else{
+      reviewPanel.style.display = 'none';
+      reviewBtn.textContent = '全員分を一覧で確認';
+    }
+  });
+
+  reviewPanel.addEventListener('click', function(e){
+    var btn = e.target.closest('.review-name');
+    if(!btn) return;
+    selectChild(Number(btn.getAttribute('data-idx')), true);
   });
 
   copyAllBtn.addEventListener('click', function(){
@@ -1378,10 +1694,12 @@
       editor.value = state.soloText;
     }
 
+    undoBtn.disabled = true;
     refreshSubSelect();
     rebuildUsage();
     renderRoster();
     renderResults();
+    updateNav();
     updateCounter();
     renderChecks();
   })();
