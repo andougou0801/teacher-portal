@@ -1712,6 +1712,37 @@
     return toHiragana(String(s || '')).trim().replace(/\s+/g, '');
   }
 
+  // 読み方クイズ（自由入力）用：入力と正解の「近さ」を編集距離で判定する。
+  // 「おしい」は本来“もう少しで正解”という意味なので、まったく見当違いの
+  // 入力にまで一律で使うと手応えを誤らせてしまう。近い入力だけ「おしい」、
+  // かけ離れた入力はシンプルに「ちがうよ」と出し分けるために使う。
+  function levenshteinDistance(a, b){
+    const m = a.length, n = b.length;
+    if(m === 0) return n;
+    if(n === 0) return m;
+    const dp = new Array(n + 1);
+    for(let j = 0; j <= n; j++) dp[j] = j;
+    for(let i = 1; i <= m; i++){
+      let prev = dp[0];
+      dp[0] = i;
+      for(let j = 1; j <= n; j++){
+        const temp = dp[j];
+        dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j], dp[j - 1]);
+        prev = temp;
+      }
+    }
+    return dp[n];
+  }
+  function isCloseYomiAnswer(input, correct){
+    const a = normalizeAnswer(input);
+    const b = normalizeAnswer(correct);
+    if(!a || !b) return false;
+    const dist = levenshteinDistance(a, b);
+    const longer = Math.max(a.length, b.length);
+    // 文字数のおよそ半分までの違いなら「おしい」、それ以上違えば見当違いとみなす。
+    return dist <= Math.max(1, Math.floor(longer / 2));
+  }
+
   /* ---------- sound ---------- */
   const SOUND_KEY = 'kanji-practice-sound-v1';
   let soundEnabled = localStorage.getItem(SOUND_KEY) !== '0';
@@ -2111,7 +2142,7 @@
     queue.splice(insertAt, 0, idx);
   }
 
-  function afterAnswer(isCorrect, variant){
+  function afterAnswer(isCorrect, variant, userInput){
     if(isCorrect){
       correctCount++;
       streak++;
@@ -2129,7 +2160,22 @@
       const answerDisplay = mode === 'yomi' ? variant.yomi
         : (mode === 'okurigana' || mode === 'homophone') ? variant.word
         : variant.char;
-      feedback.textContent = '🌱 おしい！ こたえは「' + answerDisplay + '」';
+      // 不正解時の文言は、こたえとの「近さ」がわかるモードとそうでないモードで
+      // 出し分ける。
+      // ・読み方クイズ（自由入力）：近い入力なら「おしい」、見当違いなら「ちがうよ」
+      // ・送り仮名／同じ読み方／漢字クイズ（二択・選択肢タップ）：中間状態が
+      //   無いので「おしい」は使わず、シンプルな不正解表現にする
+      // ・ノートで勉強（自己採点）：もともと"まだ書けていない"という自己申告
+      //   なので、従来どおり やわらかい「おしい」表現のままにする
+      let wrongLabel;
+      if(mode === 'yomi'){
+        wrongLabel = isCloseYomiAnswer(userInput, variant.yomi) ? '🌱 おしい！' : '❌ ちがうよ。';
+      } else if(mode === 'write'){
+        wrongLabel = '🌱 おしい！';
+      } else {
+        wrongLabel = '❌ ざんねん！';
+      }
+      feedback.textContent = wrongLabel + ' こたえは「' + answerDisplay + '」';
       playWrong();
     }
     if(variant.example){
@@ -2149,7 +2195,7 @@
     answerInput.disabled = true;
     answerBtn.disabled = true;
     const isCorrect = normalizeAnswer(answerInput.value) === normalizeAnswer(currentVariant.yomi);
-    afterAnswer(isCorrect, currentVariant);
+    afterAnswer(isCorrect, currentVariant, answerInput.value);
   }
   answerBtn.addEventListener('click', submitYomiAnswer);
   // isComposing のチェックは、ローマ字入力などIMEで変換確定のためにEnterを押した
