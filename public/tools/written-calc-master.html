@@ -17,7 +17,7 @@
   body.op-add{--accent:#43a047;--accent-dark:#2e7d32;}
   body.op-sub{--accent:#fb8c00;--accent-dark:#ef6c00;}
   body.op-mul{--accent:#8e24aa;--accent-dark:#6a1b78;}
-  body.op-div{--accent:#1e88e5;--accent-dark:#1565c0;}
+  body.op-div{--accent:#1e88e5;--accent-dark:#1565c0;--cs-gap:2px;}
 
   *{box-sizing:border-box;}
   body{
@@ -122,7 +122,7 @@
   .tip-box.flash{animation:tipFlash 0.6s ease 2;}
   @keyframes tipFlash{0%,100%{background:#eef6ff;}50%{background:#fff3cd;border-color:#f5a623;}}
 
-  .problem-scroll{overflow-x:auto;padding:8px 2px 14px;}
+  .problem-scroll{overflow:auto;-webkit-overflow-scrolling:touch;max-height:52vh;padding:8px 2px 14px;}
   .problem-center{display:flex;justify-content:center;min-width:min-content;}
 
   .calc-grid{display:grid;gap:var(--cs-gap);align-items:center;justify-items:center;}
@@ -193,8 +193,8 @@
     height:calc(var(--cs) + 10px);background:#333;border-radius:0 0 0 3px;
   }
   .div-remainder-label{
-    margin-top:14px;background:#fff8e1;border:2px solid #f5a623;color:#c07d00;
-    padding:8px 16px;border-radius:12px;font-weight:800;font-size:15px;
+    margin-top:10px;background:#fff8e1;border:2px solid #f5a623;color:#c07d00;
+    padding:6px 14px;border-radius:12px;font-weight:800;font-size:15px;
     opacity:0;transform:translateY(-6px);transition:all .35s;
   }
   .div-remainder-label.show{opacity:1;transform:translateY(0);}
@@ -357,6 +357,8 @@
       <div class="summary-stats">
         <div class="summary-stat"><div class="num" id="sum-solved">0</div><div class="lbl">といた もんだい</div></div>
         <div class="summary-stat"><div class="num" id="sum-stars">0</div><div class="lbl">ぜんぶの ⭐</div></div>
+        <div class="summary-stat"><div class="num" id="sum-hints">0</div><div class="lbl">ヒントを つかった かいすう</div></div>
+        <div class="summary-stat"><div class="num" id="sum-helped">0</div><div class="lbl">おしえてで といた もんだい</div></div>
       </div>
       <button class="btn-primary" id="summary-back-btn">もんだいを えらびなおす</button>
     </div>
@@ -364,7 +366,7 @@
 
 </div>
 
-<div class="celebrate-overlay" id="celebrate-overlay"><div class="celebrate-text">せいかい！🎉</div></div>
+<div class="celebrate-overlay" id="celebrate-overlay"><div class="celebrate-text" id="celebrate-text">せいかい！🎉</div></div>
 <div class="confetti-container" id="confetti-container"></div>
 
 <div class="modal-overlay hidden" id="continue-modal">
@@ -904,7 +906,7 @@ const safeStorage={
   get(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } },
   set(key,val){ try{ localStorage.setItem(key,val); }catch(e){} }
 };
-const state={op:null, level:null, questionCount:0, sessionSolved:0};
+const state={op:null, level:null, questionCount:0, sessionSolved:0, sessionHintUses:0, sessionHelped:0};
 let answerCells=[];
 let muted = safeStorage.get('hissan_muted')==='1';
 let lifetimeStars = parseInt(safeStorage.get('hissan_stars')||'0',10);
@@ -940,7 +942,8 @@ function addCell(grid, opts){
   el.style.gridColumn=col;
   if(editable){
     el.type='text';
-    el.inputMode='numeric';
+    el.inputMode='none';
+    el.readOnly=true;
     el.maxLength=1;
     el.autocomplete='off';
     if(correct!==undefined){ el.dataset.correct=String(correct); }
@@ -961,10 +964,12 @@ function addLine(grid,row,totalCols){
 }
 
 let divRemainderLabel=null;
+let usedTeachThisProblem=false;
 
 function resetProblemArea(){
   answerCells=[];
   divRemainderLabel=null;
+  usedTeachThisProblem=false;
   lastFocusedCell=null;
   const area=document.getElementById('problem-area');
   area.innerHTML='';
@@ -1428,17 +1433,24 @@ function onHint(){
   const target=answerCells.find(c=>!c.classList.contains('correct'));
   if(!target) return;
   answerCells.forEach(c=>{ if(c!==target){ c.classList.remove('hint','hint2'); c.placeholder=''; } });
-  if(target.classList.contains('hint')){
+  const alreadyHinted=target.classList.contains('hint');
+  // フォーカスを先に済ませる。focusイベントは hint/hint2 クラスを消してしまうので、
+  // あとからクラスをつけると新しい問題の直後などフォーカスが無い状態で
+  // ヒントが一瞬で消えてしまうバグになる（先にフラグだけ保存しておく）。
+  target.focus();
+  lastFocusedCell=target;
+  state.sessionHintUses=(state.sessionHintUses||0)+1;
+  if(alreadyHinted){
     target.classList.add('hint2');
     target.placeholder=target.dataset.correct;
   } else {
     target.classList.add('hint');
   }
-  target.focus();
 }
 function onTeach(){
   const target=answerCells.find(c=>!c.classList.contains('correct'));
   if(!target) return;
+  usedTeachThisProblem=true;
   target.classList.remove('hint','hint2','wrong');
   target.placeholder='';
   target.value=target.dataset.correct;
@@ -1472,9 +1484,18 @@ function showConfetti(){
 }
 function celebrate(){
   state.sessionSolved++;
-  lifetimeStars++;
-  safeStorage.set('hissan_stars', String(lifetimeStars));
-  updateStarBadge();
+  const overlayText=document.getElementById('celebrate-text');
+  if(usedTeachThisProblem){
+    // 「おしえて」で答えを教えてもらった問題は、自力で解いたときと同じ⭐にはしない。
+    // がんばって最後までは進めたことは認めつつ、星のインフレを防ぐ。
+    state.sessionHelped=(state.sessionHelped||0)+1;
+    if(overlayText) overlayText.textContent='できたね！🌱';
+  } else {
+    lifetimeStars++;
+    safeStorage.set('hissan_stars', String(lifetimeStars));
+    updateStarBadge();
+    if(overlayText) overlayText.textContent='せいかい！🎉';
+  }
   if(divRemainderLabel) divRemainderLabel.classList.add('show');
   showConfetti();
   playTone('success');
@@ -1616,6 +1637,8 @@ document.getElementById('start-btn').addEventListener('click',()=>{
   document.body.className='op-'+state.op;
   state.questionCount=0;
   state.sessionSolved=0;
+  state.sessionHintUses=0;
+  state.sessionHelped=0;
   showScreen('screen-play');
   newProblem();
 });
@@ -1639,6 +1662,8 @@ document.getElementById('continue-no').addEventListener('click',()=>{
   document.getElementById('continue-modal').classList.add('hidden');
   document.getElementById('sum-solved').textContent=state.sessionSolved;
   document.getElementById('sum-stars').textContent=lifetimeStars;
+  document.getElementById('sum-hints').textContent=state.sessionHintUses||0;
+  document.getElementById('sum-helped').textContent=state.sessionHelped||0;
   showScreen('screen-summary');
 });
 document.getElementById('summary-back-btn').addEventListener('click',()=>{
