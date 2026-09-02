@@ -1636,13 +1636,30 @@
      全学年ぶんの単語を読み（yomi）でグループ化し、同じ読みで書き表し方（word）が
      2つ以上ある組み合わせ（同訓異字・同音異義語）を集める。学年をまたぐ組み合わせも
      あるため、出題時は「選んだ学年以下」の相手だけを選択肢に使う。 */
+  // word2（もう一方の読みの熟語）には専用の例文データが無いため、全学年の主な
+  // 単語（word／yomi／example）から「word2の単語＋その読み」に一致するものを探し、
+  // 見つかれば正しい例文として使う。見つからなければ無理に作らず空のままにする
+  // （呼び出し側で「例文なし＝ヒント表示」にフォールバックする）。
+  const EXAMPLE_BY_WORD_YOMI = (function(){
+    const map = new Map();
+    GRADE_KANJI.forEach(g => {
+      entriesOf(g.grade).forEach(entry => {
+        if(entry.word && entry.yomi && entry.example){
+          const key = entry.word + '|' + entry.yomi;
+          if(!map.has(key)) map.set(key, entry.example);
+        }
+      });
+    });
+    return map;
+  })();
   const HOMOPHONE_GROUPS = (function(){
     const byYomi = new Map();
     GRADE_KANJI.forEach(g => {
       entriesOf(g.grade).forEach(entry => {
         const variants = [{ word: entry.word, yomi: entry.yomi, hint: entry.hint, example: entry.example }];
         if(entry.word2){
-          variants.push({ word: entry.word2, yomi: entry.yomi2, hint: entry.hint2, example: entry.example });
+          const example2 = EXAMPLE_BY_WORD_YOMI.get(entry.word2 + '|' + entry.yomi2) || '';
+          variants.push({ word: entry.word2, yomi: entry.yomi2, hint: entry.hint2, example: example2 });
         }
         variants.forEach(v => {
           if(!v.yomi) return;
@@ -1847,6 +1864,7 @@
     startGame(selectedMode, selectedCount);
   });
   document.getElementById('quitBtn').addEventListener('click', () => {
+    if(!confirm('とちゅうで やめて、さいしょの がめんに もどりますか？')) return;
     showScreen(startScreen);
     renderBestStreakLine();
   });
@@ -2044,7 +2062,7 @@
 
       qInstr.textContent = 'この ぶんに あう かんじことばは どれ？';
       qPromptArea.innerHTML = '';
-      const exampleText = correctMember.example || entry.example || '';
+      const exampleText = correctMember.example || '';
       const sentenceEl = document.createElement('div');
       sentenceEl.className = 'q-yomi-sub';
       if(exampleText && exampleText.includes(correctMember.word)){
