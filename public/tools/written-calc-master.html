@@ -124,7 +124,16 @@
   .tip-box.flash{animation:tipFlash 0.6s ease 2;}
   @keyframes tipFlash{0%,100%{background:#eef6ff;}50%{background:#fff3cd;border-color:#f5a623;}}
 
-  .problem-scroll{overflow:auto;-webkit-overflow-scrolling:touch;max-height:52vh;padding:8px 2px 14px;}
+  .problem-scroll{overflow:auto;-webkit-overflow-scrolling:touch;max-height:34vh;padding:6px 2px 10px;}
+  @media (max-height:900px){
+    .problem-scroll{max-height:28vh;}
+    #screen-play .card{padding:16px;}
+    #screen-play .tip-box{margin-bottom:8px;padding:8px 12px;}
+    #screen-play .instruction{margin-bottom:6px;}
+    #screen-play .op-tag{margin-bottom:6px;}
+    .controls-row{margin-bottom:8px;}
+    .numpad button{padding:10px 0;}
+  }
   .problem-center{display:flex;justify-content:center;min-width:min-content;}
 
   .calc-grid{display:grid;gap:var(--cs-gap);align-items:center;justify-items:center;}
@@ -951,6 +960,7 @@ function addCell(grid, opts){
     if(correct!==undefined){ el.dataset.correct=String(correct); }
     el.addEventListener('input', onCellInput);
     el.addEventListener('focus', onCellFocus);
+    el.addEventListener('keydown', onCellKeydown);
   } else {
     el.textContent = (digit===undefined||digit===null) ? '' : digit;
   }
@@ -1439,6 +1449,23 @@ function onCellInput(e){
     setTimeout(()=>{ if(el.value===v){ el.value=''; } el.classList.remove('wrong'); },420);
   }
 }
+function eraseCurrent(){
+  const target=pickInputTarget();
+  if(target){ target.value=''; target.focus(); lastFocusedCell=target; }
+}
+function onCellKeydown(e){
+  // readOnly + inputMode:none にしているのは、タブレットで純正の仮想キーボードが
+  // 出てしまうのを防ぐための対策。だが物理キーボード接続時は数字キーを打っても
+  // 反応しないままになってしまうため、数字パッドのボタン処理をそのまま再利用して
+  // 打鍵に反応させる。
+  if(e.key>='0' && e.key<='9'){
+    e.preventDefault();
+    enterDigit(parseInt(e.key,10));
+  } else if(e.key==='Backspace' || e.key==='Delete'){
+    e.preventDefault();
+    eraseCurrent();
+  }
+}
 function onHint(){
   const target=answerCells.find(c=>!c.classList.contains('correct'));
   if(!target) return;
@@ -1544,10 +1571,7 @@ function buildNumpad(){
   const back=document.createElement('button');
   back.textContent='⌫';
   back.className='back-key';
-  back.addEventListener('click',()=>{
-    const target=pickInputTarget();
-    if(target){ target.value=''; target.focus(); lastFocusedCell=target; }
-  });
+  back.addEventListener('click', eraseCurrent);
   pad.appendChild(back);
 }
 function enterDigit(d){
