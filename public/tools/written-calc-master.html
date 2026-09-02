@@ -50,6 +50,8 @@
     background:#fff;border-radius:20px;padding:8px 14px;font-weight:800;color:#f5a623;
     box-shadow:0 2px 4px rgba(0,0,0,0.06);font-size:14px;display:flex;align-items:center;gap:4px;
   }
+  .star-badge.pop{animation:starPop .5s ease;}
+  @keyframes starPop{0%{transform:scale(1);}40%{transform:scale(1.35);}100%{transform:scale(1);}}
 
   .card{
     background:#fff;border-radius:20px;padding:22px;
@@ -965,11 +967,13 @@ function addLine(grid,row,totalCols){
 
 let divRemainderLabel=null;
 let usedTeachThisProblem=false;
+let problemCelebrated=false;
 
 function resetProblemArea(){
   answerCells=[];
   divRemainderLabel=null;
   usedTeachThisProblem=false;
+  problemCelebrated=false;
   lastFocusedCell=null;
   const area=document.getElementById('problem-area');
   area.innerHTML='';
@@ -1418,9 +1422,15 @@ function onCellInput(e){
     el.placeholder='';
     el.disabled=true;
     playTone('correct');
-    focusNextCell();
     checkAllComplete();
+    // disabled直後に同期でフォーカス移動すると、端末によってはフォーカスが
+    // うまく移らず数字パッドが反応しなくなることがあるため、1tick遅らせる。
+    setTimeout(focusNextCell,0);
   } else {
+    // ヒント表示中のセルに誤答すると、hint系クラスがwrongの見た目(赤・シェイク)を
+    // 上書きしてしまい「反応がない」ように見えるバグがあったため、先に消しておく。
+    el.classList.remove('hint','hint2');
+    el.placeholder='';
     el.classList.add('wrong');
     playTone('wrong');
     const wc=(parseInt(el.dataset.wrongCount||'0',10))+1;
@@ -1457,11 +1467,13 @@ function onTeach(){
   target.classList.add('correct');
   target.disabled=true;
   playTone('correct');
-  focusNextCell();
   checkAllComplete();
+  setTimeout(focusNextCell,0);
 }
 function checkAllComplete(){
+  if(problemCelebrated) return; // 1問につき celebrate() は1回だけ（おしえて連打などでの二重カウント防止）
   if(answerCells.length>0 && answerCells.every(c=>c.classList.contains('correct'))){
+    problemCelebrated=true;
     celebrate();
   }
 }
@@ -1494,6 +1506,11 @@ function celebrate(){
     lifetimeStars++;
     safeStorage.set('hissan_stars', String(lifetimeStars));
     updateStarBadge();
+    // 「せいかい！」演出と同時に⭐が増えたことが目で見てわかるよう、バッジをポップさせる
+    const badgeEl=document.getElementById('star-badge');
+    badgeEl.classList.remove('pop');
+    void badgeEl.offsetWidth;
+    badgeEl.classList.add('pop');
     if(overlayText) overlayText.textContent='せいかい！🎉';
   }
   if(divRemainderLabel) divRemainderLabel.classList.add('show');
