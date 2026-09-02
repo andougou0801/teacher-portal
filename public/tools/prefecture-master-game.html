@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <title>日本国土・産業開拓トレジャーハント｜都道府県マスターゲーム</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
@@ -32,6 +32,7 @@
   .badge{background:#fff;border-radius:20px;padding:7px 14px;font-weight:800;font-size:13px;box-shadow:0 2px 4px rgba(0,0,0,0.07);display:flex;align-items:center;gap:5px;}
   .badge.rank{color:#c07a1f;}
   .badge.score{color:var(--accent-dark);}
+  .badge.total{color:#e08a3c;}
 
   .card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(30,60,50,0.08);margin-bottom:16px;}
   h2.section-title{margin:0 0 10px;font-size:16px;color:#555;font-weight:800;display:flex;align-items:center;gap:6px;}
@@ -111,6 +112,9 @@
   .mode-tag.R{background:#9c5fc4;}
   .mode-tag.W{background:#e05a5a;}
   .q-progress{font-size:13px;font-weight:800;color:#888;}
+  .combo-badge{background:#fff3cd;color:#c07a1f;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:800;display:none;align-items:center;gap:3px;animation:comboPop .35s ease;}
+  .combo-badge.show{display:inline-flex;}
+  @keyframes comboPop{0%{transform:scale(0.7);}60%{transform:scale(1.15);}100%{transform:scale(1);}}
   .question-card{background:var(--accent-soft);border:2px solid #cdeadd;border-radius:16px;padding:16px;font-size:15px;line-height:2.3;font-weight:700;color:#2c5c46;margin-bottom:12px;}
 
   .hint-panel{margin-bottom:12px;}
@@ -141,6 +145,8 @@
   .stat-box{background:#f6faf8;border-radius:14px;padding:14px;text-align:center;}
   .stat-box b{display:block;font-size:22px;color:var(--accent-dark);}
   .stat-box span{font-size:11.5px;color:#888;line-height:1.8;}
+  .celebrate-banner{background:linear-gradient(90deg,#ffd23f,#ff9f1c);color:#5c3d00;border-radius:14px;padding:12px 14px;text-align:center;font-weight:800;font-size:13.5px;margin-bottom:12px;line-height:1.8;}
+  .celebrate-banner.rankup{background:linear-gradient(90deg,#8ecae6,#5c9fd6);color:#0d3a5c;}
 
   /* ---- atlas ---- */
   .atlas-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;font-size:11.5px;color:#777;}
@@ -158,6 +164,7 @@
     <div class="badge-row">
       <div class="badge rank" id="hdr-rank">🔰 -</div>
       <div class="badge score" id="hdr-progress">0/47</div>
+      <div class="badge total" id="hdr-total">🌟 0点</div>
     </div>
   </div>
 
@@ -203,6 +210,7 @@
     <div class="card">
       <div class="quiz-topbar">
         <span class="mode-tag" id="quiz-mode-tag">モード</span>
+        <span class="combo-badge" id="quiz-combo">🔥 x3</span>
         <span class="q-progress" id="quiz-progress">1 / 10</span>
       </div>
       <div class="question-card" id="quiz-question">問題文</div>
@@ -211,7 +219,7 @@
         <div class="hint-buttons">
           <button class="hint-btn" data-hint="region">🗺️ <span class="rb">地方名</span></button>
           <button class="hint-btn" data-hint="neighbor">🧭 <span class="rb">隣接する県</span></button>
-          <button class="hint-btn" data-hint="fact">📝 <span class="rb">とくちょう</span></button>
+          <button class="hint-btn" data-hint="pos">📍 <span class="rb">方位・緯度経度</span></button>
         </div>
         <div id="hint-text-area"></div>
       </div>
@@ -231,6 +239,7 @@
         <div class="rank-name" id="res-rank">称号</div>
         <div class="rank-sub" id="res-rank-sub">開拓図鑑 0/47県</div>
       </div>
+      <div id="res-banners"></div>
       <div class="stat-grid">
         <div class="stat-box"><b id="res-correct">0</b><span class="rb">正解した問題数</span></div>
         <div class="stat-box"><b id="res-score">0</b><span class="rb">今回のスコア</span></div>
@@ -326,7 +335,8 @@ var FURIGANA = {
 "柿":"かき","宍道湖":"しんじこ","小豆島":"しょうどしま","有明海":"ありあけかい","鹿島":"かしま","臨海":"りんかい",
 "洋食器":"ようしょっき","精密機械":"せいみつきかい","刃物":"はもの","四日市":"よっかいち","観光":"かんこう",
 "苦手":"にがて","復習":"ふくしゅう","市":"し","再挑戦":"さいちょうせん","記録":"きろく","有数":"ゆうすう",
-"中央":"ちゅうおう","高地":"こうち","両方":"りょうほう"
+"中央":"ちゅうおう","高地":"こうち","両方":"りょうほう",
+"点":"てん","連続":"れんぞく","達成":"たっせい","全問":"ぜんもん","累計":"るいけい","称号":"しょうごう","最大":"さいだい"
 };
 var FURIGANA_KEYS = Object.keys(FURIGANA).map(function(k){ return {key:k, len:Array.from(k).length, reading:FURIGANA[k]}; }).sort(function(a,b){return b.len-a.len;});
 
@@ -547,6 +557,7 @@ function updateHeader(){
   var r = rankFor(discovered.size);
   document.getElementById("hdr-rank").innerHTML = r.emoji+" "+toRuby(r.name);
   document.getElementById("hdr-progress").innerHTML = toRuby(discovered.size+"/47県");
+  document.getElementById("hdr-total").innerHTML = "🌟 "+toRuby(totalScore+"点");
   updateReviewButton();
 }
 
@@ -922,13 +933,24 @@ function startQuiz(mode, regionFilter){
   } else {
     pool = shuffle(QUESTIONS[mode].map(function(q){return Object.assign({mode:mode},q);}));
   }
-  quiz = {mode:mode, regionFilter:regionFilter, list:pool, idx:0, correctCount:0, score:0, wrongAttempts:0, hintUsed:false, groups:null};
+  quiz = {mode:mode, regionFilter:regionFilter, list:pool, idx:0, correctCount:0, score:0, wrongAttempts:0, hintUsed:false, groups:null,
+    streak:0, bestStreak:0, perfect:true, rankAtStart:rankFor(discovered.size).name};
   showScreen("quiz");
   quiz.groups = buildMap("quiz-map", {onClick:onMapClickInQuiz});
   renderQuestion();
 }
 
 function currentQ(){ return quiz.list[quiz.idx]; }
+
+function updateComboBadge(){
+  var el = document.getElementById("quiz-combo");
+  if(quiz.streak>=2){
+    el.innerHTML = "🔥 "+quiz.streak+toRuby("連続");
+    el.classList.add("show");
+  } else {
+    el.classList.remove("show");
+  }
+}
 
 function renderQuestion(){
   quiz.wrongAttempts = 0;
@@ -943,6 +965,7 @@ function renderQuestion(){
   tag.className = "mode-tag "+q.mode;
   document.getElementById("quiz-progress").textContent = (quiz.idx+1)+" / "+quiz.list.length;
   document.getElementById("quiz-question").innerHTML = toRuby(q.q);
+  updateComboBadge();
 
   Object.values(quiz.groups).forEach(function(el){
     el.g.classList.remove("flash-wrong","flash-correct","nudge");
@@ -956,7 +979,7 @@ document.querySelectorAll(".hint-btn").forEach(function(btn){
     var txt = "";
     if(kind==="region") txt = "この県は「"+p.region+"」にあるよ。";
     else if(kind==="neighbor") txt = p.neighbors.length ? "隣接している県：" + p.neighbors.join("、") + " など。" : "陸続きの隣県がない、海に囲まれた場所だよ。";
-    else if(kind==="fact") txt = p.fact;
+    else if(kind==="pos") txt = "県庁所在地はだいたい北緯"+p.lat+"度、東経"+p.lon+"度くらいの場所だよ。";
     document.getElementById("hint-text-area").innerHTML = "<div class='hint-text'>💡 "+toRuby(txt)+"</div>";
     btn.classList.add("used");
     quiz.hintUsed = true;
@@ -964,6 +987,9 @@ document.querySelectorAll(".hint-btn").forEach(function(btn){
 });
 
 document.getElementById("btn-give-up").addEventListener("click", function(){
+  quiz.streak = 0;
+  quiz.perfect = false;
+  updateComboBadge();
   showAnswerModal(false, true);
 });
 
@@ -972,16 +998,32 @@ function onMapClickInQuiz(id, groups){
   var el = groups[id];
   if(id === q.a){
     discovered.add(id);
-    var pts = (quiz.hintUsed || quiz.wrongAttempts>0) ? 6 : 10;
+    var base;
+    if(quiz.wrongAttempts>0){
+      base = 5;
+      quiz.streak = 0;
+      quiz.perfect = false;
+    } else if(quiz.hintUsed){
+      base = 8;
+      quiz.streak++;
+      quiz.perfect = false;
+    } else {
+      base = 10;
+      quiz.streak++;
+    }
+    quiz.bestStreak = Math.max(quiz.bestStreak, quiz.streak);
+    var comboBonus = (quiz.streak>0 && quiz.streak%3===0) ? 5 : 0;
+    var pts = base + comboBonus;
     quiz.score += pts;
     totalScore += pts;
     quiz.correctCount++;
     if(quiz.wrongAttempts===0){ weakPrefs.delete(id); }
     refreshMapColors(groups);
     el.g.classList.add("flash-correct");
+    updateComboBadge();
     saveProgress();
     updateHeader();
-    showAnswerModal(true, false, pts);
+    showAnswerModal(true, false, pts, base, comboBonus);
   } else {
     quiz.wrongAttempts++;
     weakPrefs.add(q.a);
@@ -1010,18 +1052,26 @@ function showWrongToast(wrongId){
   setTimeout(function(){ if(toast.parentNode) toast.remove(); }, 4500);
 }
 
-function showAnswerModal(correct, gaveUp, pts){
+function showAnswerModal(correct, gaveUp, pts, base, comboBonus){
   var q = currentQ();
   var p = PREF_BY_ID[q.a];
   var backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop";
   var isLast = quiz.idx >= quiz.list.length-1;
+  var ptsLine = "";
+  if(correct){
+    if(comboBonus>0){
+      ptsLine = "<div class='pts'>+"+base+toRuby("点")+" 🔥"+toRuby(quiz.streak+"連続ボーナス")+"+"+comboBonus+toRuby("点")+" ＝ +"+pts+toRuby("点！")+"</div>";
+    } else {
+      ptsLine = "<div class='pts'>+"+pts+toRuby("点獲得！")+"</div>";
+    }
+  }
   backdrop.innerHTML =
     "<div class='modal-card'>"+
-      "<div class='result-emoji'>"+(correct?"🎉":"📚")+"</div>"+
+      "<div class='result-emoji'>"+(correct?(comboBonus>0?"🔥":"🎉"):"📚")+"</div>"+
       "<h3>"+(correct?toRuby("正解！"):(toRuby(p.name)+" はここ！"))+"</h3>"+
       "<div class='fact-box'>"+p.icon+" <b>"+toRuby(p.name)+"</b><br>"+toRuby(p.fact)+"</div>"+
-      (correct?("<div class='pts'>+"+pts+toRuby("ポイント獲得！")+"</div>"):"")+
+      ptsLine+
       "<button class='btn-primary' id='modal-next'>"+(isLast?"けっかを見る":toRuby("つぎの問題へ"))+"</button>"+
     "</div>";
   document.body.appendChild(backdrop);
@@ -1037,7 +1087,21 @@ function showAnswerModal(correct, gaveUp, pts){
 }
 
 function finishQuiz(){
+  var banners = [];
+  if(quiz.perfect && quiz.list.length>=5){
+    var bonus = 20;
+    quiz.score += bonus;
+    totalScore += bonus;
+    saveProgress();
+    banners.push("<div class='celebrate-banner'>🌟 "+toRuby("全問パーフェクト達成！ノーヒント・ノーミスでボーナス")+"+"+bonus+toRuby("点！")+"</div>");
+  }
   var r = rankFor(discovered.size);
+  if(r.name !== quiz.rankAtStart){
+    banners.push("<div class='celebrate-banner rankup'>🎉 "+toRuby("称号アップ！")+r.emoji+" "+toRuby(r.name)+" "+toRuby("になったよ！")+"</div>");
+  } else if(quiz.bestStreak>=3){
+    banners.push("<div class='celebrate-banner'>🔥 "+toRuby("最大")+quiz.bestStreak+toRuby("連続正解を達成したよ！")+"</div>");
+  }
+  document.getElementById("res-banners").innerHTML = banners.join("");
   document.getElementById("res-emoji").textContent = r.emoji;
   document.getElementById("res-rank").innerHTML = toRuby(r.name);
   document.getElementById("res-rank-sub").innerHTML = toRuby("開拓図鑑 "+discovered.size+"/47県");
