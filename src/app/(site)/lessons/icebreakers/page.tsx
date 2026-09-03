@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import IcebreakerScene from "@/components/IcebreakerScene";
-import { icebreakers, icebreakerCategories } from "@/lib/icebreakers";
+import { icebreakers, icebreakerCategories, sortIcebreakers } from "@/lib/icebreakers";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
@@ -23,10 +23,15 @@ export default function IcebreakersPage() {
         <p className="mx-auto max-w-lg text-sm text-muted">
           全{icebreakers.length}種類。気になるものをタップすると、やり方をイラスト付きで詳しく紹介します。
         </p>
+        <p className="mx-auto mt-2 max-w-lg text-sm text-muted">
+          各カテゴリーの中は、短い時間でできるものから順に並んでいます（同じ時間なら準備物が要らないものが先）。
+        </p>
       </div>
 
       {icebreakerCategories.map((category) => {
-        const items = icebreakers.filter((ib) => ib.category === category);
+        const items = sortIcebreakers(
+          icebreakers.filter((ib) => ib.category === category),
+        );
         return (
           <div key={category} className="mb-10">
             <h2 className="mb-3 text-sm font-bold text-navy">
