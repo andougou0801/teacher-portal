@@ -944,7 +944,7 @@ function startQuiz(mode, regionFilter){
     pool = shuffle(QUESTIONS[mode].map(function(q){return Object.assign({mode:mode},q);}));
   }
   quiz = {mode:mode, regionFilter:regionFilter, list:pool, idx:0, correctCount:0, score:0, wrongAttempts:0, hintUsed:false, groups:null,
-    streak:0, bestStreak:0, perfect:true, rankAtStart:rankFor(discovered.size).name};
+    streak:0, bestStreak:0, perfect:true, rankAtStart:rankFor(discovered.size).name, answered:false};
   showScreen("quiz");
   quiz.groups = buildMap("quiz-map", {onClick:onMapClickInQuiz});
   renderQuestion();
@@ -972,6 +972,7 @@ function resetMapMarks(){
 function renderQuestion(){
   quiz.wrongAttempts = 0;
   quiz.hintUsed = false;
+  quiz.answered = false;
   document.querySelectorAll(".hint-btn").forEach(function(b){b.classList.remove("used");});
   document.getElementById("hint-text-area").innerHTML="";
   document.getElementById("btn-give-up").classList.add("hidden");
@@ -1002,6 +1003,8 @@ document.querySelectorAll(".hint-btn").forEach(function(btn){
 });
 
 document.getElementById("btn-give-up").addEventListener("click", function(){
+  if(quiz.answered) return;
+  quiz.answered = true;
   quiz.streak = 0;
   quiz.perfect = false;
   updateComboBadge();
@@ -1010,9 +1013,11 @@ document.getElementById("btn-give-up").addEventListener("click", function(){
 });
 
 function onMapClickInQuiz(id, groups){
+  if(quiz.answered) return;
   var q = currentQ();
   var el = groups[id];
   if(id === q.a){
+    quiz.answered = true;
     discovered.add(id);
     var base;
     if(quiz.wrongAttempts>0){
@@ -1092,7 +1097,7 @@ function showAnswerModal(correct, gaveUp, pts, base, comboBonus){
       "<button class='btn-primary' id='modal-next'>"+(isLast?"けっかを見る":toRuby("つぎの問題へ"))+"</button>"+
     "</div>";
   document.body.appendChild(backdrop);
-  document.getElementById("modal-next").addEventListener("click", function(){
+  backdrop.querySelector("#modal-next").addEventListener("click", function(){
     backdrop.remove();
     if(isLast){
       finishQuiz();
