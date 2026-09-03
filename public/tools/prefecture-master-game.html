@@ -54,6 +54,8 @@
   .mode-btn[data-mode="D"]{border-color:#b8c0f0;}
   .mode-btn[data-mode="E"]{border-color:#f5c6a5;}
   .mode-btn[data-mode="R"]{border-color:#ffc6ff;}
+  .mode-btn.selected{background:#fffbe8;box-shadow:0 0 0 3px #ffd23f,0 4px 10px rgba(0,0,0,0.1);position:relative;}
+  .mode-btn.selected::after{content:"✓";position:absolute;top:-10px;right:-8px;background:#ffd23f;color:#5c3d00;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;box-shadow:0 2px 4px rgba(0,0,0,0.2);}
 
   .btn-primary{width:100%;padding:15px;border:none;border-radius:16px;background:var(--accent);color:#fff;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.12);}
   .btn-primary:active{transform:scale(0.98);}
@@ -103,6 +105,8 @@
 
   /* ---- quiz screen ---- */
   .quiz-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .quit-btn{order:9;background:none;border:2px solid #e2e8f0;color:#999;font-size:12px;font-weight:800;cursor:pointer;padding:5px 10px;border-radius:10px;}
+  .quit-btn:active{opacity:0.6;}
   .mode-tag{display:inline-block;color:#fff;border-radius:10px;padding:4px 12px;font-size:12px;font-weight:800;}
   .mode-tag.A{background:#3d8f92;}
   .mode-tag.B{background:#4caf50;}
@@ -209,6 +213,7 @@
   <div id="screen-quiz" class="hidden">
     <div class="card">
       <div class="quiz-topbar">
+        <button class="quit-btn" id="btn-quiz-quit">✕ <span class="rb">やめる</span></button>
         <span class="mode-tag" id="quiz-mode-tag">モード</span>
         <span class="combo-badge" id="quiz-combo">🔥 x3</span>
         <span class="q-progress" id="quiz-progress">1 / 10</span>
@@ -848,17 +853,22 @@ document.querySelectorAll(".mode-btn").forEach(function(btn){
   btn.addEventListener("click", function(){
     var m = btn.getAttribute("data-mode");
     if(m==="D"||m==="E"){ openRegionPicker(m); return; }
-    document.querySelectorAll(".mode-btn").forEach(function(b){b.style.outline="";});
+    document.querySelectorAll(".mode-btn").forEach(function(b){b.classList.remove("selected");});
     selectedMode = m;
-    btn.style.outline = "3px solid #ffd23f";
+    btn.classList.add("selected");
   });
 });
-document.querySelector('.mode-btn[data-mode="A"]').style.outline="3px solid #ffd23f";
+document.querySelector('.mode-btn[data-mode="A"]').classList.add("selected");
 
 document.getElementById("btn-start").addEventListener("click", function(){ startQuiz(selectedMode); });
 document.getElementById("btn-atlas").addEventListener("click", function(){ openAtlas(); });
 document.getElementById("btn-atlas-back").addEventListener("click", function(){ showScreen("home"); updateHeader(); });
 document.getElementById("btn-region-back").addEventListener("click", function(){ showScreen("home"); });
+document.getElementById("btn-quiz-quit").addEventListener("click", function(){
+  if(!confirm("とちゅうで やめて、ホームに もどりますか？")) return;
+  showScreen("home");
+  updateHeader();
+});
 document.getElementById("btn-review").addEventListener("click", function(){
   if(weakPrefs.size===0) return;
   startQuiz("W");
@@ -952,6 +962,13 @@ function updateComboBadge(){
   }
 }
 
+function resetMapMarks(){
+  if(!quiz || !quiz.groups) return;
+  Object.values(quiz.groups).forEach(function(el){
+    el.g.classList.remove("flash-wrong","flash-correct","nudge");
+  });
+}
+
 function renderQuestion(){
   quiz.wrongAttempts = 0;
   quiz.hintUsed = false;
@@ -967,9 +984,7 @@ function renderQuestion(){
   document.getElementById("quiz-question").innerHTML = toRuby(q.q);
   updateComboBadge();
 
-  Object.values(quiz.groups).forEach(function(el){
-    el.g.classList.remove("flash-wrong","flash-correct","nudge");
-  });
+  resetMapMarks();
 }
 
 document.querySelectorAll(".hint-btn").forEach(function(btn){
@@ -990,6 +1005,7 @@ document.getElementById("btn-give-up").addEventListener("click", function(){
   quiz.streak = 0;
   quiz.perfect = false;
   updateComboBadge();
+  resetMapMarks();
   showAnswerModal(false, true);
 });
 
@@ -1019,6 +1035,7 @@ function onMapClickInQuiz(id, groups){
     quiz.correctCount++;
     if(quiz.wrongAttempts===0){ weakPrefs.delete(id); }
     refreshMapColors(groups);
+    resetMapMarks();
     el.g.classList.add("flash-correct");
     updateComboBadge();
     saveProgress();
