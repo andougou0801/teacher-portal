@@ -1033,7 +1033,7 @@ function onMapClickInQuiz(id, groups){
     quiz.score += pts;
     totalScore += pts;
     quiz.correctCount++;
-    if(quiz.wrongAttempts===0){ weakPrefs.delete(id); }
+    if(quiz.wrongAttempts===0 || q.mode==="W"){ weakPrefs.delete(id); }
     refreshMapColors(groups);
     resetMapMarks();
     el.g.classList.add("flash-correct");
@@ -1117,6 +1117,10 @@ function finishQuiz(){
     banners.push("<div class='celebrate-banner rankup'>🎉 "+toRuby("称号アップ！")+r.emoji+" "+toRuby(r.name)+" "+toRuby("になったよ！")+"</div>");
   } else if(quiz.bestStreak>=3){
     banners.push("<div class='celebrate-banner'>🔥 "+toRuby("最大")+quiz.bestStreak+toRuby("連続正解を達成したよ！")+"</div>");
+  }
+  if(banners.length===0 && (quiz.mode==="R" || quiz.mode==="W")){
+    var cheerMsg = quiz.mode==="W" ? "苦手な県にチャレンジしてえらいね！またがんばろう！" : "まぜまぜチャレンジ、よくがんばったね！";
+    banners.push("<div class='celebrate-banner'>👏 "+toRuby(cheerMsg)+"</div>");
   }
   document.getElementById("res-banners").innerHTML = banners.join("");
   document.getElementById("res-emoji").textContent = r.emoji;
