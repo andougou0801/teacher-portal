@@ -13,6 +13,7 @@
     --cs:48px;
     --cs-gap:4px;
     --pw:18px;
+    --fit-scale:1;
   }
   body.op-add{--accent:#43a047;--accent-dark:#2e7d32;}
   body.op-sub{--accent:#fb8c00;--accent-dark:#ef6c00;}
@@ -136,24 +137,24 @@
   }
   .problem-center{display:flex;justify-content:center;min-width:min-content;}
 
-  .calc-grid{display:grid;gap:var(--cs-gap);align-items:center;justify-items:center;}
+  .calc-grid{display:grid;gap:calc(var(--cs-gap) * var(--fit-scale));align-items:center;justify-items:center;}
   .cell{
-    width:var(--cs);height:var(--cs);
+    width:calc(var(--cs) * var(--fit-scale));height:calc(var(--cs) * var(--fit-scale));
     display:flex;align-items:center;justify-content:center;
-    font-size:22px;font-weight:800;color:#333;
+    font-size:calc(22px * var(--fit-scale));font-weight:800;color:#333;
     border-radius:8px;
   }
   div.cell{background:transparent;}
   div.cell.empty{visibility:hidden;}
-  div.cell.op{color:var(--accent-dark);font-size:26px;}
-  div.cell.point{width:var(--pw);color:var(--accent-dark);font-size:26px;font-weight:800;align-items:flex-end;padding-bottom:4px;justify-self:center;}
+  div.cell.op{color:var(--accent-dark);font-size:calc(26px * var(--fit-scale));}
+  div.cell.point{width:calc(var(--pw) * var(--fit-scale));color:var(--accent-dark);font-size:calc(26px * var(--fit-scale));font-weight:800;align-items:flex-end;padding-bottom:4px;justify-self:center;}
   input.cell{
     border:2.5px solid #d7dfe9;background:#fbfdff;text-align:center;
     font-family:inherit;caret-color:var(--accent);padding:0;
   }
   input.cell.scratch{
-    width:calc(var(--cs) * 0.6);height:calc(var(--cs) * 0.6);
-    font-size:14px;border:2px dashed #cfd8e3;background:#fff;color:#999;align-self:end;
+    width:calc(var(--cs) * var(--fit-scale) * 0.6);height:calc(var(--cs) * var(--fit-scale) * 0.6);
+    font-size:calc(14px * var(--fit-scale));border:2px dashed #cfd8e3;background:#fff;color:#999;align-self:end;
   }
   div.cell.borrowable{cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;}
   div.cell.borrowable::after{
@@ -189,8 +190,8 @@
   .div-outer{display:inline-flex;flex-direction:column;align-items:flex-start;position:relative;}
   .div-flexrow{display:flex;align-items:flex-start;}
   .div-divisor-box{
-    min-width:38px;height:var(--cs);display:flex;align-items:center;justify-content:center;
-    font-size:22px;font-weight:800;color:var(--accent-dark);padding:0 8px 0 2px;margin-top:8px;
+    min-width:38px;height:calc(var(--cs) * var(--fit-scale));display:flex;align-items:center;justify-content:center;
+    font-size:calc(22px * var(--fit-scale));font-weight:800;color:var(--accent-dark);padding:0 8px 0 2px;margin-top:8px;
   }
   .div-divisor-box.spacer{visibility:hidden;}
   .div-qgrid{margin-bottom:4px;}
@@ -201,7 +202,7 @@
   }
   .div-bracket::before{
     content:'';position:absolute;left:0;top:-4px;width:4px;
-    height:calc(var(--cs) + 10px);background:#333;border-radius:0 0 0 3px;
+    height:calc((var(--cs) * var(--fit-scale)) + 10px);background:#333;border-radius:0 0 0 3px;
   }
   .div-remainder-label{
     margin-top:10px;background:#fff8e1;border:2px solid #f5a623;color:#c07d00;
@@ -987,9 +988,33 @@ function resetProblemArea(){
   lastFocusedCell=null;
   const area=document.getElementById('problem-area');
   area.innerHTML='';
+  area.style.setProperty('--fit-scale','1');
   document.getElementById('next-btn-wrap').style.display='none';
   return area;
 }
+
+function fitProblemToScreen(){
+  const area=document.getElementById('problem-area');
+  const scrollBox=document.querySelector('.problem-scroll');
+  if(!area || !scrollBox || !area.firstChild) return;
+  area.style.setProperty('--fit-scale','1');
+  void area.offsetWidth;
+  const availW=scrollBox.clientWidth;
+  const availH=scrollBox.clientHeight;
+  if(availW<=0 || availH<=0) return;
+  let scale=1;
+  for(let i=0;i<4;i++){
+    const contentW=area.scrollWidth;
+    const contentH=area.scrollHeight;
+    if(contentW<=0 || contentH<=0) break;
+    if(contentW<=availW && contentH<=availH) break;
+    const ratio=Math.min(availW/contentW, availH/contentH);
+    scale=Math.max(0.55, Math.min(scale, scale*ratio*0.985));
+    area.style.setProperty('--fit-scale', String(scale));
+    void area.offsetWidth;
+  }
+}
+window.addEventListener('resize', ()=>{ setTimeout(fitProblemToScreen, 0); });
 
 function buildOpGridInto(container,a,b,opChar,result,withScratch,opts){
   opts = opts || {};
@@ -1606,6 +1631,7 @@ function newProblem(){
     else renderDivision(r.dividend,r.divisor);
   }
   updateProgressUI();
+  fitProblemToScreen();
   setTimeout(focusNextCell,50);
 }
 function updateProgressUI(){
