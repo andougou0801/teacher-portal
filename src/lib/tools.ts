@@ -150,6 +150,17 @@ export const tools: Tool[] = [
     file: "/tools/kanji-practice.html",
   },
   {
+    slug: "history-quiz",
+    name: "歴史人物タイムトラベルクイズ",
+    description:
+      "卑弥呼から明治の人物まで、日本の歴史人物43人をヒントクイズで覚えられます。ヒントは1つずつ出てきて、少ないヒントで当てるほど高得点。時代ごとの挑戦、正解した人物が集まる人物図鑑、間違えた人物だけの復習モードにも対応。",
+    icon: "🏯",
+    tags: ["社会", "無料"],
+    audience: "student",
+    status: "live",
+    file: "/tools/history-quiz.html",
+  },
+  {
     slug: "typing-practice",
     name: "タイピングれんしゅう",
     description:

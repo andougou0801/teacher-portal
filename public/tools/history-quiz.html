@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>歴史人物タイムトラベルクイズ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#b5502e;
+    --accent-dark:#8a3a1f;
+    --accent-soft:#fbeee3;
+  }
+  *{box-sizing:border-box;}
+  html{touch-action:manipulation;}
+  body{
+    margin:0;
+    font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#fdf6e8 0%, #f6ece0 100%);
+    color:#3a3a3a;
+    min-height:100vh;
+    touch-action:manipulation;
+  }
+  button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+  .wrap{max-width:880px;margin:0 auto;padding:16px 14px 60px;}
+  .hidden{display:none !important;}
+  ruby{ruby-align:center;}
+  rt{font-size:0.55em;font-weight:700;color:#8a7a6a;user-select:none;}
+
+  .app-header{display:flex;align-items:center;justify-content:space-between;padding:6px 4px 16px;flex-wrap:wrap;gap:8px;}
+  .app-title{font-size:19px;font-weight:800;color:var(--accent-dark);display:flex;align-items:center;gap:8px;line-height:1.6;}
+  .app-title .sub{font-size:11px;color:#888;font-weight:700;display:block;}
+  .badge-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .badge{background:#fff;border-radius:20px;padding:7px 14px;font-weight:800;font-size:13px;box-shadow:0 2px 4px rgba(0,0,0,0.07);display:flex;align-items:center;gap:5px;}
+  .badge.rank{color:#c07a1f;}
+  .badge.score{color:var(--accent-dark);}
+  .badge.total{color:#3d7a5c;}
+
+  .card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(60,40,20,0.08);margin-bottom:16px;}
+  h2.section-title{margin:0 0 10px;font-size:16px;color:#555;font-weight:800;display:flex;align-items:center;gap:6px;}
+  p.lead{font-size:13.5px;color:#666;line-height:2.1;margin:0 0 14px;}
+
+  .era-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;}
+  .era-btn{border:3px solid #e9ddd0;background:#fffaf4;border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;}
+  .era-btn.all{grid-column:1 / -1;border-color:#ffd23f;background:#fffaeb;}
+  .era-btn b{display:block;font-size:14px;color:#333;line-height:1.7;}
+  .era-btn span{display:block;font-size:11px;color:#888;margin-top:4px;}
+  .era-btn:active{transform:scale(0.97);}
+
+  .btn-primary{width:100%;padding:15px;border:none;border-radius:16px;background:var(--accent);color:#fff;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.12);}
+  .btn-primary:active{transform:scale(0.98);}
+  .btn-secondary{width:100%;padding:13px;border:2px solid #e2e8f0;border-radius:16px;background:#fff;color:#666;font-size:14px;font-weight:800;cursor:pointer;margin-top:10px;}
+  .btn-secondary:active{transform:scale(0.98);}
+  .btn-secondary:disabled{opacity:.5;cursor:not-allowed;}
+
+  details.teacher-note{background:#fff8ec;border:2px dashed #e0b878;border-radius:14px;padding:10px 14px;font-size:12.5px;color:#8a6a2a;margin-top:6px;}
+  details.teacher-note summary{cursor:pointer;font-weight:800;}
+  details.teacher-note ul{margin:8px 0 2px;padding-left:18px;line-height:1.7;}
+
+  /* ---- quiz screen ---- */
+  .quiz-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .era-tag{display:inline-block;background:var(--accent);color:#fff;border-radius:10px;padding:4px 12px;font-size:12px;font-weight:800;}
+  .combo-badge{background:#fff3cd;color:#c07a1f;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:800;display:none;align-items:center;gap:3px;animation:comboPop .35s ease;}
+  .combo-badge.show{display:inline-flex;}
+  @keyframes comboPop{0%{transform:scale(0.7);}60%{transform:scale(1.15);}100%{transform:scale(1);}}
+  .q-progress{font-size:13px;font-weight:800;color:#888;}
+
+  .person-icon-box{text-align:center;font-size:52px;margin-bottom:6px;}
+  .hint-list{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .hint-list li{background:var(--accent-soft);border:2px solid #f0d9c5;border-radius:14px;padding:12px 14px;font-size:14.5px;line-height:1.9;color:#5c3a24;display:flex;gap:8px;}
+  .hint-list li .hn{flex:none;font-weight:800;color:var(--accent-dark);}
+  .btn-next-hint{width:100%;padding:12px;border:2px dashed var(--accent);border-radius:14px;background:#fff;color:var(--accent-dark);font-size:13.5px;font-weight:800;cursor:pointer;margin-bottom:14px;}
+  .btn-next-hint:active{transform:scale(0.98);}
+
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .choice-btn{border:3px solid #e9ddd0;background:#fffaf4;border-radius:14px;padding:16px 10px;text-align:center;font-size:15px;font-weight:800;color:#333;cursor:pointer;min-height:56px;display:flex;align-items:center;justify-content:center;}
+  .choice-btn:active{transform:scale(0.97);}
+  .choice-btn.wrong{background:#ffe3e3;border-color:#ff9a9a;color:#b23a3a;opacity:.6;pointer-events:none;text-decoration:line-through;}
+  .choice-btn.correct-flash{animation:correctPop .5s ease;background:#e2f8ec;border-color:#4caf50;}
+  @keyframes correctPop{0%{transform:scale(1);}45%{transform:scale(1.12);}100%{transform:scale(1);}}
+  .choice-btn:disabled{cursor:default;}
+
+  .wrong-toast{
+    margin-top:12px;background:#fff4f4;border:2px solid #ffc9c9;border-radius:14px;
+    padding:12px 14px;font-size:13px;line-height:2;color:#7a4a4a;
+    display:flex;gap:10px;align-items:flex-start;animation:shakeIn .4s ease;
+  }
+  .wrong-toast .wt-icon{font-size:24px;flex:none;}
+  .wrong-toast .close-x{margin-left:auto;background:none;border:none;font-size:16px;color:#c9a0a0;cursor:pointer;flex:none;}
+  @keyframes shakeIn{0%{transform:translateX(-6px);}25%{transform:translateX(6px);}50%{transform:translateX(-4px);}75%{transform:translateX(4px);}100%{transform:translateX(0);}}
+
+  .quit-row{text-align:center;margin-top:16px;}
+  .quit-row button{background:none;border:none;color:#9a8878;font-size:12px;font-weight:800;text-decoration:underline;cursor:pointer;}
+
+  /* ---- feedback modal ---- */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(40,30,20,0.45);display:flex;align-items:flex-end;justify-content:center;z-index:50;}
+  @media(min-width:600px){.modal-backdrop{align-items:center;}}
+  .modal-card{background:#fff;border-radius:22px 22px 0 0;padding:24px 22px 26px;max-width:520px;width:100%;box-shadow:0 -6px 24px rgba(0,0,0,0.18);}
+  @media(min-width:600px){.modal-card{border-radius:22px;}}
+  .modal-card .result-emoji{font-size:44px;text-align:center;margin-bottom:6px;}
+  .modal-card h3{margin:0 0 8px;text-align:center;font-size:19px;color:#8a3a1f;line-height:1.8;}
+  .modal-card .fact-box{background:#fbf5ee;border-radius:14px;padding:14px 16px;font-size:14px;line-height:2.1;color:#444;margin-bottom:14px;}
+  .modal-card .pts{text-align:center;font-weight:800;color:#c07a1f;font-size:13px;margin-bottom:14px;}
+
+  /* ---- result screen ---- */
+  .result-hero{text-align:center;padding:10px 0 18px;}
+  .result-hero .big-emoji{font-size:56px;}
+  .result-hero .rank-name{font-size:22px;font-weight:800;color:var(--accent-dark);margin:6px 0 2px;line-height:1.8;}
+  .result-hero .rank-sub{font-size:12.5px;color:#888;}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+  .stat-box{background:#fbf5ee;border-radius:14px;padding:14px;text-align:center;}
+  .stat-box b{display:block;font-size:22px;color:var(--accent-dark);}
+  .stat-box span{font-size:11.5px;color:#888;line-height:1.8;}
+  .celebrate-banner{background:linear-gradient(90deg,#ffd23f,#ff9f1c);color:#5c3d00;border-radius:14px;padding:12px 14px;text-align:center;font-weight:800;font-size:13.5px;margin-bottom:12px;line-height:1.8;}
+  .celebrate-banner.rankup{background:linear-gradient(90deg,#8ecae6,#5c9fd6);color:#0d3a5c;}
+
+  /* ---- encyclopedia ---- */
+  .people-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  @media(min-width:480px){.people-grid{grid-template-columns:repeat(5,1fr);}}
+  .people-cell{background:#f2eee6;border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;border:2px solid transparent;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+  .people-cell.discovered{background:var(--accent-soft);border-color:#f0d9c5;}
+  .people-cell .pc-icon{font-size:22px;display:block;}
+  .people-cell .pc-name{font-size:10.5px;color:#666;display:block;margin-top:3px;line-height:1.5;}
+  .people-cell .pc-name rt{font-size:0.5em;}
+  .people-cell.discovered .pc-name{color:#5c3a24;font-weight:800;}
+
+  .detail-toast{
+    position:relative;margin-bottom:14px;background:#fff;border-radius:14px;
+    padding:14px 16px;box-shadow:0 4px 14px rgba(0,0,0,0.12);font-size:13px;line-height:2;color:#555;
+    border-left:6px solid #ffb703;display:flex;gap:10px;align-items:flex-start;
+  }
+  .detail-toast .close-x{margin-left:auto;background:none;border:none;font-size:16px;color:#aaa;cursor:pointer;flex:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="app-header">
+    <div class="app-title">🏯 <span class="rb">歴史人物タイムトラベルクイズ</span></div>
+    <div class="badge-row">
+      <div class="badge rank" id="hdr-rank">🔰 -</div>
+      <div class="badge score" id="hdr-progress">0/41</div>
+      <div class="badge total" id="hdr-total">🌟 0点</div>
+    </div>
+  </div>
+
+  <!-- ===== HOME ===== -->
+  <div id="screen-home">
+    <div class="card">
+      <h2 class="section-title">🕰️ <span class="rb">時代をえらんでスタート！</span></h2>
+      <p class="lead rb">ヒントが1つずつ出てくるよ。少ないヒントで当てるほど高得点！わからなければ「つぎのヒント」を見て、選択肢の中から人物を選ぼう。</p>
+      <div class="era-grid" id="era-grid"></div>
+      <button class="btn-secondary rb" id="btn-encyclopedia" style="margin-top:10px;">📖 人物図鑑をひらく（進み具合を見る）</button>
+      <button class="btn-secondary rb" id="btn-review">🔁 苦手な人物を復習する（0人）</button>
+      <details class="teacher-note">
+        <summary>👩‍🏫 先生方へ（活用のヒント）</summary>
+        <ul>
+          <li>時代ごとに問題をしぼれるので、その単元の学習後の振り返りや小テスト前のウォームアップに使えます。</li>
+          <li>ヒントは「時代・立場」→「できごと」→「代表的な作品や逸話」→「ほぼ答えがわかる情報」の順で具体的になっていきます。少ないヒントで正解できるほど高得点になるため、自然と深い知識が問われる設計です。</li>
+          <li>結果画面の「1回で正解できた数」が、その子の実際の定着度の目安になります（何度でも選び直せる仕組みのため、最終的には全問正解になります）。</li>
+          <li>「苦手な人物を復習する」は、これまで間違えた人物だけを集めて出題します。個別最適な復習に活用してください。</li>
+          <li>途中でやめたいときは、クイズ画面の下にある「やめてホームにもどる」から、そこまでの結果を見て終了できます。授業時間に合わせてご活用ください。</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="screen-quiz" class="hidden">
+    <div class="card">
+      <div class="quiz-topbar">
+        <span class="era-tag" id="quiz-era-tag">時代</span>
+        <span class="combo-badge" id="quiz-combo">🔥 x3</span>
+        <span class="q-progress" id="quiz-progress">1 / 10</span>
+      </div>
+      <div class="person-icon-box" id="quiz-icon">❔</div>
+      <ol class="hint-list" id="hint-list"></ol>
+      <button class="btn-next-hint" id="btn-next-hint">👉 つぎのヒントを見る（2/4）</button>
+      <div class="choice-grid" id="choice-grid"></div>
+      <div id="wrong-feedback"></div>
+      <div class="quit-row"><button id="btn-quit" class="rb">やめてホームにもどる</button></div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT ===== -->
+  <div id="screen-result" class="hidden">
+    <div class="card">
+      <div class="result-hero">
+        <div class="big-emoji" id="res-emoji">🏅</div>
+        <div class="rank-name" id="res-rank">称号</div>
+        <div class="rank-sub" id="res-rank-sub">人物図鑑 0/41人</div>
+      </div>
+      <div id="res-banners"></div>
+      <div class="stat-grid">
+        <div class="stat-box"><b id="res-correct">0</b><span class="rb">1回で正解できた数</span></div>
+        <div class="stat-box"><b id="res-score">0</b><span class="rb">今回のスコア</span></div>
+      </div>
+      <button class="btn-primary" id="btn-replay">もういちど同じ時代で挑戦</button>
+      <button class="btn-secondary" id="btn-tohome">ホームにもどる</button>
+    </div>
+  </div>
+
+  <!-- ===== ENCYCLOPEDIA ===== -->
+  <div id="screen-encyclopedia" class="hidden">
+    <div class="card">
+      <h2 class="section-title rb">📖 人物図鑑</h2>
+      <p class="lead rb">正解して出会った人物はここに記録されるよ。タップすると、その人物のミニ知識をもう一度見られるよ。</p>
+      <div id="encyclopedia-detail"></div>
+      <div class="people-grid" id="people-grid"></div>
+      <button class="btn-secondary" id="btn-encyclopedia-back" style="margin-top:14px;">ホームにもどる</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var FURIGANA = {
+"卑弥呼":"ひみこ","仁徳天皇":"にんとくてんのう","ワカタケル大王":"ワカタケルだいおう","大王":"だいおう","古墳":"こふん","古墳時代":"こふんじだい",
+"大仙古墳":"だいせんこふん","前方後円墳":"ぜんぽうこうえんふん","大和朝廷":"やまとちょうてい","世界遺産":"せかいいさん","登録":"とうろく",
+"鉄剣":"てっけん","刻":"きざ","範囲":"はんい","及":"およ","埼玉県":"さいたまけん","熊本県":"くまもとけん","大阪府":"おおさかふ","発見":"はっけん",
+"魏志倭人伝":"ぎしわじんでん","邪馬台国":"やまたいこく","歴史書":"れきししょ","記":"しる","治":"おさ","墓":"はか","率":"ひき",
+"聖徳太子":"しょうとくたいし","小野妹子":"おののいもこ","中大兄皇子":"なかのおおえのおうじ","中臣鎌足":"なかとみのかまたり",
+"聖武天皇":"しょうむてんのう","行基":"ぎょうき","鑑真":"がんじん","藤原道長":"ふじわらのみちなが","紫式部":"むらさきしきぶ","清少納言":"せいしょうなごん",
+"平清盛":"たいらのきよもり","源頼朝":"みなもとのよりとも","源義経":"みなもとのよしつね","北条政子":"ほうじょうまさこ","北条時宗":"ほうじょうときむね",
+"足利義満":"あしかがよしみつ","足利義政":"あしかがよしまさ","雪舟":"せっしゅう","織田信長":"おだのぶなが","豊臣秀吉":"とよとみひでよし","徳川家康":"とくがわいえやす",
+"徳川家光":"とくがわいえみつ","近松門左衛門":"ちかまつもんざえもん","歌川広重":"うたがわひろしげ","本居宣長":"もとおりのりなが","杉田玄白":"すぎたげんぱく",
+"伊能忠敬":"いのうただたか","葛飾北斎":"かつしかほくさい","ペリー":"ペリー","勝海舟":"かつかいしゅう","西郷隆盛":"さいごうたかもり","大久保利通":"おおくぼとしみち",
+"木戸孝允":"きどたかよし","坂本龍馬":"さかもとりょうま","明治天皇":"めいじてんのう","福沢諭吉":"ふくざわゆきち","板垣退助":"いたがきたいすけ",
+"伊藤博文":"いとうひろぶみ","東郷平八郎":"とうごうへいはちろう","野口英世":"のぐちひでよ",
+"縄文":"じょうもん","弥生":"やよい","飛鳥":"あすか","奈良":"なら","平安":"へいあん","鎌倉":"かまくら","室町":"むろまち","戦国":"せんごく",
+"安土桃山":"あづちももやま","江戸":"えど","幕末":"ばくまつ","明治":"めいじ","時代":"じだい",
+"時代区分":"じだいくぶん","歴史":"れきし","人物":"じんぶつ","天皇":"てんのう","皇族":"こうぞく","皇子":"おうじ","将軍":"しょうぐん","幕府":"ばくふ",
+"新米":"しんまい","見習い":"みならい","一人前":"いちにんまえ","名人":"めいじん","達人":"たつじん","研究者":"けんきゅうしゃ","歴史家":"れきしか",
+"図鑑":"ずかん","苦手":"にがて","復習":"ふくしゅう","進み具合":"すすみぐあい","選択肢":"せんたくし","高得点":"こうとくてん","少":"すく",
+"点":"てん","連続":"れんぞく","達成":"たっせい","全問":"ぜんもん","称号":"しょうごう","最大":"さいだい","正解":"せいかい","獲得":"かくとく",
+"問題":"もんだい","問題数":"もんだいすう","今回":"こんかい","挑戦":"ちょうせん","同":"おな","回":"かい","数":"かず","出会":"であ",
+"記録":"きろく","知識":"ちしき","一度":"いちど","当":"あ","見":"み","出":"で","選":"えら","残":"のこ",
+"執権":"しっけん","武士":"ぶし","武将":"ぶしょう","貴族":"きぞく","僧":"そう","画僧":"がそう","女官":"にょかん","女王":"じょおう","女性":"じょせい",
+"学者":"がくしゃ","医学者":"いがくしゃ","蘭学者":"らんがくしゃ","教育者":"きょういくしゃ","思想家":"しそうか","政治家":"せいじか","軍人":"ぐんじん",
+"海軍":"かいぐん","作家":"さっか","浮世絵師":"うきよえし","画家":"がか","劇作家":"げきさっか","国学":"こくがく","蘭学":"らんがく",
+"派遣":"はけん","使者":"ししゃ","遣隋使":"けんずいし","隋":"ずい","唐":"とう","明":"みん","宋":"そう","元":"げん","中国":"ちゅうごく","朝鮮":"ちょうせん",
+"皇帝":"こうてい","天子":"てんし","改革":"かいかく","改新":"かいしん","大化の改新":"たいかのかいしん","蘇我氏":"そがし","即位":"そくい",
+"藤原":"ふじわら","藤原氏":"ふじわらし","摂関政治":"せっかんせいじ","全盛期":"ぜんせいき","和歌":"わか","望月":"もちづき",
+"宮中":"きゅうちゅう","随筆":"ずいひつ","枕草子":"まくらのそうし","源氏物語":"げんじものがたり","光源氏":"ひかるげんじ","長編小説":"ちょうへんしょうせつ",
+"太政大臣":"だじょうだいじん","貿易":"ぼうえき","港":"みなと","大輪田泊":"おおわだのとまり","一族":"いちぞく","滅び":"ほろび","滅ぼ":"ほろぼ",
+"守護":"しゅご","地頭":"じとう","荘園":"しょうえん","幕臣":"ばくしん","御家人":"ごけにん","尼将軍":"あまじょうぐん","出家":"しゅっけ",
+"承久の乱":"じょうきゅうのらん","団結":"だんけつ","服属":"ふくぞく","元寇":"げんこう","襲来":"しゅうらい","神風":"かみかぜ","暴風雨":"ぼうふうう",
+"金閣":"きんかく","銀閣":"ぎんかく","別荘":"べっそう","応仁の乱":"おうにんのらん","書院造":"しょいんづくり","水墨画":"すいぼくが",
+"逸話":"いつわ","伝説":"でんせつ","天下統一":"てんかとういつ","尾張":"おわり","桶狭間の戦い":"おけはざまのたたかい","今川義元":"いまがわよしもと",
+"鉄砲":"てっぽう","長篠の戦い":"ながしののたたかい","明智光秀":"あけちみつひで","本能寺":"ほんのうじ","楽市・楽座":"らくいちらくざ",
+"太閤検地":"たいこうけんち","刀狩":"かたながり","大阪城":"おおさかじょう","関ヶ原の戦い":"せきがはらのたたかい","大名":"だいみょう",
+"参勤交代":"さんきんこうたい","鎖国":"さこく","脚本":"きゃくほん","人形浄瑠璃":"にんぎょうじょうるり","歌舞伎":"かぶき","義理":"ぎり","人情":"にんじょう",
+"庶民":"しょみん","浮世絵":"うきよえ","東海道五十三次":"とうかいどうごじゅうさんつぎ","連作":"れんさく","古事記":"こじき","注釈書":"ちゅうしゃくしょ",
+"古事記伝":"こじきでん","国学":"こくがく","大成":"たいせい","オランダ語":"オランダご","医学書":"いがくしょ","翻訳":"ほんやく","解体新書":"かいたいしんしょ",
+"人体":"じんたい","天文学":"てんもんがく","測量":"そくりょう","測量術":"そくりょうじゅつ","実測":"じっそく","日本地図":"にほんちず",
+"富嶽三十六景":"ふがくさんじゅうろっけい","神奈川沖浪裏":"かながわおきなみうら","富士山":"ふじさん","生涯":"しょうがい",
+"黒船":"くろふね","浦賀":"うらが","開国":"かいこく","日米和親条約":"にちべいわしんじょうやく","来航":"らいこう",
+"軍艦":"ぐんかん","太平洋":"たいへいよう","横断":"おうだん","無血開城":"むけつかいじょう","江戸城":"えどじょう","話し合い":"はなしあい",
+"薩摩藩":"さつまはん","明治維新":"めいじいしん","西南戦争":"せいなんせんそう","上野公園":"うえのこうえん","銅像":"どうぞう",
+"新政府":"しんせいふ","近代化":"きんだいか","富国強兵":"ふこくきょうへい","廃藩置県":"はいはんちけん","暗殺":"あんさつ","幼なじみ":"おさななじみ",
+"長州藩":"ちょうしゅうはん","薩長同盟":"さっちょうどうめい","維新の三傑":"いしんのさんけつ","要職":"ようしょく","志士":"しし",
+"土佐藩":"とさはん","仲立ち":"なかだち","大政奉還":"たいせいほうかん","新婚旅行":"しんこんりょこう","五箇条の御誓文":"ごかじょうのごせいもん",
+"都":"みやこ","東京":"とうきょう","学問のすゝめ":"がくもんのすすめ","慶應義塾":"けいおうぎじゅく","肖像画":"しょうぞうが","一万円札":"いちまんえんさつ",
+"民撰議院設立建白書":"みんせんぎいんせつりつけんぱくしょ","自由民権運動":"じゆうみんけんうんどう","自由党":"じゆうとう","国会":"こっかい",
+"暴漢":"ぼうかん","内閣総理大臣":"ないかくそうりだいじん","初代":"しょだい","ヨーロッパ":"ヨーロッパ","憲法":"けんぽう",
+"大日本帝国憲法":"だいにっぽんていこくけんぽう","韓国統監":"かんこくとうかん","千円札":"せんえんさつ","日露戦争":"にちろせんそう",
+"艦隊":"かんたい","日本海海戦":"にほんかいかいせん","バルチック艦隊":"バルチックかんたい","大金星":"おおきんぼし",
+"細菌":"さいきん","細菌学者":"さいきんがくしゃ","やけど":"やけど","アフリカ":"アフリカ","黄熱病":"おうねつびょう","感染":"かんせん",
+"天は人の上に人を造らず":"てんはひとのうえにひとをつくらず",
+"歴代":"れきだい","偉人":"いじん","業績":"ぎょうせき","功績":"こうせき","貢献":"こうけん","発展":"はってん","活躍":"かつやく","活やく":"かつやく",
+"立場":"たちば","代表":"だいひょう","代表的":"だいひょうてき","作品":"さくひん","建てた":"たてた","著し":"あらわし","著書":"ちょしょ",
+"完成":"かんせい","出版":"しゅっぱん","協力":"きょうりょく","対立":"たいりつ","結んだ":"むすんだ","結び":"むすび","率いて":"ひきいて",
+"退けた":"しりぞけた","支えた":"ささえた","救われた":"すくわれた","最期":"さいご","最後":"さいご","悲劇的":"ひげきてき","苦労":"くろう",
+"人質":"ひとじち","性格":"せいかく","権威":"けんい","権力":"けんりょく","絶頂":"ぜっちょう","負担":"ふたん","統制":"とうせい",
+"世界的":"せかいてき","世界最古":"せかいさいこ","世界最強":"せかいさいきょう","影響":"えいきょう","勝利":"しょうり","感情":"かんじょう",
+"自然":"しぜん","表現":"ひょうげん","絶大":"ぜつだい","人気":"にんき","才能":"さいのう","出世":"しゅっせ","身分":"みぶん","低い":"ひくい",
+"心構え":"こころがまえ","制度":"せいど","冠位十二階":"かんいじゅうにかい","十七条の憲法":"じゅうしちじょうのけんぽう",
+"和を以て貴しとなす":"わをもってとうとしとなす","水時計":"みずどけい","時刻":"じこく",
+"金銅":"こんどう","仏像":"ぶつぞう","東大寺":"とうだいじ","大仏":"だいぶつ","位":"くらい","大僧正":"だいそうじょう","布教":"ふきょう",
+"航海":"こうかい","失敗":"しっぱい","失明":"しつめい","唐招提寺":"とうしょうだいじ",
+"実権":"じっけん","恩":"おん","演説":"えんぜつ","一族":"いちぞく"
+};
+var FURIGANA_KEYS = Object.keys(FURIGANA).map(function(k){ return {key:k, len:Array.from(k).length, reading:FURIGANA[k]}; }).sort(function(a,b){return b.len-a.len;});
+
+function escapeHtml(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function toRuby(text){
+  var chars = Array.from(String(text));
+  var out = "";
+  var i = 0;
+  while(i < chars.length){
+    var matched = false;
+    for(var k=0;k<FURIGANA_KEYS.length;k++){
+      var item = FURIGANA_KEYS[k];
+      if(chars.slice(i,i+item.len).join("")===item.key){
+        out += "<ruby>"+escapeHtml(item.key)+"<rt>"+escapeHtml(item.reading)+"</rt></ruby>";
+        i += item.len;
+        matched = true;
+        break;
+      }
+    }
+    if(!matched){
+      out += escapeHtml(chars[i]);
+      i++;
+    }
+  }
+  return out;
+}
+
+var ERA_ORDER = ["弥生・古墳時代","飛鳥時代","奈良時代","平安時代","鎌倉時代","室町時代","戦国・安土桃山時代","江戸時代","幕末・明治時代"];
+var ERA_COLOR = {
+  "弥生・古墳時代":"#bdb2ff","飛鳥時代":"#a8dadc","奈良時代":"#caffbf","平安時代":"#ffc6ff",
+  "鎌倉時代":"#8ecae6","室町時代":"#fdffb6","戦国・安土桃山時代":"#ff9a9a","江戸時代":"#ffd6a5","幕末・明治時代":"#9adbb0"
+};
+
+var PEOPLE = [
+{id:"himiko",name:"卑弥呼",era:"弥生・古墳時代",icon:"🔮",
+ hints:["今から1800年ほど前、日本にあった小さな国々をまとめていた女王だよ。","「魏志倭人伝」という中国の古い歴史書に、その名前が記されているよ。","まじないやうらないの力で人々の心をまとめていたと言われているよ。","「邪馬台国」という国を治めていた女王として知られているよ。"],
+ fact:"卑弥呼のお墓がどこにあるかは、実はまだはっきりとは分かっていないんだよ。"},
+{id:"nintoku",name:"仁徳天皇",era:"弥生・古墳時代",icon:"⛰️",
+ hints:["古墳時代に、大和朝廷の中心にいたと伝えられる天皇だよ。","大阪府にある、日本一大きな前方後円墳にほうむられたと伝えられているよ。","そのお墓は「大仙古墳」と呼ばれ、世界遺産にも登録されているよ。","日本最大の古墳「大仙古墳」の主と伝えられる天皇だよ。"],
+ fact:"大仙古墳は、エジプトのピラミッドや秦の始皇帝陵とならぶ世界最大級のお墓なんだよ。"},
+{id:"wakatakeru",name:"ワカタケル大王",era:"弥生・古墳時代",icon:"🗡️",
+ hints:["古墳時代に、大和朝廷を率いていたと考えられる王だよ。","埼玉県と熊本県の古墳から出た鉄の刀に、その名前が刻まれていたよ。","はなれた場所の古墳から同じ名前が見つかり、大和朝廷の力が広い範囲に及んでいたと分かったよ。","鉄剣に名が刻まれていたことで知られる、大和朝廷の大王だよ。"],
+ fact:"埼玉と熊本という遠く離れた場所で同じ名前が見つかったことが、大きな発見になったよ。"},
+{id:"shotoku",name:"聖徳太子",era:"飛鳥時代",icon:"👑",
+ hints:["飛鳥時代に、天皇に代わって国の政治を助けた皇族だよ。","家がらではなく能力で役人を取り立てる「冠位十二階」を定めたよ。","役人の心構えを示す「十七条の憲法」を作ったことでも知られているよ。","「和を以て貴しとなす」という言葉で始まる憲法を定めた人物だよ。"],
+ fact:"一度に何人もの人の話を同時に聞き分けられたという伝説も残っているよ。"},
+{id:"ononoimoko",name:"小野妹子",era:"飛鳥時代",icon:"📜",
+ hints:["聖徳太子の時代に、中国へ派遣された使者だよ。","「遣隋使」として、当時の中国の国「隋」に送られたよ。","隋の皇帝に「日出づる処の天子」から始まる手紙を届けたよ。","遣隋使として2度も海をわたり、中国の進んだ制度や文化を持ち帰った人物だよ。"],
+ fact:"名前に「子」がつくけれど、実は男性だと考えられているよ。"},
+{id:"nakanooe",name:"中大兄皇子",era:"飛鳥時代",icon:"⚔️",
+ hints:["飛鳥時代に、大きな政治改革を行った皇族だよ。","中臣鎌足とともに、勢力をふるっていた蘇我氏をたおしたよ。","この人物が中心となって行った改革は「大化の改新」と呼ばれているよ。","のちに即位して天智天皇となった人物だよ。"],
+ fact:"日本で初めて水時計をつくらせ、時刻を人々に知らせたとも言われているよ。"},
+{id:"nakatomi",name:"中臣鎌足",era:"飛鳥時代",icon:"⚔️",
+ hints:["中大兄皇子とともに大きな政治改革を進めた人物だよ。","蘇我氏をたおす計画を、中大兄皇子と一緒に立てたよ。","のちに天皇から「藤原」の姓をあたえられたよ。","藤原氏の祖先として知られる、大化の改新の立役者だよ。"],
+ fact:"この人物の子孫である藤原氏は、その後何百年も朝廷で大きな力を持ち続けたよ。"},
+{id:"shomu",name:"聖武天皇",era:"奈良時代",icon:"👑",
+ hints:["奈良時代に国を治めていた天皇だよ。","病気や災害の多い世の中を、仏の力でしずめようとしたよ。","都に大きな寺を建て、金銅の大きな仏像を作らせたよ。","東大寺と、その中にある大仏をつくらせた天皇だよ。"],
+ fact:"大仏づくりには、のべ260万人もの人が関わったと伝えられているよ。"},
+{id:"gyoki",name:"行基",era:"奈良時代",icon:"⛩️",
+ hints:["奈良時代に活やくした、仏教の教えを広めた僧だよ。","橋や池、道をつくるなど、人々のために社会事業を行ったよ。","はじめは朝廷から布教を禁じられていたが、のちに認められたよ。","東大寺の大仏づくりに協力し、位の高い僧「大僧正」になった人物だよ。"],
+ fact:"各地を歩いて教えを説きながら、橋や用水路づくりも指導したと言われているよ。"},
+{id:"ganjin",name:"鑑真",era:"奈良時代",icon:"⛩️",
+ hints:["奈良時代に、中国から日本へやってきた僧だよ。","何度も航海に失敗し、そのたびに目が見えなくなっていったよ。","5度の失敗をこえて、6度目にようやく日本にたどり着いたよ。","唐招提寺を開き、正しい仏教の教えを日本に伝えた中国出身の僧だよ。"],
+ fact:"日本にたどり着いたときには、失明してしまっていたと伝えられているよ。"},
+{id:"michinaga",name:"藤原道長",era:"平安時代",icon:"👑",
+ hints:["平安時代に、朝廷でもっとも大きな力を持っていた貴族だよ。","自分のむすめたちを天皇のきさきにして勢力を強めたよ。","「この世をば わが世とぞ思ふ 望月の…」という和歌を詠んだよ。","藤原氏の全盛期を築いた、摂関政治の中心人物だよ。"],
+ fact:"満月にたとえて自分の権力の絶頂を詠んだ和歌が今も伝わっているよ。"},
+{id:"murasaki",name:"紫式部",era:"平安時代",icon:"📜",
+ hints:["平安時代に活やくした、女性の作家だよ。","藤原道長の娘に仕える女官として宮中で働いていたよ。","光源氏を主人公とする長い物語を書いたよ。","「源氏物語」を書いたことで知られる女性作家だよ。"],
+ fact:"「源氏物語」は世界最古の長編小説のひとつともいわれているよ。"},
+{id:"seishonagon",name:"清少納言",era:"平安時代",icon:"📜",
+ hints:["紫式部と同じ平安時代に活やくした、女性の作家だよ。","天皇のきさきに仕える女官として宮中で働いていたよ。","「春はあけぼの」という一文で始まる作品を書いたよ。","随筆「枕草子」を書いたことで知られる女性作家だよ。"],
+ fact:"紫式部とはライバル関係にあったとも言われているよ。"},
+{id:"kiyomori",name:"平清盛",era:"平安時代",icon:"⚔️",
+ hints:["平安時代の終わりごろ、初めて武士として大きな力を持った人物だよ。","武士として初めて朝廷の最高の位である太政大臣になったよ。","中国(宋)との貿易を盛んにするため、港を整備したよ。","平氏一族の全盛期を築いたが、のちに源氏との戦いで平氏は滅びたよ。"],
+ fact:"兵庫の港(大輪田泊)を整えて、中国との貿易をさかんにしたよ。"},
+{id:"yoritomo",name:"源頼朝",era:"鎌倉時代",icon:"⚔️",
+ hints:["平氏をたおし、新しい武士の政治のしくみをつくった人物だよ。","弟の源義経らを送って平氏を滅ぼしたよ。","国ごとに守護、荘園ごとに地頭という役職を置いたよ。","鎌倉に幕府を開き、初代将軍となった人物だよ。"],
+ fact:"妻の北条政子は、頼朝の死後も幕府を支え続けたよ。"},
+{id:"yoshitsune",name:"源義経",era:"鎌倉時代",icon:"⚔️",
+ hints:["源頼朝の弟で、すぐれた戦のうまさで知られる武将だよ。","一の谷や壇ノ浦などの戦いで、平氏を打ち破ったよ。","平氏を滅ぼす大きな手がらを立てたが、兄と対立してしまったよ。","最後は奥州(東北)へ逃れ、兄・頼朝に追いつめられて亡くなった武将だよ。"],
+ fact:"悲劇的な最期から、今も多くの物語やドラマの主人公になっているよ。"},
+{id:"masako",name:"北条政子",era:"鎌倉時代",icon:"👑",
+ hints:["源頼朝の妻で、鎌倉幕府を支えた女性だよ。","頼朝の死後も、幕府の実権をにぎり続けたよ。","「尼将軍」と呼ばれ、御家人たちに頼朝の恩を説いて団結をうながしたよ。","承久の乱の際、御家人たちを一つにまとめる演説をしたことで知られる女性だよ。"],
+ fact:"出家して尼になっていたことから「尼将軍」と呼ばれたよ。"},
+{id:"tokimune",name:"北条時宗",era:"鎌倉時代",icon:"⚔️",
+ hints:["鎌倉幕府の8代目の執権だよ。","中国大陸を支配していた元(モンゴル帝国)からの服属要求を拒んだよ。","2度にわたる元軍の襲来を、御家人たちを率いて防いだよ。","「元寇」を退けたことで知られる鎌倉幕府の執権だよ。"],
+ fact:"2度目の襲来では、暴風雨(のちに「神風」と呼ばれた)も味方したと言われているよ。"},
+{id:"yoshimitsu",name:"足利義満",era:"室町時代",icon:"👑",
+ hints:["室町幕府の3代目の将軍だよ。","京都の北山に、金色にかがやく別荘を建てたよ。","中国(明)との貿易を始め、幕府の力を強めたよ。","金閣(金閣寺)を建てたことで知られる室町幕府3代将軍だよ。"],
+ fact:"明との貿易では「日本国王」と名乗って正式な国交を結んだよ。"},
+{id:"yoshimasa",name:"足利義政",era:"室町時代",icon:"👑",
+ hints:["室町幕府の8代目の将軍だよ。","京都の東山に、静かなおもむきの別荘を建てたよ。","あとつぎ争いなどがきっかけで、「応仁の乱」という大きな戦乱が起きたよ。","銀閣(銀閣寺)を建てたことで知られる室町幕府8代将軍だよ。"],
+ fact:"銀閣とともに、書院造という今の和室のもとになる建築様式も広まったよ。"},
+{id:"sesshu",name:"雪舟",era:"室町時代",icon:"🎨",
+ hints:["室町時代に活やくした、絵をかく僧だよ。","中国(明)にわたって、絵の技術をさらに学んだよ。","墨一色で自然を表現する「水墨画」の名人として知られているよ。","日本の水墨画を大きく発展させた、画僧として有名な人物だよ。"],
+ fact:"小さいころ、涙で足のゆびを使ってねずみの絵をかいたという逸話が伝わっているよ。"},
+{id:"nobunaga",name:"織田信長",era:"戦国・安土桃山時代",icon:"⚔️",
+ hints:["戦国時代に天下統一を目指した、尾張(愛知県)出身の武将だよ。","桶狭間の戦いで、少ない兵で今川義元の大軍を破ったよ。","鉄砲を効果的に使った長篠の戦いでも有名だよ。","天下統一を目前にしながら、家来の明智光秀にそむかれて本能寺で亡くなった武将だよ。"],
+ fact:"商工業を発展させるため、「楽市・楽座」という自由な商売を認める政策も行ったよ。"},
+{id:"hideyoshi",name:"豊臣秀吉",era:"戦国・安土桃山時代",icon:"⚔️",
+ hints:["織田信長の家来から、天下統一をなしとげた武将だよ。","もとは低い身分の出身だったが、才能を認められて出世したよ。","全国の田畑を調べる「太閤検地」や、農民から武器を取り上げる「刀狩」を行ったよ。","大阪城を築き、天下統一をなしとげた戦国武将だよ。"],
+ fact:"2度にわたって朝鮮半島へ大軍を送ったが、うまくいかなかったよ。"},
+{id:"ieyasu",name:"徳川家康",era:"戦国・安土桃山時代",icon:"⚔️",
+ hints:["戦国時代の終わりに天下を統一し、長く続く幕府を開いた武将だよ。","関ヶ原の戦いで対立する大名たちを打ち破ったよ。","「鳴かぬなら 鳴くまで待とう ほととぎす」にたとえられる、がまん強い性格でも知られるよ。","江戸に幕府を開き、260年余り続く江戸時代の基礎を築いた人物だよ。"],
+ fact:"幼いころは今川氏のもとで人質として過ごすなど、苦労の多い前半生を送ったよ。"},
+{id:"iemitsu",name:"徳川家光",era:"江戸時代",icon:"⚔️",
+ hints:["江戸幕府の3代目の将軍だよ。","大名を統制するため、1年おきに江戸と領地を行き来させる制度を整えたよ。","この制度は「参勤交代」と呼ばれ、大名にとって大きな負担になったよ。","鎖国の体制を完成させた、江戸幕府3代将軍だよ。"],
+ fact:"「生まれながらの将軍」と自ら名乗り、将軍の権威を大名たちに示したよ。"},
+{id:"chikamatsu",name:"近松門左衛門",era:"江戸時代",icon:"🎭",
+ hints:["江戸時代に活やくした、劇の脚本を書く作者だよ。","人形浄瑠璃や歌舞伎の台本を数多く書いたよ。","「曽根崎心中」など、義理と人情のはざまで苦しむ人々をえがいたよ。","「曽根崎心中」などの作品で知られる、江戸時代を代表する劇作家だよ。"],
+ fact:"生きた人間のような自然な感情を表現し、庶民から絶大な人気を集めたよ。"},
+{id:"hiroshige",name:"歌川広重",era:"江戸時代",icon:"🎨",
+ hints:["江戸時代後期に活やくした、浮世絵師だよ。","江戸から京都までの道の風景を描いたシリーズ作品で人気を集めたよ。","「東海道五十三次」という浮世絵の連作で知られているよ。","東海道の風景画で有名な浮世絵師で、ゴッホなど海外の画家にも影響をあたえたよ。"],
+ fact:"この人の浮世絵は、遠くヨーロッパの画家たちにも大きな影響をあたえたよ。"},
+{id:"norinaga",name:"本居宣長",era:"江戸時代",icon:"📜",
+ hints:["江戸時代に活やくした、日本古来の文化を研究する学者だよ。","「古事記」を長い年月をかけて研究し、注釈書を書き上げたよ。","中国から伝わった学問ではなく、日本古来の心を明らかにしようとしたよ。","「古事記伝」を著し、国学を大成させた学者だよ。"],
+ fact:"「古事記伝」を完成させるまでに、なんと35年もの年月をかけたよ。"},
+{id:"genpaku",name:"杉田玄白",era:"江戸時代",icon:"🔬",
+ hints:["江戸時代に活やくした、医学を学ぶ蘭学者だよ。","オランダ語の医学書を、仲間と協力して日本語に翻訳したよ。","人体の仕組みをくわしく描いたその翻訳書は「解体新書」と名づけられたよ。","「解体新書」を出版し、日本の西洋医学の発展に大きく貢献した人物だよ。"],
+ fact:"オランダ語の辞書もろくにない中、仲間と何年もかけて翻訳を完成させたよ。"},
+{id:"tadataka",name:"伊能忠敬",era:"江戸時代",icon:"🗺️",
+ hints:["江戸時代に活やくした、日本地図をつくった人物だよ。","50歳を過ぎてから天文学や測量術を学び始めたよ。","自分の足で歩いて日本全国を測量してまわったよ。","日本で初めての実測による正確な日本地図をつくった人物だよ。"],
+ fact:"地図が完成したのは、この人が亡くなった3年後のことだったよ。"},
+{id:"hokusai",name:"葛飾北斎",era:"江戸時代",icon:"🎨",
+ hints:["江戸時代を代表する、浮世絵師だよ。","富士山をさまざまな場所やアングルから描いたシリーズ作品を残したよ。","大きな波を描いた作品は「神奈川沖浪裏」として世界的に有名だよ。","「富嶽三十六景」で知られる、世界的にも有名な浮世絵師だよ。"],
+ fact:"生涯に3万点以上の作品を残し、90歳で亡くなるまで絵を描き続けたよ。"},
+{id:"perry",name:"ペリー",era:"江戸時代",icon:"🚢",
+ hints:["江戸時代の終わりごろ、日本にやってきたアメリカの軍人だよ。","大きな黒い船に乗って、浦賀(神奈川県)に現れたよ。","「黒船」と呼ばれたその船は、人々を大きく驚かせたよ。","日本に開国をせまり、日米和親条約を結ばせたアメリカの人物だよ。"],
+ fact:"「黒船来航」は、その後の江戸幕府がたおれる大きなきっかけのひとつになったよ。"},
+{id:"kaishu",name:"勝海舟",era:"幕末・明治時代",icon:"⚓",
+ hints:["幕末に活やくした、幕府の軍艦の指揮を任された人物だよ。","日本人として初めて太平洋を横断する船の指揮をとったよ。","江戸城が戦場にならずに明治新政府に引きわたされる話し合いをまとめたよ。","西郷隆盛と話し合い、江戸城の無血開城を実現させた幕臣だよ。"],
+ fact:"この話し合いのおかげで、江戸の町は戦火から救われたと言われているよ。"},
+{id:"saigo",name:"西郷隆盛",era:"幕末・明治時代",icon:"⚔️",
+ hints:["薩摩藩(鹿児島県)出身で、明治維新の中心人物のひとりだよ。","勝海舟と話し合い、江戸城を戦わずに明け渡させることに成功したよ。","新政府の中心となって活やくしたが、のちに政府と対立したよ。","西南戦争を起こし、最後は鹿児島で亡くなった明治維新の中心人物だよ。"],
+ fact:"上野公園にある犬を連れた銅像は、この人物の姿として親しまれているよ。"},
+{id:"okubo",name:"大久保利通",era:"幕末・明治時代",icon:"🏛️",
+ hints:["西郷隆盛と同じ薩摩藩出身で、明治維新を進めた政治家だよ。","明治新政府の中心となり、近代化の政策を強力に進めたよ。","藩をなくして県を置く「廃藩置県」を実現させたよ。","明治政府の中心人物として富国強兵を進めたが、暗殺されて亡くなった政治家だよ。"],
+ fact:"幼なじみだった西郷隆盛とは、のちに政治の方針をめぐって対立してしまったよ。"},
+{id:"kido",name:"木戸孝允",era:"幕末・明治時代",icon:"🏛️",
+ hints:["長州藩(山口県)出身で、明治維新の中心人物のひとりだよ。","対立していた薩摩藩と長州藩を結びつける同盟に力を尽くしたよ。","西郷隆盛・大久保利通とともに「維新の三傑」と呼ばれているよ。","薩長同盟の実現に貢献し、明治新政府でも要職を務めた政治家だよ。"],
+ fact:"桂小五郎という名前でも活動していた、幕末を代表する志士だよ。"},
+{id:"ryoma",name:"坂本龍馬",era:"幕末・明治時代",icon:"⚔️",
+ hints:["土佐藩(高知県)出身の、幕末に活やくした志士だよ。","対立していた薩摩藩と長州藩の同盟を仲立ちしたよ。","江戸幕府が政権を朝廷に返す「大政奉還」の実現にも力を尽くしたよ。","薩長同盟の仲立ちをしたが、新しい時代を見ないまま暗殺された志士だよ。"],
+ fact:"日本で初めて新婚旅行をした人物としても知られているよ。"},
+{id:"meiji",name:"明治天皇",era:"幕末・明治時代",icon:"👑",
+ hints:["明治時代の日本を治めた天皇だよ。","この天皇の名前が、そのまま時代の名前になっているよ。","新しい政治の方針を示す「五箇条の御誓文」が出されたときの天皇だよ。","江戸から東京へ都を移し、近代化を進めた明治時代の天皇だよ。"],
+ fact:"この天皇の時代に、日本は大きく近代化して世界の国々に肩を並べていったよ。"},
+{id:"fukuzawa",name:"福沢諭吉",era:"幕末・明治時代",icon:"📜",
+ hints:["明治時代に活やくした、教育者であり思想家だよ。","「天は人の上に人を造らず 人の下に人を造らずと言えり」という言葉で知られているよ。","慶應義塾という学校を開いたよ。","「学問のすゝめ」を著し、慶應義塾を開いた明治の教育者だよ。"],
+ fact:"一万円札の肖像画に長く使われていたことでも有名だよ。"},
+{id:"itagaki",name:"板垣退助",era:"幕末・明治時代",icon:"🏛️",
+ hints:["明治時代に、国民の意見を政治に反映させる運動を進めた政治家だよ。","「民撰議院設立建白書」を政府に提出し、国会を開くよう求めたよ。","この運動は「自由民権運動」と呼ばれ、全国に広まっていったよ。","自由民権運動の中心人物で、日本最初の政党「自由党」をつくった政治家だよ。"],
+ fact:"暴漢におそわれた際に「板垣死すとも自由は死せず」と言ったという話が伝わっているよ。"},
+{id:"ito",name:"伊藤博文",era:"幕末・明治時代",icon:"🏛️",
+ hints:["明治時代に活やくした、日本の初代内閣総理大臣だよ。","ヨーロッパにわたり、憲法について学んで帰国したよ。","この人物が中心となって、大日本帝国憲法がつくられたよ。","日本の初代内閣総理大臣で、初代韓国統監も務めた政治家だよ。"],
+ fact:"千円札の肖像画に長く使われていたことでも知られているよ。"},
+{id:"togo",name:"東郷平八郎",era:"幕末・明治時代",icon:"⚓",
+ hints:["明治時代に活やくした、日本の海軍の指揮官だよ。","日露戦争で、ロシアの強力な艦隊を相手に戦ったよ。","日本海海戦で、ロシアのバルチック艦隊をほぼ全滅させたよ。","日本海海戦の勝利で世界に名をとどろかせた、日本の海軍軍人だよ。"],
+ fact:"この勝利は、当時世界最強といわれたロシア艦隊を破った大金星だったよ。"},
+{id:"noguchi",name:"野口英世",era:"幕末・明治時代",icon:"🔬",
+ hints:["明治から大正時代にかけて活やくした、細菌を研究する医学者だよ。","幼いころ、やけどで左手に大きなけがを負ったよ。","アフリカで黄熱病の研究をしている最中に、自らも感染して亡くなったよ。","黄熱病などの研究に生涯をささげた、世界的に有名な細菌学者だよ。"],
+ fact:"千円札の肖像画に使われていることでも知られているよ。"}
+];
+var PEOPLE_BY_ID = {};
+PEOPLE.forEach(function(p){ PEOPLE_BY_ID[p.id]=p; });
+var TOTAL_PEOPLE = PEOPLE.length;
+
+var RANKS = [
+ {min:0,name:"新米歴史家",emoji:"🔰"},
+ {min:9,name:"見習い研究者",emoji:"🧭"},
+ {min:18,name:"一人前の歴史家",emoji:"📚"},
+ {min:27,name:"名人研究者",emoji:"🏅"},
+ {min:36,name:"達人歴史家",emoji:"👑"},
+ {min:43,name:"歴史マイスター",emoji:"🏆"}
+];
+function rankFor(count){
+  var r = RANKS[0];
+  for(var i=0;i<RANKS.length;i++){ if(count>=RANKS[i].min) r=RANKS[i]; }
+  return r;
+}
+
+var discovered = new Set(JSON.parse(localStorage.getItem("history_discovered")||"[]"));
+var totalScore = parseInt(localStorage.getItem("history_score")||"0",10);
+var weakPeople = new Set(JSON.parse(localStorage.getItem("history_weak")||"[]"));
+
+function saveProgress(){
+  localStorage.setItem("history_discovered", JSON.stringify(Array.from(discovered)));
+  localStorage.setItem("history_score", String(totalScore));
+  localStorage.setItem("history_weak", JSON.stringify(Array.from(weakPeople)));
+}
+
+function updateHeader(){
+  var r = rankFor(discovered.size);
+  document.getElementById("hdr-rank").innerHTML = r.emoji+" "+toRuby(r.name);
+  document.getElementById("hdr-progress").innerHTML = toRuby(discovered.size+"/"+TOTAL_PEOPLE+"人");
+  document.getElementById("hdr-total").innerHTML = "🌟 "+toRuby(totalScore+"点");
+  updateReviewButton();
+}
+
+function updateReviewButton(){
+  var btn = document.getElementById("btn-review");
+  if(!btn) return;
+  var n = weakPeople.size;
+  btn.innerHTML = toRuby("🔁 苦手な人物を復習する（"+n+"人）");
+  btn.disabled = (n===0);
+  btn.style.opacity = (n===0) ? "0.5" : "1";
+}
+
+document.querySelectorAll(".rb").forEach(function(el){
+  el.innerHTML = toRuby(el.textContent);
+});
+
+/* ---------------- screens ---------------- */
+var screens = ["home","quiz","result","encyclopedia"];
+function showScreen(name){
+  screens.forEach(function(s){
+    document.getElementById("screen-"+s).classList.toggle("hidden", s!==name);
+  });
+}
+
+/* ---- home / era picker ---- */
+function buildEraGrid(){
+  var grid = document.getElementById("era-grid");
+  grid.innerHTML = "";
+  var allBtn = document.createElement("button");
+  allBtn.className = "era-btn all";
+  allBtn.innerHTML = "<b>🌏 "+toRuby("全時代からランダム")+"</b><span>"+toRuby("15問チャレンジ")+"</span>";
+  allBtn.addEventListener("click", function(){ startQuiz("ALL"); });
+  grid.appendChild(allBtn);
+  ERA_ORDER.forEach(function(era){
+    var count = PEOPLE.filter(function(p){return p.era===era;}).length;
+    var btn = document.createElement("button");
+    btn.className = "era-btn";
+    btn.style.borderColor = ERA_COLOR[era];
+    btn.innerHTML = "<b>"+toRuby(era)+"</b><span>"+count+toRuby("問")+"</span>";
+    btn.addEventListener("click", function(){ startQuiz(era); });
+    grid.appendChild(btn);
+  });
+}
+buildEraGrid();
+
+document.getElementById("btn-encyclopedia").addEventListener("click", function(){ openEncyclopedia(); });
+document.getElementById("btn-encyclopedia-back").addEventListener("click", function(){ showScreen("home"); updateHeader(); });
+document.getElementById("btn-review").addEventListener("click", function(){
+  if(weakPeople.size===0) return;
+  startQuiz("WEAK");
+});
+
+function openEncyclopedia(){
+  showScreen("encyclopedia");
+  var grid = document.getElementById("people-grid");
+  grid.innerHTML = "";
+  document.getElementById("encyclopedia-detail").innerHTML = "";
+  PEOPLE.forEach(function(p){
+    var cell = document.createElement("div");
+    var isKnown = discovered.has(p.id);
+    cell.className = "people-cell"+(isKnown?" discovered":"");
+    cell.innerHTML = "<span class='pc-icon'>"+(isKnown?p.icon:"❔")+"</span><span class='pc-name'>"+(isKnown?toRuby(p.name):"？？？")+"</span>";
+    cell.addEventListener("click", function(){
+      var box = document.getElementById("encyclopedia-detail");
+      if(isKnown){
+        box.innerHTML = "<div class='detail-toast'><div>"+p.icon+"</div><div><b>"+toRuby(p.name)+"</b>（"+toRuby(p.era)+"）<br>"+toRuby(p.fact)+"</div><button class='close-x'>✕</button></div>";
+      } else {
+        box.innerHTML = "<div class='detail-toast'><div>❔</div><div>"+toRuby("まだ出会っていない人物だよ。クイズに挑戦して見つけよう！")+"</div><button class='close-x'>✕</button></div>";
+      }
+      box.querySelector(".close-x").addEventListener("click", function(){ box.innerHTML=""; });
+      box.scrollIntoView({behavior:"auto", block:"start"});
+    });
+    grid.appendChild(cell);
+  });
+}
+
+/* ---- quiz state ---- */
+var quiz = null;
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
+  return a;
+}
+
+function startQuiz(eraFilter){
+  var pool;
+  if(eraFilter==="ALL"){
+    pool = shuffle(PEOPLE).slice(0,15);
+  } else if(eraFilter==="WEAK"){
+    pool = shuffle(Array.from(weakPeople).map(function(id){ return PEOPLE_BY_ID[id]; }));
+  } else {
+    pool = shuffle(PEOPLE.filter(function(p){ return p.era===eraFilter; }));
+  }
+  quiz = {eraFilter:eraFilter, list:pool, idx:0, correctCount:0, firstTryCount:0, answeredCount:0, score:0, wrongAttempts:0, hintLevel:1, groups:null,
+    streak:0, bestStreak:0, perfect:true, rankAtStart:rankFor(discovered.size).name};
+  showScreen("quiz");
+  renderQuestion();
+}
+
+function currentP(){ return quiz.list[quiz.idx]; }
+
+function updateComboBadge(){
+  var el = document.getElementById("quiz-combo");
+  if(quiz.streak>=2){
+    el.innerHTML = "🔥 "+quiz.streak+toRuby("連続");
+    el.classList.add("show");
+  } else {
+    el.classList.remove("show");
+  }
+}
+
+function buildChoices(person){
+  var samEra = PEOPLE.filter(function(p){ return p.era===person.era && p.id!==person.id; });
+  var pool = shuffle(samEra);
+  var distractors = pool.slice(0,3);
+  if(distractors.length<3){
+    var others = shuffle(PEOPLE.filter(function(p){ return p.id!==person.id && distractors.indexOf(p)===-1; }));
+    distractors = distractors.concat(others.slice(0,3-distractors.length));
+  }
+  return shuffle([person].concat(distractors));
+}
+
+function renderQuestion(){
+  quiz.wrongAttempts = 0;
+  quiz.hintLevel = 1;
+  var p = currentP();
+  var tag = document.getElementById("quiz-era-tag");
+  tag.innerHTML = toRuby("？？？時代");
+  document.getElementById("quiz-progress").textContent = (quiz.idx+1)+" / "+quiz.list.length;
+  document.getElementById("quiz-icon").textContent = "❔";
+  document.getElementById("wrong-feedback").innerHTML = "";
+  updateComboBadge();
+  renderHints();
+  renderChoices();
+}
+
+function renderHints(){
+  var p = currentP();
+  var list = document.getElementById("hint-list");
+  list.innerHTML = "";
+  for(var i=0;i<quiz.hintLevel;i++){
+    var li = document.createElement("li");
+    li.innerHTML = "<span class='hn'>ヒント"+(i+1)+"</span><span>"+toRuby(p.hints[i])+"</span>";
+    list.appendChild(li);
+  }
+  var btn = document.getElementById("btn-next-hint");
+  if(quiz.hintLevel>=p.hints.length){
+    btn.classList.add("hidden");
+  } else {
+    btn.classList.remove("hidden");
+    btn.innerHTML = "👉 "+toRuby("つぎのヒントを見る")+"（"+(quiz.hintLevel+1)+"/"+p.hints.length+"）";
+  }
+}
+
+document.getElementById("btn-next-hint").addEventListener("click", function(){
+  var p = currentP();
+  if(quiz.hintLevel<p.hints.length){
+    quiz.hintLevel++;
+    renderHints();
+  }
+});
+
+function renderChoices(){
+  var p = currentP();
+  var choices = buildChoices(p);
+  var grid = document.getElementById("choice-grid");
+  grid.innerHTML = "";
+  choices.forEach(function(c){
+    var btn = document.createElement("button");
+    btn.className = "choice-btn";
+    btn.innerHTML = toRuby(c.name);
+    btn.addEventListener("click", function(){ onChoiceClick(c.id, btn); });
+    grid.appendChild(btn);
+  });
+}
+
+function onChoiceClick(id, btnEl){
+  var p = currentP();
+  if(id === p.id){
+    discovered.add(id);
+    var base;
+    if(quiz.wrongAttempts>0){
+      base = 5; quiz.streak = 0; quiz.perfect = false;
+    } else if(quiz.hintLevel>1){
+      base = 8; quiz.streak++; quiz.perfect = false;
+    } else {
+      base = 10; quiz.streak++;
+    }
+    quiz.bestStreak = Math.max(quiz.bestStreak, quiz.streak);
+    var comboBonus = (quiz.streak>0 && quiz.streak%3===0) ? 5 : 0;
+    var pts = base + comboBonus;
+    quiz.score += pts;
+    totalScore += pts;
+    quiz.correctCount++;
+    quiz.answeredCount++;
+    if(quiz.wrongAttempts===0){
+      quiz.firstTryCount++;
+      weakPeople.delete(id);
+    }
+    document.getElementById("quiz-icon").textContent = p.icon;
+    document.getElementById("quiz-era-tag").innerHTML = toRuby(p.era);
+    btnEl.classList.add("correct-flash");
+    updateComboBadge();
+    saveProgress();
+    updateHeader();
+    showAnswerModal(pts, base, comboBonus);
+  } else {
+    quiz.wrongAttempts++;
+    weakPeople.add(p.id);
+    saveProgress();
+    updateReviewButton();
+    btnEl.classList.add("wrong");
+    btnEl.disabled = true;
+    showWrongFeedback(id);
+    if(quiz.hintLevel<p.hints.length){
+      quiz.hintLevel++;
+      renderHints();
+    }
+  }
+}
+
+function showWrongFeedback(wrongId){
+  var w = PEOPLE_BY_ID[wrongId];
+  var box = document.getElementById("wrong-feedback");
+  var hintAdded = quiz.hintLevel < currentP().hints.length;
+  box.innerHTML =
+    "<div class='wrong-toast'><div class='wt-icon'>"+w.icon+"</div>"+
+    "<div><b>"+toRuby("ざんねん！")+"</b> "+toRuby("それは"+w.name+"（"+w.era+"）だよ。")+"<br>"+
+    toRuby(w.fact)+"<br>"+
+    "<b>"+toRuby(hintAdded ? "ヒントをふやしたよ。もう一度チャレンジ！" : "もう一度チャレンジ！")+"</b></div>"+
+    "<button class='close-x'>✕</button></div>";
+  box.querySelector(".close-x").addEventListener("click", function(){ box.innerHTML=""; });
+}
+
+function showAnswerModal(pts, base, comboBonus){
+  var p = currentP();
+  var backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  var isLast = quiz.idx >= quiz.list.length-1;
+  var ptsLine = "";
+  if(comboBonus>0){
+    ptsLine = "<div class='pts'>+"+base+toRuby("点")+" 🔥"+toRuby(quiz.streak+"連続ボーナス")+"+"+comboBonus+toRuby("点")+" ＝ +"+pts+toRuby("点！")+"</div>";
+  } else {
+    ptsLine = "<div class='pts'>+"+pts+toRuby("点獲得！")+"</div>";
+  }
+  backdrop.innerHTML =
+    "<div class='modal-card'>"+
+      "<div class='result-emoji'>"+(comboBonus>0?"🔥":"🎉")+"</div>"+
+      "<h3>"+toRuby("正解！")+"</h3>"+
+      "<div class='fact-box'>"+p.icon+" <b>"+toRuby(p.name)+"</b>（"+toRuby(p.era)+"）<br>"+toRuby(p.fact)+"</div>"+
+      ptsLine+
+      "<button class='btn-primary' id='modal-next'>"+(isLast?"けっかを見る":toRuby("つぎの問題へ"))+"</button>"+
+    "</div>";
+  document.body.appendChild(backdrop);
+  document.getElementById("modal-next").addEventListener("click", function(){
+    backdrop.remove();
+    if(isLast){
+      finishQuiz();
+    } else {
+      quiz.idx++;
+      renderQuestion();
+    }
+  });
+}
+
+function finishQuiz(quitEarly){
+  var banners = [];
+  var played = quitEarly ? quiz.answeredCount : quiz.list.length;
+  if(!quitEarly && quiz.perfect && quiz.list.length>=5){
+    var bonus = 20;
+    quiz.score += bonus;
+    totalScore += bonus;
+    saveProgress();
+    banners.push("<div class='celebrate-banner'>🌟 "+toRuby("全問パーフェクト達成！ノーヒント・ノーミスでボーナス")+"+"+bonus+toRuby("点！")+"</div>");
+  }
+  var r = rankFor(discovered.size);
+  if(r.name !== quiz.rankAtStart){
+    banners.push("<div class='celebrate-banner rankup'>🎉 "+toRuby("称号アップ！")+r.emoji+" "+toRuby(r.name)+" "+toRuby("になったよ！")+"</div>");
+  } else if(quiz.bestStreak>=3){
+    banners.push("<div class='celebrate-banner'>🔥 "+toRuby("最大")+quiz.bestStreak+toRuby("連続正解を達成したよ！")+"</div>");
+  }
+  document.getElementById("res-banners").innerHTML = banners.join("");
+  document.getElementById("res-emoji").textContent = r.emoji;
+  document.getElementById("res-rank").innerHTML = toRuby(r.name);
+  document.getElementById("res-rank-sub").innerHTML = toRuby("人物図鑑 "+discovered.size+"/"+TOTAL_PEOPLE+"人");
+  document.getElementById("res-correct").textContent = quiz.firstTryCount+" / "+played;
+  document.getElementById("res-score").textContent = quiz.score;
+  showScreen("result");
+  updateHeader();
+}
+
+document.getElementById("btn-quit").addEventListener("click", function(){
+  if(quiz.answeredCount>0){
+    finishQuiz(true);
+  } else {
+    showScreen("home");
+    updateHeader();
+  }
+});
+
+document.getElementById("btn-replay").addEventListener("click", function(){ startQuiz(quiz.eraFilter); });
+document.getElementById("btn-tohome").addEventListener("click", function(){ showScreen("home"); updateHeader(); });
+
+updateHeader();
+})();
+</script>
+</body>
+</html>
