@@ -93,6 +93,17 @@ export const tools: Tool[] = [
     file: "/tools/group-divider.html",
   },
   {
+    slug: "league-tournament-maker",
+    name: "リーグ戦・トーナメント表メーカー",
+    description:
+      "参加者・チーム名と条件を入れるだけで、リーグ戦（総当たり戦）の日程表・対戦表や、トーナメント表を自動作成。対戦表はクリックで勝敗を記録すると順位表が自動計算され、トーナメント表も勝者をクリックするだけで次の対戦相手まで自動更新されます。印刷にも対応。",
+    icon: "🏆",
+    tags: ["体育・学校行事", "無料"],
+    audience: "teacher",
+    status: "live",
+    file: "/tools/league-tournament-maker.html",
+  },
+  {
     slug: "roster-tools",
     name: "名簿関連ツール",
     description:
