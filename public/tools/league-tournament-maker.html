@@ -102,6 +102,10 @@
     display:flex;align-items:center;gap:10px;padding:9px 12px;background:#f7f9fc;
     border-radius:10px;margin-bottom:6px;font-size:14px;font-weight:700;
   }
+  .match-order-badge{
+    background:var(--accent-soft);color:var(--accent-dark);border-radius:8px;
+    padding:3px 8px;font-size:12px;font-weight:800;flex:none;
+  }
   .match-row .court-tag{
     background:#fff;border:1.5px solid #d8dfea;border-radius:8px;padding:3px 9px;
     font-size:11.5px;color:#666;flex:none;
@@ -113,18 +117,28 @@
 
   /* matrix table */
   .matrix-wrap{overflow-x:auto;margin-bottom:18px;}
-  table.matrix{border-collapse:collapse;width:100%;min-width:340px;}
+  table.matrix{border-collapse:collapse;width:100%;min-width:420px;}
   table.matrix th, table.matrix td{
     border:1.5px solid #e2e8f0;text-align:center;font-size:13px;padding:0;
-    width:44px;height:44px;min-width:44px;
+    width:58px;height:58px;min-width:58px;
   }
   table.matrix th{background:#f4f8ff;color:var(--accent-dark);font-weight:800;font-size:12px;padding:4px;}
   table.matrix td.self{background:repeating-linear-gradient(45deg,#f0f0f0,#f0f0f0 4px,#e6e6e6 4px,#e6e6e6 8px);}
-  table.matrix td.cell-btn{cursor:pointer;font-weight:800;font-size:16px;user-select:none;}
-  table.matrix td.cell-btn:active{background:#eef3ff;}
-  table.matrix td.win{color:#2e7d32;}
-  table.matrix td.lose{color:#c0392b;}
-  table.matrix td.draw{color:#a06800;}
+  table.matrix .cell-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:100%;padding:2px;}
+  table.matrix .cell-order{font-size:9px;color:#aaa;font-weight:700;line-height:1;min-height:9px;}
+  table.matrix .cell-mark{
+    font-weight:800;font-size:16px;line-height:1;cursor:pointer;user-select:none;
+    min-height:18px;min-width:20px;
+  }
+  table.matrix .cell-mark:active{opacity:0.6;}
+  table.matrix .cell-mark.win{color:#2e7d32;}
+  table.matrix .cell-mark.lose{color:#c0392b;}
+  table.matrix .cell-mark.draw{color:#a06800;}
+  table.matrix .cell-score{
+    width:34px;padding:1px 2px;border:1px solid #d8dfea;border-radius:4px;
+    font-size:11px;text-align:center;font-family:inherit;color:#555;
+  }
+  table.matrix .cell-score:focus{outline:none;border-color:var(--accent);}
   table.matrix th.row-name{text-align:left;padding:4px 8px;min-width:90px;width:auto;}
 
   table.standings{border-collapse:collapse;width:100%;font-size:13.5px;}
@@ -166,6 +180,9 @@
     .wrap{max-width:100%;padding:0;}
     .card{box-shadow:none;border-radius:0;padding:0;margin-bottom:20px;}
     table.matrix th, table.matrix td{border-color:#999;}
+    table.matrix .cell-order{color:#777;}
+    table.matrix .cell-score{border:none;background:transparent;color:#000;}
+    .match-order-badge{border-color:#999 !important;}
     .match-row{background:#fff;border:1px solid #999;}
     .bslot{border-color:#999;background:#fff;color:#000;}
     .bslot.winner{border-color:#333;background:#fff;font-weight:800;}
@@ -363,6 +380,28 @@ function generateRoundRobin(names, cycles){
   return oneCycle;
 }
 
+function circledNumber(n){
+  if(n>=1 && n<=20) return String.fromCodePoint(0x2460 + (n-1));
+  if(n>=21 && n<=35) return String.fromCodePoint(0x3251 + (n-21));
+  if(n>=36 && n<=50) return String.fromCodePoint(0x32B1 + (n-36));
+  return '('+n+')';
+}
+
+function buildMatchOrder(rounds, names){
+  const order = {};
+  names.forEach(a=>{ order[a]={}; names.forEach(b=>{ if(a!==b) order[a][b]=[]; }); });
+  let counter=0;
+  rounds.forEach(pairs=>{
+    pairs.forEach(([a,b])=>{
+      if(a===null || b===null) return;
+      counter++;
+      order[a][b].push(counter);
+      order[b][a].push(counter);
+    });
+  });
+  return order;
+}
+
 function buildLeague(){
   const names = parseNames();
   if(names.length < 2){ errorMsg.textContent='2人（チーム）以上、入力してください。'; return null; }
@@ -371,9 +410,14 @@ function buildLeague(){
   const pointsMode = document.getElementById('points-mode').checked;
   const rounds = generateRoundRobin(names, cycles);
   const marks = {};
-  names.forEach(a=>{ marks[a]={}; names.forEach(b=>{ if(a!==b) marks[a][b]=''; }); });
+  const scores = {};
+  names.forEach(a=>{
+    marks[a]={}; scores[a]={};
+    names.forEach(b=>{ if(a!==b){ marks[a][b]=''; scores[a][b]=''; } });
+  });
+  const matchOrder = buildMatchOrder(rounds, names);
   errorMsg.textContent='';
-  return {names, cycles, courts, pointsMode, rounds, marks};
+  return {names, cycles, courts, pointsMode, rounds, marks, scores, matchOrder};
 }
 
 function renderLeague(){
@@ -386,6 +430,7 @@ function renderLeague(){
 function renderScheduleView(){
   const el = document.getElementById('schedule-view');
   el.innerHTML='';
+  let matchCounter = 0;
   leagueData.rounds.forEach((pairs, ri)=>{
     const block = document.createElement('div');
     block.className='round-block';
@@ -412,9 +457,11 @@ function renderScheduleView(){
           row.className='match-row bye';
           row.textContent = '💤 ' + (a===null?b:a) + ' は お休み（不戦）';
         } else {
+          matchCounter++;
           row.className='match-row';
           const courtNum = pairs.length>courts ? (pi+1) : ((h*courts+pi)%courts+1);
-          row.innerHTML = '<span class="court-tag">'+(courts>1?('コート'+courtNum):'')+'</span>'+
+          row.innerHTML = '<span class="match-order-badge">'+circledNumber(matchCounter)+'</span>'+
+            '<span class="court-tag">'+(courts>1?('コート'+courtNum):'')+'</span>'+
             '<span class="vs-names"><span class="name">'+escapeHtml(a)+'</span><span class="vs">VS</span><span class="name">'+escapeHtml(b)+'</span></span>'+
             '<span class="court-tag" style="visibility:hidden">.</span>';
         }
@@ -463,12 +510,41 @@ function renderMatrixView(){
         td.className='self';
       } else {
         td.className='cell-btn';
+        const inner = document.createElement('div');
+        inner.className='cell-inner';
+
+        const orderNums = leagueData.matchOrder[rowName][colName];
+        const orderEl = document.createElement('div');
+        orderEl.className='cell-order';
+        orderEl.textContent = orderNums.map(circledNumber).join(' ');
+        inner.appendChild(orderEl);
+
+        const markEl = document.createElement('div');
+        markEl.className='cell-mark';
         const mark = leagueData.marks[rowName][colName];
-        applyMarkClass(td, mark);
-        td.textContent = mark;
-        td.addEventListener('click', ()=>{
+        applyMarkClass(markEl, mark);
+        markEl.textContent = mark;
+        markEl.addEventListener('click', ()=>{
           cycleMark(rowName, colName);
         });
+        inner.appendChild(markEl);
+
+        const scoreInput = document.createElement('input');
+        scoreInput.type='text';
+        scoreInput.inputMode='numeric';
+        scoreInput.maxLength=3;
+        scoreInput.className='cell-score';
+        scoreInput.placeholder='点';
+        scoreInput.value = leagueData.scores[rowName][colName];
+        scoreInput.addEventListener('click', e=>e.stopPropagation());
+        scoreInput.addEventListener('input', e=>{
+          const v = e.target.value.replace(/[^0-9]/g,'');
+          e.target.value = v;
+          leagueData.scores[rowName][colName] = v;
+        });
+        inner.appendChild(scoreInput);
+
+        td.appendChild(inner);
       }
       tr.appendChild(td);
     });
@@ -479,23 +555,23 @@ function renderMatrixView(){
 
   const note = document.createElement('p');
   note.className='hint no-print';
-  note.textContent = 'マス目をクリックすると「○（勝ち）→●（負け）→△（引き分け）→空白」の順に切り替わります。行のチームから見た結果です。';
+  note.textContent = 'マークをクリックすると「○（勝ち）→×（負け）→△（引き分け）→空白」の順に切り替わります（行のチームから見た結果）。数字は何試合目かを表し、点数は自由に入力できます。';
   el.appendChild(note);
 
   el.appendChild(buildStandingsTable());
 }
 
-function applyMarkClass(td, mark){
-  td.classList.remove('win','lose','draw');
-  if(mark==='○') td.classList.add('win');
-  else if(mark==='●') td.classList.add('lose');
-  else if(mark==='△') td.classList.add('draw');
+function applyMarkClass(el, mark){
+  el.classList.remove('win','lose','draw');
+  if(mark==='○') el.classList.add('win');
+  else if(mark==='×') el.classList.add('lose');
+  else if(mark==='△') el.classList.add('draw');
 }
 
 function cycleMark(a,b){
   const cur = leagueData.marks[a][b];
-  const next = cur==='' ? '○' : cur==='○' ? '●' : cur==='●' ? '△' : '';
-  const mirror = next==='○' ? '●' : next==='●' ? '○' : next;
+  const next = cur==='' ? '○' : cur==='○' ? '×' : cur==='×' ? '△' : '';
+  const mirror = next==='○' ? '×' : next==='×' ? '○' : next;
   leagueData.marks[a][b] = next;
   leagueData.marks[b][a] = mirror;
   renderMatrixView();
@@ -508,7 +584,7 @@ function buildStandingsTable(){
     names.forEach(opp=>{
       if(opp===name) return;
       const m = leagueData.marks[name][opp];
-      if(m==='○') win++; else if(m==='●') lose++; else if(m==='△') draw++;
+      if(m==='○') win++; else if(m==='×') lose++; else if(m==='△') draw++;
     });
     const played = win+lose+draw;
     const points = leagueData.pointsMode ? win*3+draw*1 : win;
