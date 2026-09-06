@@ -56,6 +56,16 @@
   }
   .btn-mini:active{transform:scale(0.96);}
 
+  .quick-count-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;}
+  .quick-count-label{font-size:12.5px;font-weight:700;color:#555;}
+  .quick-count-btns{display:flex;flex-wrap:wrap;gap:6px;}
+  .quick-count-btn{
+    width:34px;height:34px;border-radius:10px;border:2px solid #e2e8f0;background:#fafcff;
+    font-size:13px;font-weight:800;color:#555;cursor:pointer;font-family:inherit;
+  }
+  .quick-count-btn:active{transform:scale(0.92);}
+  .quick-count-btn.selected{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-dark);}
+
   .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   .mode-btn{
     border:3px solid #e2e8f0;background:#fafcff;border-radius:16px;
@@ -117,18 +127,21 @@
 
   /* matrix table */
   .matrix-wrap{overflow-x:auto;margin-bottom:18px;}
-  table.matrix{border-collapse:collapse;width:100%;min-width:420px;}
+  table.matrix{border-collapse:collapse;width:100%;min-width:460px;}
   table.matrix th, table.matrix td{
     border:1.5px solid #e2e8f0;text-align:center;font-size:13px;padding:0;
-    width:58px;height:58px;min-width:58px;
+    width:66px;height:66px;min-width:66px;
   }
   table.matrix th{background:#f4f8ff;color:var(--accent-dark);font-weight:800;font-size:12px;padding:4px;}
   table.matrix td.self{background:repeating-linear-gradient(45deg,#f0f0f0,#f0f0f0 4px,#e6e6e6 4px,#e6e6e6 8px);}
-  table.matrix .cell-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:100%;padding:2px;}
-  table.matrix .cell-order{font-size:9px;color:#aaa;font-weight:700;line-height:1;min-height:9px;}
+  table.matrix .cell-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:100%;padding:2px;}
+  table.matrix .cell-order{
+    font-size:13px;color:var(--accent-dark);font-weight:800;line-height:1;min-height:15px;
+    background:var(--accent-soft);border-radius:6px;padding:1px 4px;
+  }
   table.matrix .cell-mark{
-    font-weight:800;font-size:16px;line-height:1;cursor:pointer;user-select:none;
-    min-height:18px;min-width:20px;
+    font-weight:800;font-size:18px;line-height:1;cursor:pointer;user-select:none;
+    min-height:20px;min-width:22px;
   }
   table.matrix .cell-mark:active{opacity:0.6;}
   table.matrix .cell-mark.win{color:#2e7d32;}
@@ -173,16 +186,22 @@
   .print-btn-row{margin-top:18px;}
   .print-only{display:none;}
 
+  @page{ size:A4 landscape; margin:12mm; }
   @media print{
+    *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
     body{background:#fff;padding:0;}
     .no-print{display:none !important;}
     .print-only{display:block !important;}
+    .app-header{display:none !important;}
     .wrap{max-width:100%;padding:0;}
     .card{box-shadow:none;border-radius:0;padding:0;margin-bottom:20px;}
-    table.matrix th, table.matrix td{border-color:#999;}
-    table.matrix .cell-order{color:#777;}
+    .matrix-wrap{overflow-x:visible;}
+    table.matrix{width:100%;table-layout:fixed;min-width:0;}
+    table.matrix th, table.matrix td{border-color:#999;width:auto;}
+    table.matrix .cell-order{color:var(--accent-dark);background:#eef3ff;}
     table.matrix .cell-score{border:none;background:transparent;color:#000;}
-    .match-order-badge{border-color:#999 !important;}
+    table.matrix .cell-score::placeholder{color:transparent;}
+    .match-order-badge{border:1px solid #999 !important;background:#eef3ff !important;}
     .match-row{background:#fff;border:1px solid #999;}
     .bslot{border-color:#999;background:#fff;color:#000;}
     .bslot.winner{border-color:#333;background:#fff;font-weight:800;}
@@ -209,9 +228,12 @@
     <div class="input-toolbar">
       <span class="count-badge" id="count-badge">0人</span>
       <button class="btn-mini" id="shuffle-btn">🔀 順番をシャッフル</button>
-      <button class="btn-mini" id="sample-btn">✏️ サンプルを入力（8チーム）</button>
     </div>
-    <p class="hint">空の行は無視されます。リーグ戦・トーナメントとも2人（チーム）以上で作成できます。</p>
+    <div class="quick-count-row">
+      <span class="quick-count-label">チーム数で自動入力：</span>
+      <div class="quick-count-btns" id="quick-count-btns"></div>
+    </div>
+    <p class="hint">空の行は無視されます。リーグ戦・トーナメントとも2人（チーム）以上で作成できます。11チーム以上は上の欄に直接入力してください。</p>
   </div>
 
   <div class="card no-print">
@@ -318,9 +340,24 @@ document.getElementById('shuffle-btn').addEventListener('click', ()=>{
   namesInput.value = shuffle(names).join('\n');
   updateCountBadge();
 });
-document.getElementById('sample-btn').addEventListener('click', ()=>{
-  namesInput.value = ['チームA','チームB','チームC','チームD','チームE','チームF','チームG','チームH'].join('\n');
-  updateCountBadge();
+const quickCountBtns = document.getElementById('quick-count-btns');
+for(let n=2; n<=10; n++){
+  const b = document.createElement('button');
+  b.type='button';
+  b.className='quick-count-btn';
+  b.textContent=n;
+  b.addEventListener('click', ()=>{
+    const lines=[];
+    for(let i=1;i<=n;i++) lines.push('チーム'+i);
+    namesInput.value = lines.join('\n');
+    updateCountBadge();
+    quickCountBtns.querySelectorAll('.quick-count-btn').forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected');
+  });
+  quickCountBtns.appendChild(b);
+}
+namesInput.addEventListener('input', ()=>{
+  quickCountBtns.querySelectorAll('.quick-count-btn').forEach(x=>x.classList.remove('selected'));
 });
 
 document.querySelectorAll('.mode-btn').forEach(btn=>{
