@@ -66,7 +66,7 @@
   }
   .custom-q-row .q-preview{flex:1;line-height:1.5;}
   .custom-q-row .q-preview b{color:var(--accent-dark);}
-  .custom-sentence{line-height:2.4;}
+  .custom-sentence, .q-sentence{line-height:1.8;}
   .card{
     background:#fff;
     border-radius:20px;
@@ -230,6 +230,17 @@
     border:1px solid #e2e7ee;
     border-radius:8px;
   }
+  .pick-tools{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+  .pick-tool-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .pick-tool-label{font-size:12px;color:#8a93a3;}
+  .pick-tools input[type="text"]{
+    flex:1;min-width:180px;padding:6px 10px;border:1px solid #d8dfea;
+    border-radius:8px;font-size:13px;font-family:inherit;
+  }
+  .pick-tools input[type="number"]{
+    width:70px;padding:6px 8px;border:1px solid #d8dfea;
+    border-radius:8px;font-size:13px;font-family:inherit;
+  }
   .kanji-chip{
     display:inline-flex;
     align-items:center;
@@ -333,7 +344,9 @@
     writing-mode:vertical-rl;
     flex:1;
     min-height:0;
-    font-size:calc(var(--masu-mm) * 0.6);
+    /* マス目は指定どおり大きくしつつ、まわりの文字は大きくなりすぎないよう上限を設ける。
+       （文字まで比例して大きくすると、例文が何列にも折り返して1枚に収まらなくなるため） */
+    font-size:min(calc(var(--masu-mm) * 0.6), 6mm);
     line-height:1.5;
   }
   .mondai-row + .mondai-row{
@@ -344,7 +357,7 @@
   .q-item{
     display:inline-block;
     border-left:1px dashed #d8dfea;
-    padding:0 6px;
+    padding:0 4px;
     height:100%;
     vertical-align:top;
   }
@@ -362,8 +375,11 @@
     font-weight:700;
   }
   .word-disp{
+    display:inline-block;
     font-weight:700;
     margin-block-end:10px;
+    /* 語の長さが違っても（　）の位置がそろうように、最低の長さを確保する */
+    min-height:4.4em;
   }
   .yomi-blank{
     display:inline-block;
@@ -500,6 +516,20 @@
           <button type="button" class="btn-small" id="kanjiPickNoneBtn">すべて解除</button>
         </span>
       </div>
+      <div class="pick-tools">
+        <input type="text" id="kanjiSearchInput" placeholder="漢字・読み・言葉でしぼりこむ（例：委、いいん、委員）">
+        <div class="pick-tool-row">
+          <span class="pick-tool-label">番号で選ぶ</span>
+          <input type="number" id="kanjiRangeFrom" min="1" placeholder="1">
+          <span class="pick-tool-label">〜</span>
+          <input type="number" id="kanjiRangeTo" min="1" placeholder="10">
+          <button type="button" class="btn-small" id="kanjiRangeBtn">この範囲を選ぶ</button>
+        </div>
+        <div class="pick-tool-row">
+          <input type="text" id="kanjiPasteInput" placeholder="漢字を貼り付けて一括選択（例：悪安暗医委 / 悪 安 暗）">
+          <button type="button" class="btn-small" id="kanjiPasteBtn">貼り付けて選ぶ</button>
+        </div>
+      </div>
       <div class="kanji-chip-grid" id="kanjiChipGrid"></div>
       <p style="font-size:12px; color:#8a93a3; margin-top:8px; margin-bottom:0;" id="kanjiPickCountNote">選択中：0字</p>
     </div>
@@ -528,7 +558,9 @@
     </div>
     <div class="btn-row">
       <button class="btn-sub" id="printBtn">印刷する</button>
+      <button class="btn-sub" id="shuffleOrderBtn">問題の順番だけ入れかえる（B版を作る）</button>
     </div>
+    <p class="sub-note">同じ問題のまま並び順だけ変えられます。となりの席と違う順番にしたいときに使えます。</p>
 
     <div class="preset-row">
       <select id="presetSelect"><option value="">保存済み設定を選択…</option></select>
@@ -615,6 +647,7 @@
   <div id="a4-frame">
     <div id="print-area">
       <div class="page-header">
+        <div class="hizuke-ran"><span class="kaku-sen-s"></span>月<span class="kaku-sen-s"></span>日</div>
         <div class="hizuke-ran"><span class="kaku-sen-s"></span>年<span class="kaku-sen-s"></span>組<span class="kaku-sen-s"></span>番　名前<span class="kaku-sen-l"></span></div>
       </div>
       <h2 id="title-hyouji"></h2>
@@ -1705,7 +1738,7 @@
   function kanjiListOf(grade){
     const g = GRADE_KANJI.find(x => x.grade === grade);
     if(!g) return [];
-    return g.kanji.map(row => ({ char: row[0], word: row[1], yomi: row[2], hint: row[3] }));
+    return g.kanji.map(row => ({ char: row[0], word: row[1], yomi: row[2], hint: row[3], example: row[4] || '' }));
   }
 
   const gradeSelect = document.getElementById('gradeSelect');
@@ -1726,6 +1759,10 @@
   const kanjiPickAllBtn = document.getElementById('kanjiPickAllBtn');
   const kanjiPickNoneBtn = document.getElementById('kanjiPickNoneBtn');
   const kanjiPickCountNote = document.getElementById('kanjiPickCountNote');
+  const kanjiSearchInput = document.getElementById('kanjiSearchInput');
+  const kanjiRangeFrom = document.getElementById('kanjiRangeFrom');
+  const kanjiRangeTo = document.getElementById('kanjiRangeTo');
+  const kanjiPasteInput = document.getElementById('kanjiPasteInput');
 
   const PRESET_KEY = 'kanji-test-maker-presets-v1';
   let presets = {};
@@ -1777,9 +1814,15 @@
     return Number(gradeSelect.value) || GRADE_KANJI[0].grade;
   }
 
+  // 3年生以上は「漢字」「書」なども既習なので、漢字かなまじりの表記にする。
+  function useKanjiWording(grade){
+    return grade >= 3;
+  }
+
   function defaultTitle(){
-    const g = GRADE_KANJI.find(x => x.grade === currentGrade());
-    return (g ? g.label : '') + ' かんじテスト';
+    const grade = currentGrade();
+    const g = GRADE_KANJI.find(x => x.grade === grade);
+    return (g ? g.label : '') + (useKanjiWording(grade) ? ' 漢字テスト' : ' かんじテスト');
   }
 
   // ---- 出題する漢字を選ぶ機能（学年から自動作成モードの絞り込み） ----
@@ -1799,10 +1842,25 @@
 
   function renderKanjiPicker(){
     const pool = kanjiListOf(currentGrade());
-    kanjiChipGrid.innerHTML = pool.map(entry => {
+    const keyword = kanjiSearchInput ? kanjiSearchInput.value.trim() : '';
+    const shown = pool
+      .map((entry, i) => ({ entry, no: i + 1 }))
+      .filter(({ entry }) => {
+        if(!keyword) return true;
+        return entry.char.includes(keyword)
+          || entry.word.includes(keyword)
+          || entry.yomi.includes(keyword);
+      });
+    if(shown.length === 0){
+      kanjiChipGrid.innerHTML = '<p style="font-size:12px;color:#8a93a3;margin:6px;">「' + escapeHtml(keyword) + '」に当てはまる漢字は見つかりませんでした。</p>';
+      updateKanjiPickCountNote();
+      return;
+    }
+    kanjiChipGrid.innerHTML = shown.map(({ entry, no }) => {
       const checked = selectedKanjiChars.has(entry.char);
       return '<label class="kanji-chip' + (checked ? ' checked' : '') + '">'
         + '<input type="checkbox" data-char="' + escapeHtml(entry.char) + '"' + (checked ? ' checked' : '') + '>'
+        + '<span style="color:#a8b1bd;font-size:11px;">' + no + '</span>'
         + escapeHtml(entry.char) + '（' + escapeHtml(entry.word) + '）'
         + '</label>';
     }).join('');
@@ -1820,8 +1878,11 @@
     markDirty();
   });
 
+  // しぼりこみ中は「今表示されている漢字だけ」を選ぶ（しぼりこみが無ければ全部）
   kanjiPickAllBtn.addEventListener('click', () => {
-    kanjiListOf(currentGrade()).forEach(entry => selectedKanjiChars.add(entry.char));
+    kanjiChipGrid.querySelectorAll('input[data-char]').forEach(cb => {
+      selectedKanjiChars.add(cb.getAttribute('data-char'));
+    });
     renderKanjiPicker();
     updatePoolSizeNote();
     markDirty();
@@ -1839,6 +1900,46 @@
     }
     updatePoolSizeNote();
     markDirty();
+  });
+
+  kanjiSearchInput.addEventListener('input', renderKanjiPicker);
+
+  document.getElementById('kanjiRangeBtn').addEventListener('click', () => {
+    const pool = kanjiListOf(currentGrade());
+    let from = Math.floor(Number(kanjiRangeFrom.value)) || 1;
+    let to = Math.floor(Number(kanjiRangeTo.value)) || pool.length;
+    if(from > to){ const t = from; from = to; to = t; }
+    from = Math.max(1, from);
+    to = Math.min(pool.length, to);
+    pool.slice(from - 1, to).forEach(entry => selectedKanjiChars.add(entry.char));
+    renderKanjiPicker();
+    updatePoolSizeNote();
+    markDirty();
+    setStatus(from + '〜' + to + '番目の' + (to - from + 1) + '字を選びました', false);
+  });
+
+  document.getElementById('kanjiPasteBtn').addEventListener('click', () => {
+    const pool = kanjiListOf(currentGrade());
+    const chars = [...kanjiPasteInput.value].filter(ch => /[一-鿿]/.test(ch));
+    if(chars.length === 0){
+      setStatus('貼り付け欄に漢字が見つかりませんでした', true);
+      return;
+    }
+    const inGrade = new Set(pool.map(e => e.char));
+    let hit = 0;
+    const missing = [];
+    chars.forEach(ch => {
+      if(inGrade.has(ch)){ selectedKanjiChars.add(ch); hit++; }
+      else if(!missing.includes(ch)) missing.push(ch);
+    });
+    renderKanjiPicker();
+    updatePoolSizeNote();
+    markDirty();
+    if(missing.length > 0){
+      setStatus(hit + '字を選びました（この学年にない漢字：' + missing.join('') + '）', false);
+    }else{
+      setStatus(hit + '字を選びました', false);
+    }
   });
 
   function updatePoolSizeNote(){
@@ -1865,6 +1966,7 @@
 
   gradeSelect.addEventListener('change', () => {
     selectedKanjiChars.clear();
+    kanjiSearchInput.value = '';
     if(kanjiPickerToggle.checked){
       renderKanjiPicker();
     }
@@ -1890,14 +1992,21 @@
     return el ? el.value : 'yomi';
   }
 
-  function instructionText(format){
+  function instructionText(format, grade){
+    const kanjiOK = useKanjiWording(grade);
     if(format === 'yomi'){
-      return '◆　かんじの　よみがなを　（　）に　ひらがなで　かきましょう。';
+      return kanjiOK
+        ? '◆　漢字の　読みがなを　（　）に　ひらがなで　書きましょう。'
+        : '◆　かんじの　よみがなを　（　）に　ひらがなで　かきましょう。';
     }
     if(format === 'kaki'){
-      return '◆　（　）の　ひらがなに　あう　かんじを　□に　かきましょう。';
+      return kanjiOK
+        ? '◆　文に　合う　漢字を　□に　書きましょう。'
+        : '◆　文に　あう　かんじを　□に　かきましょう。';
     }
-    return '◆　もんだいに　あわせて、よみがな（ひらがな）または　かんじを　かきましょう。';
+    return kanjiOK
+      ? '◆　問題に　合わせて、読みがな（ひらがな）または　漢字を　書きましょう。'
+      : '◆　もんだいに　あわせて、よみがな（ひらがな）または　かんじを　かきましょう。';
   }
 
   // 一部のヒント（例：円＝「おかねの たんい（1円、10円など）」）は正当な理由で
@@ -1916,6 +2025,58 @@
       out.push({ type: isKanji ? 'kanji' : 'kana', text: ch });
     }
     return out;
+  }
+
+  const KANA_RE = /[ぁ-んァ-ヶー]/;
+
+  // 送り仮名や接頭のかなを除いた「漢字の部分だけの読み」を返す。
+  // 例：休む/やすむ → やす、お金/おかね → かね
+  function kanjiPartReading(word, yomi){
+    const chars = [...word];
+    let head = '', tail = '';
+    let i = 0, j = chars.length - 1;
+    while(i <= j && KANA_RE.test(chars[i])){ head += chars[i]; i++; }
+    while(j >= i && KANA_RE.test(chars[j])){ tail = chars[j] + tail; j--; }
+    let r = yomi;
+    if(head && r.startsWith(head)) r = r.slice(head.length);
+    if(tail && r.endsWith(tail)) r = r.slice(0, r.length - tail.length);
+    return r || yomi;
+  }
+
+  function kanjiOnlyOf(word){
+    return [...word].filter(ch => /[一-鿿]/.test(ch)).join('');
+  }
+
+  // 書き取り問題を「例文の中の言葉をマス目にする」形にするための材料を作る。
+  // データの例文は学年によって書き方が違う（3年生は例文が全部ひらがな）ので、
+  // ①例文に語がそのまま出てくる ②活用して漢字だけ出てくる ③読みだけ出てくる
+  // の順に探し、どれにも当てはまらなければ null（従来のヒント形式にフォールバック）。
+  function kakiSentenceParts(entry){
+    const ex = entry.example;
+    if(!ex) return null;
+    const reading = kanjiPartReading(entry.word, entry.yomi);
+
+    let idx = ex.indexOf(entry.word);
+    if(idx !== -1){
+      return { before: ex.slice(0, idx), target: entry.word, after: ex.slice(idx + entry.word.length), reading };
+    }
+
+    const kanjiOnly = kanjiOnlyOf(entry.word);
+    if(kanjiOnly){
+      idx = ex.indexOf(kanjiOnly);
+      if(idx !== -1){
+        return { before: ex.slice(0, idx), target: kanjiOnly, after: ex.slice(idx + kanjiOnly.length), reading };
+      }
+    }
+
+    // 例文が全部ひらがなの場合は、読みの「漢字にあたる部分」をマス目に置き換える。
+    if(reading){
+      idx = ex.indexOf(reading);
+      if(idx !== -1){
+        return { before: ex.slice(0, idx), target: kanjiOnly || entry.word, after: ex.slice(idx + reading.length), reading };
+      }
+    }
+    return null;
   }
 
   function maruSuuji(n){
@@ -1954,7 +2115,7 @@
     });
 
     document.getElementById('title-hyouji').textContent = titleInput.value || defaultTitle();
-    document.getElementById('instruction-hyouji').textContent = instructionText(format);
+    document.getElementById('instruction-hyouji').textContent = instructionText(format, grade);
     render();
     clearDirty();
   }
@@ -1969,6 +2130,21 @@
           + '<span class="q-num">' + num + '</span>'
           + '<span class="word-disp">' + escapeHtml(q.entry.word) + '</span>'
           + '<span class="yomi-blank">' + (withAns ? escapeHtml(q.entry.yomi) : '') + '</span>'
+          + '</div></div>';
+      }
+      const parts = kakiSentenceParts(q.entry);
+      if(parts){
+        const boxesHtml = toSegments(parts.target).map(seg => {
+          if(seg.type === 'kanji'){
+            return masuHtml(seg.text, withAns);
+          }
+          return '<span class="kana-fixed">' + escapeHtml(seg.text) + '</span>';
+        }).join('');
+        const rubyBlank = '<ruby class="masu-ruby">' + boxesHtml + '<rt>' + escapeHtml(parts.reading) + '</rt></ruby>';
+        return '<div class="q-item kaki">'
+          + '<div class="q-head">'
+          + '<span class="q-num">' + num + '</span>'
+          + '<span class="q-sentence">' + escapeHtml(parts.before) + rubyBlank + escapeHtml(parts.after) + '</span>'
           + '</div></div>';
       }
       const segs = toSegments(q.entry.word);
@@ -2026,27 +2202,52 @@
       rowEl.querySelectorAll(':scope > .q-item').forEach(el => { total += el.getBoundingClientRect().width; });
       return total;
     };
-
-    let overflow = rowWidth(mondai.querySelector('.mondai-row')) > printAreaWidth + 2;
-
-    if(overflow && itemHtmls.length > 1){
-      const mid = Math.ceil(itemHtmls.length / 2);
-      mondai.innerHTML =
-        '<div class="mondai-row">' + itemHtmls.slice(0, mid).join('') + '</div>' +
-        '<div class="mondai-row">' + itemHtmls.slice(mid).join('') + '</div>';
-      overflow = false;
+    // 段を増やすと1段あたりの列数は減るが、段の高さが低くなる分だけ例文が折り返して
+    // かえって太くなることがある。両方を実際に測って、はみ出しが少ない方を採用する。
+    const tryLayout = (rowCount) => {
+      if(rowCount === 1){
+        mondai.innerHTML = '<div class="mondai-row">' + itemHtmls.join('') + '</div>';
+      }else{
+        const mid = Math.ceil(itemHtmls.length / 2);
+        mondai.innerHTML =
+          '<div class="mondai-row">' + itemHtmls.slice(0, mid).join('') + '</div>' +
+          '<div class="mondai-row">' + itemHtmls.slice(mid).join('') + '</div>';
+      }
+      let worst = 0;
       mondai.querySelectorAll('.mondai-row').forEach(row => {
-        if(rowWidth(row) > printAreaWidth + 2) overflow = true;
+        worst = Math.max(worst, rowWidth(row) - printAreaWidth);
       });
+      return worst;
+    };
+
+    let worstOver = tryLayout(1);
+    if(worstOver > 2 && itemHtmls.length > 1){
+      const two = tryLayout(2);
+      if(two < worstOver){
+        worstOver = two;
+      }else{
+        tryLayout(1);
+      }
     }
 
     frame.style.cssText = motoNoCss;
-    warning.style.display = overflow ? 'block' : 'none';
+    warning.style.display = worstOver > 2 ? 'block' : 'none';
   }
 
   showAnswer.addEventListener('change', render);
   makeBtn.addEventListener('click', makeTest);
   printBtn.addEventListener('click', () => window.print());
+
+  // 出題する漢字はそのままに、並び順だけ入れかえる（となりの席と違う版を配るため）
+  document.getElementById('shuffleOrderBtn').addEventListener('click', () => {
+    if(currentQuestions.length === 0){
+      setStatus('先に「テストを作る」を押してください', true);
+      return;
+    }
+    currentQuestions = shuffle(currentQuestions);
+    render();
+    setStatus('同じ問題のまま、順番を入れかえました', false);
+  });
 
   function masuSizeUpdate(){
     const mm = document.querySelector('input[name="masuSize"]:checked').value;
@@ -2113,9 +2314,20 @@
     updatePoolSizeNote();
     if(p.count) countInput.value = String(p.count);
     if(p.title) titleInput.value = p.title;
+    if(p.masuSize){
+      const masuEl = document.querySelector('input[name="masuSize"][value="' + p.masuSize + '"]');
+      if(masuEl){
+        masuEl.checked = true;
+        document.documentElement.style.setProperty('--masu-mm', p.masuSize + 'mm');
+      }
+    }
+    if(typeof p.masuCenterLine === 'boolean'){
+      document.getElementById('masuCenterLine').checked = p.masuCenterLine;
+    }
     presetNameInput.value = name;
-    markDirty();
-    setStatus('「' + name + '」を読み込みました', false);
+    // 毎週同じ設定で作り直すためのプリセットなので、読み込んだらそのまま作成まで行う。
+    makeTest();
+    setStatus('「' + name + '」を読み込んで、テストを作成しました', false);
   });
 
   presetSaveBtn.addEventListener('click', () => {
@@ -2124,13 +2336,16 @@
       setStatus('保存名を入力してください', true);
       return;
     }
+    const masuEl = document.querySelector('input[name="masuSize"]:checked');
     presets[name] = {
       grade: currentGrade(),
       format: selectedFormat(),
       count: Number(countInput.value),
       title: titleInput.value,
       pickerOn: kanjiPickerToggle.checked,
-      pickerChars: Array.from(selectedKanjiChars)
+      pickerChars: Array.from(selectedKanjiChars),
+      masuSize: masuEl ? masuEl.value : null,
+      masuCenterLine: document.getElementById('masuCenterLine').checked
     };
     persistPresets();
     renderPresetSelect(name);
