@@ -1881,12 +1881,11 @@
     if (file) importAllData(file);
   });
 
-  // 初期表示: 今週の月曜日
+  // 初期表示: 今年度4/1週の月曜日
   (function init() {
-    migrateLegacyDataOnce();
+    try { migrateLegacyDataOnce(); } catch (e) { /* localStorageが使えない環境などでは移行をスキップ */ }
     hiraganaCheckbox.checked = HIRAGANA_MODE;
-    const today = toDateStr(new Date());
-    const monday = getMonday(today);
+    const monday = firstMondayOfSchoolYear(currentSchoolYear());
     weekStartInput.value = monday;
     loadAndRender(monday);
   })();
