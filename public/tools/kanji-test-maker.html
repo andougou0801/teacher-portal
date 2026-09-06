@@ -324,11 +324,22 @@
     margin:0 0 14px;
   }
   #mondai{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+  }
+  .mondai-row{
     writing-mode:vertical-rl;
     flex:1;
     min-height:0;
     font-size:calc(var(--masu-mm) * 0.6);
     line-height:1.5;
+  }
+  .mondai-row + .mondai-row{
+    border-top:1px dashed #999;
+    margin-top:6px;
+    padding-top:6px;
   }
   .q-item{
     display:inline-block;
@@ -1950,54 +1961,57 @@
 
   function render(){
     const withAns = showAnswer.checked;
-    let html = '';
-
-    currentQuestions.forEach((q, i) => {
+    const itemHtmls = currentQuestions.map((q, i) => {
       const num = maruSuuji(i + 1);
       if(q.qType === 'yomi'){
-        html += '<div class="q-item yomi">'
+        return '<div class="q-item yomi">'
           + '<div class="q-head">'
           + '<span class="q-num">' + num + '</span>'
           + '<span class="word-disp">' + escapeHtml(q.entry.word) + '</span>'
           + '<span class="yomi-blank">' + (withAns ? escapeHtml(q.entry.yomi) : '') + '</span>'
           + '</div></div>';
-      } else {
-        const segs = toSegments(q.entry.word);
-        const boxesHtml = segs.map(seg => {
-          if(seg.type === 'kanji'){
-            return masuHtml(seg.text, withAns);
-          }
-          return '<span class="kana-fixed">' + escapeHtml(seg.text) + '</span>';
-        }).join('');
-        html += '<div class="q-item kaki">'
-          + '<div class="q-head">'
-          + '<span class="q-num">' + num + '</span>'
-          + '<span class="q-yomi">' + escapeHtml(q.entry.yomi) + '</span>'
-          + '<span class="q-hint">（' + escapeHtml(maskHintForKaki(q.entry)) + '）</span>'
-          + '<span class="q-boxes">' + boxesHtml + '</span>'
-          + '</div>'
-          + '</div>';
       }
+      const segs = toSegments(q.entry.word);
+      const boxesHtml = segs.map(seg => {
+        if(seg.type === 'kanji'){
+          return masuHtml(seg.text, withAns);
+        }
+        return '<span class="kana-fixed">' + escapeHtml(seg.text) + '</span>';
+      }).join('');
+      return '<div class="q-item kaki">'
+        + '<div class="q-head">'
+        + '<span class="q-num">' + num + '</span>'
+        + '<span class="q-yomi">' + escapeHtml(q.entry.yomi) + '</span>'
+        + '<span class="q-hint">（' + escapeHtml(maskHintForKaki(q.entry)) + '）</span>'
+        + '<span class="q-boxes">' + boxesHtml + '</span>'
+        + '</div>'
+        + '</div>';
     });
 
-    document.getElementById('mondai').innerHTML = html || '<p style="color:#8a93a3;font-size:13px;">「テストを作る」を押すと、ここに問題が表示されます。</p>';
-    hamidashiKakunin();
+    layoutMondai(itemHtmls);
   }
 
   // A4横向き＋縦書きなので、はみ出しは「高さ」ではなく「幅（列の合計）」で起こる。
+  // マスを大きくする・問題数が多いと1行（1段）に収まらなくなるため、その場合は
+  // 上下2段に分けて、各段の列の合計幅がページ幅に収まるようにする。
   // 画面上のプレビュー枠は aspect-ratio で作っているため印刷時の実寸（267mm×180mm、
   // @page margin:15mm を差し引いた値）より余裕があることがあるので、印刷時と同じ
-  // 実寸に一時的に切り替えてから列の合計幅を測り、直後に元の見た目へ戻す。
-  function hamidashiKakunin(){
+  // 実寸に一時的に切り替えてから幅を測り、直後に元の見た目へ戻す。
+  function layoutMondai(itemHtmls, emptyMessage){
+    const mondai = document.getElementById('mondai');
     const frame = document.getElementById('a4-frame');
     const printArea = document.getElementById('print-area');
     const warning = document.getElementById('overflowWarning');
-    if(!frame || !printArea || !warning) return;
-    const items = document.querySelectorAll('.q-item');
-    if(items.length === 0){
+    if(!mondai || !frame || !printArea || !warning) return;
+
+    if(itemHtmls.length === 0){
+      mondai.innerHTML = '<p style="color:#8a93a3;font-size:13px;">' + (emptyMessage || '「テストを作る」を押すと、ここに問題が表示されます。') + '</p>';
       warning.style.display = 'none';
       return;
     }
+
+    mondai.innerHTML = '<div class="mondai-row">' + itemHtmls.join('') + '</div>';
+
     const motoNoCss = frame.style.cssText;
     frame.style.width = '267mm';
     frame.style.height = '180mm';
@@ -2005,11 +2019,29 @@
     frame.style.overflow = 'visible';
     frame.style.padding = '0';
     frame.style.margin = '0';
-    let total = 0;
-    items.forEach(el => { total += el.getBoundingClientRect().width; });
+
     const printAreaWidth = printArea.getBoundingClientRect().width;
+    const rowWidth = (rowEl) => {
+      let total = 0;
+      rowEl.querySelectorAll(':scope > .q-item').forEach(el => { total += el.getBoundingClientRect().width; });
+      return total;
+    };
+
+    let overflow = rowWidth(mondai.querySelector('.mondai-row')) > printAreaWidth + 2;
+
+    if(overflow && itemHtmls.length > 1){
+      const mid = Math.ceil(itemHtmls.length / 2);
+      mondai.innerHTML =
+        '<div class="mondai-row">' + itemHtmls.slice(0, mid).join('') + '</div>' +
+        '<div class="mondai-row">' + itemHtmls.slice(mid).join('') + '</div>';
+      overflow = false;
+      mondai.querySelectorAll('.mondai-row').forEach(row => {
+        if(rowWidth(row) > printAreaWidth + 2) overflow = true;
+      });
+    }
+
     frame.style.cssText = motoNoCss;
-    warning.style.display = (total > printAreaWidth + 2) ? 'block' : 'none';
+    warning.style.display = overflow ? 'block' : 'none';
   }
 
   showAnswer.addEventListener('change', render);
@@ -2020,7 +2052,7 @@
     const mm = document.querySelector('input[name="masuSize"]:checked').value;
     document.documentElement.style.setProperty('--masu-mm', mm + 'mm');
     if(currentMode === 'auto'){
-      hamidashiKakunin();
+      render();
     }else{
       renderCustomPrint();
     }
@@ -2251,8 +2283,7 @@
 
   function renderCustomPrint(){
     const withAns = customShowAnswer.checked;
-    let html = '';
-    customQuestions.forEach((q, i) => {
+    const itemHtmls = customQuestions.map((q, i) => {
       const num = maruSuuji(i + 1);
       const idx = q.sentence.indexOf(q.target);
       const before = q.sentence.slice(0, idx);
@@ -2262,25 +2293,23 @@
         // ふりがなと同じ<ruby>を使うと、ブラウザが縦書きでも自動的にマス目の
         // 横（右側）に読みを添えてくれる。
         const rubyBlank = '<ruby class="masu-ruby">' + boxesHtml + '<rt>' + escapeHtml(q.yomi || '') + '</rt></ruby>';
-        html += '<div class="q-item kaki">'
+        return '<div class="q-item kaki">'
           + '<div class="q-head">'
           + '<span class="q-num">' + num + '</span>'
           + '<span class="custom-sentence">' + escapeHtml(before) + rubyBlank + escapeHtml(after) + '</span>'
           + '</div></div>';
-      }else{
-        html += '<div class="q-item yomi">'
-          + '<div class="q-head">'
-          + '<span class="q-num">' + num + '</span>'
-          + '<span class="custom-sentence">' + escapeHtml(before) + escapeHtml(q.target)
-          + '<span class="yomi-blank">' + (withAns ? escapeHtml(q.yomi) : '') + '</span>'
-          + escapeHtml(after) + '</span>'
-          + '</div></div>';
       }
+      return '<div class="q-item yomi">'
+        + '<div class="q-head">'
+        + '<span class="q-num">' + num + '</span>'
+        + '<span class="custom-sentence">' + escapeHtml(before) + escapeHtml(q.target)
+        + '<span class="yomi-blank">' + (withAns ? escapeHtml(q.yomi) : '') + '</span>'
+        + escapeHtml(after) + '</span>'
+        + '</div></div>';
     });
     document.getElementById('title-hyouji').textContent = customTitleInput.value || 'オリジナルもんだい';
     document.getElementById('instruction-hyouji').textContent = '◆　じぶんで つくった もんだいです。';
-    document.getElementById('mondai').innerHTML = html || '<p style="color:#8a93a3;font-size:13px;">「この問題を追加する」を押すと、ここに表示されます。</p>';
-    hamidashiKakunin();
+    layoutMondai(itemHtmls, '「この問題を追加する」を押すと、ここに表示されます。');
   }
 
   customShowAnswer.addEventListener('change', renderCustomPrint);
