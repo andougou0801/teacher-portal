@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { articles } from "@/lib/articles";
+import { getPublishedArticles } from "@/lib/content";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
@@ -13,7 +13,10 @@ const upcomingTopics = [
   "子ども同士のトラブル", "授業中の私語", "個人懇談",
 ];
 
-export default function ClassroomPage() {
+export const revalidate = 60;
+
+export default async function ClassroomPage() {
+  const articles = await getPublishedArticles();
   const posts = articles.filter((article) => article.section === "classroom");
 
   return (

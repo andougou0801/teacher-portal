@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { articles, getArticleBySlug } from "@/lib/articles";
+import { articles } from "@/lib/articles";
 import { getToolBySlug } from "@/lib/tools";
 import { getIcebreakerBySlug } from "@/lib/icebreakers";
+import { getPublishedArticleBySlug } from "@/lib/content";
 import FavoriteButton from "@/components/FavoriteButton";
+
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return articles.map((article) => ({ slug: article.slug }));
@@ -14,7 +17,7 @@ export async function generateMetadata(
   props: PageProps<"/articles/[slug]">,
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  const article = getArticleBySlug(slug);
+  const article = await getPublishedArticleBySlug(slug);
   return {
     title: article
       ? `${article.title} | 全国教員支援ポータル`
@@ -26,7 +29,7 @@ export default async function ArticlePage(
   props: PageProps<"/articles/[slug]">,
 ) {
   const { slug } = await props.params;
-  const article = getArticleBySlug(slug);
+  const article = await getPublishedArticleBySlug(slug);
 
   if (!article) {
     notFound();

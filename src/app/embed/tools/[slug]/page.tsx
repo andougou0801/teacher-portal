@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { tools, getToolBySlug } from "@/lib/tools";
+import { getVisibleToolBySlug } from "@/lib/content";
 
 export function generateStaticParams() {
   return tools
@@ -17,11 +18,14 @@ export async function generateMetadata(
   return { title: tool ? tool.name : "ツール" };
 }
 
+export const revalidate = 60;
+
 export default async function EmbedToolPage(
   props: PageProps<"/embed/tools/[slug]">,
 ) {
   const { slug } = await props.params;
-  const tool = getToolBySlug(slug);
+  // 管理画面で非表示にしたツールは、配布済みのURLからも開けないようにする。
+  const tool = await getVisibleToolBySlug(slug);
 
   if (!tool || tool.status !== "live" || !tool.file) {
     notFound();

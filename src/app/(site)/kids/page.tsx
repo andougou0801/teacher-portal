@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { tools } from "@/lib/tools";
+import { getVisibleTools } from "@/lib/content";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 import FavoriteButton from "@/components/FavoriteButton";
 
@@ -10,7 +10,10 @@ export const metadata: Metadata = {
     "漢字・計算・タイピングなど、子どもが学校や家庭で使える学習ツールをまとめるページです。",
 };
 
-export default function KidsPage() {
+export const revalidate = 60;
+
+export default async function KidsPage() {
+  const tools = await getVisibleTools();
   const kidsTools = tools.filter((tool) => tool.audience === "student");
   const liveTools = kidsTools.filter((tool) => tool.status === "live");
   const plannedTools = kidsTools.filter((tool) => tool.status === "planned");

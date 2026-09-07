@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { articles } from "@/lib/articles";
+import { getPublishedArticles } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "先生のコラム | 全国教員支援ポータル",
@@ -12,7 +12,10 @@ const topics = [
   "教育について考えたこと", "実際の授業実践", "教員の働き方", "ICT・AI教育",
 ];
 
-export default function ColumnPage() {
+export const revalidate = 60;
+
+export default async function ColumnPage() {
+  const articles = await getPublishedArticles();
   const columns = articles.filter((article) => article.section === "column");
 
   return (

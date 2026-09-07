@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { tools } from "@/lib/tools";
+import { getVisibleTools } from "@/lib/content";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 import FavoriteButton from "@/components/FavoriteButton";
 
@@ -9,7 +9,10 @@ export const metadata: Metadata = {
   description: "採点・プリント作成・時間割など、教員の仕事をすぐ効率化できるツール一覧。",
 };
 
-export default function ToolsPage() {
+export const revalidate = 60;
+
+export default async function ToolsPage() {
+  const tools = await getVisibleTools();
   const teacherTools = tools.filter((tool) => tool.audience === "teacher");
   const liveTools = teacherTools.filter((tool) => tool.status === "live");
   const plannedTools = teacherTools.filter((tool) => tool.status === "planned");

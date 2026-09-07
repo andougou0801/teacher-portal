@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { tools } from "@/lib/tools";
-import { articles } from "@/lib/articles";
+import { getPublishedArticles, getVisibleTools } from "@/lib/content";
 import { icebreakers } from "@/lib/icebreakers";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
@@ -16,6 +15,10 @@ export async function generateMetadata(
 export default async function TagPage(props: PageProps<"/tags/[tag]">) {
   const { tag } = await props.params;
   const decoded = decodeURIComponent(tag);
+  const [tools, articles] = await Promise.all([
+    getVisibleTools(),
+    getPublishedArticles(),
+  ]);
 
   const matchedTools = tools.filter((tool) => tool.tags.includes(decoded));
   const matchedArticles = articles.filter(

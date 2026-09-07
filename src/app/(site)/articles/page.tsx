@@ -1,13 +1,16 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { articles } from "@/lib/articles";
+import { getPublishedArticles } from "@/lib/content";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
   title: "記事・コラム | 全国教員支援ポータル",
 };
 
-export default function ArticlesPage() {
+export const revalidate = 60;
+
+export default async function ArticlesPage() {
+  const articles = await getPublishedArticles();
   const [featured, ...rest] = articles;
 
   return (

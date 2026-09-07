@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { articles } from "@/lib/articles";
+import { getPublishedArticles } from "@/lib/content";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
@@ -14,7 +14,10 @@ const upcomingMonths = [
   "1〜3月：卒業・6年生を送る会・年度末・学級じまい",
 ];
 
-export default function EventsPage() {
+export const revalidate = 60;
+
+export default async function EventsPage() {
+  const articles = await getPublishedArticles();
   const posts = articles.filter((article) => article.section === "event");
 
   return (

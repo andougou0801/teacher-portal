@@ -1,9 +1,14 @@
 import Link from "next/link";
-import { tools } from "@/lib/tools";
-import { articles } from "@/lib/articles";
 import { categories } from "@/lib/categories";
+import { getPublishedArticles, getVisibleTools } from "@/lib/content";
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
+  const [tools, articles] = await Promise.all([
+    getVisibleTools(),
+    getPublishedArticles(),
+  ]);
   const [featuredArticle] = articles;
   const liveTools = tools.filter((tool) => tool.status === "live");
   const featuredTools = liveTools

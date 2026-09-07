@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { tools, getToolBySlug } from "@/lib/tools";
+import { getVisibleToolBySlug } from "@/lib/content";
 import CopyEmbedLinkButton from "@/components/CopyEmbedLinkButton";
 import FavoriteButton from "@/components/FavoriteButton";
 
@@ -19,9 +20,12 @@ export async function generateMetadata(
   return { title: tool ? `${tool.name} | 全国教員支援ポータル` : "ツール" };
 }
 
+export const revalidate = 60;
+
 export default async function ToolPage(props: PageProps<"/tools/[slug]">) {
   const { slug } = await props.params;
-  const tool = getToolBySlug(slug);
+  // 管理画面で非表示にされたツールは、個別ページも表示しない。
+  const tool = await getVisibleToolBySlug(slug);
 
   if (!tool) {
     notFound();

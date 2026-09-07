@@ -5,6 +5,22 @@
 公開URL: https://teacher-portal-puce.vercel.app
 （`master`ブランチにpushすると、Vercelが自動で再デプロイします。このURLは毎回聞き返さず、この記載を参照してください。）
 
+## 管理画面（/admin）
+
+記事・コラム、ツールの表示設定、Q&Aの管理は、ユーザー自身が `/admin` から操作できる。
+セットアップ手順と設計方針は `supabase/README.md` を参照。
+
+- 記事はSupabaseの `articles` テーブルが正。`src/lib/articles.ts` はDBに接続できないときの
+  フォールバック用スナップショットなので、記事の追加依頼が来ても基本はこのファイルを編集しない
+  （ユーザーが管理画面から追加できる）。
+- ツールは `src/lib/tools.ts` が正で、`tool_settings` テーブルは公開/非公開と並び順のみを上書きする。
+  **新しいツールの追加は従来通りコード側の作業**（HTMLの配置＋tools.tsへの追記）。
+- サイト側のページは `src/lib/content.ts` の `getPublishedArticles()` / `getVisibleTools()` 経由で
+  コンテンツを取得する。新しくコンテンツを表示するページを作るときも、直接 `articles.ts` /
+  `tools.ts` をimportせず、この関数を使うこと。
+- コンテンツを表示するページには `export const revalidate = 60;` を付ける（管理画面での変更が
+  最大1分で反映されるようにするため）。
+
 ## 運用ルール：編集が完了したら自分でpushする
 
 このリポジトリで`public/tools/*.html`（ツール本体）や`src/`配下のコンテンツ・コードを編集した場合、

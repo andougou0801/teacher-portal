@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { tools } from "@/lib/tools";
-import { articles } from "@/lib/articles";
+import { getPublishedArticles, getVisibleTools } from "@/lib/content";
 import { officialLinks } from "@/lib/officialLinks";
 import { aiGuides } from "@/lib/aiGuides";
 import { icebreakers } from "@/lib/icebreakers";
@@ -21,6 +20,10 @@ function matches(query: string, ...fields: string[]) {
 export default async function SearchPage(props: PageProps<"/search">) {
   const { q } = await props.searchParams;
   const query = typeof q === "string" ? q : "";
+  const [tools, articles] = await Promise.all([
+    getVisibleTools(),
+    getPublishedArticles(),
+  ]);
 
   const matchedTools = tools.filter((tool) =>
     matches(query, tool.name, tool.description, tool.tags.join(" ")),
