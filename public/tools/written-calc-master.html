@@ -93,6 +93,12 @@
   }
   .level-btn.selected{border-color:var(--accent);background:#f2f7ff;color:var(--accent-dark);}
   .level-btn.selected .lv-num{background:var(--accent);color:#fff;}
+  .level-btn .lv-text{flex:1;}
+  .level-btn .lv-grade{
+    flex:none;background:#eef2f7;color:#667;border-radius:8px;
+    padding:3px 8px;font-size:11px;font-weight:800;white-space:nowrap;
+  }
+  .level-btn.selected .lv-grade{background:var(--accent);color:#fff;}
 
   .btn-primary{
     width:100%;padding:16px;border:none;border-radius:16px;
@@ -817,49 +823,49 @@ function genDecimalDivision(level){
 /* ---------------- level labels ---------------- */
 const OP_META={
   add:{name:'たしざん', emoji:'➕', levels:[
-    '2桁+1桁・2桁+2桁（くり上がりなし）',
-    '2桁+2桁（くり上がり1回）',
-    '3桁+2桁・3桁+3桁（くり上がりなし）',
-    '3桁+3桁（くり上がり複数回）',
-    '4桁以上の大きなたし算（くり上がり複数回）',
-    '小数のたし算・基礎（小数第一位）',
-    '小数のたし算・拡張（小数第二位まで）',
-    '小数のたし算（ちがう小数桁）',
-    '整数と小数のたし算',
-    '多数桁の複雑な小数のたし算']},
+    {label:'2桁+1桁・2桁+2桁（くり上がりなし）', grade:'小2'},
+    {label:'2桁+2桁（くり上がり1回）', grade:'小2'},
+    {label:'3桁+2桁・3桁+3桁（くり上がりなし）', grade:'小2'},
+    {label:'3桁+3桁（くり上がり複数回）', grade:'小3'},
+    {label:'4桁以上の大きなたし算（くり上がり複数回）', grade:'小3・小4'},
+    {label:'小数のたし算・基礎（小数第一位）', grade:'小3'},
+    {label:'小数のたし算・拡張（小数第二位まで）', grade:'小4'},
+    {label:'小数のたし算（ちがう小数桁）', grade:'小4'},
+    {label:'整数と小数のたし算', grade:'小4・小5'},
+    {label:'多数桁の複雑な小数のたし算', grade:'小5'}]},
   sub:{name:'ひきざん', emoji:'➖', levels:[
-    '2桁-1桁・2桁-2桁（くり下がりなし）',
-    '2桁-2桁（くり下がり1回）',
-    '3桁-2桁・3桁-3桁（くり下がりなし）',
-    '3桁-3桁（くり下がり複数回）',
-    '「0」をまたぐくり下がり',
-    '小数のひき算・基礎（小数第一位）',
-    '小数のひき算・拡張（小数第二位まで）',
-    '小数のひき算（ちがう小数桁）',
-    '整数から小数を引く筆算',
-    '多数桁の複雑な小数のひき算']},
+    {label:'2桁-1桁・2桁-2桁（くり下がりなし）', grade:'小2'},
+    {label:'2桁-2桁（くり下がり1回）', grade:'小2'},
+    {label:'3桁-2桁・3桁-3桁（くり下がりなし）', grade:'小2'},
+    {label:'3桁-3桁（くり下がり複数回）', grade:'小3'},
+    {label:'「0」をまたぐくり下がり', grade:'小3'},
+    {label:'小数のひき算・基礎（小数第一位）', grade:'小3'},
+    {label:'小数のひき算・拡張（小数第二位まで）', grade:'小4'},
+    {label:'小数のひき算（ちがう小数桁）', grade:'小4'},
+    {label:'整数から小数を引く筆算', grade:'小4・小5'},
+    {label:'多数桁の複雑な小数のひき算', grade:'小5'}]},
   mul:{name:'かけざん', emoji:'✖️', levels:[
-    '(2桁)×1位数（くり上がりなし）',
-    '(2桁)×1位数（くり上がりあり）',
-    '(3桁)×1位数（くり上がりあり）',
-    '(2桁)×(2桁)（かける数が「何十」）',
-    '(2桁)×(2桁)の一般的な筆算',
-    '(3桁)×(2桁)の筆算',
-    '小数×整数の筆算',
-    '小数×小数の基本',
-    '小数×小数（末尾の0を消す）',
-    '小数×小数（積が1未満、0を補う）']},
+    {label:'(2桁)×1位数（くり上がりなし）', grade:'小3'},
+    {label:'(2桁)×1位数（くり上がりあり）', grade:'小3'},
+    {label:'(3桁)×1位数（くり上がりあり）', grade:'小3'},
+    {label:'(2桁)×(2桁)（かける数が「何十」）', grade:'小3・小4'},
+    {label:'(2桁)×(2桁)の一般的な筆算', grade:'小3'},
+    {label:'(3桁)×(2桁)の筆算', grade:'小3・小4'},
+    {label:'小数×整数の筆算', grade:'小4'},
+    {label:'小数×小数の基本', grade:'小5'},
+    {label:'小数×小数（末尾の0を消す）', grade:'小5'},
+    {label:'小数×小数（積が1未満、0を補う）', grade:'小5'}]},
   div:{name:'わりざん', emoji:'➗', levels:[
-    '(2桁)÷1位数（各桁が割り切れる）',
-    '(2桁)÷1位数（1の位にあまり）',
-    '(2桁)÷1位数（くり下ろしが必要）',
-    '(3桁)÷1位数（商が3桁）',
-    '(3桁)÷1位数（商が2桁）',
-    '2桁でわる（仮の商が1回で決定）',
-    '2桁でわる（仮の商を修正する）',
-    '整数÷整数の割り進む筆算',
-    '小数÷小数の筆算（商のみ）',
-    '小数÷小数（商とあまり）【最難関】']}
+    {label:'(2桁)÷1位数（各桁が割り切れる）', grade:'小3'},
+    {label:'(2桁)÷1位数（1の位にあまり）', grade:'小3・小4'},
+    {label:'(2桁)÷1位数（くり下ろしが必要）', grade:'小4'},
+    {label:'(3桁)÷1位数（商が3桁）', grade:'小4'},
+    {label:'(3桁)÷1位数（商が2桁）', grade:'小4'},
+    {label:'2桁でわる（仮の商が1回で決定）', grade:'小4'},
+    {label:'2桁でわる（仮の商を修正する）', grade:'小4'},
+    {label:'整数÷整数の割り進む筆算', grade:'小4'},
+    {label:'小数÷小数の筆算（商のみ）', grade:'小5'},
+    {label:'小数÷小数（商とあまり）【最難関】', grade:'小5'}]}
 };
 
 const TIPS={
@@ -1637,7 +1643,8 @@ function newProblem(){
 function updateProgressUI(){
   const inSet=(state.questionCount%5)+1;
   document.getElementById('progress-badge').textContent=`${inSet}問目 / 5`;
-  document.getElementById('op-tag').textContent=OP_META[state.op].name+' レベル'+state.level;
+  const item=OP_META[state.op].levels[state.level-1];
+  document.getElementById('op-tag').textContent=OP_META[state.op].name+' レベル'+state.level+'（'+item.grade+'）';
   updateTipBox();
 }
 function updateTipBox(){
@@ -1672,11 +1679,11 @@ function buildLevelGrid(){
   const wrap=document.getElementById('level-grid');
   wrap.innerHTML='';
   if(!state.op) return;
-  OP_META[state.op].levels.forEach((label,idx)=>{
+  OP_META[state.op].levels.forEach((item,idx)=>{
     const lv=idx+1;
     const btn=document.createElement('button');
     btn.className='level-btn'+(state.level===lv?' selected':'');
-    btn.innerHTML=`<span class="lv-num">${lv}</span><span>${label}</span>`;
+    btn.innerHTML=`<span class="lv-num">${lv}</span><span class="lv-text">${item.label}</span><span class="lv-grade">${item.grade}</span>`;
     btn.addEventListener('click',()=>{
       state.level=lv;
       buildLevelGrid();
