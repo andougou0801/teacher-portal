@@ -8,7 +8,10 @@
 ## 管理画面（/admin）
 
 記事・コラム、ツールの表示設定、Q&Aの管理は、ユーザー自身が `/admin` から操作できる。
-セットアップ手順と設計方針は `supabase/README.md` を参照。
+セットアップ手順と設計方針は `supabase/README.md`、SQLは `supabase/admin_setup.sql` を参照。
+
+- 編集権限は `is_admin()`（`admin_setup.sql` 内）に書かれたメールアドレスのみ。
+  匿名キーで誰でもサインアップできてしまうため、「ログイン済みなら誰でも編集可」にしないこと。
 
 - 記事はSupabaseの `articles` テーブルが正。`src/lib/articles.ts` はDBに接続できないときの
   フォールバック用スナップショットなので、記事の追加依頼が来ても基本はこのファイルを編集しない

@@ -1,8 +1,177 @@
--- 全国教員支援ポータル - 既存の記事をデータベースへ移すためのSQL
--- 003_admin.sql を実行したあとに、Supabaseの「SQL Editor」へ貼り付けて1回だけ実行してください。
--- （このファイルは src/lib/articles.ts から自動生成しています）
+-- ============================================================================
+-- 全国教員支援ポータル - 管理画面（/admin）のセットアップ
 --
--- すでに同じ slug の記事がある場合は上書きされます。
+-- このファイルの中身を「すべて」コピーして、Supabaseの SQL Editor に貼り付け、
+-- Run を押してください。実行は1回だけでOKです。
+--
+-- 実行すると、次の3つが用意されます。
+--   1. 記事・コラムを保存するテーブル（今サイトにある13本の記事も取り込みます）
+--   2. ツールの表示設定を保存するテーブル
+--   3. 管理者だけが編集できるようにする権限設定
+-- ============================================================================
+
+create extension if not exists "pgcrypto";
+
+-- ============================================================================
+-- 管理者の判定
+--   ここに書いたメールアドレスでログインした人だけが、記事などを編集できます。
+--   別のメールアドレスを使う場合は、下の1行を書き換えてから実行してください。
+--   （複数登録したいときは、カンマ区切りで並べられます）
+-- ============================================================================
+create or replace function is_admin()
+returns boolean as $$
+  select coalesce(auth.jwt() ->> 'email', '') in (
+    'andougou0801@gmail.com'
+  );
+$$ language sql stable;
+
+-- ============================================================================
+-- 記事・コラム
+-- ============================================================================
+create table if not exists articles (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  title text not null,
+  category text not null,
+  summary text not null default '',
+  body text[] not null default '{}',
+  author text not null default '全国教員支援ポータル編集部',
+  read_time text not null default '',
+  published_at date not null default current_date,
+  -- 掲載先。null なら /articles のみ。
+  section text check (section in ('column', 'lesson', 'classroom', 'event')),
+  subject text,
+  month text,
+  situation text,
+  related_tools text[] not null default '{}',
+  related_icebreakers text[] not null default '{}',
+  status text not null default 'draft' check (status in ('draft', 'published')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ============================================================================
+-- ツールの表示設定（本体のHTMLはリポジトリ側。ここでは公開/非公開と並び順のみ）
+-- ============================================================================
+create table if not exists tool_settings (
+  slug text primary key,
+  hidden boolean not null default false,
+  sort_order integer,
+  updated_at timestamptz not null default now()
+);
+
+-- ============================================================================
+-- Q&Aの非表示フラグ（管理画面から不適切な投稿を隠せるようにする）
+-- ============================================================================
+alter table questions add column if not exists hidden boolean not null default false;
+alter table answers add column if not exists hidden boolean not null default false;
+
+-- ============================================================================
+-- updated_at の自動更新
+-- ============================================================================
+create or replace function set_updated_at()
+returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists articles_set_updated_at on articles;
+create trigger articles_set_updated_at
+  before update on articles
+  for each row execute function set_updated_at();
+
+drop trigger if exists tool_settings_set_updated_at on tool_settings;
+create trigger tool_settings_set_updated_at
+  before update on tool_settings
+  for each row execute function set_updated_at();
+
+-- ============================================================================
+-- 権限（RLS）
+--   閲覧：公開済みの記事とツール設定は誰でも読める
+--   編集：is_admin() に書いたメールアドレスでログインした人だけ
+-- ============================================================================
+alter table articles enable row level security;
+alter table tool_settings enable row level security;
+
+drop policy if exists "published articles are publicly readable" on articles;
+create policy "published articles are publicly readable" on articles
+  for select using (status = 'published');
+
+drop policy if exists "admins can read all articles" on articles;
+create policy "admins can read all articles" on articles
+  for select using (is_admin());
+
+drop policy if exists "admins can insert articles" on articles;
+create policy "admins can insert articles" on articles
+  for insert with check (is_admin());
+
+drop policy if exists "admins can update articles" on articles;
+create policy "admins can update articles" on articles
+  for update using (is_admin()) with check (is_admin());
+
+drop policy if exists "admins can delete articles" on articles;
+create policy "admins can delete articles" on articles
+  for delete using (is_admin());
+
+drop policy if exists "tool settings are publicly readable" on tool_settings;
+create policy "tool settings are publicly readable" on tool_settings
+  for select using (true);
+
+drop policy if exists "admins can upsert tool settings" on tool_settings;
+create policy "admins can upsert tool settings" on tool_settings
+  for insert with check (is_admin());
+
+drop policy if exists "admins can update tool settings" on tool_settings;
+create policy "admins can update tool settings" on tool_settings
+  for update using (is_admin()) with check (is_admin());
+
+drop policy if exists "admins can delete tool settings" on tool_settings;
+create policy "admins can delete tool settings" on tool_settings
+  for delete using (is_admin());
+
+-- 非表示にした質問・回答は、そもそも一般の閲覧者には返さない
+drop policy if exists "questions are publicly readable" on questions;
+create policy "questions are publicly readable" on questions
+  for select using (hidden = false);
+
+drop policy if exists "admins can read hidden questions" on questions;
+create policy "admins can read hidden questions" on questions
+  for select using (is_admin());
+
+drop policy if exists "answers are publicly readable" on answers;
+create policy "answers are publicly readable" on answers
+  for select using (hidden = false);
+
+drop policy if exists "admins can read hidden answers" on answers;
+create policy "admins can read hidden answers" on answers
+  for select using (is_admin());
+
+-- Q&Aの管理（非表示・削除）は管理者のみ
+drop policy if exists "admins can update questions" on questions;
+create policy "admins can update questions" on questions
+  for update using (is_admin()) with check (is_admin());
+
+drop policy if exists "admins can delete questions" on questions;
+create policy "admins can delete questions" on questions
+  for delete using (is_admin());
+
+drop policy if exists "admins can update answers" on answers;
+create policy "admins can update answers" on answers
+  for update using (is_admin()) with check (is_admin());
+
+drop policy if exists "admins can delete answers" on answers;
+create policy "admins can delete answers" on answers
+  for delete using (is_admin());
+
+drop policy if exists "admins can delete reports" on reports;
+create policy "admins can delete reports" on reports
+  for delete using (is_admin());
+
+-- ============================================================================
+-- 今サイトに載っている記事を取り込む（管理画面から編集できるようにする）
+-- ============================================================================
 
 insert into articles (
   slug, title, category, summary, body, author, read_time, published_at,
