@@ -412,10 +412,35 @@
     font-size:0.7em;
     color:#777;
   }
+  .masu-ruby{
+    /* 読み仮名は、マス目のかたまり全体の中央にそろえる */
+    ruby-align:center;
+  }
   .masu-ruby rt{
     font-size:0.55em;
     color:var(--accent-dark);
     font-weight:700;
+  }
+  /* 2字以上の熟語は、読み仮名が「どちらか一方の漢字のもの」と誤解されないよう、
+     マス目のかたまりを角かっこで囲んで、読みが全体にかかることを示す */
+  .masu-group{display:inline-block;}
+  .masu-group.multi{
+    position:relative;
+    /* かっこの幅は文字の大きさに比例させる（紙面が詰まって文字を縮めるときは
+       かっこも一緒に縮み、収まりに影響しにくくする） */
+    padding-right:0.26em;
+  }
+  .masu-group.multi::after{
+    content:"";
+    position:absolute;
+    top:2px;
+    bottom:2px;
+    right:0.02em;
+    width:0.16em;
+    border-right:2px solid var(--accent-dark);
+    border-top:2px solid var(--accent-dark);
+    border-bottom:2px solid var(--accent-dark);
+    border-radius:0 3px 3px 0;
   }
   .q-boxes{
     display:inline-flex;
@@ -1807,6 +1832,14 @@
 
   // 書き取りマス目のHTMLを作る共通ヘルパー（学年別自動作成・自作問題の両方で使う）。
   // 中央の点線は「マスの中央に点線を入れる」チェックの状態に合わせて付け外しする。
+  // マス目のかたまり＋読み仮名（ルビ）を作る。マスが2つ以上のときは、読みが
+  // どちらか片方の漢字のものだと誤解されないよう、かたまりを角かっこで囲む。
+  function rubyBoxesHtml(boxesHtml, reading, boxCount){
+    const cls = 'masu-group' + (boxCount > 1 ? ' multi' : '');
+    return '<ruby class="masu-ruby"><span class="' + cls + '">' + boxesHtml + '</span>'
+      + '<rt>' + escapeHtml(reading || '') + '</rt></ruby>';
+  }
+
   function masuHtml(ch, withAns){
     const centerLine = document.getElementById('masuCenterLine').checked;
     const cls = 'masu' + (centerLine ? ' with-center-line' : '');
@@ -2162,13 +2195,15 @@
       }
       const parts = kakiSentenceParts(q.entry);
       if(parts){
-        const boxesHtml = toSegments(parts.target).map(seg => {
+        const targetSegs = toSegments(parts.target);
+        const boxesHtml = targetSegs.map(seg => {
           if(seg.type === 'kanji'){
             return masuHtml(seg.text, withAns);
           }
           return '<span class="kana-fixed">' + escapeHtml(seg.text) + '</span>';
         }).join('');
-        const rubyBlank = '<ruby class="masu-ruby">' + boxesHtml + '<rt>' + escapeHtml(parts.reading) + '</rt></ruby>';
+        const kanjiCount = targetSegs.filter(seg => seg.type === 'kanji').length;
+        const rubyBlank = rubyBoxesHtml(boxesHtml, parts.reading, kanjiCount);
         return '<div class="q-item kaki">'
           + '<div class="q-head">'
           + '<span class="q-num">' + num + '</span>'
@@ -2640,10 +2675,11 @@
       const before = q.sentence.slice(0, idx);
       const after = q.sentence.slice(idx + q.target.length);
       if(q.type === 'kaki'){
-        const boxesHtml = [...q.target].map(ch => masuHtml(ch, withAns)).join('');
+        const targetChars = [...q.target];
+        const boxesHtml = targetChars.map(ch => masuHtml(ch, withAns)).join('');
         // ふりがなと同じ<ruby>を使うと、ブラウザが縦書きでも自動的にマス目の
         // 横（右側）に読みを添えてくれる。
-        const rubyBlank = '<ruby class="masu-ruby">' + boxesHtml + '<rt>' + escapeHtml(q.yomi || '') + '</rt></ruby>';
+        const rubyBlank = rubyBoxesHtml(boxesHtml, q.yomi || '', targetChars.length);
         return '<div class="q-item kaki">'
           + '<div class="q-head">'
           + '<span class="q-num">' + num + '</span>'
