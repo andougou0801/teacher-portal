@@ -67,6 +67,11 @@
     border-radius:14px;padding:12px 16px;font-size:14px;font-weight:800;
     margin-bottom:16px;text-align:center;line-height:1.5;
   }
+  .mastery-progress{
+    background:linear-gradient(135deg,#fff4da,#ffe8b8);border:2px solid #f5a623;color:#8a5a00;
+    border-radius:14px;padding:10px 16px;font-size:14px;font-weight:800;
+    margin-bottom:16px;text-align:center;
+  }
   .op-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px;}
   .op-btn{
     border:3px solid #e2e8f0;background:#fafcff;border-radius:16px;
@@ -99,6 +104,8 @@
     padding:3px 8px;font-size:11px;font-weight:800;white-space:nowrap;
   }
   .level-btn.selected .lv-grade{background:var(--accent);color:#fff;}
+  .level-btn.mastered{border-color:#f5a623;}
+  .level-btn .lv-clear{flex:none;font-size:17px;line-height:1;}
 
   .btn-primary{
     width:100%;padding:16px;border:none;border-radius:16px;
@@ -265,6 +272,10 @@
   }
   .celebrate-overlay.show .celebrate-text{animation:bounceIn .55s cubic-bezier(.34,1.56,.64,1) forwards;}
   @keyframes bounceIn{0%{transform:scale(0.4);opacity:0;}60%{transform:scale(1.12);opacity:1;}100%{transform:scale(1);opacity:1;}}
+  .celebrate-overlay.mastered .celebrate-text{
+    background:linear-gradient(135deg,#f5a623,#e08e00);font-size:44px;
+  }
+  .celebrate-overlay.mastered.show .celebrate-text{animation:bounceIn .55s cubic-bezier(.34,1.56,.64,1) forwards, starPop 0.6s ease 0.55s 2;}
 
   .confetti-container{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:49;}
   .confetti-piece{
@@ -326,6 +337,7 @@
   <!-- ================= SELECT SCREEN ================= -->
   <div id="screen-select">
     <div class="notebook-tip">📓 じっさいに ノートにも かきながら、もんだいを といてみよう！</div>
+    <div class="mastery-progress" id="mastery-progress">🏆 クリアしたレベル：0 / 40</div>
     <div class="card">
       <h2 class="section-title">① けいさんの しゅるいを えらぼう</h2>
       <div class="op-grid" id="op-grid">
@@ -928,6 +940,25 @@ const state={op:null, level:null, questionCount:0, sessionSolved:0, sessionHintU
 let answerCells=[];
 let muted = safeStorage.get('hissan_muted')==='1';
 let lifetimeStars = parseInt(safeStorage.get('hissan_stars')||'0',10);
+
+/* ---------------- mastery (level clear) tracking ---------------- */
+const MASTERY_THRESHOLD = 5; // ヒント/おしえてに頼らず自力で解けた回数がこれに達したら「クリア」
+let masteryData = {};
+try{ masteryData = JSON.parse(safeStorage.get('hissan_mastery')||'{}') || {}; }catch(e){ masteryData = {}; }
+function masteryKey(op,level){ return op+'-'+level; }
+function getMasteryCount(op,level){ return masteryData[masteryKey(op,level)]||0; }
+function isMastered(op,level){ return getMasteryCount(op,level) >= MASTERY_THRESHOLD; }
+function saveMastery(){ safeStorage.set('hissan_mastery', JSON.stringify(masteryData)); }
+function countMasteredLevels(){
+  let n=0;
+  Object.keys(OP_META).forEach(op=>{
+    OP_META[op].levels.forEach((item,idx)=>{ if(isMastered(op, idx+1)) n++; });
+  });
+  return n;
+}
+function totalLevelCount(){
+  return Object.keys(OP_META).reduce((sum,op)=>sum+OP_META[op].levels.length, 0);
+}
 
 /* ---------------- audio ---------------- */
 let audioCtx=null;
@@ -1555,6 +1586,7 @@ function showConfetti(){
 function celebrate(){
   state.sessionSolved++;
   const overlayText=document.getElementById('celebrate-text');
+  let justMastered=false;
   if(usedTeachThisProblem){
     // 「おしえて」で答えを教えてもらった問題は、自力で解いたときと同じ⭐にはしない。
     // がんばって最後までは進めたことは認めつつ、星のインフレを防ぐ。
@@ -1570,16 +1602,30 @@ function celebrate(){
     void badgeEl.offsetWidth;
     badgeEl.classList.add('pop');
     if(overlayText) overlayText.textContent='せいかい！🎉';
+
+    // ヒントに頼らず自力で解けた回数を、レベルごとにクリア判定へ積み上げる
+    const key=masteryKey(state.op,state.level);
+    const before=getMasteryCount(state.op,state.level);
+    if(before<MASTERY_THRESHOLD){
+      masteryData[key]=before+1;
+      saveMastery();
+      if(masteryData[key]>=MASTERY_THRESHOLD){
+        justMastered=true;
+        if(overlayText) overlayText.textContent='🏆 レベルクリア！';
+      }
+    }
   }
   if(divRemainderLabel) divRemainderLabel.classList.add('show');
   showConfetti();
+  if(justMastered) setTimeout(showConfetti,300);
   playTone('success');
   const overlay=document.getElementById('celebrate-overlay');
+  overlay.classList.toggle('mastered', justMastered);
   overlay.classList.add('show');
   setTimeout(()=>{
     overlay.classList.remove('show');
     document.getElementById('next-btn-wrap').style.display='block';
-  }, 1200);
+  }, justMastered ? 2000 : 1200);
 }
 function updateStarBadge(){
   document.getElementById('star-badge').textContent='⭐ '+lifetimeStars;
@@ -1673,6 +1719,16 @@ function showScreen(id){
   ['screen-select','screen-play','screen-summary'].forEach(s=>{
     document.getElementById(s).classList.toggle('hidden', s!==id);
   });
+  if(id==='screen-select'){
+    buildLevelGrid();
+    updateMasteryProgress();
+  }
+}
+
+function updateMasteryProgress(){
+  const box=document.getElementById('mastery-progress');
+  if(!box) return;
+  box.textContent=`🏆 クリアしたレベル：${countMasteredLevels()} / ${totalLevelCount()}`;
 }
 
 function buildLevelGrid(){
@@ -1681,9 +1737,12 @@ function buildLevelGrid(){
   if(!state.op) return;
   OP_META[state.op].levels.forEach((item,idx)=>{
     const lv=idx+1;
+    const mastered=isMastered(state.op,lv);
     const btn=document.createElement('button');
-    btn.className='level-btn'+(state.level===lv?' selected':'');
-    btn.innerHTML=`<span class="lv-num">${lv}</span><span class="lv-text">${item.label}</span><span class="lv-grade">${item.grade}</span>`;
+    btn.className='level-btn'+(state.level===lv?' selected':'')+(mastered?' mastered':'');
+    btn.innerHTML=`<span class="lv-num">${lv}</span>`
+      +(mastered?'<span class="lv-clear" title="クリア済み">🏆</span>':'')
+      +`<span class="lv-text">${item.label}</span><span class="lv-grade">${item.grade}</span>`;
     btn.addEventListener('click',()=>{
       state.level=lv;
       buildLevelGrid();
