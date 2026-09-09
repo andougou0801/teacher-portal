@@ -61,6 +61,31 @@ create table if not exists tool_settings (
 );
 
 -- ============================================================================
+-- Q&Aの通報（002_reports.sql 未実行のプロジェクトでも動くよう、ここで作る）
+-- ============================================================================
+create table if not exists reports (
+  id uuid primary key default gen_random_uuid(),
+  question_id uuid references questions(id) on delete cascade,
+  answer_id uuid references answers(id) on delete cascade,
+  reason text not null check (char_length(reason) <= 100),
+  created_at timestamptz not null default now(),
+  constraint reports_target_check check (
+    (question_id is not null and answer_id is null)
+    or (question_id is null and answer_id is not null)
+  )
+);
+
+alter table reports enable row level security;
+
+drop policy if exists "reports are publicly readable" on reports;
+create policy "reports are publicly readable" on reports
+  for select using (true);
+
+drop policy if exists "anyone can insert reports" on reports;
+create policy "anyone can insert reports" on reports
+  for insert with check (true);
+
+-- ============================================================================
 -- Q&Aの非表示フラグ（管理画面から不適切な投稿を隠せるようにする）
 -- ============================================================================
 alter table questions add column if not exists hidden boolean not null default false;
