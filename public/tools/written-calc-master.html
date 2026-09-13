@@ -1475,9 +1475,13 @@ function pickInputTarget(){
   if(t && t.classList && t.classList.contains('cell') && !t.disabled) return t;
   return answerCells.find(c=>!c.classList.contains('correct'));
 }
+function scrollCellIntoView(el){
+  if(!el) return;
+  try{ el.scrollIntoView({block:'nearest', inline:'nearest'}); }catch(e){}
+}
 function focusNextCell(){
   const target=answerCells.find(c=>!c.classList.contains('correct'));
-  if(target){ target.focus(); }
+  if(target){ target.focus(); scrollCellIntoView(target); }
 }
 function onCellInput(e){
   const el=e.target;
@@ -1537,6 +1541,7 @@ function onHint(){
   // あとからクラスをつけると新しい問題の直後などフォーカスが無い状態で
   // ヒントが一瞬で消えてしまうバグになる（先にフラグだけ保存しておく）。
   target.focus();
+  scrollCellIntoView(target);
   lastFocusedCell=target;
   state.sessionHintUses=(state.sessionHintUses||0)+1;
   if(alreadyHinted){
