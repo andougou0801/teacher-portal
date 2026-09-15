@@ -221,6 +221,19 @@ export const tools: Tool[] = [
     mobileNote:
       "スマートフォンでも使えますが、クラス全員分をまとめて作成する場合はPCでの利用を推奨します。",
   },
+  {
+    slug: "minutes-maker",
+    name: "議事録メーカー",
+    description:
+      "会議中に録音するだけで、話した言葉がその場で文字になり、要約・決定事項・やること（担当と期限つき）・課題・次回の予定まで自動で整理します。声の高さと声質から話者を聞き分けて「Aさん」「Bさん」と記録し、会議の前に参加者の声を登録しておけば最初から実名で残せます。20人規模の会議でも、あとから人数を指定して話者を整理し直せます。誤変換はその場で直せ、コピー・印刷・PDF・テキスト保存に対応。音声も文章も外部には送信されません。",
+    icon: "🎙",
+    tags: ["校務効率化", "無料"],
+    audience: "teacher",
+    status: "live",
+    file: "/tools/minutes-maker.html",
+    mobileNote:
+      "音声認識はChrome・Edge・Safariで動きます（Firefoxは非対応）。iPad・iPhoneでは区切りごとに認識が止まりやすいため、止まったら画面の「認識を再開」を押してください。長い会議はPCでの利用を推奨します。",
+  },
 ];
 
 export function getToolBySlug(slug: string): Tool | undefined {

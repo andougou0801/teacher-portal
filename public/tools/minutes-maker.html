@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>議事録メーカー</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+    --rec:#e0464b;
+    --ok:#2e9e6b;
+    --line:#d8dfea;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:20px 14px 80px;
+  }
+  .wrap{max-width:840px;width:100%;}
+  h1{
+    text-align:center;
+    font-size:21px;
+    color:var(--accent-dark);
+    margin:6px 0 4px;
+  }
+  .privacy-note{
+    text-align:center;
+    font-size:11px;
+    color:#8a93a3;
+    margin:0 0 18px;
+    line-height:1.6;
+  }
+  .card{
+    background:#fff;
+    border-radius:20px;
+    padding:20px 18px;
+    box-shadow:0 4px 16px rgba(30,50,90,0.08);
+    margin-bottom:16px;
+  }
+  h2{
+    font-size:15px;
+    color:var(--accent-dark);
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  h2 .num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:22px;height:22px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;font-size:12px;
+    flex:none;
+  }
+  label{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:#555;
+    margin-bottom:5px;
+  }
+  input[type=text],input[type=date],textarea,select{
+    width:100%;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    font-size:14px;
+    font-family:inherit;
+    background:#fbfcfe;
+    color:#2a2a2a;
+  }
+  input:focus,textarea:focus,select:focus{outline:2px solid rgba(45,108,223,.25);border-color:var(--accent);}
+  textarea{min-height:150px;line-height:1.7;resize:vertical;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+  .btn{
+    appearance:none;border:0;cursor:pointer;
+    font-family:inherit;font-size:14px;font-weight:700;
+    padding:12px 18px;border-radius:999px;
+    background:var(--accent);color:#fff;
+    box-shadow:0 3px 10px rgba(45,108,223,.25);
+    transition:transform .08s ease, filter .15s ease;
+  }
+  .btn:hover{filter:brightness(1.06);}
+  .btn:active{transform:translateY(1px);}
+  .btn:disabled{background:#c3cbd8;box-shadow:none;cursor:not-allowed;}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:1.5px solid var(--line);box-shadow:none;}
+  .btn.rec{background:var(--rec);box-shadow:0 3px 10px rgba(224,70,75,.28);}
+  .btn.sm{font-size:12px;padding:8px 14px;}
+  .btn.big{font-size:16px;padding:15px 26px;}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;background:#e8eef9;padding:5px;border-radius:14px;}
+  .tabs button{
+    flex:1;appearance:none;border:0;cursor:pointer;
+    font-family:inherit;font-size:13px;font-weight:700;
+    padding:10px 6px;border-radius:10px;background:transparent;color:#66738a;
+  }
+  .tabs button.active{background:#fff;color:var(--accent-dark);box-shadow:0 2px 6px rgba(30,50,90,.10);}
+  .pane{display:none;}
+  .pane.active{display:block;}
+  .status{
+    display:flex;align-items:center;gap:10px;
+    font-size:13px;font-weight:700;color:#66738a;
+    background:#f5f8fd;border-radius:12px;padding:10px 14px;margin:12px 0;
+  }
+  .dot{width:10px;height:10px;border-radius:50%;background:#c3cbd8;flex:none;}
+  .dot.on{background:var(--rec);animation:pulse 1.2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .timer{font-variant-numeric:tabular-nums;font-size:15px;color:#2a2a2a;margin-left:auto;}
+  .speakers{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;max-height:136px;overflow-y:auto;}
+  .spk{
+    appearance:none;border:1.5px solid var(--line);background:#fff;
+    border-radius:999px;padding:7px 13px;font-size:12px;font-weight:700;
+    color:#55606f;cursor:pointer;font-family:inherit;
+  }
+  .spk.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .autospk{
+    display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+    margin-top:12px;padding:10px 12px;border-radius:12px;background:#f5f8fd;
+  }
+  .autospk .sw{display:flex;align-items:center;gap:6px;margin:0;font-size:12px;font-weight:700;color:#55606f;}
+  .autospk input[type=checkbox]{width:auto;}
+  .autospk select{width:auto;padding:5px 8px;font-size:12px;border-radius:8px;}
+  .detected{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--accent-dark);}
+  .enroll{
+    margin-top:12px;border:1px solid var(--line);border-radius:12px;
+    background:#fcfdff;overflow:hidden;
+  }
+  .enroll summary{
+    cursor:pointer;padding:11px 14px;font-size:12.5px;font-weight:700;color:var(--accent-dark);
+    background:#f5f8fd;list-style:none;
+  }
+  .enroll summary::-webkit-details-marker{display:none;}
+  .enroll summary::before{content:"▸ ";}
+  .enroll[open] summary::before{content:"▾ ";}
+  .enroll .enroll-body{padding:12px 14px 14px;}
+  .spk.done{background:#e9f6f0;border-color:#a9ddc7;color:var(--ok);}
+  .spk.busy{background:var(--rec);border-color:var(--rec);color:#fff;}
+  .map{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-top:12px;}
+  .map .unit{display:flex;flex-direction:column;gap:3px;}
+  .map .unit span{font-size:11px;color:#8a93a3;font-weight:700;}
+  .map input{width:120px;padding:7px 10px;font-size:13px;}
+  .live{
+    border:1px dashed var(--line);border-radius:12px;padding:12px;
+    min-height:54px;background:#fcfdff;font-size:14px;line-height:1.7;
+    color:#8a93a3;margin-top:12px;
+  }
+  .live b{color:#2a2a2a;font-weight:400;}
+  .hint{font-size:11.5px;color:#8a93a3;line-height:1.7;margin:8px 0 0;}
+  .warn{
+    background:#fff7ed;border:1px solid #f6d9b0;color:#8a5a1a;
+    border-radius:12px;padding:11px 13px;font-size:12px;line-height:1.7;margin-top:12px;
+  }
+  .out{
+    border:1px solid var(--line);border-radius:14px;background:#fff;
+    padding:20px 22px;line-height:1.9;font-size:14px;
+  }
+  .out h3{font-size:17px;color:var(--accent-dark);margin:0 0 6px;border-bottom:2px solid #e8eef9;padding-bottom:6px;}
+  .out h4{font-size:14px;color:#33415c;margin:20px 0 6px;padding-left:9px;border-left:4px solid var(--accent);}
+  .out h5{font-size:13px;color:#55606f;margin:14px 0 4px;}
+  .out ul{margin:4px 0 4px 2px;padding-left:20px;}
+  .out li{margin-bottom:4px;}
+  .out p{margin:4px 0;}
+  .out .meta{font-size:12.5px;color:#66738a;}
+  .out hr{border:0;border-top:1px solid #eceff5;margin:16px 0;}
+  .badge{font-size:11px;background:#e8eef9;color:var(--accent-dark);border-radius:6px;padding:2px 7px;margin-left:6px;font-weight:700;}
+  .kw{display:inline-block;background:#eef3fb;color:#44536b;border-radius:999px;padding:3px 10px;font-size:12px;margin:0 5px 5px 0;}
+  .foot{text-align:center;font-size:11px;color:#9aa3b2;margin-top:6px;}
+  .split{display:none;}
+  @media print{
+    body{background:#fff;padding:0;display:block;}
+    .noprint{display:none !important;}
+    .card{box-shadow:none;border-radius:0;padding:0;margin:0;}
+    .out{border:0;padding:0;font-size:12pt;}
+    .wrap{max-width:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>議事録メーカー</h1>
+  <p class="privacy-note">録音・文字起こし・要約まで、すべてこのパソコンの中だけで処理します。<br>音声も文章もどこにも送信されません。</p>
+
+  <!-- ① 会議の情報 -->
+  <div class="card noprint">
+    <h2><span class="num">1</span>会議の情報</h2>
+    <div class="grid">
+      <div>
+        <label>会議名</label>
+        <input type="text" id="mTitle" placeholder="例）第3回 学年会議">
+      </div>
+      <div>
+        <label>日付</label>
+        <input type="date" id="mDate">
+      </div>
+      <div>
+        <label>場所</label>
+        <input type="text" id="mPlace" placeholder="例）会議室A / オンライン">
+      </div>
+      <div>
+        <label>記録者</label>
+        <input type="text" id="mWriter" placeholder="例）安藤">
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <label>参加者（「、」または「,」区切り）</label>
+      <input type="text" id="mMembers" placeholder="例）田中、鈴木、佐藤">
+      <p class="hint">参加者を入れておくと、録音中にワンタップで発言者を切り替えられます。</p>
+    </div>
+  </div>
+
+  <!-- ② 文字起こし -->
+  <div class="card noprint">
+    <h2><span class="num">2</span>文字起こし</h2>
+
+    <div class="tabs">
+      <button class="active" data-tab="rec">マイクで録音</button>
+      <button data-tab="file">音声ファイル</button>
+      <button data-tab="paste">文章を貼り付け</button>
+    </div>
+
+    <!-- 録音タブ -->
+    <div class="pane active" id="pane-rec">
+      <div class="row">
+        <button class="btn rec big" id="btnRec">● 録音開始</button>
+        <button class="btn ghost" id="btnStar" disabled>★ ここ重要</button>
+        <button class="btn ghost sm" id="btnDlAudio" style="display:none">音声を保存</button>
+      </div>
+      <div class="status">
+        <span class="dot" id="dot"></span><span id="statusText">待機中</span>
+        <button class="btn sm" id="btnResume" style="display:none">▶ 認識を再開</button>
+        <span class="timer" id="timer">00:00</span>
+      </div>
+      <div class="speakers" id="speakers"></div>
+
+      <div class="autospk">
+        <label class="sw"><input type="checkbox" id="autoSpk" checked> 声で話者を自動判別</label>
+        <label class="sw">聞き分け
+          <select id="sens">
+            <option value="0.72">ゆるめ（数人）</option>
+            <option value="0.58" selected>ふつう</option>
+            <option value="0.46">細かめ（大人数）</option>
+          </select>
+        </label>
+        <span class="detected" id="detected">未検出</span>
+      </div>
+
+      <details class="enroll" id="enrollBox">
+        <summary>声の登録（出席確認）— 大人数の会議はこちらが確実です</summary>
+        <div class="enroll-body">
+          <p class="hint" style="margin:0 0 10px">
+            会議のはじめに、ひとりずつ名前を押して<b>「おはようございます、◯◯です」と3秒ほど</b>話してもらいます。<br>
+            登録すると、その人の発言に<b>最初から実名が付きます</b>。登録した声はこのパソコンに残り、次回の会議でもそのまま使えます。
+          </p>
+          <div class="speakers" id="enrollChips"></div>
+          <div class="row" style="margin-top:10px">
+            <span class="hint" id="enrollStatus" style="margin:0">まだ登録がありません</span>
+            <button class="btn ghost sm" id="btnEnrollClear" style="margin-left:auto">登録を消す</button>
+          </div>
+        </div>
+      </details>
+
+      <div class="live" id="live">認識中の文字がここに表示されます。</div>
+      <p class="hint">・Google Chrome / Microsoft Edge / Safari で動きます（Firefox は非対応）。<br>
+        ・「★ ここ重要」を押すと直前の発言に印がつき、要約に必ず入ります。<br>
+        ・長い会議でも自動でつながります。ページを閉じても下書きは自動保存されます。</p>
+      <div class="warn" id="unsupported" style="display:none">
+        このブラウザは音声認識に対応していません。Chrome・Edge・Safari で開くか、「文章を貼り付け」タブをお使いください。
+      </div>
+      <div class="warn" id="iosNote" style="display:none">
+        <b>iPad・iPhone をお使いの方へ</b><br>
+        Safari でも録音できますが、ひと区切りごとに認識が止まりやすい仕様です。止まったら上の<b>「▶ 認識を再開」</b>を押してください（自動で戻ることもあります）。<br>
+        ・<b>設定 →「画面表示と明るさ」→「自動ロック」を「なし」</b>にしてください。画面が消えると録音も止まります<br>
+        ・録音中はほかのアプリに切り替えないでください<br>
+        ・<b>いちばん確実な方法</b>：下の「文字起こし」欄をタップし、キーボードの<b>マイクボタン（音声入力）</b>で入れる方法もおすすめです。長い会議は、途中で何度か区切って入力してください
+      </div>
+    </div>
+
+    <!-- ファイルタブ -->
+    <div class="pane" id="pane-file">
+      <label>録音済みの音声ファイル</label>
+      <input type="file" id="audioFile" accept="audio/*,video/*">
+      <audio id="player" controls style="width:100%;margin-top:12px"></audio>
+      <div class="row" style="margin-top:12px">
+        <button class="btn rec" id="btnFileRec">▶ 再生しながら文字起こし</button>
+        <label style="margin:0;font-weight:700">速度
+          <select id="rate" style="width:auto;display:inline-block;margin-left:6px">
+            <option value="0.9">0.9倍</option>
+            <option value="1" selected>1.0倍</option>
+            <option value="1.25">1.25倍</option>
+            <option value="1.5">1.5倍</option>
+          </select>
+        </label>
+      </div>
+      <div class="live" id="live2">認識中の文字がここに表示されます。</div>
+      <div class="warn">
+        <b>この方式の注意</b><br>
+        ブラウザは音声ファイルを直接読み取れないため、<u>スピーカーから流した音をマイクで拾って</u>文字にします。<br>
+        ・イヤホンは外し、スピーカーの音量を上げてください<br>
+        ・静かな部屋で行ってください<br>
+        ・うまくいかない場合は、他の文字起こしサービスの結果を「文章を貼り付け」タブに貼るのが確実です
+      </div>
+    </div>
+
+    <!-- 貼り付けタブ -->
+    <div class="pane" id="pane-paste">
+      <label>文字起こし済みの文章を貼り付け</label>
+      <textarea id="pasteBox" placeholder="スマホの音声入力やほかの文字起こしサービスの結果を貼り付けてください。&#10;&#10;「田中: 〜」のように発言者を書いておくと、発言者ごとに整理されます。"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost" id="btnPaste">下の文字起こし欄に取り込む</button>
+      </div>
+    </div>
+
+    <hr style="border:0;border-top:1px solid #eceff5;margin:18px 0">
+    <label>文字起こし（そのまま直せます）</label>
+    <textarea id="transcript" style="min-height:230px" placeholder="ここに文字起こしがたまっていきます。誤変換はここで直してから議事録を作成してください。"></textarea>
+    <div id="reclusterWrap" style="display:none">
+      <div class="row" style="margin-top:12px">
+        <button class="btn ghost sm" id="btnRecluster">話者をあとから整理する</button>
+        <label class="sw" style="margin:0;font-size:12px;font-weight:700;color:#55606f;display:flex;align-items:center;gap:6px">
+          人数 <input type="number" id="kNum" min="2" max="26" style="width:70px;padding:7px 8px">人
+        </label>
+        <span class="hint" id="reclusterMsg" style="margin:0"></span>
+      </div>
+      <p class="hint">録音が終わったあと、<b>実際の参加人数を入れて</b>押すと、会議全体をもう一度見直して話者を割り当て直します。録音中の判定よりも正確になります。</p>
+    </div>
+
+    <div id="mapWrap" style="display:none">
+      <label style="margin-top:14px">聞き分けた話者に名前をつける</label>
+      <div class="map" id="spkMap"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost sm" id="btnMap">名前を反映する</button>
+        <span class="hint" style="margin:0">※声の似た人はまとめられることがあります。違っていたら上の文字起こしを直接直してください。</span>
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <span class="hint" id="charCount" style="margin:0">0文字</span>
+      <button class="btn ghost sm" id="btnClear" style="margin-left:auto">全部消す</button>
+    </div>
+  </div>
+
+  <!-- ③ 議事録 -->
+  <div class="card noprint">
+    <h2><span class="num">3</span>議事録をつくる</h2>
+    <div class="row">
+      <button class="btn big" id="btnMake">議事録を作成</button>
+      <label style="margin:0;font-weight:700">要約の細かさ
+        <select id="detail" style="width:auto;display:inline-block;margin-left:6px">
+          <option value="s">短め</option>
+          <option value="m" selected>ふつう</option>
+          <option value="l">くわしく</option>
+        </select>
+      </label>
+      <label style="margin:0;font-weight:700;font-size:12px;display:flex;align-items:center;gap:5px">
+        <input type="checkbox" id="incFull" style="width:auto"> 全文も入れる
+      </label>
+    </div>
+    <p class="hint">決定事項・宿題（ToDo）・課題・次回予定を自動で拾い出します。作成後は下の文章を直接直せます。</p>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none">
+    <h2 class="noprint"><span class="num">4</span>できあがった議事録</h2>
+    <div class="out" id="preview"></div>
+    <div class="row noprint" style="margin-top:16px">
+      <button class="btn" id="btnCopy">文章をコピー</button>
+      <button class="btn ghost" id="btnPrint">印刷 / PDF保存</button>
+      <button class="btn ghost" id="btnMd">.txt で保存</button>
+      <button class="btn ghost sm" id="btnEdit" style="margin-left:auto">文章を直す</button>
+    </div>
+    <div id="editWrap" class="noprint" style="display:none;margin-top:12px">
+      <label>議事録の文章（直したら「反映」を押してください）</label>
+      <textarea id="mdBox" style="min-height:320px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn sm" id="btnApply">反映する</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot noprint">議事録メーカー</p>
+</div>
+
+<script>
+"use strict";
+
+/* ============ 便利関数 ============ */
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,"0");
+const fmtTime = s => {
+  s = Math.floor(s);
+  const h = Math.floor(s/3600), m = Math.floor(s%3600/60), sec = s%60;
+  return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
+};
+
+/* ============ 環境の判定 ============ */
+// iPadOS は「Macintosh」と名乗ることがあるので、タッチ対応かどうかも見る
+const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+              (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+/* ============ 音声認識クラス ============ */
+const SRClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recog = null;
+
+/* ============ 状態 ============ */
+const state = {
+  recording:false,
+  mode:"mic",          // mic / file
+  startedAt:0,
+  elapsed:0,
+  timerId:null,
+  speaker:"",
+  manualStop:false,
+  audioChunks:[],
+  audioUrl:null
+};
+
+/* ============ タブ ============ */
+document.querySelectorAll(".tabs button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(".pane").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    $("pane-"+b.dataset.tab).classList.add("active");
+  });
+});
+
+/* ============ 参加者ボタン ============ */
+$("mMembers").addEventListener("input", ()=>{ buildSpeakers(); buildEnroll(); });
+function members(){
+  return $("mMembers").value.split(/[、,，\s]+/).map(s=>s.trim()).filter(Boolean);
+}
+function buildSpeakers(){
+  const box = $("speakers");
+  box.innerHTML = "";
+  const list = members();
+  if(!list.length){
+    box.innerHTML = '<span class="hint" style="margin:0">※参加者を入れると、発言者を切り替えられます</span>';
+    state.speaker = "";
+    return;
+  }
+  const all = ["（指定なし）", ...list];
+  all.forEach(name=>{
+    const b = document.createElement("button");
+    b.className = "spk" + ((name===state.speaker || (name==="（指定なし）" && !state.speaker)) ? " active":"");
+    b.textContent = name;
+    b.addEventListener("click",()=>{
+      state.speaker = (name==="（指定なし）") ? "" : name;
+      buildSpeakers();
+    });
+    box.appendChild(b);
+  });
+}
+
+/* ============ 音声認識 ============ */
+function startRecognition(liveEl){
+  if(!SRClass){ alert("このブラウザは音声認識に対応していません。Chrome か Edge をお使いください。"); return false; }
+  recog = new SRClass();
+  recog.lang = "ja-JP";
+  recog.continuous = true;
+  recog.interimResults = true;
+  recog.maxAlternatives = 1;
+
+  recog.onresult = e=>{
+    let interim = "";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const r = e.results[i];
+      const txt = (r[0].transcript||"").trim();
+      if(!txt) continue;
+      if(r.isFinal) appendLine(txt);
+      else interim += txt;
+    }
+    liveEl.innerHTML = interim ? "<b>"+escapeHtml(interim)+"</b>" : "（認識待ち）";
+  };
+  recog.onerror = e=>{
+    if(e.error === "not-allowed" || e.error === "service-not-allowed"){
+      alert("マイクの使用が許可されていません。アドレスバーのマイクのアイコンから許可してください。");
+      stopAll();
+    }
+  };
+  recog.onend = ()=>{
+    // ブラウザは一定時間で自動停止する（iPhone/iPadは一区切りごと）ので繋ぎ直す
+    if(!state.recording || state.manualStop) return;
+    const now = Date.now();
+    state.ends = (state.ends||[]).filter(t=>now-t < 10000);
+    state.ends.push(now);
+    if(state.ends.length > 12){ showResume(); return; }   // 繋ぎ直せない状態
+    setTimeout(()=>tryRestart(0), 150);
+  };
+  try{ recog.start(); }catch(_){}
+  return true;
+}
+
+function tryRestart(n){
+  if(!state.recording || state.manualStop || !recog) return;
+  try{
+    recog.start();
+    $("btnResume").style.display = "none";
+  }catch(_){
+    if(n < 3) setTimeout(()=>tryRestart(n+1), 400*(n+1));
+    else showResume();
+  }
+}
+function showResume(){
+  if(!state.recording) return;
+  $("btnResume").style.display = "";
+  $("statusText").textContent = "認識が止まりました";
+}
+$("btnResume").addEventListener("click", ()=>{
+  state.ends = [];
+  $("btnResume").style.display = "none";
+  $("statusText").textContent = state.mode==="file" ? "再生＋文字起こし中…" : "録音中…（話してください）";
+  tryRestart(0);
+});
+
+/* 録音中は画面を消さない（対応ブラウザのみ） */
+let wakeLock = null;
+async function keepAwake(on){
+  try{
+    if(on){
+      if("wakeLock" in navigator && !wakeLock) wakeLock = await navigator.wakeLock.request("screen");
+    }else if(wakeLock){
+      await wakeLock.release(); wakeLock = null;
+    }
+  }catch(_){}
+}
+document.addEventListener("visibilitychange", ()=>{
+  if(document.visibilityState === "visible" && state.recording){
+    keepAwake(true);
+    tryRestart(0);            // 画面が戻ったら認識を復帰させる
+  }
+});
+
+function appendLine(text){
+  const t = $("transcript");
+  const stamp = fmtTime(state.elapsed);
+  // 手で選んだ話者を優先し、なければ声から自動判別する
+  let who = state.speaker;
+  if(diar.enabled){ try{ who = diar.consume(stamp, state.speaker) || state.speaker; }catch(_){ who = state.speaker; } }
+  const spk = who ? who+": " : "";
+  const line = `[${stamp}] ${spk}${text}`;
+  t.value += (t.value && !t.value.endsWith("\n") ? "\n" : "") + line + "\n";
+  t.scrollTop = t.scrollHeight;
+  checkCallout(text);
+  updateCount();
+  buildMap();
+  save();
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* =========================================================
+   話者の自動聞き分け
+   ひとつの発話から28個の数値（声紋）を取り出して見分けます。
+     ・声の高さ（基本周波数）の中央値とばらつき … 自己相関で推定
+     ・声質12個の平均と、そのばらつき12個 … メル周波数のケプストラム
+     ・第1・第2フォルマント … 声道の長さの違いが出る
+   大人数でも見分けられるよう、
+     ①声を先に登録しておく（出席確認）
+     ②会議のあとに人数を指定して全体を整理し直す
+   の二段構えにしています。
+   ========================================================= */
+const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const NCEP = 12, NMEL = 24, DIM = NCEP*2 + 4;
+
+// 各成分の重み（声の高さと声質の平均を重く見る）
+const WEIGHT = (()=>{
+  const w = new Float64Array(DIM);
+  for(let i=0;i<NCEP;i++) w[i] = 1.0;              // 声質（平均）
+  for(let i=0;i<NCEP;i++) w[NCEP+i] = 0.5;         // 声質（ばらつき）
+  w[NCEP*2]   = 1.6;                                // 声の高さ
+  w[NCEP*2+1] = 0.4;                                // 高さのばらつき
+  w[NCEP*2+2] = 0.7; w[NCEP*2+3] = 0.7;             // フォルマント
+  return w;
+})();
+const WNORM = Math.sqrt(WEIGHT.reduce((s,v)=>s+v*v,0));
+
+// 統計が貯まるまで使う、標準的なばらつきの見積り
+const PRIOR_VAR = (()=>{
+  const v = new Float64Array(DIM);
+  for(let i=0;i<NCEP;i++) v[i] = 1.5;
+  for(let i=0;i<NCEP;i++) v[NCEP+i] = 0.6;
+  v[NCEP*2] = 0.09; v[NCEP*2+1] = 0.02;
+  v[NCEP*2+2] = 0.05; v[NCEP*2+3] = 0.05;
+  return v;
+})();
+
+const diar = {
+  ctx:null, analyser:null, node:null, timerId:null,
+  elCtx:null, elAnalyser:null, elNode:null, isElement:false,
+  tbuf:null, fbuf:null, sr:48000,
+  noise:0.006, silent:0, mel:null,
+  seg:null, pending:[], clusters:[], enabled:true, thr:0.58,
+  utts:[],                       // 発話ごとの声紋（あとで整理し直すため）
+  stat:null, hint:"",
+
+  reset(){
+    this.seg = null; this.pending = []; this.utts = [];
+    this.clusters = this.clusters.filter(c=>c.enrolled);   // 登録した声は残す
+    this.clusters.forEach(c=>{ c.n = c.n0 || c.n; });
+    this.stat = null;
+    this.noise = 0.006; this.silent = 0; this.hint = "";
+    updateDetected();
+  },
+
+  /* 各成分のばらつきを覚えておき、公平に比べられるようにする */
+  norm(vec){
+    const st = this.stat;
+    const out = new Float64Array(DIM);
+    for(let i=0;i<DIM;i++){
+      const n = st ? st.n : 0;
+      const mean = st && n ? st.sum[i]/n : 0;
+      let varr = PRIOR_VAR[i];
+      if(st && n >= 8){
+        const v = st.sq[i]/n - mean*mean;
+        varr = Math.max(v, PRIOR_VAR[i]*0.15);
+      }
+      out[i] = (vec[i] - mean) / Math.sqrt(varr);
+    }
+    return out;
+  },
+
+  learn(vec){
+    if(!this.stat) this.stat = {n:0, sum:new Float64Array(DIM), sq:new Float64Array(DIM)};
+    this.stat.n++;
+    for(let i=0;i<DIM;i++){ this.stat.sum[i] += vec[i]; this.stat.sq[i] += vec[i]*vec[i]; }
+  },
+
+  async start(source, isElement, force){
+    if(!$("autoSpk").checked && !force) return;
+    this.isElement = !!isElement;
+    // 音声ファイルへの接続は1回しか作れないので、作った配線を使い回す
+    if(isElement && this.elAnalyser){
+      this.ctx = this.elCtx; this.analyser = this.elAnalyser; this.node = this.elNode;
+      this.proc = this.elProc;
+      this.sr = this.ctx.sampleRate;
+      this.tbuf = new Float32Array(this.analyser.fftSize);
+      this.fbuf = new Float32Array(this.analyser.frequencyBinCount);
+      if(this.ctx.state === "suspended") await this.ctx.resume();
+      this.listen();
+      return;
+    }
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return;
+      this.ctx = new AC();
+      if(this.ctx.state === "suspended") await this.ctx.resume();
+      this.sr = this.ctx.sampleRate;
+      this.node = isElement ? this.ctx.createMediaElementSource(source)
+                            : this.ctx.createMediaStreamSource(source);
+      this.analyser = this.ctx.createAnalyser();
+      this.analyser.fftSize = 2048;
+      this.analyser.smoothingTimeConstant = 0.2;
+      this.node.connect(this.analyser);
+      if(isElement) this.node.connect(this.ctx.destination);   // 再生音は止めない
+
+      // 解析は音声処理側で回す。タイマーだとタブが裏に回ったとき止まってしまうため
+      if(this.ctx.createScriptProcessor){
+        this.proc = this.ctx.createScriptProcessor(2048, 1, 1);
+        const mute = this.ctx.createGain();
+        mute.gain.value = 0;
+        this.node.connect(this.proc);
+        this.proc.connect(mute);
+        mute.connect(this.ctx.destination);        // つないでおかないと動かないブラウザがある
+      }
+      if(isElement){
+        this.elCtx = this.ctx; this.elAnalyser = this.analyser;
+        this.elNode = this.node; this.elProc = this.proc;
+      }
+      this.tbuf = new Float32Array(this.analyser.fftSize);
+      this.fbuf = new Float32Array(this.analyser.frequencyBinCount);
+      this.listen();
+    }catch(_){ this.analyser = null; }
+  },
+
+  listen(){
+    this.lastVoiced = performance.now();
+    if(this.proc){
+      this.proc.onaudioprocess = e=>{
+        try{ this.tick(e.inputBuffer.getChannelData(0)); }catch(_){}
+      };
+    }else if(!this.timerId){
+      this.timerId = setInterval(()=>this.tick(), 50);   // 古いブラウザ向けの控え
+    }
+  },
+
+  stop(){
+    if(this.timerId){ clearInterval(this.timerId); this.timerId = null; }
+    if(this.proc) this.proc.onaudioprocess = null;
+    if(this.seg && this.seg.n >= 4 && !this.seg.used) this.pending.push(this.seg);
+    this.seg = null;
+    if(this.isElement) return;    // 再生用の接続は残す（切ると音が出なくなる）
+    try{ if(this.proc) this.proc.disconnect(); }catch(_){}
+    try{ if(this.node) this.node.disconnect(); }catch(_){}
+    this.proc = null;
+    try{ if(this.ctx && this.ctx.state !== "closed") this.ctx.close(); }catch(_){}
+    this.ctx = null; this.analyser = null; this.node = null;
+  },
+
+  tick(buf){
+    if(!this.analyser) return;
+    let src = buf;
+    if(!src){ this.analyser.getFloatTimeDomainData(this.tbuf); src = this.tbuf; }
+    let e = 0;
+    for(let i=0;i<src.length;i++) e += src[i]*src[i];
+    const rms = Math.sqrt(e/src.length);
+    const now = performance.now();
+
+    // 環境音のレベルを追従して、しゃべっているかを判定
+    this.noise = rms < this.noise ? this.noise*0.9 + rms*0.1
+                                  : this.noise*0.999 + rms*0.001;
+    const voiced = rms > Math.max(this.noise*3.2, 0.006);
+
+    if(voiced){
+      this.lastVoiced = now;
+      const f0 = detectPitch(src, this.sr);
+      if(f0){
+        this.analyser.getFloatFrequencyData(this.fbuf);
+        if(!this.mel) this.mel = melBank(this.sr, this.analyser.fftSize);
+        const cep = cepstrum(this.fbuf, this.mel);
+        const fmt = formants(this.fbuf, this.sr, this.analyser.fftSize);
+        if(!this.seg) this.seg = newSeg();
+        const s = this.seg;
+        s.n++;
+        s.f0s.push(f0);
+        for(let i=0;i<NCEP;i++){ s.cs[i] += cep[i]; s.cs2[i] += cep[i]*cep[i]; }
+        if(fmt){ s.f1s.push(fmt[0]); s.f2s.push(fmt[1]); }
+      }
+    }else if(this.seg && now - this.lastVoiced > 350){   // 350msの無音で発話の区切り
+      if(this.seg.n >= 4 && !this.seg.used) this.pending.push(this.seg);
+      this.seg = null;
+    }
+  },
+
+  /* 音声認識が1文を確定したときに呼ぶ → 「Aさん」などを返す
+     override（参加者ボタンで手動指定した名前）があれば、それを正解として声も覚える */
+  consume(stamp, override){
+    stamp = stamp || fmtTime(state.elapsed);
+    if(!this.analyser && !this.pending.length) return override || "";
+    let segs = this.pending.splice(0);
+    if(!segs.length && this.seg && this.seg.n >= 4 && !this.seg.used){
+      segs = [this.seg];
+      this.seg.used = true;     // 同じ発話を二重に使わない
+    }
+    if(!segs.length) return override || "";
+    const vec = embed(segs);
+    if(!vec) return override || "";
+    const n = segs.reduce((a,s)=>a+s.n,0);
+    this.learn(vec);
+
+    let name;
+    if(override){
+      // 手で指定された名前は正解。その声を覚えて、以降の判別に生かす
+      let c = this.clusters.find(x=>x.name === override);
+      if(!c){ c = {name:override, vec:Float64Array.from(vec), n, taught:true}; this.clusters.push(c); }
+      else this.merge(c, vec, n, c.enrolled);
+      name = override;
+      this.hint = "";
+    }else{
+      name = this.assign(vec, n);
+    }
+    this.utts.push({vec, n, stamp, label:name, fixed:!!override});
+    showRecluster();
+    updateDetected(name);
+    return name;
+  },
+
+  /* ひとつの発話を、いちばん近い話者に割り当てる */
+  assign(vec, n){
+    const z = this.norm(vec);
+
+    // 「田中さん、お願いします」の直後は、その人の可能性が高い
+    if(this.hint){
+      const name = this.hint; this.hint = "";
+      let c = this.clusters.find(x=>x.name === name);
+      if(!c){
+        c = {name, vec:Float64Array.from(vec), n, called:true};
+        this.clusters.push(c);
+      }else{
+        this.merge(c, vec, n);
+      }
+      updateDetected(name);
+      return name;
+    }
+
+    const enrolled = this.clusters.filter(c=>c.enrolled);
+    const pool = enrolled.length >= 2 ? enrolled : this.clusters;
+
+    let best = null, bestD = Infinity;
+    pool.forEach(c=>{
+      const d = this.dist(z, c);
+      if(d < bestD){ bestD = d; best = c; }
+    });
+
+    // 登録した声が2人以上あれば、その中から選ぶ。
+    // ただし、どの登録者にも似ていなければ「登録していない人」として別扱いにする
+    if(enrolled.length >= 2 && best && bestD <= this.thr*2.2){
+      this.merge(best, vec, n, true);
+      updateDetected(best.name);
+      return best.name;
+    }
+    if(!best || (bestD > this.thr && this.clusters.length < LETTERS.length && n >= 9)){
+      const c = {name:LETTERS[this.clusters.filter(x=>!x.enrolled).length]+"さん",
+                 vec:Float64Array.from(vec), n};
+      this.clusters.push(c);
+      updateDetected(c.name);
+      return c.name;
+    }
+    this.merge(best, vec, n);
+    updateDetected(best.name);
+    return best.name;
+  },
+
+  dist(z, c){
+    const cz = this.norm(c.vec);
+    let s = 0;
+    for(let i=0;i<DIM;i++){
+      const d = (z[i]-cz[i]) * WEIGHT[i];
+      s += d*d;
+    }
+    return Math.sqrt(s)/WNORM;
+  },
+
+  merge(c, vec, n, gentle){
+    if(c.enrolled && !gentle) return;               // 登録した声はむやみに動かさない
+    const w = gentle ? 0.97 : c.n/(c.n+n);
+    for(let i=0;i<DIM;i++) c.vec[i] = c.vec[i]*w + vec[i]*(1-w);
+    c.n = Math.min(c.n + n, 600);
+  },
+
+  /* 声を登録する（出席確認） */
+  enroll(name, segs){
+    const vec = embed(segs);
+    if(!vec) return false;
+    this.learn(vec);
+    const old = this.clusters.findIndex(c=>c.name === name);
+    if(old >= 0) this.clusters.splice(old,1);
+    this.clusters.push({name, vec:Float64Array.from(vec),
+                        n:segs.reduce((a,s)=>a+s.n,0), n0:60, enrolled:true});
+    saveVoices();
+    buildEnroll();
+    updateDetected();
+    return true;
+  }
+};
+
+function newSeg(){
+  return {n:0, f0s:[], f1s:[], f2s:[],
+          cs:new Float64Array(NCEP), cs2:new Float64Array(NCEP), used:false};
+}
+
+/* 複数のかたまりをまとめて、28個の数値（声紋）にする */
+function embed(segs){
+  const f0s = [], f1s = [], f2s = [];
+  const cs = new Float64Array(NCEP), cs2 = new Float64Array(NCEP);
+  let n = 0;
+  segs.forEach(s=>{
+    f0s.push(...s.f0s); f1s.push(...s.f1s); f2s.push(...s.f2s);
+    for(let i=0;i<NCEP;i++){ cs[i] += s.cs[i]; cs2[i] += s.cs2[i]; }
+    n += s.n;
+  });
+  if(n < 4) return null;
+
+  const v = new Float64Array(DIM);
+  for(let i=0;i<NCEP;i++){
+    const m = cs[i]/n;
+    v[i] = m;
+    v[NCEP+i] = Math.sqrt(Math.max(cs2[i]/n - m*m, 0));
+  }
+  const lf = f0s.map(Math.log2).sort((a,b)=>a-b);
+  const q = p => lf[Math.min(lf.length-1, Math.max(0, Math.floor(lf.length*p)))];
+  v[NCEP*2]   = q(0.5);
+  v[NCEP*2+1] = q(0.75) - q(0.25);
+  v[NCEP*2+2] = f1s.length ? Math.log2(median(f1s)) : 9.0;
+  v[NCEP*2+3] = f2s.length ? Math.log2(median(f2s)) : 10.5;
+  return v;
+}
+
+function median(a){
+  const b = [...a].sort((x,y)=>x-y);
+  return b[Math.floor(b.length/2)];
+}
+
+/* 自己相関による基本周波数（声の高さ）推定 */
+function detectPitch(buf, sr){
+  const D = 4, n = Math.floor(buf.length/D);
+  const x = new Float32Array(n);
+  for(let i=0;i<n;i++){
+    let s = 0;
+    for(let j=0;j<D;j++) s += buf[i*D+j];
+    x[i] = s/D;                                  // 平均＝簡易ローパス
+  }
+  const sr2 = sr/D;
+  let m = 0;
+  for(let i=0;i<n;i++) m += x[i];
+  m /= n;
+  let energy = 0;
+  for(let i=0;i<n;i++){ x[i] -= m; energy += x[i]*x[i]; }
+  if(energy < 1e-5) return null;
+
+  const minLag = Math.max(2, Math.floor(sr2/400));   // 400Hz
+  const maxLag = Math.min(Math.floor(sr2/70), n-2);  // 70Hz
+  let best = -1, bestLag = -1;
+  const corr = new Float32Array(maxLag+1);
+  for(let lag=minLag; lag<=maxLag; lag++){
+    let s = 0, e1 = 0, e2 = 0;
+    for(let i=0; i+lag<n; i++){
+      s  += x[i]*x[i+lag];
+      e1 += x[i]*x[i];
+      e2 += x[i+lag]*x[i+lag];
+    }
+    const c = s/Math.sqrt(e1*e2 + 1e-12);
+    corr[lag] = c;
+    if(c > best){ best = c; bestLag = lag; }
+  }
+  if(best < 0.35 || bestLag <= 0) return null;
+  // オクターブ違いを避けるため、ほぼ同じ強さならより短い周期を採用
+  for(let lag=minLag; lag<bestLag; lag++){
+    if(corr[lag] > best*0.92){ bestLag = lag; break; }
+  }
+  const f0 = sr2/bestLag;
+  return (f0 >= 70 && f0 <= 400) ? f0 : null;
+}
+
+/* メル尺度のフィルタバンク（人の耳の感じ方に合わせた帯域分け）を用意する */
+function melBank(sr, fftSize, nb, fmin, fmax){
+  nb = nb || NMEL; fmin = fmin || 80; fmax = Math.min(fmax || 6000, sr/2 - 100);
+  const toMel = f => 1127*Math.log(1 + f/700);
+  const toHz  = m => 700*(Math.exp(m/1127) - 1);
+  const m0 = toMel(fmin), m1 = toMel(fmax);
+  const binHz = sr/fftSize, nbin = fftSize/2;
+  const edges = [];
+  for(let i=0;i<nb+2;i++) edges.push(Math.min(nbin-1, Math.round(toHz(m0 + (m1-m0)*i/(nb+1))/binHz)));
+  return {edges, nb};
+}
+
+/* スペクトルを対数バンドエネルギーにしてから離散コサイン変換（＝声質の要約） */
+function cepstrum(fb, mel){
+  const {edges, nb} = mel;
+  const e = new Float64Array(nb);
+  for(let b=0;b<nb;b++){
+    const lo = edges[b], mid = edges[b+1], hi = edges[b+2];
+    let s = 0, w = 0;
+    for(let i=lo;i<=hi;i++){
+      if(i < 0 || i >= fb.length) continue;
+      const t = i <= mid ? (mid===lo?1:(i-lo)/(mid-lo)) : (hi===mid?1:(hi-i)/(hi-mid));
+      s += Math.pow(10, fb[i]/10) * t;
+      w += t;
+    }
+    e[b] = Math.log(s/(w||1) + 1e-12);
+  }
+  // 全体の音量（0次）を引いて、大きさに左右されないようにする
+  let mean = 0;
+  for(let b=0;b<nb;b++) mean += e[b];
+  mean /= nb;
+  for(let b=0;b<nb;b++) e[b] -= mean;
+
+  const c = new Float64Array(NCEP);
+  const k = Math.sqrt(2/nb);
+  for(let i=0;i<NCEP;i++){
+    let s = 0;
+    for(let b=0;b<nb;b++) s += e[b]*Math.cos(Math.PI*(i+1)*(b+0.5)/nb);
+    c[i] = s*k;
+  }
+  return c;
+}
+
+/* 第1・第2フォルマント（声道の共鳴。体格や声質の違いが出る） */
+function formants(fb, sr, fftSize){
+  const binHz = sr/fftSize;
+  const peak = (lo,hi)=>{
+    let bi = -1, bv = -Infinity;
+    const a = Math.max(1,Math.floor(lo/binHz)), b = Math.min(fb.length-1, Math.ceil(hi/binHz));
+    for(let i=a;i<=b;i++){
+      // 前後3本を均して、細かいギザギザに惑わされないようにする
+      let s = 0, c = 0;
+      for(let j=Math.max(a,i-2); j<=Math.min(b,i+2); j++){ s += fb[j]; c++; }
+      const v = s/c;
+      if(v > bv){ bv = v; bi = i; }
+    }
+    return bi > 0 ? bi*binHz : null;
+  };
+  const f1 = peak(250, 950), f2 = peak(950, 2700);
+  return (f1 && f2) ? [f1, f2] : null;
+}
+
+function updateDetected(current){
+  const heard = new Set(diar.utts.map(u=>u.label).filter(Boolean));
+  const en = diar.clusters.filter(c=>c.enrolled).length;
+  const parts = [];
+  if(heard.size) parts.push(`${heard.size}人が発言`);
+  if(en) parts.push(`登録${en}人`);
+  $("detected").textContent = parts.length
+    ? parts.join(" ／ ") + (current ? `（今: ${current}）` : "")
+    : "未検出";
+  buildMap();
+}
+
+/* 聞き分けた話者に名前をつけるUI */
+function buildMap(){
+  const found = [...new Set(
+    $("transcript").value.split(/\r?\n/)
+      .map(l=>(l.match(/^\[[^\]]*\]\s*(?:★\s*)?([A-Z]さん)[:：]/)||[])[1])
+      .filter(Boolean)
+  )];
+  const wrap = $("mapWrap"), box = $("spkMap");
+  if(!found.length){ wrap.style.display = "none"; return; }
+  wrap.style.display = "";
+  const prev = {};
+  box.querySelectorAll("input").forEach(i=>prev[i.dataset.key] = i.value);
+  box.innerHTML = "";
+  found.forEach(name=>{
+    const u = document.createElement("div");
+    u.className = "unit";
+    u.innerHTML = `<span>${name}</span>`;
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.dataset.key = name;
+    inp.placeholder = "例）田中";
+    inp.value = prev[name] || "";
+    inp.setAttribute("list","memberList");
+    u.appendChild(inp);
+    box.appendChild(u);
+  });
+  let dl = $("memberList");
+  if(!dl){
+    dl = document.createElement("datalist");
+    dl.id = "memberList";
+    document.body.appendChild(dl);
+  }
+  dl.innerHTML = members().map(m=>`<option value="${m}">`).join("");
+}
+
+/* =========================================================
+   ① 声の登録（出席確認）
+   ========================================================= */
+const VKEY = "gijiroku_voices_v1";
+let enrollBusy = false;
+const wait = ms => new Promise(r=>setTimeout(r, ms));
+
+function saveVoices(){
+  try{
+    localStorage.setItem(VKEY, JSON.stringify(
+      diar.clusters.filter(c=>c.enrolled).map(c=>({name:c.name, vec:Array.from(c.vec)}))
+    ));
+  }catch(_){}
+}
+function loadVoices(){
+  try{
+    (JSON.parse(localStorage.getItem(VKEY) || "[]")).forEach(x=>{
+      if(x && x.vec && x.vec.length === DIM)
+        diar.clusters.push({name:x.name, vec:Float64Array.from(x.vec), n:60, n0:60, enrolled:true});
+    });
+  }catch(_){}
+}
+
+function buildEnroll(){
+  const box = $("enrollChips");
+  box.innerHTML = "";
+  const list = members();
+  if(!list.length){
+    box.innerHTML = '<span class="hint" style="margin:0">※先に①で参加者の名前を入れてください</span>';
+  }else{
+    list.forEach(name=>{
+      const done = diar.clusters.some(c=>c.enrolled && c.name === name);
+      const b = document.createElement("button");
+      b.className = "spk" + (done ? " done" : "");
+      b.textContent = done ? "✓ " + name : name;
+      b.addEventListener("click", ()=>enrollOne(name, b));
+      box.appendChild(b);
+    });
+  }
+  const n = diar.clusters.filter(c=>c.enrolled).length;
+  $("enrollStatus").textContent = n
+    ? `${n}人の声を登録済み（次回の会議でも使えます）`
+    : "まだ登録がありません";
+}
+
+async function enrollOne(name, chip){
+  if(enrollBusy) return;
+  if(state.recording){ alert("録音中は登録できません。いったん録音を止めてください。"); return; }
+  enrollBusy = true;
+  chip.classList.add("busy");
+  let stream = null;
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    diar.pending = []; diar.seg = null;
+    await diar.start(stream, false, true);
+    for(let s=3;s>=1;s--){ chip.textContent = `${name}　話してください ${s}`; await wait(1000); }
+    chip.textContent = `${name}　…`;
+    await wait(600);
+    diar.stop();
+    const segs = diar.pending.concat(diar.seg && diar.seg.n >= 4 ? [diar.seg] : []);
+    diar.pending = []; diar.seg = null;
+    const frames = segs.reduce((a,s)=>a+s.n, 0);
+    if(frames < 12 || !diar.enroll(name, segs)){
+      alert(`${name}さんの声をうまく拾えませんでした。\nマイクの近くで、もう少し長めに話してもらってください。`);
+    }
+  }catch(_){
+    alert("マイクを使えませんでした。マイクの使用を許可してください。");
+  }finally{
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+    enrollBusy = false;
+    buildEnroll();
+  }
+}
+
+$("btnEnrollClear").addEventListener("click", ()=>{
+  if(!diar.clusters.some(c=>c.enrolled)){ alert("登録されている声はありません。"); return; }
+  if(!confirm("登録した声をすべて消します。よろしいですか？")) return;
+  diar.clusters = diar.clusters.filter(c=>!c.enrolled);
+  try{ localStorage.removeItem(VKEY); }catch(_){}
+  buildEnroll(); updateDetected();
+});
+
+/* 「田中さん、お願いします」→ 次の発言者は田中さんの可能性が高い */
+function checkCallout(text){
+  const list = members();
+  if(!list.length) return;
+  const m = text.match(/([^\s、。]{1,10}?)(さん|先生)[、,]?\s*(お願い|どうぞ|いかがで|ご意見|意見は|説明|報告|コメント|よろしく)/);
+  if(!m) return;
+  const cand = list.find(n => m[1].endsWith(n) || n.endsWith(m[1]));
+  if(cand) diar.hint = cand;
+}
+
+/* =========================================================
+   ② 会議のあとに、人数を指定して話者を整理し直す
+   ========================================================= */
+function showRecluster(){
+  const on = diar.utts.length >= 6;
+  $("reclusterWrap").style.display = on ? "" : "none";
+  const k = $("kNum");
+  if(on && !k.value){
+    const m = members().length;
+    k.value = m >= 2 ? m : Math.max(2, new Set(diar.utts.map(u=>u.label).filter(Boolean)).size);
+  }
+}
+
+function dist2(a,b){
+  let s = 0;
+  for(let i=0;i<a.length;i++){ const d = a[i]-b[i]; s += d*d; }
+  return s;
+}
+
+/* 重みつき k-means（k-means++ で初期値を選び、何度か試して一番よいものを採る） */
+function kmeans(X, w, K, iters, restarts){
+  const N = X.length, d = X[0].length;
+  let bestLab = null, bestCost = Infinity;
+  for(let r=0;r<restarts;r++){
+    const cent = [X[Math.floor(Math.random()*N)].slice()];
+    const d2 = new Float64Array(N).fill(Infinity);
+    while(cent.length < K){
+      let tot = 0;
+      for(let i=0;i<N;i++){
+        d2[i] = Math.min(d2[i], dist2(X[i], cent[cent.length-1]));
+        tot += d2[i]*w[i];
+      }
+      if(tot <= 0){ cent.push(X[Math.floor(Math.random()*N)].slice()); continue; }
+      let pick = N-1, acc = Math.random()*tot;
+      for(let i=0;i<N;i++){ acc -= d2[i]*w[i]; if(acc <= 0){ pick = i; break; } }
+      cent.push(X[pick].slice());
+    }
+    const lab = new Int32Array(N);
+    let cost = 0;
+    for(let it=0; it<iters; it++){
+      cost = 0;
+      for(let i=0;i<N;i++){
+        let b = 0, bd = Infinity;
+        for(let c=0;c<K;c++){ const dd = dist2(X[i], cent[c]); if(dd < bd){ bd = dd; b = c; } }
+        lab[i] = b; cost += bd*w[i];
+      }
+      const sum = Array.from({length:K}, ()=>new Float64Array(d));
+      const cnt = new Float64Array(K);
+      for(let i=0;i<N;i++){
+        const c = lab[i]; cnt[c] += w[i];
+        for(let j=0;j<d;j++) sum[c][j] += X[i][j]*w[i];
+      }
+      for(let c=0;c<K;c++){
+        if(cnt[c] <= 0){ cent[c] = X[Math.floor(Math.random()*N)].slice(); continue; }
+        for(let j=0;j<d;j++) cent[c][j] = sum[c][j]/cnt[c];
+      }
+    }
+    if(cost < bestCost){ bestCost = cost; bestLab = Array.from(lab); }
+  }
+  return bestLab;
+}
+
+$("btnRecluster").addEventListener("click", async ()=>{
+  const utts = diar.utts;
+  if(utts.length < 6){ alert("発言が少なすぎます。"); return; }
+  const btn = $("btnRecluster");
+  btn.disabled = true; btn.textContent = "整理しています…";
+  await new Promise(r=>setTimeout(r, 30));    // 画面に「整理中」を出してから計算する
+  try{
+  let K = parseInt($("kNum").value, 10);
+  if(!K || K < 2) K = 2;
+  K = Math.min(K, LETTERS.length, utts.length);
+
+  // 重みを掛けたうえで、成分ごとのばらつきをそろえる
+  const X = utts.map(u=>{
+    const z = diar.norm(u.vec);
+    const v = new Float64Array(DIM);
+    for(let i=0;i<DIM;i++) v[i] = z[i]*WEIGHT[i];
+    return v;
+  });
+  const w = utts.map(u=>Math.min(u.n, 60));
+  const lab = kmeans(X, w, K, 30, 6);
+
+  // まとまりごとに名前をつける（登録した声があれば、その実名を優先）
+  const enrolled = diar.clusters.filter(c=>c.enrolled);
+  const names = new Array(K).fill(null);
+  if(enrolled.length){
+    const ez = enrolled.map(c=>{
+      const z = diar.norm(c.vec);
+      const v = new Float64Array(DIM);
+      for(let i=0;i<DIM;i++) v[i] = z[i]*WEIGHT[i];
+      return v;
+    });
+    const cent = Array.from({length:K}, ()=>new Float64Array(DIM));
+    const cnt = new Float64Array(K);
+    lab.forEach((c,i)=>{ cnt[c] += w[i]; for(let j=0;j<DIM;j++) cent[c][j] += X[i][j]*w[i]; });
+    for(let c=0;c<K;c++) if(cnt[c]) for(let j=0;j<DIM;j++) cent[c][j] /= cnt[c];
+    // 近いものから順に、1対1で結びつける
+    const pairs = [];
+    for(let c=0;c<K;c++) for(let e=0;e<ez.length;e++) pairs.push([dist2(cent[c], ez[e]), c, e]);
+    pairs.sort((a,b)=>a[0]-b[0]);
+    const usedC = new Set(), usedE = new Set();
+    pairs.forEach(([,c,e])=>{
+      if(usedC.has(c) || usedE.has(e)) return;
+      usedC.add(c); usedE.add(e); names[c] = enrolled[e].name;
+    });
+  }
+  let li = 0;
+  const order = [];
+  lab.forEach(c=>{ if(!order.includes(c)) order.push(c); });   // 発言の早い順に A, B, C…
+  order.forEach(c=>{ if(!names[c]) names[c] = LETTERS[li++] + "さん"; });
+
+  const newNames = lab.map(c=>names[c]);
+    const moved = relabelTranscript(newNames);
+    utts.forEach((u,i)=>{ u.label = newNames[i]; });
+    $("reclusterMsg").textContent = `${K}人に整理しました（${moved}件の発言を割り当て）`;
+    updateDetected();
+  }finally{
+    btn.disabled = false; btn.textContent = "話者をあとから整理する";
+  }
+});
+
+/* 文字起こしの各行の話者名を、整理した結果で書き換える */
+function relabelTranscript(newNames){
+  const lines = $("transcript").value.split(/\r?\n/);
+  let p = 0, moved = 0;
+  for(let i=0;i<lines.length && p<newNames.length;i++){
+    const m = lines[i].match(/^(\[([\d:]+)\]\s*(?:★\s*)?)(?:([^:：]{1,20})[:：]\s*)?(.*)$/);
+    if(!m) continue;
+    const u = diar.utts[p];
+    if(m[2] !== u.stamp || (m[3]||"") !== (u.label||"")) continue;
+    if(u.fixed){ newNames[p] = u.label; p++; continue; }   // 手で指定した行は動かさない
+    lines[i] = m[1] + newNames[p] + ": " + m[4];
+    p++; moved++;
+  }
+  $("transcript").value = lines.join("\n");
+  updateCount(); save(); buildMap();
+  return moved;
+}
+
+$("btnMap").addEventListener("click", ()=>{
+  const pairs = [...$("spkMap").querySelectorAll("input")]
+    .map(i=>[i.dataset.key, i.value.trim()]).filter(p=>p[1]);
+  if(!pairs.length){ alert("名前を入力してください。"); return; }
+  const lines = $("transcript").value.split(/\r?\n/).map(line=>{
+    pairs.forEach(([from,to])=>{
+      line = line.replace(new RegExp("^(\\[[^\\]]*\\]\\s*(?:★\\s*)?)"+from+"(?=[:：])"), "$1"+to);
+    });
+    return line;
+  });
+  $("transcript").value = lines.join("\n");
+  // 整理し直したときにずれないよう、記録側の名前も合わせる
+  diar.utts.forEach(u=>{
+    const hit = pairs.find(p=>p[0] === u.label);
+    if(hit) u.label = hit[1];
+  });
+  diar.clusters.forEach(c=>{
+    const hit = pairs.find(p=>p[0] === c.name);
+    if(hit) c.name = hit[1];
+  });
+  updateCount(); save(); buildMap(); updateDetected();
+});
+
+$("autoSpk").addEventListener("change", ()=>{
+  diar.enabled = $("autoSpk").checked;
+  if(!diar.enabled) diar.stop();
+});
+$("sens").addEventListener("change", ()=>{ diar.thr = parseFloat($("sens").value); });
+
+/* ============ 録音（マイク） ============ */
+$("btnRec").addEventListener("click", ()=>{
+  if(state.recording) stopAll();
+  else startMic();
+});
+
+async function startMic(){
+  state.mode = "mic";
+  state.manualStop = false;
+  // 音声ファイルとしても保存できるように録音（失敗しても文字起こしは続行）
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    const mr = new MediaRecorder(stream);
+    state.audioChunks = [];
+    mr.ondataavailable = e=>{ if(e.data.size) state.audioChunks.push(e.data); };
+    mr.onstop = ()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      if(state.audioChunks.length){
+        if(state.audioUrl) URL.revokeObjectURL(state.audioUrl);
+        state.audioUrl = URL.createObjectURL(new Blob(state.audioChunks,{type:mr.mimeType||"audio/webm"}));
+        $("btnDlAudio").style.display = "";
+      }
+    };
+    mr.start();
+    state.mediaRecorder = mr;
+    diar.thr = parseFloat($("sens").value);
+    diar.enabled = $("autoSpk").checked;
+    if(diar.enabled) await diar.start(stream, false);
+  }catch(_){ /* 録音できなくても文字起こしは動かす */ }
+
+  if(!startRecognition($("live"))) return;
+  keepAwake(true);
+  beginTimer();
+  $("btnRec").textContent = "■ 録音停止";
+  $("btnStar").disabled = false;
+  $("dot").classList.add("on");
+  $("statusText").textContent = "録音中…（話してください）";
+}
+
+function stopAll(){
+  state.manualStop = true;
+  state.recording = false;
+  diar.stop();
+  keepAwake(false);
+  $("btnResume").style.display = "none";
+  if(recog){ try{ recog.stop(); }catch(_){} recog = null; }
+  if(state.mediaRecorder && state.mediaRecorder.state !== "inactive"){
+    try{ state.mediaRecorder.stop(); }catch(_){}
+  }
+  if(state.timerId){ clearInterval(state.timerId); state.timerId = null; }
+  $("btnRec").textContent = "● 録音開始";
+  $("btnFileRec").textContent = "▶ 再生しながら文字起こし";
+  $("btnStar").disabled = true;
+  $("dot").classList.remove("on");
+  $("statusText").textContent = "停止中";
+  $("live").textContent = "認識中の文字がここに表示されます。";
+  $("live2").textContent = "認識中の文字がここに表示されます。";
+  try{ $("player").pause(); }catch(_){}
+  save();
+}
+
+function beginTimer(){
+  state.recording = true;
+  state.startedAt = Date.now() - state.elapsed*1000;
+  state.timerId = setInterval(()=>{
+    state.elapsed = (Date.now() - state.startedAt)/1000;
+    $("timer").textContent = fmtTime(state.elapsed);
+  },500);
+}
+
+/* ★重要マーク：直前の確定行に印をつける */
+$("btnStar").addEventListener("click", ()=>{
+  const t = $("transcript");
+  const lines = t.value.replace(/\n$/,"").split("\n");
+  for(let i=lines.length-1;i>=0;i--){
+    if(lines[i].trim()){
+      if(!/^\[[^\]]*\]\s*★/.test(lines[i])){
+        lines[i] = lines[i].replace(/^(\[[^\]]*\]\s*)/, "$1★ ");
+      }
+      break;
+    }
+  }
+  t.value = lines.join("\n") + "\n";
+  updateCount(); save();
+  $("statusText").textContent = "★ 重要マークをつけました";
+  setTimeout(()=>{ if(state.recording) $("statusText").textContent = "録音中…（話してください）"; },1500);
+});
+
+$("btnDlAudio").addEventListener("click", ()=>{
+  if(!state.audioUrl) return;
+  const a = document.createElement("a");
+  a.href = state.audioUrl;
+  a.download = (($("mTitle").value||"会議録音")+"_"+$("mDate").value+".webm");
+  a.click();
+});
+
+/* ============ 音声ファイル再生モード ============ */
+$("audioFile").addEventListener("change", e=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  $("player").src = URL.createObjectURL(f);
+});
+$("rate").addEventListener("change", ()=>{ $("player").playbackRate = parseFloat($("rate").value); });
+
+$("btnFileRec").addEventListener("click", async ()=>{
+  if(state.recording){ stopAll(); return; }
+  if(!$("player").src){ alert("先に音声ファイルを選んでください。"); return; }
+  state.mode = "file";
+  state.manualStop = false;
+  if(!startRecognition($("live2"))) return;
+  diar.thr = parseFloat($("sens").value);
+  diar.enabled = $("autoSpk").checked;
+  // ファイルの場合は再生中の音声を直接解析できるので、聞き分けの精度が上がる
+  if(diar.enabled) await diar.start($("player"), true);
+  keepAwake(true);
+  $("player").playbackRate = parseFloat($("rate").value);
+  $("player").play();
+  beginTimer();
+  $("btnFileRec").textContent = "■ 停止";
+  $("dot").classList.add("on");
+  $("statusText").textContent = "再生＋文字起こし中…";
+});
+$("player").addEventListener("ended", ()=>{ if(state.mode==="file" && state.recording) stopAll(); });
+
+/* ============ 貼り付け取り込み ============ */
+$("btnPaste").addEventListener("click", ()=>{
+  const v = $("pasteBox").value.trim();
+  if(!v){ alert("貼り付ける文章がありません。"); return; }
+  const t = $("transcript");
+  t.value += (t.value && !t.value.endsWith("\n") ? "\n" : "") + v + "\n";
+  updateCount(); save();
+  $("pasteBox").value = "";
+  alert("取り込みました。「議事録を作成」を押してください。");
+});
+
+$("transcript").addEventListener("input", ()=>{ updateCount(); save(); });
+function updateCount(){
+  $("charCount").textContent = $("transcript").value.replace(/\s/g,"").length + "文字";
+}
+$("btnClear").addEventListener("click", ()=>{
+  if(!confirm("文字起こしを全部消します。よろしいですか？")) return;
+  $("transcript").value = "";
+  state.elapsed = 0; $("timer").textContent = "00:00";
+  diar.reset();
+  updateCount(); save();
+});
+
+/* ============ 自動保存 ============ */
+const KEY = "gijiroku_maker_v1";
+let saveTimer = null;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    try{
+      localStorage.setItem(KEY, JSON.stringify({
+        title:$("mTitle").value, date:$("mDate").value, place:$("mPlace").value,
+        writer:$("mWriter").value, mem:$("mMembers").value,
+        tr:$("transcript").value, el:state.elapsed, at:Date.now()
+      }));
+    }catch(_){}
+  },400);
+}
+["mTitle","mDate","mPlace","mWriter","mMembers"].forEach(id=>$(id).addEventListener("input",save));
+function restore(){
+  let d = null;
+  try{ d = JSON.parse(localStorage.getItem(KEY)||"null"); }catch(_){}
+  if(!d || !d.tr) return;
+  const when = new Date(d.at||Date.now());
+  if(!confirm(`前回の下書きが残っています（${when.getMonth()+1}/${when.getDate()} ${pad(when.getHours())}:${pad(when.getMinutes())}・${d.tr.replace(/\s/g,"").length}文字）。\n復元しますか？`)) return;
+  $("mTitle").value = d.title||""; if(d.date) $("mDate").value = d.date;
+  $("mPlace").value = d.place||""; $("mWriter").value = d.writer||"";
+  $("mMembers").value = d.mem||""; $("transcript").value = d.tr||"";
+  state.elapsed = d.el||0;
+  $("timer").textContent = fmtTime(state.elapsed);
+}
+
+/* =========================================================
+   議事録エンジン
+   ========================================================= */
+
+const FILLERS = /^(えー+と?|あの+ー?|その+ー?|まあ|ま、|えっと|んー+|はい、|ええと|なんか|やっぱり|ちょっと)[、。\s]*/;
+
+const RE = {
+  decision:/(決定(?!的)|決まりました|決まった|決めました|承認|了承|合意|確定|ということで(いき|進め)|でいきましょう|ことにします|ことにしました|ことになりました|方針としては|採用(します|しましょう))/,
+  todo:/(お願いします|お願いいたします|担当(は|して|で)|やります|対応します|作成します|準備します|進めます|確認します|共有します|連絡します|報告します|までに|期限|締め?切り|提出|してください|しておきます|まとめます)/,
+  issue:/(課題|問題(点|が|は)|懸念|心配|不安|難しい|厳しい|リスク|検討(が必要|します|しましょう)|未定|保留|できていない|間に合わ|足りない)/,
+  next:/(次回|次の(会議|打ち合わせ|集まり)|日程|スケジュール|開催|来週.{0,6}(会議|打ち合わせ))/,
+  sectionCue:/^(では|それでは|次に|続いて|続きまして|次は|最後に|まず|はじめに|まずは|議題|それから|あと|続き)/,
+  who:/([一-龥]{1,4}|[ァ-ヶー]{2,6}|[A-Za-z]{2,12})(さん|先生|部長|課長|主任|校長|教頭|チーム)/,
+  when:/(\d{1,2}月\d{1,2}日|\d{1,2}\/\d{1,2}|\d{1,2}日まで|今日中|本日中|明日|明後日|今週(中|末)?|来週(中|末)?|再来週|今月末|来月|月末|年度末|次回まで|\d{1,2}時まで)/
+};
+
+/* あいさつ・あいづちだけの発言か */
+const PLEASANTRY = /^(はい|ええ|そうですね|なるほど|わかりました|了解です|ありがとうございま|よろしくお願い|お疲れ様|お疲れさま|失礼します|すみません|おはようございます)/;
+function isPleasantry(t){
+  return PLEASANTRY.test(t) && t.replace(/[、。\s]/g,"").length < 26;
+}
+
+/* 文字起こしを 1行ずつ解析 */
+function parseTranscript(raw){
+  const out = [];
+  raw.split(/\r?\n/).forEach(line=>{
+    line = line.trim();
+    if(!line) return;
+    let time="", star=false, speaker="", text=line;
+    const m = line.match(/^\[([\d:]+)\]\s*(★)?\s*(.*)$/);
+    if(m){ time = m[1]; star = !!m[2]; text = m[3]; }
+    else if(/^★/.test(line)){ star = true; text = line.replace(/^★\s*/,""); }
+    const sm = text.match(/^([^:：]{1,20})[:：]\s*(.+)$/);
+    if(sm && !/^https?$/i.test(sm[1])){ speaker = sm[1].trim(); text = sm[2].trim(); }
+    if(text) out.push({time,star,speaker,text});
+  });
+  return out;
+}
+
+/* 文に分割 */
+function toSentences(entries){
+  const sents = [];
+  entries.forEach(e=>{
+    const parts = e.text.split(/(?<=[。．！？!?])/).map(s=>s.trim()).filter(Boolean);
+    (parts.length?parts:[e.text]).forEach(s=>{
+      const clean = s.replace(FILLERS,"").replace(/\s+/g," ").trim();
+      if(clean.replace(/[、。\s]/g,"").length < 2) return;
+      sents.push({text:clean, speaker:e.speaker, time:e.time, star:e.star, i:sents.length});
+    });
+  });
+  return sents;
+}
+
+/* キーワード抽出（漢字2字以上／カタカナ2字以上／英数2字以上） */
+const STOP = new Set(["今回","本日","以上","自分","皆様","皆さん","一つ","二つ","部分","場合","感じ","結構","本当","時間","内容","状態","状況","確認","説明","質問","意見","会議","記録","部長","課長","先生","方法","感想","最初","最後","全体","一応","一番","今日","明日","昨日","来週","今年","来年"]);
+function terms(text){
+  const list = [];
+  const re = /[一-龥々]{2,}|[ァ-ヶー]{2,}|[A-Za-z0-9]{2,}/g;
+  let m;
+  while((m = re.exec(text))!==null){
+    const w = m[0];
+    if(w.length>12) continue;
+    if(STOP.has(w)) continue;
+    list.push(w);
+  }
+  return list;
+}
+
+function buildTf(sents){
+  const tf = new Map();
+  sents.forEach(s=>terms(s.text).forEach(w=>tf.set(w,(tf.get(w)||0)+1)));
+  return tf;
+}
+
+function scoreSentence(s, tf){
+  const ws = terms(s.text);
+  if(!ws.length) return 0;
+  let sc = 0;
+  ws.forEach(w=>{ sc += Math.log(1+(tf.get(w)||0)) * Math.min(w.length,6)/3; });
+  sc = sc / Math.sqrt(Math.max(ws.length,1));
+  const t = s.text;
+  if(RE.decision.test(t)) sc *= 1.7;
+  if(RE.todo.test(t))     sc *= 1.35;
+  if(RE.issue.test(t))    sc *= 1.3;
+  if(RE.next.test(t))     sc *= 1.25;
+  if(s.star)              sc *= 3.0;
+  const len = t.replace(/[、。\s]/g,"").length;
+  if(len < 8) sc *= 0.35;
+  if(len > 120) sc *= 0.8;
+  if(isPleasantry(t)) sc *= 0.12;
+  return sc;
+}
+
+function tidy(text){
+  return text.replace(FILLERS,"")
+             .replace(/^[、。\s]+/,"")
+             .replace(/\s+/g," ")
+             .trim();
+}
+
+function uniqPush(arr, item, keyFn){
+  const k = keyFn(item);
+  if(arr.some(x=>keyFn(x)===k)) return;
+  arr.push(item);
+}
+
+/* セクション分け */
+function makeSections(sents){
+  const secs = [];
+  let cur = null;
+  sents.forEach(s=>{
+    if(!cur || (RE.sectionCue.test(s.text) && cur.items.length >= 4)){
+      cur = {title:"", items:[]};
+      secs.push(cur);
+    }
+    cur.items.push(s);
+  });
+  // タイトル決定：①話題を切り出した一文 ②だめならセクション内の最頻キーワード
+  secs.forEach(sec=>{
+    let title = "";
+    // 冒頭2文のうち「では〜」「まず〜」など話題を切り出した一文を見出しに使う
+    for(const s of sec.items.slice(0,2)){
+      if(!RE.sectionCue.test(s.text)) continue;
+      let t = s.text.replace(RE.sectionCue,"")
+                    .replace(/^[、。は，,\s]+/,"")
+                    .replace(/(についてです|についてお話しします|について話します|の話です|の件です|です|ます)[。．]?$/,"")
+                    .replace(/[。．！？]$/,"")
+                    .trim();
+      // あいさつ・開会/閉会・日時そのものは見出しに向かないので使わない
+      if(t.length > 24 || t.length < 3) continue;
+      if(/(始め|開始|終わり|終了|以上|よろしく|ありがとう)/.test(t) || RE.when.test(t)) continue;
+      title = t; break;
+    }
+    if(!title){
+      const tf = new Map();
+      sec.items.forEach((s,idx)=>terms(s.text).forEach(w=>{
+        tf.set(w,(tf.get(w)||0) + (idx<2 ? 2 : 1));
+      }));
+      const top = [...tf.entries()]
+        .sort((a,b)=> b[1]*Math.min(b[0].length,5) - a[1]*Math.min(a[0].length,5))[0];
+      title = top ? top[0]+"について" : "話し合いの内容";
+    }
+    sec.title = title;
+  });
+  // 短すぎるセクションは前に統合
+  const merged = [];
+  secs.forEach(sec=>{
+    if(merged.length && sec.items.length < 3){
+      merged[merged.length-1].items.push(...sec.items);
+    }else merged.push(sec);
+  });
+  // 多すぎる場合は上位のみ
+  return merged.slice(0,8);
+}
+
+function generate(){
+  const raw = $("transcript").value.trim();
+  if(!raw){ alert("先に文字起こしをしてください。"); return null; }
+
+  const entries = parseTranscript(raw);
+  const sents = toSentences(entries);
+  if(!sents.length){ alert("文章が短すぎて議事録を作れません。"); return null; }
+
+  const tf = buildTf(sents);
+  sents.forEach(s=>{ s.score = scoreSentence(s, tf); });
+
+  const detail = $("detail").value;
+  const ratio = detail==="s" ? 0.08 : detail==="l" ? 0.22 : 0.14;
+  const maxPer = detail==="s" ? 3 : detail==="l" ? 6 : 4;
+
+  /* --- 要約（全体） --- */
+  const n = Math.min(Math.max(Math.round(sents.length*ratio),3), detail==="l"?14:9);
+  const picked = [...sents].sort((a,b)=>b.score-a.score).slice(0,n)
+                           .sort((a,b)=>a.i-b.i);
+
+  /* --- 決定事項・ToDo・課題・次回 --- */
+  const decisions=[], todos=[], issues=[], nexts=[];
+  sents.forEach(s=>{
+    const t = tidy(s.text);
+    if(t.replace(/[、。\s]/g,"").length < 6) return;
+    if(isPleasantry(t)) return;
+    if(RE.decision.test(t)) uniqPush(decisions,{...s,text:t},x=>x.text);
+    else if(RE.todo.test(t)){
+      // 文中の「◯◯さん」を優先し、なければ発言者を担当とみなす
+      const who = (t.match(RE.who)||[])[0] || s.speaker || "";
+      const when = (t.match(RE.when)||[])[0] || "";
+      uniqPush(todos,{...s,text:t,who,when},x=>x.text);
+    }
+    if(RE.issue.test(t)) uniqPush(issues,{...s,text:t},x=>x.text);
+    if(RE.next.test(t) && RE.when.test(t)) uniqPush(nexts,{...s,text:t},x=>x.text);
+  });
+  const cut = a => a.sort((x,y)=>y.score-x.score).slice(0, detail==="l"?12:8).sort((x,y)=>x.i-y.i);
+
+  /* --- セクション --- */
+  const sections = makeSections(sents).map(sec=>({
+    title: sec.title,
+    items: [...sec.items].filter(s=>!isPleasantry(s.text))
+                         .sort((a,b)=>b.score-a.score).slice(0,maxPer).sort((a,b)=>a.i-b.i)
+  })).filter(sec=>sec.items.length);
+
+  /* --- キーワード・発言者 --- */
+  const keywords = [...tf.entries()].filter(([w,c])=>c>=2)
+      .sort((a,b)=>b[1]*Math.min(b[0].length,5) - a[1]*Math.min(a[0].length,5))
+      .slice(0,10).map(x=>x[0]);
+  const spkCount = new Map();
+  sents.forEach(s=>{ if(s.speaker) spkCount.set(s.speaker,(spkCount.get(s.speaker)||0)+1); });
+
+  /* --- 会議時間 --- */
+  const times = entries.map(e=>e.time).filter(Boolean);
+  const dur = times.length ? times[times.length-1] : (state.elapsed ? fmtTime(state.elapsed) : "");
+
+  /* ================= Markdown 生成 ================= */
+  const title = $("mTitle").value.trim() || "会議";
+  const date  = $("mDate").value ? $("mDate").value.replace(/-/g,"/") : "";
+  const place = $("mPlace").value.trim();
+  const writer= $("mWriter").value.trim();
+  const mem   = members();
+  const attendees = mem.length ? mem : [...spkCount.keys()];
+
+  const L = [];
+  L.push(`# 議事録　${title}`);
+  L.push("");
+  const meta = [];
+  if(date)  meta.push(`日時：${date}${dur?`（記録時間 ${dur}）`:""}`);
+  if(place) meta.push(`場所：${place}`);
+  if(attendees.length) meta.push(`出席者：${attendees.join("、")}`);
+  if(writer) meta.push(`記録：${writer}`);
+  meta.forEach(m=>L.push(m + "  "));
+  L.push("");
+
+  L.push("## 要約");
+  picked.forEach(s=>{
+    L.push(`- ${s.star?"★ ":""}${tidy(s.text)}${s.speaker?`（${s.speaker}）`:""}`);
+  });
+  L.push("");
+
+  if(decisions.length){
+    L.push("## 決定事項");
+    cut(decisions).forEach(s=>L.push(`- ${s.text}${s.speaker?`（${s.speaker}）`:""}`));
+    L.push("");
+  }
+  if(todos.length){
+    L.push("## やること（ToDo）");
+    cut(todos).forEach(s=>{
+      const tail = [s.who?`担当: ${s.who}`:"", s.when?`期限: ${s.when}`:""].filter(Boolean).join(" / ");
+      L.push(`- [ ] ${s.text}${tail?`　【${tail}】`:""}`);
+    });
+    L.push("");
+  }
+  if(issues.length){
+    L.push("## 課題・懸念");
+    cut(issues).forEach(s=>L.push(`- ${s.text}${s.speaker?`（${s.speaker}）`:""}`));
+    L.push("");
+  }
+  if(nexts.length){
+    L.push("## 次回・今後の予定");
+    cut(nexts).forEach(s=>L.push(`- ${s.text}`));
+    L.push("");
+  }
+
+  if(sections.length){
+    L.push("## 話し合いの内容");
+    sections.forEach((sec,idx)=>{
+      L.push(`### ${idx+1}. ${sec.title}`);
+      sec.items.forEach(s=>L.push(`- ${tidy(s.text)}${s.speaker?`（${s.speaker}）`:""}`));
+      L.push("");
+    });
+  }
+
+  if(keywords.length){
+    L.push("## キーワード");
+    L.push(keywords.join(" ・ "));
+    L.push("");
+  }
+
+  if(spkCount.size){
+    L.push("## 発言数");
+    [...spkCount.entries()].sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>L.push(`- ${k}：${v}件`));
+    L.push("");
+  }
+
+  if($("incFull").checked){
+    L.push("---");
+    L.push("## 全文（文字起こし）");
+    entries.forEach(e=>{
+      L.push(`- ${e.time?`[${e.time}] `:""}${e.star?"★ ":""}${e.speaker?`**${e.speaker}**：`:""}${e.text}`);
+    });
+    L.push("");
+  }
+
+  L.push("---");
+  L.push(`※この議事録は音声認識をもとに自動作成しました。数字・固有名詞は必ずご確認ください。`);
+
+  return L.join("\n");
+}
+
+/* ============ かんたん Markdown → HTML ============ */
+function mdToHtml(md){
+  const lines = md.split("\n");
+  let html = "", inUl = false;
+  const closeUl = ()=>{ if(inUl){ html += "</ul>"; inUl = false; } };
+  const inline = s => escapeHtml(s)
+      .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+      .replace(/\s\s$/,"<br>");
+  lines.forEach(line=>{
+    const t = line.replace(/\s+$/,"");
+    if(/^# /.test(t)){ closeUl(); html += `<h3>${inline(t.slice(2))}</h3>`; }
+    else if(/^## /.test(t)){ closeUl(); html += `<h4>${inline(t.slice(3))}</h4>`; }
+    else if(/^### /.test(t)){ closeUl(); html += `<h5>${inline(t.slice(4))}</h5>`; }
+    else if(/^---+$/.test(t)){ closeUl(); html += "<hr>"; }
+    else if(/^-\s/.test(t)){
+      if(!inUl){ html += "<ul>"; inUl = true; }
+      let body = t.slice(2);
+      body = body.replace(/^\[ \]\s*/,"☐ ").replace(/^\[x\]\s*/i,"☑ ");
+      html += `<li>${inline(body)}</li>`;
+    }
+    else if(t.trim()===""){ closeUl(); }
+    else{ closeUl(); html += `<p class="${/^(日時|場所|出席者|記録)：/.test(t)?"meta":""}">${inline(line)}</p>`; }
+  });
+  closeUl();
+  return html;
+}
+
+/* ============ ボタン ============ */
+let currentMd = "";
+
+$("btnMake").addEventListener("click", ()=>{
+  const md = generate();
+  if(md===null) return;
+  currentMd = md;
+  $("mdBox").value = md;
+  $("preview").innerHTML = mdToHtml(md);
+  $("resultCard").style.display = "";
+  $("resultCard").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+$("btnEdit").addEventListener("click", ()=>{
+  const w = $("editWrap");
+  w.style.display = w.style.display==="none" ? "" : "none";
+});
+$("btnApply").addEventListener("click", ()=>{
+  currentMd = $("mdBox").value;
+  $("preview").innerHTML = mdToHtml(currentMd);
+});
+
+$("btnCopy").addEventListener("click", async ()=>{
+  try{
+    await navigator.clipboard.writeText(currentMd);
+    flash($("btnCopy"),"コピーしました！");
+  }catch(_){
+    $("editWrap").style.display = "";
+    const box = $("mdBox");
+    box.focus(); box.setSelectionRange(0, box.value.length);   // iPad でも選択できるように
+    document.execCommand("copy");
+    flash($("btnCopy"),"コピーしました！");
+  }
+});
+function flash(btn,msg){
+  const old = btn.textContent;
+  btn.textContent = msg;
+  setTimeout(()=>btn.textContent = old, 1400);
+}
+
+$("btnPrint").addEventListener("click", ()=>window.print());
+
+$("btnMd").addEventListener("click", ()=>{
+  const name = `議事録_${($("mTitle").value.trim()||"会議")}_${($("mDate").value||"").replace(/-/g,"")}.txt`;
+  const blob = new Blob(["﻿"+currentMd], {type:"text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 3000);
+});
+
+/* 録音中の離脱防止 */
+window.addEventListener("beforeunload", e=>{
+  if(state.recording){ e.preventDefault(); e.returnValue = ""; }
+});
+
+/* ============ 初期化（すべての定義が終わってから実行する） ============ */
+(function init(){
+  const d = new Date();
+  $("mDate").value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  restore();
+  loadVoices();
+  buildSpeakers();
+  buildEnroll();
+  updateCount();
+  buildMap();
+  updateDetected();
+  if(!SRClass) $("unsupported").style.display = "block";
+  if(isIOS) $("iosNote").style.display = "block";
+})();
+</script>
+</body>
+</html>
