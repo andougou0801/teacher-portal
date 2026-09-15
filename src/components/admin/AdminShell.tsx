@@ -49,7 +49,17 @@ export default function AdminShell({
         password,
       });
       if (signInError) {
-        setError("メールアドレスかパスワードが正しくないようです。");
+        // 接続そのものに失敗した場合（Supabaseの休止中など）は、
+        // パスワードの入力ミスと区別できるようにする。
+        const unreachable =
+          signInError.status === 0 ||
+          signInError.status === 503 ||
+          /fetch|network/i.test(signInError.message);
+        setError(
+          unreachable
+            ? "サーバーに接続できませんでした。Supabaseが休止している可能性があります（ダッシュボードで Resume project を押してください）。"
+            : "メールアドレスかパスワードが正しくないようです。",
+        );
       }
       setPassword("");
       setSubmitting(false);
