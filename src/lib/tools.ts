@@ -234,6 +234,19 @@ export const tools: Tool[] = [
     mobileNote:
       "音声認識はChrome・Edge・Safariで動きます（Firefoxは非対応）。iPad・iPhoneでは区切りごとに認識が止まりやすいため、止まったら画面の「認識を再開」を押してください。長い会議はPCでの利用を推奨します。",
   },
+  {
+    slug: "reading-text-maker",
+    name: "国語の文章作成メーカー",
+    description:
+      "帯時間の音読・朝読書に使える読み物を326作品収録。学年（小1〜6年）と説明文／物語文を選ぶだけで、A4一枚に収まる文章を印刷できます。動物・かがく・歴史・食べものなど25分野のオリジナル作品に加え、芥川龍之介・宮沢賢治・新美南吉などの著作権が切れた名作の再話も収録し、オリジナルか再話かを教員が一目で確認できます。フリガナは「学年に合わせて」自動で付き、よこ書き／たて書き／原稿用紙の切り替え、行間・1行の字数の調整にも対応。ねらい・発問例・語句の説明が入った教員用メモつきで印刷することもできます。",
+    icon: "📚",
+    tags: ["国語", "無料"],
+    audience: "teacher",
+    status: "live",
+    file: "/tools/reading-text-maker.html",
+    mobileNote:
+      "印刷プレビューはA4サイズ基準のため、スマートフォンでは横スクロールしてご確認ください。学級で配る文章を印刷する場合はPCでの利用を推奨します。",
+  },
 ];
 
 export function getToolBySlug(slug: string): Tool | undefined {
