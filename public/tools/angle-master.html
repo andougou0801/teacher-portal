@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>角度マスター</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+    --ok:#18a058;
+    --ng:#e0453a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"M PLUS Rounded 1c","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#333;
+    min-height:100vh;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:16px 14px 60px;}
+  .app-header{display:flex;align-items:center;justify-content:space-between;padding:10px 4px 14px;gap:10px;}
+  .app-title{font-size:22px;font-weight:800;color:var(--accent-dark);display:flex;align-items:center;gap:8px;}
+  .header-btns{display:flex;gap:8px;align-items:center;}
+  .icon-btn{background:#fff;border:2px solid #e2e8f0;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,0.06);}
+  .icon-btn:active{transform:scale(0.92);}
+  .star-badge{background:#fff;border-radius:20px;padding:8px 14px;font-weight:800;color:#f5a623;box-shadow:0 2px 4px rgba(0,0,0,0.06);font-size:14px;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+  .star-badge.pop{animation:starPop .5s ease;}
+  @keyframes starPop{0%{transform:scale(1);}40%{transform:scale(1.35);}100%{transform:scale(1);}}
+
+  .card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 4px 16px rgba(30,50,90,0.08);margin-bottom:18px;}
+  h2.section-title{margin:0 0 12px;font-size:16px;color:#555;font-weight:800;}
+  .note{background:#fff8e1;border:2px dashed #f5a623;color:#a06800;border-radius:14px;padding:12px 16px;font-size:14px;font-weight:800;margin-bottom:16px;text-align:center;line-height:1.6;}
+  .mini-note{font-size:12px;color:#8a97a8;text-align:center;margin:8px 0 0;font-weight:700;}
+
+  .preset-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+  .preset-btn{border:3px solid #e2e8f0;background:#fafcff;border-radius:16px;padding:14px 4px;font-size:15px;font-weight:800;cursor:pointer;color:#555;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s;}
+  .preset-btn .emoji{font-size:24px;}
+  .preset-btn:active{transform:scale(0.97);}
+  .preset-btn.selected{border-color:var(--accent);background:#eaf2ff;color:var(--accent-dark);}
+
+  .unit-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  .unit-chip{display:flex;align-items:center;gap:10px;border:3px solid #e2e8f0;background:#fafcff;border-radius:14px;padding:12px 12px;cursor:pointer;transition:all .15s;user-select:none;}
+  .unit-chip.on{border-color:var(--accent);background:#eaf2ff;}
+  .unit-chip .box{width:24px;height:24px;border-radius:7px;border:3px solid #cfd8e3;background:#fff;flex:none;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;font-weight:800;}
+  .unit-chip.on .box{background:var(--accent);border-color:var(--accent);}
+  .unit-chip .name{font-weight:800;font-size:15px;color:#3b4a5c;line-height:1.3;}
+  .unit-chip .grade{font-size:11px;font-weight:800;color:#8a97a8;display:block;margin-top:2px;}
+  .unit-chip .acc{margin-left:auto;font-size:12px;font-weight:800;color:#8a97a8;white-space:nowrap;}
+
+  .count-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px;}
+  .count-btn{border:3px solid #e2e8f0;background:#fafcff;border-radius:14px;padding:14px 4px;font-size:16px;font-weight:800;cursor:pointer;color:#555;}
+  .count-btn.selected{border-color:var(--accent);background:#eaf2ff;color:var(--accent-dark);}
+
+  .main-btn{width:100%;border:none;border-radius:16px;background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:#fff;font-size:20px;font-weight:800;padding:18px;cursor:pointer;box-shadow:0 4px 0 #1a459b;font-family:inherit;}
+  .main-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #1a459b;}
+  .main-btn[disabled]{background:#c8d2e0;box-shadow:0 4px 0 #b3bfd0;cursor:not-allowed;}
+  .sub-btn{width:100%;border:3px solid #dfe6f0;border-radius:16px;background:#fff;color:#5a6a7e;font-size:16px;font-weight:800;padding:14px;cursor:pointer;font-family:inherit;margin-top:10px;}
+  .sub-btn:active{transform:scale(0.98);}
+
+  /* ---------- play ---------- */
+  .qbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .qcount{font-weight:800;color:var(--accent-dark);font-size:15px;white-space:nowrap;}
+  .bar{flex:1;height:12px;background:#e4ebf5;border-radius:8px;overflow:hidden;}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,#5b9bff,#2d6cdf);width:0;transition:width .3s;}
+  .combo{font-weight:800;color:#f5a623;font-size:14px;white-space:nowrap;min-width:52px;text-align:right;}
+
+  .unit-tag{display:inline-block;background:#eaf2ff;color:var(--accent-dark);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:800;margin-bottom:8px;}
+  .qtext{font-size:18px;font-weight:800;color:#3b4a5c;line-height:1.6;margin:0 0 10px;}
+  .figbox{background:#fbfdff;border:2px solid #e8eef7;border-radius:16px;padding:6px;margin-bottom:14px;}
+  .figbox svg{display:block;width:100%;height:auto;}
+
+  .ansrow{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;}
+  .ansbox{width:170px;height:66px;border:4px solid #cfd8e3;border-radius:14px;font-size:34px;font-weight:800;text-align:center;font-family:inherit;color:#243447;background:#fff;}
+  .ansbox:focus{outline:none;border-color:var(--accent);}
+  .ansbox.ok{border-color:var(--ok);background:#eafaf0;color:var(--ok);}
+  .ansbox.ng{border-color:var(--ng);background:#fdeeec;color:var(--ng);}
+  .deg{font-size:30px;font-weight:800;color:#5a6a7e;}
+
+  .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:330px;margin:0 auto 12px;}
+  .pad button{border:3px solid #e2e8f0;background:#fff;border-radius:14px;font-size:24px;font-weight:800;padding:12px 0;cursor:pointer;font-family:inherit;color:#3b4a5c;}
+  .pad button:active{transform:scale(0.95);background:#eaf2ff;}
+  .pad button.wide{grid-column:span 1;font-size:18px;}
+
+  .judge{text-align:center;font-size:26px;font-weight:800;margin:4px 0 10px;min-height:34px;}
+  .judge.ok{color:var(--ok);}
+  .judge.ng{color:var(--ng);}
+  .solbox{background:#f4f8ff;border:2px solid #dce7f7;border-radius:14px;padding:14px 16px;font-size:15px;font-weight:800;color:#3b4a5c;line-height:1.7;margin-bottom:12px;}
+  .solbox .lbl{display:inline-block;background:var(--accent);color:#fff;border-radius:8px;padding:2px 10px;font-size:12px;margin-right:8px;}
+  .solbox .formula{font-size:19px;color:var(--accent-dark);}
+  .hintbox{background:#fff8e1;border:2px dashed #f5a623;color:#a06800;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:800;line-height:1.6;margin-bottom:12px;}
+
+  /* ---------- result ---------- */
+  .score-big{text-align:center;font-size:52px;font-weight:800;color:var(--accent-dark);line-height:1.1;}
+  .score-sub{text-align:center;font-size:15px;font-weight:800;color:#8a97a8;margin-top:6px;}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0;}
+  .stat{background:#f6f9ff;border-radius:14px;padding:12px 6px;text-align:center;}
+  .stat b{display:block;font-size:22px;color:#3b4a5c;}
+  .stat span{font-size:12px;color:#8a97a8;font-weight:800;}
+  .accrow{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px;font-weight:800;color:#5a6a7e;}
+  .accrow .nm{width:44%;}
+  .accrow .b{flex:1;height:10px;background:#e4ebf5;border-radius:6px;overflow:hidden;}
+  .accrow .b i{display:block;height:100%;background:#5b9bff;}
+  .accrow .v{width:56px;text-align:right;}
+  .misslist{margin-top:6px;}
+  .missitem{border:2px solid #fbdcd8;background:#fff7f6;border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:14px;font-weight:800;color:#5a6a7e;line-height:1.6;}
+  .missitem .yours{color:var(--ng);}
+  .missitem .right{color:var(--ok);}
+
+  .hidden{display:none !important;}
+  @media (max-width:520px){
+    .wrap{padding:12px 10px 50px;}
+    .card{padding:16px;border-radius:16px;}
+    .unit-list{grid-template-columns:1fr;}
+    .preset-grid{grid-template-columns:repeat(2,1fr);}
+    .app-title{font-size:19px;}
+    .qtext{font-size:16px;}
+  }
+  @media print{
+    body{background:#fff;}
+    .no-print{display:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="app-header">
+    <div class="app-title">📐 角度マスター</div>
+    <div class="header-btns">
+      <div class="star-badge" id="starBadge">⭐ <span id="starNum">0</span></div>
+      <button class="icon-btn" id="homeBtn" title="さいしょの画面へ">🏠</button>
+    </div>
+  </div>
+
+  <!-- ============ ホーム ============ -->
+  <section id="scHome">
+    <div class="card">
+      <div class="note">三角形や 四角形の 角度を くりかえし れんしゅうしよう！<br>データはこのパソコンの中だけに保存され、外には送信されません。</div>
+
+      <h2 class="section-title">① どれを れんしゅうする？</h2>
+      <div class="preset-grid">
+        <button class="preset-btn" data-preset="g4"><span class="emoji">4️⃣</span>4年生</button>
+        <button class="preset-btn" data-preset="g5"><span class="emoji">5️⃣</span>5年生</button>
+        <button class="preset-btn selected" data-preset="all"><span class="emoji">🌏</span>ぜんぶ</button>
+        <button class="preset-btn" data-preset="weak"><span class="emoji">🔥</span>にがて</button>
+      </div>
+
+      <div class="unit-list" id="unitList"></div>
+
+      <h2 class="section-title">② 何問 やる？</h2>
+      <div class="count-grid">
+        <button class="count-btn" data-count="5">5問</button>
+        <button class="count-btn selected" data-count="10">10問</button>
+        <button class="count-btn" data-count="20">20問</button>
+      </div>
+
+      <button class="main-btn" id="startBtn">スタート！</button>
+    </div>
+
+    <div class="card" id="recCard">
+      <h2 class="section-title">これまでの きろく</h2>
+      <div id="recBody"></div>
+      <button class="sub-btn" id="clearRec">きろくを ぜんぶ けす</button>
+    </div>
+  </section>
+
+  <!-- ============ 問題 ============ -->
+  <section id="scPlay" class="hidden">
+    <div class="card">
+      <div class="qbar">
+        <div class="qcount" id="qCount">1 / 10</div>
+        <div class="bar"><i id="qBar"></i></div>
+        <div class="combo" id="qCombo"></div>
+      </div>
+
+      <div class="unit-tag" id="qUnit">三角形の角</div>
+      <p class="qtext" id="qText"></p>
+      <div class="figbox" id="qFig"></div>
+
+      <div class="ansrow">
+        <input class="ansbox" id="ansBox" type="text" inputmode="numeric" autocomplete="off" placeholder="?">
+        <span class="deg">°</span>
+      </div>
+
+      <div id="padWrap">
+        <div class="pad" id="pad">
+          <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+          <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+          <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+          <button class="wide" data-k="C">けす</button><button data-k="0">0</button><button class="wide" data-k="B">← 1つ</button>
+        </div>
+        <button class="main-btn" id="checkBtn">こたえあわせ</button>
+        <button class="sub-btn" id="hintBtn">💡 ヒントを見る</button>
+        <div class="hintbox hidden" id="hintBox"></div>
+      </div>
+
+      <div id="afterWrap" class="hidden">
+        <div class="judge" id="judge"></div>
+        <div class="solbox" id="solBox"></div>
+        <button class="main-btn" id="nextBtn">つぎの問題 →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 結果 ============ -->
+  <section id="scResult" class="hidden">
+    <div class="card">
+      <div id="resEmoji" style="text-align:center;font-size:56px;line-height:1">🎉</div>
+      <div class="score-big" id="resScore">10 / 10</div>
+      <div class="score-sub" id="resMsg">すばらしい！</div>
+      <div class="stat-grid">
+        <div class="stat"><b id="resAcc">100%</b><span>せいかいりつ</span></div>
+        <div class="stat"><b id="resTime">0:00</b><span>かかった時間</span></div>
+        <div class="stat"><b id="resPer">0秒</b><span>1問あたり</span></div>
+      </div>
+      <div id="resUnits"></div>
+      <div class="misslist" id="resMiss"></div>
+      <button class="main-btn" id="againBtn">もう一度 同じ設定で</button>
+      <button class="sub-btn hidden" id="retryWrongBtn">✕だった問題だけ もう一度</button>
+      <button class="sub-btn" id="backHomeBtn">さいしょの画面へ</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+"use strict";
+/* =========================================================
+   小さな道具
+========================================================= */
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+function $(id){ return document.getElementById(id); }
+function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i];a[i]=a[j];a[j]=t; } return a; }
+function f2(n){ return Math.round(n*100)/100; }
+const D2R = Math.PI/180;
+
+/* =========================================================
+   図形の計算（角度から頂点座標をつくる）
+========================================================= */
+// 内角の列(度)と、はじめの n-2 本の辺の長さから多角形の頂点を求める
+function polyPoints(angDeg, given){
+  const n = angDeg.length;
+  const dirs = [0];
+  for(let i=1;i<n;i++) dirs.push(dirs[i-1] + Math.PI - angDeg[i]*D2R);
+  const s = new Array(n).fill(0);
+  for(let i=0;i<given.length;i++) s[i] = given[i];
+  let cx=0, cy=0;
+  for(let i=0;i<n-2;i++){ cx += s[i]*Math.cos(dirs[i]); cy += s[i]*Math.sin(dirs[i]); }
+  const a1=Math.cos(dirs[n-2]), b1=Math.cos(dirs[n-1]);
+  const a2=Math.sin(dirs[n-2]), b2=Math.sin(dirs[n-1]);
+  const det = a1*b2 - b1*a2;
+  if(Math.abs(det) < 1e-9) return null;
+  const x = (-cx*b2 + b1*cy)/det;
+  const y = (-a1*cy + a2*cx)/det;
+  if(!(x>1e-4) || !(y>1e-4)) return null;
+  s[n-2]=x; s[n-1]=y;
+  const pts=[[0,0]];
+  for(let i=0;i<n-1;i++){
+    const p=pts[i];
+    pts.push([p[0]+s[i]*Math.cos(dirs[i]), p[1]+s[i]*Math.sin(dirs[i])]);
+  }
+  return pts;
+}
+function segCross(p,q,r,s){
+  const d=(a,b,c)=>Math.sign((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]));
+  return d(p,q,r)!==d(p,q,s) && d(r,s,p)!==d(r,s,q);
+}
+function isSimple(pts){
+  const n=pts.length;
+  if(n<4) return true;
+  for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){
+    if(j===i+1 || (i===0&&j===n-1)) continue;
+    if(segCross(pts[i],pts[(i+1)%n],pts[j],pts[(j+1)%n])) return false;
+  }
+  return true;
+}
+function bbox(pts){
+  let a=1e9,b=1e9,c=-1e9,d=-1e9;
+  for(const p of pts){ a=Math.min(a,p[0]); b=Math.min(b,p[1]); c=Math.max(c,p[0]); d=Math.max(d,p[1]); }
+  return {x0:a,y0:b,x1:c,y1:d,w:c-a,h:d-b};
+}
+// 形のよい多角形を探す（strict=true なら見た目チェックに通ったものだけ）
+function solvePoly(ang, fixedSides, strict){
+  const n = ang.length;
+  const passes = strict ? 1 : 2;
+  for(let pass=0; pass<passes; pass++){
+    const tries = fixedSides ? 1 : 90;
+    for(let t=0;t<tries;t++){
+      let given;
+      if(fixedSides) given = fixedSides.slice();
+      else {
+        given=[1];
+        for(let i=1;i<n-2;i++) given.push(0.62 + Math.random()*0.75);
+      }
+      const pts = polyPoints(ang, given);
+      if(!pts) continue;
+      if(!isSimple(pts)) continue;
+      if(pass===0){
+        const sides=[];
+        for(let i=0;i<n;i++){
+          const p=pts[i], q=pts[(i+1)%n];
+          sides.push(Math.hypot(q[0]-p[0], q[1]-p[1]));
+        }
+        const mn=Math.min.apply(null,sides), mx=Math.max.apply(null,sides);
+        if(mn/mx < 0.3) continue;
+        const bb=bbox(pts);
+        const ar = Math.max(bb.w/bb.h, bb.h/bb.w);
+        if(ar > (strict ? 2.35 : 2.8)) continue;
+      }
+      return pts;
+    }
+  }
+  return null;
+}
+// 座標を表示領域にあわせる（y反転つき）
+function makeFit(pts, W, H, pad){
+  const bb = bbox(pts);
+  const sc = Math.min((W-2*pad)/(bb.w||1), (H-2*pad)/(bb.h||1));
+  const ox = (W - bb.w*sc)/2, oy = (H - bb.h*sc)/2;
+  return function(p){
+    return [ (p[0]-bb.x0)*sc + ox, H - ((p[1]-bb.y0)*sc + oy) ];
+  };
+}
+
+/* =========================================================
+   SVG のパーツ
+========================================================= */
+const ARC_C = "#e8730c";
+function arcPath(c, r, t1, t2){
+  const p1=[c[0]+r*Math.cos(t1), c[1]+r*Math.sin(t1)];
+  const p2=[c[0]+r*Math.cos(t2), c[1]+r*Math.sin(t2)];
+  const large = (t2-t1) > Math.PI ? 1 : 0;
+  return "M"+f2(p1[0])+" "+f2(p1[1])+" A"+f2(r)+" "+f2(r)+" 0 "+large+" 1 "+f2(p2[0])+" "+f2(p2[1]);
+}
+function labelSVG(p, lab){
+  if(!lab) return "";
+  if(lab.unknown){
+    return '<g><rect x="'+f2(p[0]-23)+'" y="'+f2(p[1]-20)+'" width="46" height="40" rx="10" fill="#fff4e6" stroke="#f57c00" stroke-width="2.5"/>'+
+           '<text x="'+f2(p[0])+'" y="'+f2(p[1]+10)+'" text-anchor="middle" font-size="26" font-weight="800" fill="#e8730c">?</text></g>';
+  }
+  const txt = (lab.text!==undefined) ? lab.text : (lab.v + "°");
+  const col = lab.solved ? "#18a058" : (lab.dim ? "#6b7b8f" : "#1f54b8");
+  let s = "";
+  if(lab.solved){
+    const w = Math.max(50, String(txt).length*13 + 18);
+    s += '<rect x="'+f2(p[0]-w/2)+'" y="'+f2(p[1]-20)+'" width="'+w+'" height="40" rx="10" fill="#eafaf0" stroke="#18a058" stroke-width="2.5"/>';
+  }
+  s += '<text x="'+f2(p[0])+'" y="'+f2(p[1]+8)+'" text-anchor="middle" font-size="21" font-weight="800" fill="'+col+'"'+
+       ' style="paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round">'+txt+'</text>';
+  return s;
+}
+// 角のしるしの形（弧の向き・半径・ラベル位置）をまとめて求める
+function markGeom(P, A, B, deg, lab){
+  const rad = deg*D2R;
+  const t1 = Math.atan2(A[1]-P[1], A[0]-P[0]);
+  const t2 = Math.atan2(B[1]-P[1], B[0]-P[0]);
+  let d = t2 - t1; d = ((d % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+  const ts = (Math.abs(d - rad) < 0.06) ? t1 : t2;
+  const mid = ts + rad/2;
+  let r = deg<32 ? 54 : deg<50 ? 45 : deg<75 ? 37 : 32;
+  if(Math.abs(deg-90) < 0.001) r = 24;
+  const off = r + ((lab && lab.unknown) ? 30 : 26);
+  return {ts:ts, rad:rad, r:r, mid:mid, lp:[P[0]+off*Math.cos(mid), P[1]+off*Math.sin(mid)]};
+}
+// 頂点 P、となりの点 A・B、内角 deg の角のしるし＋ラベル
+function angleMark(P, A, B, deg, lab){
+  if(!lab) return "";
+  const g = markGeom(P, A, B, deg, lab);
+  const rad = g.rad, ts = g.ts, mid = g.mid;
+  let r = g.r;
+  let s = "";
+  if(Math.abs(deg-90) < 0.001){
+    const m = 17;
+    const u=[Math.cos(ts),Math.sin(ts)], v=[Math.cos(ts+rad),Math.sin(ts+rad)];
+    s += '<path d="M'+f2(P[0]+u[0]*m)+' '+f2(P[1]+u[1]*m)+' L'+f2(P[0]+(u[0]+v[0])*m)+' '+f2(P[1]+(u[1]+v[1])*m)+
+         ' L'+f2(P[0]+v[0]*m)+' '+f2(P[1]+v[1]*m)+'" fill="none" stroke="'+ARC_C+'" stroke-width="2.6"/>';
+  } else {
+    s += '<path d="'+arcPath(P, r, ts, ts+rad)+'" fill="none" stroke="'+ARC_C+'" stroke-width="2.8"/>';
+  }
+  return s + labelSVG(g.lp, lab);
+}
+// 辺に「等しい」しるしをつける
+function tickSVG(P, Q, num){
+  const mx=(P[0]+Q[0])/2, my=(P[1]+Q[1])/2;
+  const dx=Q[0]-P[0], dy=Q[1]-P[1], len=Math.hypot(dx,dy)||1;
+  const ux=dx/len, uy=dy/len, nx=-uy, ny=ux;
+  let s="";
+  const gap=6, h=9;
+  for(let i=0;i<num;i++){
+    const o = (i - (num-1)/2)*gap;
+    const cx0 = mx + ux*o, cy0 = my + uy*o;
+    s += '<line x1="'+f2(cx0-nx*h)+'" y1="'+f2(cy0-ny*h)+'" x2="'+f2(cx0+nx*h)+'" y2="'+f2(cy0+ny*h)+'" stroke="#20486f" stroke-width="2.6" stroke-linecap="round"/>';
+  }
+  return s;
+}
+function svgWrap(inner, W, H){
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg>';
+}
+
+/* ---------- 多角形の図 ---------- */
+// markSets: ラベル配列の配列（問題用・答え用）→ SVG文字列の配列を返す
+function figPoly(ang, markSets, opt){
+  opt = Object.assign({W:560, H:400, pad:84, ticks:null, extend:null, extMarks:null, diagonals:false, sides:null, strict:false}, opt);
+  const n = ang.length;
+  const hasExt = (opt.extend !== null && opt.extend !== undefined);
+
+  // ラベルが重ならない配置が出るまで作りなおす
+  let P=null, E=null, best=-1;
+  const tries = opt.sides ? 1 : 40;
+  for(let t=0;t<tries;t++){
+    const raw = solvePoly(ang, opt.sides, opt.strict);
+    if(!raw) break;
+    let extRaw = null;
+    const all = raw.slice();
+    if(hasExt){
+      const i = opt.extend;
+      const p = raw[(i-1+n)%n], q = raw[i];
+      extRaw = [ q[0] + (q[0]-p[0])*0.55, q[1] + (q[1]-p[1])*0.55 ];
+      all.push(extRaw);
+    }
+    const fit = makeFit(all, opt.W, opt.H, opt.pad);
+    const pp = raw.map(fit);
+    const ee = extRaw ? fit(extRaw) : null;
+    // ラベルの位置をしらべる
+    const anchors=[];
+    for(let i=0;i<n;i++){
+      const m = markSets[0][i];
+      if(m) anchors.push(markGeom(pp[i], pp[(i-1+n)%n], pp[(i+1)%n], ang[i], m).lp);
+    }
+    if(ee && opt.extMarks && opt.extMarks[0]){
+      const i=opt.extend;
+      anchors.push(markGeom(pp[i], ee, pp[(i+1)%n], 180-ang[i], opt.extMarks[0]).lp);
+    }
+    let sep = 1e9, inside = true;
+    for(let i=0;i<anchors.length;i++){
+      const q=anchors[i];
+      if(q[0]<30 || q[0]>opt.W-30 || q[1]<24 || q[1]>opt.H-24) inside=false;
+      for(let j=i+1;j<anchors.length;j++) sep = Math.min(sep, Math.hypot(anchors[i][0]-anchors[j][0], anchors[i][1]-anchors[j][1]));
+    }
+    const score = sep + (inside ? 1000 : 0);
+    if(score > best){ best = score; P = pp; E = ee; }
+    if(inside && sep >= 70) break;
+  }
+  // どうしても重なってしまう角度の組み合わせは、出題しない
+  if(!P || best < 1000 + 56) return null;
+
+  let base = "";
+  base += '<polygon points="'+P.map(p=>f2(p[0])+","+f2(p[1])).join(" ")+'" fill="#dcebfa" stroke="#20486f" stroke-width="3.5" stroke-linejoin="round"/>';
+  if(opt.diagonals){
+    for(let i=2;i<n-1;i++){
+      base += '<line x1="'+f2(P[0][0])+'" y1="'+f2(P[0][1])+'" x2="'+f2(P[i][0])+'" y2="'+f2(P[i][1])+'" stroke="#7aa2cc" stroke-width="2" stroke-dasharray="7 5"/>';
+    }
+  }
+  if(E){
+    base += '<line x1="'+f2(P[opt.extend][0])+'" y1="'+f2(P[opt.extend][1])+'" x2="'+f2(E[0])+'" y2="'+f2(E[1])+'" stroke="#20486f" stroke-width="3.5" stroke-linecap="round"/>';
+  }
+  if(opt.ticks){
+    for(const t of opt.ticks) base += tickSVG(P[t[0]], P[t[1]], t[2]);
+  }
+  for(const p of P) base += '<circle cx="'+f2(p[0])+'" cy="'+f2(p[1])+'" r="4" fill="#20486f"/>';
+
+  return markSets.map(function(marks, si){
+    let s = base;
+    for(let i=0;i<n;i++){
+      if(marks[i]) s += angleMark(P[i], P[(i-1+n)%n], P[(i+1)%n], ang[i], marks[i]);
+    }
+    if(E && opt.extMarks && opt.extMarks[si]){
+      const i = opt.extend;
+      s += angleMark(P[i], E, P[(i+1)%n], 180-ang[i], opt.extMarks[si]);
+    }
+    return svgWrap(s, opt.W, opt.H);
+  });
+}
+
+/* ---------- 光線（一直線・回転・三角じょうぎ）の図 ---------- */
+// secs: [{deg, lab|null}] を start(度・反時計回り) から順に並べる
+function figFan(secs, markSets, opt){
+  opt = Object.assign({W:560, H:360, pad:56, R:172, start:0, outer:null}, opt);
+  const bounds=[opt.start];
+  for(const sc of secs) bounds.push(bounds[bounds.length-1] + sc.deg);
+  const C=[0,0];
+  const pt = (deg, r) => [ r*Math.cos(-deg*D2R), r*Math.sin(-deg*D2R) ];
+
+  const collect=[C];
+
+  // ラベルどうしが重ならないように、近すぎるものを外へ押し出す
+  function placeLabels(marks, si){
+    const items=[];
+    for(let i=0;i<secs.length;i++){
+      if(!marks[i]) continue;
+      const deg=secs[i].deg;
+      const b = (Math.abs(deg-90)<0.001) ? 30 : (deg<32 ? 62 : deg<50 ? 54 : 46);
+      items.push({key:"s"+i, mid:(bounds[i]+bounds[i+1])/2, r: b + (marks[i].unknown?30:26)});
+    }
+    function relax(list, onlyLast){
+      for(let it=0; it<90; it++){
+        let pair=null, wd=1e9;
+        for(let i=0;i<list.length;i++) for(let j=i+1;j<list.length;j++){
+          const A=list[i], B=list[j];
+          const d=Math.sqrt(A.r*A.r + B.r*B.r - 2*A.r*B.r*Math.cos((A.mid-B.mid)*D2R));
+          if(d<wd){ wd=d; pair=[A,B]; }
+        }
+        if(!pair || wd>=76) break;
+        const t = onlyLast ? list[list.length-1] : ((pair[0].r >= pair[1].r) ? pair[0] : pair[1]);
+        if(t.r>=225) break;
+        t.r += 7;
+      }
+    }
+    relax(items, false);
+    // ぜんたいの角をしめす外側の弧は、中のラベルより外に置く
+    let R2 = 118;
+    items.forEach(x=>{ R2 = Math.max(R2, x.r + 28); });
+    if(opt.outer && opt.outer.labs && opt.outer.labs[si]){
+      const fr=opt.outer.from, to=opt.outer.to;
+      let om=(bounds[fr]+bounds[to])/2;
+      // 中の直線とちょうど重なるときは、少しずらす
+      for(let k=fr+1;k<to;k++){
+        if(Math.abs(om-bounds[k])<14){
+          om = bounds[k] + ((bounds[k]-bounds[fr] >= bounds[to]-bounds[k]) ? -16 : 16);
+        }
+      }
+      items.push({key:"o", mid:om, r:R2+30});
+      relax(items, true);
+    }
+    const map={R2:R2};
+    items.forEach(x=>map[x.key]=x);
+    return map;
+  }
+
+  // 直線の長さは、外側の弧より外まで
+  const placed = markSets.map((m,si)=>placeLabels(m,si));
+  let RAY = opt.R;
+  placed.forEach(function(p){ if(p["o"]) RAY = Math.max(RAY, p.R2 + 22); });
+  let base = "";
+  for(const b of bounds){
+    const e = pt(b, RAY);
+    base += '<line x1="0" y1="0" x2="'+f2(e[0])+'" y2="'+f2(e[1])+'" stroke="#20486f" stroke-width="4" stroke-linecap="round"/>';
+  }
+  base += '<circle cx="0" cy="0" r="5" fill="#20486f"/>';
+  for(const b of bounds) collect.push(pt(b, RAY + 8));
+
+  const sets = markSets.map(function(marks, si){
+    let s = base;
+    const labR = placed[si];
+    for(let i=0;i<secs.length;i++){
+      const lab = marks[i];
+      if(!lab) continue;
+      const a1=bounds[i], a2=bounds[i+1], deg=secs[i].deg;
+      let r = deg<32 ? 62 : deg<50 ? 54 : 46;
+      if(Math.abs(deg-90)<0.001){
+        const m=20;
+        const u=pt(a1,1), v=pt(a2,1);
+        s += '<path d="M'+f2(u[0]*m)+' '+f2(u[1]*m)+' L'+f2((u[0]+v[0])*m)+' '+f2((u[1]+v[1])*m)+' L'+f2(v[0]*m)+' '+f2(v[1]*m)+'" fill="none" stroke="'+ARC_C+'" stroke-width="2.6"/>';
+        r = 30;
+      } else {
+        s += '<path d="'+arcPath(C, r, -a2*D2R, -a1*D2R)+'" fill="none" stroke="'+ARC_C+'" stroke-width="2.8"/>';
+      }
+      const li = labR["s"+i];
+      s += labelSVG(pt(li.mid, li.r), lab);
+      collect.push(pt(li.mid, li.r + 30));
+    }
+    if(opt.outer && opt.outer.labs && opt.outer.labs[si]){
+      const a1=bounds[opt.outer.from], a2=bounds[opt.outer.to];
+      const R2 = labR.R2;
+      s += '<path d="'+arcPath(C, R2, -a2*D2R, -a1*D2R)+'" fill="none" stroke="#7b3fd4" stroke-width="2.8" stroke-dasharray="6 4"/>';
+      const lo = labR["o"];
+      s += labelSVG(pt(lo.mid, lo.r), opt.outer.labs[si]);
+      collect.push(pt(lo.mid, lo.r + 30));
+    }
+    return s;
+  });
+
+  const bb = bbox(collect);
+  const dx = (opt.W - bb.w)/2 - bb.x0;
+  const dy = (opt.H - bb.h)/2 - bb.y0;
+  return sets.map(s => svgWrap('<g transform="translate('+f2(dx)+','+f2(dy)+')">'+s+'</g>', opt.W, opt.H));
+}
+
+/* ---------- 分度器の図 ---------- */
+function figProtractor(a, leftBase, showAnsSet){
+  const W=600, H=360, cx=300, cy=312, R=252;
+  const P=(t,r)=>[cx + r*Math.cos(t*D2R), cy - r*Math.sin(t*D2R)];
+  let body = "";
+  body += '<path d="M'+(cx-R)+' '+cy+' A'+R+' '+R+' 0 0 1 '+(cx+R)+' '+cy+' Z" fill="#eef4fb" stroke="#8aa0b6" stroke-width="2"/>';
+  body += '<line x1="'+(cx-R+18)+'" y1="'+cy+'" x2="'+(cx+R-18)+'" y2="'+cy+'" stroke="#8aa0b6" stroke-width="1.2"/>';
+  let ticks="";
+  for(let t=0;t<=180;t++){
+    const len = (t%10===0) ? 22 : (t%5===0 ? 14 : 8);
+    const p1=P(t,R), p2=P(t,R-len);
+    ticks += '<line x1="'+f2(p1[0])+'" y1="'+f2(p1[1])+'" x2="'+f2(p2[0])+'" y2="'+f2(p2[1])+'" stroke="#5d7185" stroke-width="'+(t%10===0?1.7:1)+'"/>';
+  }
+  let nums="";
+  for(let t=0;t<=180;t+=10){
+    const q1=P(t,R-36), q2=P(t,R-62);
+    nums += '<text x="'+f2(q1[0])+'" y="'+f2(q1[1]+5)+'" text-anchor="middle" font-size="16" font-weight="800" fill="#2f4c69" style="paint-order:stroke;stroke:#eef4fb;stroke-width:4px">'+t+'</text>';
+    nums += '<text x="'+f2(q2[0])+'" y="'+f2(q2[1]+5)+'" text-anchor="middle" font-size="15" font-weight="800" fill="#7a8ba0" style="paint-order:stroke;stroke:#eef4fb;stroke-width:4px">'+(180-t)+'</text>';
+  }
+  const bd = leftBase ? 180 : 0;
+  const od = leftBase ? 180-a : a;
+  let rays="";
+  const r1=P(bd, R-6), r2=P(od, R-6);
+  rays += '<line x1="'+cx+'" y1="'+cy+'" x2="'+f2(r1[0])+'" y2="'+f2(r1[1])+'" stroke="#d92d20" stroke-width="4" stroke-linecap="round"/>';
+  rays += '<line x1="'+cx+'" y1="'+cy+'" x2="'+f2(r2[0])+'" y2="'+f2(r2[1])+'" stroke="#d92d20" stroke-width="4" stroke-linecap="round"/>';
+  rays += '<circle cx="'+cx+'" cy="'+cy+'" r="5" fill="#d92d20"/>';
+
+  return showAnsSet.map(function(lab){
+    let s = body + ticks + rays + nums;
+    const lo = Math.min(bd,od), hi = Math.max(bd,od);
+    s += '<path d="'+arcPath([cx,cy], 86, -hi*D2R, -lo*D2R)+'" fill="none" stroke="'+ARC_C+'" stroke-width="3"/>';
+    const mid=(lo+hi)/2, lp=P(mid, 120);
+    s += labelSVG(lp, lab);
+    return svgWrap(s, W, H);
+  });
+}
+
+/* =========================================================
+   問題をつくる（単元ごと）
+========================================================= */
+function Q(o){ return o; }
+const UNKNOWN = {unknown:true};
+function ansLab(v){ return {v:v, solved:true}; }
+
+/* --- 分度器をよむ --- */
+function genProtractor(){
+  let a;
+  if(Math.random()<0.7) a = rnd(3,34)*5;            // 15〜170 の5とび
+  else a = rnd(12,168);
+  if(a>172) a=170;
+  const leftBase = Math.random()<0.5;
+  const figs = figProtractor(a, leftBase, [UNKNOWN, ansLab(a)]);
+  return Q({
+    unit:"protractor",
+    q:"分度器で 角の 大きさを はかりました。?は 何度ですか。",
+    ans:a,
+    svg:figs[0], svgAns:figs[1],
+    hint:"分度器の 0のめもりに 辺が 合っている ほうの 数字を 読もう。2つ あるめもりを まちがえないように！",
+    sol:"0から じゅんに ふえていく めもりを 読むと "+a+"°"
+  });
+}
+
+/* --- 一直線・1回転の角 --- */
+function genLine(){
+  const kind = pick(["straight","straight","round","vertical","vertical"]);
+  if(kind === "straight"){
+    const n = pick([2,2,3]);
+    let parts = [];
+    for(let t=0;t<200;t++){
+      parts = [];
+      let rest = 180;
+      for(let i=0;i<n-1;i++){
+        const mx = rest - 25*(n-1-i);
+        const v = rnd(5, Math.floor(mx/5))*5;
+        parts.push(v); rest -= v;
+      }
+      parts.push(rest);
+      if(parts.every(v=>v>=25 && v<=155)) break;
+    }
+    const ui = rnd(0, n-1);
+    const ans = parts[ui];
+    const secs = parts.map(v=>({deg:v}));
+    const mA = parts.map((v,i)=> i===ui ? UNKNOWN : {v:v});
+    const mB = parts.map((v,i)=> i===ui ? ansLab(v) : {v:v});
+    const figs = figFan(secs, [mA,mB], {start:0});
+    const others = parts.filter((v,i)=>i!==ui);
+    return Q({
+      unit:"line",
+      q:"一直線の 上に できた 角です。?は 何度ですか。",
+      ans:ans, svg:figs[0], svgAns:figs[1],
+      hint:"一直線の 角は 180°。のこりを ひき算で もとめよう。",
+      sol:"180 − "+others.join(" − ")+" = "+ans
+    });
+  }
+  if(kind === "round"){
+    const n = pick([3,3,4]);
+    let parts=[];
+    for(let t=0;t<200;t++){
+      parts=[]; let rest=360;
+      for(let i=0;i<n-1;i++){
+        const mx = rest - 40*(n-1-i);
+        const v = rnd(8, Math.floor(mx/5))*5;
+        parts.push(v); rest -= v;
+      }
+      parts.push(rest);
+      if(parts.every(v=>v>=40 && v<=170)) break;
+    }
+    const ui = rnd(0,n-1);
+    const ans = parts[ui];
+    const secs = parts.map(v=>({deg:v}));
+    const st = rnd(0,11)*30;
+    const mA = parts.map((v,i)=> i===ui ? UNKNOWN : {v:v});
+    const mB = parts.map((v,i)=> i===ui ? ansLab(v) : {v:v});
+    const figs = figFan(secs, [mA,mB], {start:st, R:160});
+    const others = parts.filter((v,i)=>i!==ui);
+    return Q({
+      unit:"line",
+      q:"1つの点の まわりに できた 角です。?は 何度ですか。",
+      ans:ans, svg:figs[0], svgAns:figs[1],
+      hint:"1回転した 角は 360°だよ。",
+      sol:"360 − "+others.join(" − ")+" = "+ans
+    });
+  }
+  // 交わった2本の直線
+  const b = rnd(5,15)*5;            // 25〜75
+  const secs = [{deg:b},{deg:180-b},{deg:b},{deg:180-b}];
+  const target = pick([1,2,3]);
+  const ans = secs[target].deg;
+  const mA = [ {v:b}, null, null, null ]; mA[target]=UNKNOWN;
+  const mB = [ {v:b}, null, null, null ]; mB[target]=ansLab(ans);
+  const st = rnd(0,3)*10;
+  const figs = figFan(secs, [mA,mB], {start:st, R:160});
+  return Q({
+    unit:"line",
+    q:"2本の 直線が 交わって います。?は 何度ですか。",
+    ans:ans, svg:figs[0], svgAns:figs[1],
+    hint: target===2 ? "向かい合った 角は 同じ 大きさに なるよ。" : "一直線の 角は 180°。となりの 角から ひこう。",
+    sol: target===2 ? ("向かい合った角だから "+b+"° と同じで "+ans) : ("180 − "+b+" = "+ans)
+  });
+}
+
+/* --- 三角じょうぎの角 --- */
+function genSetSquare(){
+  const kind = pick(["single","combo","combo","diff"]);
+  if(kind === "single"){
+    const which = pick([0,1]);
+    const ang = which===0 ? [90,60,30] : [90,45,45];
+    const ui = rnd(0,2);
+    const ans = ang[ui];
+    const mA = ang.map((v,i)=> i===ui ? UNKNOWN : {v:v});
+    const mB = ang.map((v,i)=> i===ui ? ansLab(v) : {v:v});
+    const figs = figPoly(ang, [mA,mB], {strict:true});
+    if(!figs) return null;
+    return Q({
+      unit:"set",
+      q:"三角じょうぎの 角です。?は 何度ですか。",
+      ans:ans, svg:figs[0], svgAns:figs[1],
+      hint:"三角じょうぎは 90°・60°・30° と 90°・45°・45° の 2まい。3つの 角の 和は 180°。",
+      sol:"180 − "+ang.filter((v,i)=>i!==ui).join(" − ")+" = "+ans
+    });
+  }
+  if(kind === "combo"){
+    const p = pick([[30,45],[45,60],[30,90],[45,90],[60,90],[30,60],[45,45],[60,45]]);
+    const ans = p[0]+p[1];
+    const secs = [{deg:p[0]},{deg:p[1]}];
+    const st = pick([0,0,10,15,20]);
+    const figs = figFan(secs, [[{v:p[0]},{v:p[1]}],[{v:p[0]},{v:p[1]}]], {
+      start:st, R:178,
+      outer:{from:0, to:2, labs:[UNKNOWN, ansLab(ans)]}
+    });
+    return Q({
+      unit:"set",
+      q:"三角じょうぎを 2まい ならべました。むらさきの ?は 何度ですか。",
+      ans:ans, svg:figs[0], svgAns:figs[1],
+      hint:"2つの 角を たせば もとめられるよ。",
+      sol:p[0]+" + "+p[1]+" = "+ans
+    });
+  }
+  // 大きい角から 一部をひく
+  const big = pick([[60,45],[90,60],[90,45],[45,30],[60,30],[90,30]]);
+  const whole = big[0], part = big[1];
+  const ans = whole - part;
+  const secs = [{deg:ans},{deg:part}];
+  const st = pick([0,0,15,20]);
+  const figs = figFan(secs, [[UNKNOWN,{v:part}],[ansLab(ans),{v:part}]], {
+    start:st, R:178,
+    outer:{from:0, to:2, labs:[{v:whole, dim:true},{v:whole, dim:true}]}
+  });
+  return Q({
+    unit:"set",
+    q:"ぜんたいの 角が "+whole+"° です。?は 何度ですか。",
+    ans:ans, svg:figs[0], svgAns:figs[1],
+    hint:"ぜんたいから わかっている 角を ひこう。",
+    sol:whole+" − "+part+" = "+ans
+  });
+}
+
+/* --- 三角形の角 --- */
+function genTri(){
+  const right = Math.random()<0.3;
+  let a,b,c;
+  if(right){
+    a = 90; b = rnd(5,13)*5; c = 90-b;   // 25°〜65°
+  } else {
+    for(let t=0;t<100;t++){
+      a = rnd(6,24)*5; b = rnd(6,24)*5; c = 180-a-b;
+      if(c>=30 && c<=120 && a!==90 && b!==90 && c!==90) break;
+      c = -1;
+    }
+    if(c<0) return null;
+  }
+  const ang=[a,b,c];
+  const ui = right ? pick([1,2]) : rnd(0,2);
+  const ans = ang[ui];
+  const mA = ang.map((v,i)=> i===ui ? UNKNOWN : {v:v});
+  const mB = ang.map((v,i)=> i===ui ? ansLab(v) : {v:v});
+  const figs = figPoly(ang, [mA,mB], {strict:true});
+  if(!figs) return null;
+  const others = ang.filter((v,i)=>i!==ui);
+  return Q({
+    unit:"tri",
+    q: right ? "直角三角形です。?は 何度ですか。" : "三角形の 角です。?は 何度ですか。",
+    ans:ans, svg:figs[0], svgAns:figs[1],
+    hint:"三角形の 3つの 角の 大きさの 和は 180°。",
+    sol:"180 − "+others.join(" − ")+" = "+ans
+  });
+}
+
+/* --- 二等辺三角形・正三角形 --- */
+function genIso(){
+  const kind = pick(["apex","base","base","equi"]);
+  if(kind === "equi"){
+    const ang=[60,60,60];
+    const ui = rnd(0,2);
+    const mA = ang.map((v,i)=> i===ui ? UNKNOWN : {v:null});
+    const mB = ang.map((v,i)=> i===ui ? ansLab(60) : {v:null});
+    for(let i=0;i<3;i++){ if(i!==ui){ mA[i]=null; mB[i]=null; } }
+    const figs = figPoly(ang, [mA,mB], {strict:true, ticks:[[0,1,1],[1,2,1],[2,0,1]]});
+    if(!figs) return null;
+    return Q({
+      unit:"iso",
+      q:"3つの 辺の 長さが 等しい 三角形です。?は 何度ですか。",
+      ans:60, svg:figs[0], svgAns:figs[1],
+      hint:"正三角形の 3つの 角は ぜんぶ 同じ 大きさ。",
+      sol:"180 ÷ 3 = 60"
+    });
+  }
+  // 頂点0が頂角、辺 0-1 と 2-0 が等しい → 底角は 1 と 2
+  const apex = rnd(2,35)*4;   // 8〜140 の偶数
+  if(apex<20 || apex>140) return null;
+  const base = (180-apex)/2;
+  if(base < 20 || base > 80) return null;
+  const ang=[apex, base, base];
+  let mA, mB, q, hint, sol, ans;
+  if(kind === "apex"){
+    ans = apex;
+    mA = [UNKNOWN, {v:base}, null];
+    mB = [ansLab(apex), {v:base}, null];
+    q = "二等辺三角形です。?は 何度ですか。";
+    hint = "二等辺三角形の 下の 2つの 角は 同じ 大きさ。180°から 2つ分を ひこう。";
+    sol = "180 − "+base+" − "+base+" = "+ans;
+  } else {
+    ans = base;
+    mA = [{v:apex}, UNKNOWN, null];
+    mB = [{v:apex}, ansLab(base), null];
+    q = "二等辺三角形です。?は 何度ですか。";
+    hint = "二等辺三角形の 下の 2つの 角は 同じ 大きさ。のこりを 2で わろう。";
+    sol = "(180 − "+apex+") ÷ 2 = "+ans;
+  }
+  const figs = figPoly(ang, [mA,mB], {strict:true, ticks:[[0,1,2],[2,0,2]]});
+  if(!figs) return null;
+  return Q({unit:"iso", q:q, ans:ans, svg:figs[0], svgAns:figs[1], hint:hint, sol:sol});
+}
+
+/* --- 四角形の角 --- */
+function genQuad(){
+  let ang=null;
+  for(let t=0;t<200;t++){
+    const a=rnd(10,29)*5, b=rnd(10,29)*5, c=rnd(10,29)*5, d=360-a-b-c;
+    if(d>=45 && d<=155){ ang=[a,b,c,d]; break; }
+  }
+  if(!ang) return null;
+  const ui = rnd(0,3);
+  const ans = ang[ui];
+  const mA = ang.map((v,i)=> i===ui ? UNKNOWN : {v:v});
+  const mB = ang.map((v,i)=> i===ui ? ansLab(v) : {v:v});
+  const figs = figPoly(ang, [mA,mB], {strict:true});
+  if(!figs) return null;
+  const others = ang.filter((v,i)=>i!==ui);
+  return Q({
+    unit:"quad",
+    q:"四角形の 角です。?は 何度ですか。",
+    ans:ans, svg:figs[0], svgAns:figs[1],
+    hint:"四角形の 4つの 角の 大きさの 和は 360°。（三角形 2つ分だね）",
+    sol:"360 − "+others.join(" − ")+" = "+ans
+  });
+}
+
+/* --- 平行四辺形・ひし形・台形 --- */
+function genPara(){
+  const kind = pick(["para","para","rhom","trape"]);
+  if(kind === "trape"){
+    const a = rnd(10,15)*5;   // 50〜75
+    const b = rnd(20,26)*5;   // 100〜130
+    const ang=[a, b, 180-b, 180-a];
+    const ui = pick([2,3]);
+    const ans = ang[ui];
+    const known = (ui===2) ? 1 : 0;
+    const mA=[null,null,null,null], mB=[null,null,null,null];
+    mA[known]={v:ang[known]}; mB[known]={v:ang[known]};
+    mA[ui]=UNKNOWN; mB[ui]=ansLab(ans);
+    const figs = figPoly(ang, [mA,mB], {strict:true});
+    if(!figs) return null;
+    return Q({
+      unit:"para",
+      q:"上と下の 辺が 平行な 台形です。?は 何度ですか。",
+      ans:ans, svg:figs[0], svgAns:figs[1],
+      hint:"平行な 2本の 辺に はさまれた となりどうしの 角を たすと 180°に なるよ。",
+      sol:"180 − "+ang[known]+" = "+ans
+    });
+  }
+  const a = rnd(9,16)*5;   // 45〜80
+  const ang = [a, 180-a, a, 180-a];
+  const ui = pick([1,2,3]);
+  const ans = ang[ui];
+  const mA=[{v:a},null,null,null], mB=[{v:a},null,null,null];
+  mA[ui]=UNKNOWN; mB[ui]=ansLab(ans);
+  const sides = (kind==="rhom") ? [1,1] : [1, 0.62+Math.random()*0.2];
+  const figs = figPoly(ang, [mA,mB], {sides:sides, ticks: kind==="rhom" ? [[0,1,1],[1,2,1],[2,3,1],[3,0,1]] : [[0,1,1],[2,3,1]]});
+  if(!figs) return null;
+  return Q({
+    unit:"para",
+    q:(kind==="rhom"?"ひし形":"平行四辺形")+"です。?は 何度ですか。",
+    ans:ans, svg:figs[0], svgAns:figs[1],
+    hint:"向かい合った 角は 同じ 大きさ。となりの 角と たすと 180°。",
+    sol: (ui===2) ? ("向かい合った角だから "+a+"° と同じで "+ans) : ("180 − "+a+" = "+ans)
+  });
+}
+
+/* --- 多角形の角 --- */
+function genPoly(){
+  const kind = pick(["sum","one","one","regular"]);
+  // 七角形は1つの角が整数にならないので「角の和」のときだけ使う
+  const n = (kind==="sum") ? pick([5,5,6,6,7]) : pick([5,5,6,6]);
+  const reg = (n-2)*180/n;
+  if(kind === "sum"){
+    const ang=[]; let rest=0;
+    for(let i=0;i<n-1;i++){ const d = rnd(-3,3)*5; ang.push(reg+d); rest+=d; }
+    ang.push(reg-rest);
+    const figs = figPoly(ang, [ang.map(()=>null), ang.map(()=>null)], {strict:true, diagonals:true});
+    if(!figs) return null;
+    const nm = {5:"五角形",6:"六角形",7:"七角形"}[n];
+    return Q({
+      unit:"poly",
+      q:nm+"の "+n+"つの 角の 大きさの 和は 何度ですか。",
+      ans:(n-2)*180, svg:figs[0], svgAns:figs[1],
+      hint:"1つの 頂点から 対角線を ひくと、三角形が "+(n-2)+"こ できるよ。",
+      sol:"180 × "+(n-2)+" = "+((n-2)*180)
+    });
+  }
+  if(kind === "regular"){
+    const nm = {5:"正五角形",6:"正六角形",7:"正七角形"}[n];
+    if(n===7) return null;
+    const ang = new Array(n).fill(reg);
+    const ui = 0;
+    const mA = ang.map((v,i)=> i===ui ? UNKNOWN : null);
+    const mB = ang.map((v,i)=> i===ui ? ansLab(reg) : null);
+    const ticks=[]; for(let i=0;i<n;i++) ticks.push([i,(i+1)%n,1]);
+    const figs = figPoly(ang, [mA,mB], {strict:true, ticks:ticks});
+    if(!figs) return null;
+    return Q({
+      unit:"poly",
+      q:nm+"です。1つの 角 ?は 何度ですか。",
+      ans:reg, svg:figs[0], svgAns:figs[1],
+      hint:"まず "+n+"つの 角の 和（180×"+(n-2)+"）を もとめて、"+n+"で わろう。",
+      sol:"180 × "+(n-2)+" = "+((n-2)*180)+"、　"+((n-2)*180)+" ÷ "+n+" = "+reg
+    });
+  }
+  // 1つの角をもとめる
+  const ang=[]; let rest=0;
+  for(let i=0;i<n-1;i++){ const d=rnd(-4,4)*5; ang.push(reg+d); rest+=d; }
+  ang.push(reg-rest);
+  if(ang.some(v=>v<60||v>165)) return null;
+  const ui = rnd(0,n-1);
+  const ans = ang[ui];
+  const mA = ang.map((v,i)=> i===ui ? UNKNOWN : {v:v});
+  const mB = ang.map((v,i)=> i===ui ? ansLab(v) : {v:v});
+  const figs = figPoly(ang, [mA,mB], {strict:true});
+  if(!figs) return null;
+  const nm = {5:"五角形",6:"六角形",7:"七角形"}[n];
+  const others = ang.filter((v,i)=>i!==ui);
+  return Q({
+    unit:"poly",
+    q:nm+"の 角です。?は 何度ですか。",
+    ans:ans, svg:figs[0], svgAns:figs[1],
+    hint:nm+"の 角の 和は 180×"+(n-2)+" = "+((n-2)*180)+"° だよ。",
+    sol:((n-2)*180)+" − "+others.join(" − ")+" = "+ans
+  });
+}
+
+/* --- 三角形の外角 --- */
+function genExt(){
+  let a,b,c;
+  for(let t=0;t<100;t++){
+    a=rnd(8,16)*5; c=rnd(8,16)*5; b=180-a-c;   // 40°〜80°
+    if(b>=35 && b<=100) break;
+    b=-1;
+  }
+  if(b<0) return null;
+  const ang=[a,b,c];
+  const v = 1;                  // 頂点1 の外角
+  const ans = 180 - ang[v];     // = a + c
+  const known = [0,2];
+  const mA=[null,null,null], mB=[null,null,null];
+  for(const k of known){ mA[k]={v:ang[k]}; mB[k]={v:ang[k]}; }
+  const figs = figPoly(ang, [mA,mB], {strict:true, extend:v, extMarks:[UNKNOWN, ansLab(ans)]});
+  if(!figs) return null;
+  return Q({
+    unit:"ext",
+    q:"辺を のばして できた 角です。?は 何度ですか。",
+    ans:ans, svg:figs[0], svgAns:figs[1],
+    hint:"まず 三角形の のこりの 角を もとめよう。そのあと 一直線の 180°から ひくよ。（はなれた 2つの 角の 和とも 同じ！）",
+    sol:"180 − "+ang[0]+" − "+ang[2]+" = "+ang[v]+"、　180 − "+ang[v]+" = "+ans+"　（"+ang[0]+" + "+ang[2]+" = "+ans+"）"
+  });
+}
+
+/* =========================================================
+   単元の一覧
+========================================================= */
+const UNITS = [
+  {id:"protractor", name:"分度器をよむ",        grade:"4年", gen:genProtractor},
+  {id:"line",       name:"一直線と1回転の角",   grade:"4年", gen:genLine},
+  {id:"set",        name:"三角じょうぎの角",     grade:"4年", gen:genSetSquare},
+  {id:"tri",        name:"三角形の角",          grade:"5年", gen:genTri},
+  {id:"iso",        name:"二等辺三角形・正三角形", grade:"5年", gen:genIso},
+  {id:"quad",       name:"四角形の角",          grade:"5年", gen:genQuad},
+  {id:"para",       name:"平行四辺形・ひし形・台形", grade:"5年", gen:genPara},
+  {id:"poly",       name:"多角形の角",          grade:"5年", gen:genPoly},
+  {id:"ext",        name:"三角形の外角",        grade:"発展", gen:genExt}
+];
+const UNIT_BY_ID = {};
+UNITS.forEach(u=>UNIT_BY_ID[u.id]=u);
+
+function makeProblem(unitId){
+  const u = UNIT_BY_ID[unitId];
+  for(let t=0;t<60;t++){
+    let p = null;
+    try{ p = u.gen(); }catch(e){ p = null; }
+    if(p && p.svg) return p;
+  }
+  // 最後の手だて（かならず作れる問題）
+  for(let t=0;t<40;t++){
+    let p=null;
+    try{ p = genTri(); }catch(e){}
+    if(p && p.svg) return p;
+  }
+  const a = rnd(5,25)*5, b = 180-a;
+  const figs = figFan([{deg:a},{deg:b}], [[{v:a},UNKNOWN],[{v:a},ansLab(b)]], {start:0});
+  return Q({
+    unit:"line",
+    q:"一直線の 上に できた 角です。?は 何度ですか。",
+    ans:b, svg:figs[0], svgAns:figs[1],
+    hint:"一直線の 角は 180°。のこりを ひき算で もとめよう。",
+    sol:"180 − "+a+" = "+b
+  });
+}
+
+/* =========================================================
+   きろく（localStorage）
+========================================================= */
+const KEY = "kakudo-master-v1";
+function loadRec(){
+  let r=null;
+  try{ r = JSON.parse(lsGet(KEY)); }catch(e){ r=null; }
+  if(!r || typeof r!=="object") r = {};
+  if(!r.units) r.units = {};
+  if(typeof r.total!=="number") r.total = 0;
+  if(typeof r.correct!=="number") r.correct = 0;
+  if(typeof r.sets!=="number") r.sets = 0;
+  if(typeof r.stars!=="number") r.stars = 0;
+  if(typeof r.bestCombo!=="number") r.bestCombo = 0;
+  return r;
+}
+function saveRec(r){ lsSet(KEY, JSON.stringify(r)); }
+let REC = loadRec();
+
+function recAdd(unitId, ok){
+  REC.total++; if(ok) REC.correct++;
+  const u = REC.units[unitId] || (REC.units[unitId] = {t:0,c:0});
+  u.t++; if(ok) u.c++;
+  if(ok) REC.stars++;
+  saveRec(REC);
+}
+function unitAcc(id){
+  const u = REC.units[id];
+  if(!u || u.t===0) return null;
+  return u.c/u.t;
+}
+function weakUnits(){
+  const arr = UNITS.map(u=>({id:u.id, t:(REC.units[u.id]||{t:0}).t, acc:unitAcc(u.id)}));
+  const tried = arr.filter(x=>x.t>=3);
+  if(tried.length===0) return UNITS.map(u=>u.id);
+  tried.sort((a,b)=>a.acc-b.acc);
+  const weak = tried.filter(x=>x.acc<0.9).slice(0,4).map(x=>x.id);
+  if(weak.length===0) return tried.slice(0,3).map(x=>x.id);
+  return weak;
+}
+
+/* =========================================================
+   画面
+========================================================= */
+const SC = {home:$("scHome"), play:$("scPlay"), result:$("scResult")};
+function showScreen(name){
+  for(const k in SC) SC[k].classList.toggle("hidden", k!==name);
+  window.scrollTo(0,0);
+}
+function updStars(pop){
+  $("starNum").textContent = REC.stars;
+  if(pop){ const b=$("starBadge"); b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); }
+}
+
+/* ---------- ホーム ---------- */
+let selUnits = UNITS.map(u=>u.id);
+let selCount = 10;
+
+function renderUnits(){
+  const box = $("unitList");
+  box.innerHTML = UNITS.map(function(u){
+    const on = selUnits.indexOf(u.id)>=0;
+    const acc = unitAcc(u.id);
+    const accTxt = acc===null ? "" : Math.round(acc*100)+"%";
+    return '<div class="unit-chip'+(on?" on":"")+'" data-u="'+u.id+'">'+
+      '<div class="box">'+(on?"✓":"")+'</div>'+
+      '<div class="name">'+u.name+'<span class="grade">'+u.grade+'</span></div>'+
+      '<div class="acc">'+accTxt+'</div></div>';
+  }).join("");
+  Array.prototype.forEach.call(box.querySelectorAll(".unit-chip"), function(el){
+    el.addEventListener("click", function(){
+      const id = el.getAttribute("data-u");
+      const i = selUnits.indexOf(id);
+      if(i>=0){ if(selUnits.length<=1) return; selUnits.splice(i,1); }
+      else selUnits.push(id);
+      markPreset(null);
+      renderUnits();
+      $("startBtn").disabled = selUnits.length===0;
+    });
+  });
+}
+function markPreset(p){
+  Array.prototype.forEach.call(document.querySelectorAll(".preset-btn"), function(b){
+    b.classList.toggle("selected", b.getAttribute("data-preset")===p);
+  });
+}
+Array.prototype.forEach.call(document.querySelectorAll(".preset-btn"), function(b){
+  b.addEventListener("click", function(){
+    const p = b.getAttribute("data-preset");
+    if(p==="g4") selUnits = UNITS.filter(u=>u.grade==="4年").map(u=>u.id);
+    else if(p==="g5") selUnits = UNITS.filter(u=>u.grade==="5年").map(u=>u.id);
+    else if(p==="all") selUnits = UNITS.map(u=>u.id);
+    else selUnits = weakUnits();
+    markPreset(p);
+    renderUnits();
+    $("startBtn").disabled = selUnits.length===0;
+  });
+});
+Array.prototype.forEach.call(document.querySelectorAll(".count-btn"), function(b){
+  b.addEventListener("click", function(){
+    selCount = parseInt(b.getAttribute("data-count"),10);
+    Array.prototype.forEach.call(document.querySelectorAll(".count-btn"), x=>x.classList.remove("selected"));
+    b.classList.add("selected");
+  });
+});
+
+function renderRec(){
+  const body = $("recBody");
+  if(REC.total===0){
+    body.innerHTML = '<p class="mini-note" style="font-size:14px">まだ きろくが ありません。さっそく スタート！</p>';
+    return;
+  }
+  const acc = Math.round(REC.correct/REC.total*100);
+  let h = '<div class="stat-grid">'+
+    '<div class="stat"><b>'+REC.total+'</b><span>といた 問題</span></div>'+
+    '<div class="stat"><b>'+acc+'%</b><span>せいかいりつ</span></div>'+
+    '<div class="stat"><b>'+REC.bestCombo+'</b><span>さいこう連続</span></div>'+
+    '</div>';
+  h += UNITS.map(function(u){
+    const a = unitAcc(u.id);
+    const t = (REC.units[u.id]||{t:0}).t;
+    const p = a===null ? 0 : Math.round(a*100);
+    return '<div class="accrow"><div class="nm">'+u.name+'</div>'+
+      '<div class="b"><i style="width:'+p+'%;background:'+(a===null?"#e4ebf5":(a<0.6?"#f27c6a":a<0.85?"#f5b13a":"#5fc48a"))+'"></i></div>'+
+      '<div class="v">'+(a===null?"—":p+"%")+'<span style="color:#b6c0cd"> ('+t+')</span></div></div>';
+  }).join("");
+  body.innerHTML = h;
+}
+$("clearRec").addEventListener("click", function(){
+  if(!confirm("これまでの きろくを ぜんぶ けしますか？")) return;
+  lsDel(KEY);
+  REC = loadRec();
+  renderRec(); renderUnits(); updStars(false);
+});
+
+/* ---------- 出題 ---------- */
+let game = null;
+
+function buildQueue(units, count){
+  const list = [];
+  let bag = [];
+  let lastUnit = null;
+  let guard = count*4 + 20;
+  while(list.length < count && guard-- > 0){
+    if(bag.length===0) bag = shuffle(units);
+    let u = bag.shift();
+    if(u===lastUnit && bag.length>0 && units.length>1){ const t=bag.shift(); bag.unshift(u); u=t; }
+    lastUnit = u;
+    const p = makeProblem(u);
+    if(p) list.push(p);
+  }
+  return list;
+}
+function startGame(units, count, preset){
+  const qs = preset || buildQueue(units, count);
+  if(qs.length===0){ alert("問題を つくれませんでした。もう一度 おためしください。"); return; }
+  game = { qs:qs, i:0, res:[], combo:0, maxCombo:0, t0:Date.now(), units:units.slice(), count:qs.length };
+  showScreen("play");
+  renderQ();
+}
+$("startBtn").addEventListener("click", function(){ startGame(selUnits, selCount, null); });
+
+function renderQ(){
+  const p = game.qs[game.i];
+  $("qCount").textContent = (game.i+1)+" / "+game.qs.length;
+  $("qBar").style.width = (game.i/game.qs.length*100)+"%";
+  $("qCombo").textContent = game.combo>=2 ? ("🔥"+game.combo+"連続") : "";
+  $("qUnit").textContent = UNIT_BY_ID[p.unit].name;
+  $("qText").textContent = p.q;
+  $("qFig").innerHTML = p.svg;
+  const box = $("ansBox");
+  box.value = ""; box.className = "ansbox"; box.disabled = false;
+  $("padWrap").classList.remove("hidden");
+  $("afterWrap").classList.add("hidden");
+  $("judge").textContent = "";
+  $("judge").className = "judge";
+  $("hintBox").classList.add("hidden");
+  $("hintBtn").classList.remove("hidden");
+  if(window.matchMedia && !window.matchMedia("(pointer:coarse)").matches) box.focus();
+}
+
+function keyIn(k){
+  const box = $("ansBox");
+  if(box.disabled) return;
+  if(k==="C") box.value="";
+  else if(k==="B") box.value = box.value.slice(0,-1);
+  else if(box.value.length<3) box.value += k;
+}
+Array.prototype.forEach.call(document.querySelectorAll("#pad button"), function(b){
+  b.addEventListener("click", function(){ keyIn(b.getAttribute("data-k")); });
+});
+$("hintBtn").addEventListener("click", function(){
+  const p = game.qs[game.i];
+  const hb = $("hintBox");
+  hb.textContent = "💡 " + p.hint;
+  hb.classList.remove("hidden");
+  $("hintBtn").classList.add("hidden");
+});
+
+function checkAnswer(){
+  const box = $("ansBox");
+  const raw = box.value.trim();
+  if(raw==="") { box.focus(); return; }
+  const val = parseInt(raw,10);
+  if(isNaN(val)) { box.value=""; return; }
+  const p = game.qs[game.i];
+  const ok = (val === p.ans);
+  box.disabled = true;
+  box.classList.add(ok?"ok":"ng");
+  game.res.push({p:p, your:val, ok:ok});
+  if(ok){ game.combo++; if(game.combo>game.maxCombo) game.maxCombo=game.combo; }
+  else game.combo = 0;
+  recAdd(p.unit, ok);
+  if(game.maxCombo > REC.bestCombo){ REC.bestCombo = game.maxCombo; saveRec(REC); }
+  updStars(ok);
+
+  $("qFig").innerHTML = p.svgAns;
+  $("padWrap").classList.add("hidden");
+  $("afterWrap").classList.remove("hidden");
+  const j = $("judge");
+  j.className = "judge " + (ok?"ok":"ng");
+  j.textContent = ok ? (game.combo>=3 ? "⭕ せいかい！ "+game.combo+"連続🔥" : "⭕ せいかい！") : "❌ ざんねん… 正しくは "+p.ans+"°";
+  $("solBox").innerHTML = '<span class="lbl">しき</span><span class="formula">'+p.sol+'</span><br>'+p.hint;
+  $("nextBtn").textContent = (game.i === game.qs.length-1) ? "けっかを 見る →" : "つぎの問題 →";
+  $("qCombo").textContent = game.combo>=2 ? ("🔥"+game.combo+"連続") : "";
+  $("nextBtn").focus();
+}
+$("checkBtn").addEventListener("click", checkAnswer);
+$("nextBtn").addEventListener("click", function(){
+  game.i++;
+  if(game.i >= game.qs.length) showResult();
+  else renderQ();
+});
+document.addEventListener("keydown", function(e){
+  if(SC.play.classList.contains("hidden")) return;
+  const answering = !$("padWrap").classList.contains("hidden");
+  if(e.key==="Enter"){
+    e.preventDefault();
+    if(answering) checkAnswer(); else $("nextBtn").click();
+    return;
+  }
+  if(!answering) return;
+  if(e.key>="0" && e.key<="9"){ if(document.activeElement!==$("ansBox")){ e.preventDefault(); keyIn(e.key); } }
+  else if(e.key==="Backspace"){ if(document.activeElement!==$("ansBox")){ e.preventDefault(); keyIn("B"); } }
+});
+$("ansBox").addEventListener("input", function(){
+  this.value = this.value.replace(/[^0-9]/g,"").slice(0,3);
+});
+
+/* ---------- 結果 ---------- */
+function showResult(){
+  const n = game.res.length;
+  const c = game.res.filter(r=>r.ok).length;
+  const sec = Math.max(1, Math.round((Date.now()-game.t0)/1000));
+  const acc = Math.round(c/n*100);
+  REC.sets++; saveRec(REC);
+  $("resScore").textContent = c + " / " + n;
+  $("resAcc").textContent = acc + "%";
+  $("resTime").textContent = Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0");
+  $("resPer").textContent = (Math.round(sec/n*10)/10) + "秒";
+  let emoji="🎉", msg="すばらしい！";
+  if(acc===100){ emoji="🏆"; msg="ぜんもん せいかい！ かんぺき！"; }
+  else if(acc>=80){ emoji="🎉"; msg="よく できました！ この ちょうし！"; }
+  else if(acc>=50){ emoji="💪"; msg="あと すこし！ まちがえた ところを 見なおそう。"; }
+  else { emoji="🌱"; msg="ヒントを 見ながら、ゆっくり やってみよう。"; }
+  $("resEmoji").textContent = emoji;
+  $("resMsg").textContent = msg;
+
+  const per = {};
+  game.res.forEach(function(r){
+    const u = r.p.unit;
+    if(!per[u]) per[u]={t:0,c:0};
+    per[u].t++; if(r.ok) per[u].c++;
+  });
+  $("resUnits").innerHTML = '<h2 class="section-title" style="margin-top:6px">単元べつ</h2>' + Object.keys(per).map(function(id){
+    const p = Math.round(per[id].c/per[id].t*100);
+    return '<div class="accrow"><div class="nm">'+UNIT_BY_ID[id].name+'</div>'+
+      '<div class="b"><i style="width:'+p+'%;background:'+(p<60?"#f27c6a":p<85?"#f5b13a":"#5fc48a")+'"></i></div>'+
+      '<div class="v">'+per[id].c+'/'+per[id].t+'</div></div>';
+  }).join("");
+
+  const wrong = game.res.filter(r=>!r.ok);
+  if(wrong.length){
+    $("resMiss").innerHTML = '<h2 class="section-title" style="margin-top:14px">まちがえた 問題</h2>' + wrong.map(function(r,i){
+      return '<div class="missitem">'+(i+1)+'. '+UNIT_BY_ID[r.p.unit].name+'<br>'+
+        'じぶんの答え <span class="yours">'+r.your+'°</span> ／ 正しい答え <span class="right">'+r.p.ans+'°</span><br>'+
+        '<span style="color:#8a97a8">しき：'+r.p.sol+'</span></div>';
+    }).join("");
+    $("retryWrongBtn").classList.remove("hidden");
+  } else {
+    $("resMiss").innerHTML = "";
+    $("retryWrongBtn").classList.add("hidden");
+  }
+  showScreen("result");
+  renderRec(); renderUnits();
+}
+$("againBtn").addEventListener("click", function(){ startGame(game.units, game.count, null); });
+$("retryWrongBtn").addEventListener("click", function(){
+  const qs = shuffle(game.res.filter(r=>!r.ok).map(r=>r.p));
+  startGame(game.units, qs.length, qs);
+});
+$("backHomeBtn").addEventListener("click", function(){ showScreen("home"); renderRec(); renderUnits(); });
+$("homeBtn").addEventListener("click", function(){
+  if(!SC.play.classList.contains("hidden")){
+    if(!confirm("とちゅうですが やめますか？")) return;
+  }
+  showScreen("home"); renderRec(); renderUnits();
+});
+
+/* ---------- 起動 ---------- */
+renderUnits();
+renderRec();
+updStars(false);
+</script>
+</body>
+</html>

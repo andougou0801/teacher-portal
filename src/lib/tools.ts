@@ -247,6 +247,17 @@ export const tools: Tool[] = [
     mobileNote:
       "印刷プレビューはA4サイズ基準のため、スマートフォンでは横スクロールしてご確認ください。学級で配る文章を印刷する場合はPCでの利用を推奨します。",
   },
+  {
+    slug: "angle-master",
+    name: "角度マスター",
+    description:
+      "三角形・四角形の角度の問題を、図を見ながら繰り返し練習できます。分度器の読み取り、一直線と1回転の角、三角じょうぎの角（4年）、三角形・二等辺三角形・四角形・平行四辺形・多角形の角（5年）、三角形の外角（発展）の9単元に対応。図は毎回自動で作られるので、同じ問題が続きません。答え合わせをすると図の「?」が答えに変わり、しきと考え方が出ます。学年やにがてな単元での出題、まちがえた問題だけの復習、単元別の正答率の記録にも対応しています。",
+    icon: "📐",
+    tags: ["算数", "無料"],
+    audience: "student",
+    status: "live",
+    file: "/tools/angle-master.html",
+  },
 ];
 
 export function getToolBySlug(slug: string): Tool | undefined {
