@@ -118,8 +118,8 @@ npm run dev
 | `文章問題メーカー.html` | `teacher-portal/public/tools/word-problem-maker.html` | 先生 |
 | `通知表所見文例集.html` | `teacher-portal/public/tools/report-comment-maker.html` | 先生 |
 
-> 旧`抽選ルーレット.html`・`あみだくじ.html`は`抽選・あみだくじツール.html`に統合されました（タブ切替で同じ機能を利用できます）。
-> 元の2ファイルはデスクトップに残していますが、ポータルとのハードリンクは解除済みです。まだ一般公開前のため、
+> 旧`抽選ルーレット.html`・`あみだくじ.html`は`抽選・あみだくじツール.html`に統合され、
+> 2026-09-16に元の2ファイルを削除しました（タブ切替で同じ機能を利用できます）。まだ一般公開前のため、
 > 旧URL（`/tools/lottery-roulette`・`/tools/amidakuji`）は404になります。
 
 > Write/Editツールでの編集はハードリンクを切ってしまうことがあるため、元ファイルを編集した後は

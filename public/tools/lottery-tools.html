@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>抽選・あみだくじツール</title>
 <style>
   :root{
@@ -206,6 +206,7 @@
     top:-6px;
     left:50%;
     transform:translateX(-50%);
+    transform-origin:50% 0;
     width:0;height:0;
     border-left:14px solid transparent;
     border-right:14px solid transparent;
@@ -213,10 +214,57 @@
     z-index:2;
     filter:drop-shadow(0 2px 2px rgba(0,0,0,0.2));
   }
+  /* 回転は requestAnimationFrame で自前に動かす。CSS transition では
+     区画の境界を通過した瞬間が取れず、カチカチ音を鳴らせないため */
   canvas{
     border-radius:50%;
     box-shadow:0 4px 20px rgba(30,50,90,0.18);
-    transition:transform 4s cubic-bezier(.17,.67,.16,1);
+    width:min(86vw,320px);
+    height:min(86vw,320px);
+    transition:opacity .12s linear;
+  }
+  .wheel-stack{position:relative;display:inline-block;line-height:0;}
+  .wheel-dim, .wheel-edge{
+    position:absolute;inset:0;pointer-events:none;opacity:0;
+  }
+  /* 当選区画だけを残して外side を暗くする覆い。当選区画は必ず真上に来るので、
+     ホイールと一緒に回す必要がなく、画面に固定した扇形で足りる */
+  .wheel-dim{
+    border-radius:50%;
+    transition:opacity .45s ease;
+    background:conic-gradient(from calc(var(--slice,60) * -0.5deg),
+      transparent 0deg, transparent calc(var(--slice,60) * 1deg),
+      rgba(10,16,34,0.60) calc(var(--slice,60) * 1deg), rgba(10,16,34,0.60) 360deg);
+  }
+  .wheel-edge{
+    transition:opacity .3s ease;
+    filter:drop-shadow(0 0 5px rgba(255,255,255,0.85));
+  }
+  .wheel-stack.lit .wheel-dim{opacity:1;}
+  .wheel-stack.lit .wheel-edge{opacity:1;animation:edgePulse 1s ease-in-out 2;}
+  @keyframes edgePulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+  .result .name{animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes bounceIn{
+    0%{transform:scale(.4);opacity:0;}
+    60%{transform:scale(1.12);opacity:1;}
+    100%{transform:scale(1);opacity:1;}
+  }
+  .confetti-container{
+    position:fixed;inset:0;pointer-events:none;z-index:15;overflow:hidden;
+  }
+  .confetti-piece{position:absolute;top:-16px;will-change:transform,opacity;}
+  @keyframes fall{
+    0%{transform:translateY(0) rotate(0deg);opacity:1;}
+    100%{transform:translateY(105vh) rotate(720deg);opacity:0;}
+  }
+  /* 前庭系への負担を避けるため、OS側で「視差効果を減らす」設定の端末では
+     回転そのものを見せず、結果だけを短く示す（JS側でも分岐している） */
+  @media (prefers-reduced-motion: reduce){
+    .result .name{animation:none;}
+    .wheel-stack.lit .wheel-edge{animation:none;}
+    .wheel-dim{transition-duration:.2s;}
+    .confetti-piece{display:none;}
+    .pointer{transition:none;}
   }
   .controls{
     display:flex;
@@ -245,6 +293,44 @@
     font-weight:800;
     padding:8px 24px;
     border-radius:16px;
+  }
+  .result .notice{
+    display:inline-block;
+    color:#c0392b;
+    font-size:13px;
+    font-weight:700;
+  }
+  .headcount-unit{font-size:13px;color:#555;font-weight:700;margin-right:4px;}
+  .pickcount-row{
+    display:flex;align-items:center;gap:6px;font-size:13px;color:#555;font-weight:700;
+  }
+  .pickcount-row select{
+    padding:6px 8px;border-radius:10px;border:1px solid #d8dfea;
+    font-size:14px;font-family:inherit;
+  }
+  .absent-box{margin-top:12px;border-top:1px solid #eef1f6;padding-top:10px;}
+  .absent-toggle{
+    background:none;color:#5a6472;font-size:13px;font-weight:700;padding:4px 0;
+  }
+  .absent-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .absent-chip{
+    background:#eef1f6;color:#3a4152;border:1px solid #dde3ec;
+    font-size:13px;padding:5px 10px;border-radius:14px;
+  }
+  .absent-chip.off{
+    background:#fdecea;color:#9aa3b2;border-color:#f5c6c0;text-decoration:line-through;
+  }
+  .undo-row{text-align:center;margin-top:10px;min-height:28px;}
+  .btn-undo{
+    background:#eef1f6;color:#5a6472;font-size:12px;font-weight:700;padding:6px 14px;
+  }
+  .remaining-msg{
+    text-align:center;
+    font-size:13px;
+    font-weight:700;
+    color:#5a6472;
+    margin:12px 0 0;
+    min-height:18px;
   }
   .history-list{
     margin-top:16px;
@@ -309,8 +395,16 @@
   body.big-mode .result .name{font-size:min(9vw,64px);padding:20px 40px;}
   body.big-mode .name-cell, body.big-mode .result-cell{font-size:min(4vw,26px);}
   body.big-mode .result-cell .cover, body.big-mode .result-cell .revealed{font-size:min(3vw,20px);padding:8px 16px;}
-  body.big-mode .history-list, body.big-mode .log-list{display:none;}
-  body.big-mode .btn-row, body.big-mode .checkbox-row{display:none;}
+  /* 投影中こそ「もう当たった人」の一覧が要る。黒板に書き写し終わるまで消せない。
+     あみだくじの「すべて表示」「くじを作り直す」も投影中に押せないと困る */
+  body.big-mode .history-list, body.big-mode .log-list{
+    display:block;font-size:min(3.2vw,22px);max-height:26vh;overflow-y:auto;
+  }
+  body.big-mode .history-list .history-title{font-size:min(2.4vw,16px);}
+  body.big-mode .btn-row{display:flex;justify-content:center;gap:16px;}
+  body.big-mode .btn-row .btn-sub{font-size:min(2.6vw,18px);padding:12px 22px;}
+  body.big-mode .checkbox-row, body.big-mode .pickcount-row,
+  body.big-mode .undo-row{display:none;}
   .exit-big-btn{
     position:fixed;top:16px;right:16px;z-index:20;
     background:#2a2a2a;color:#fff;font-size:13px;font-weight:700;
@@ -328,18 +422,18 @@
   <div class="card">
     <h2>名簿</h2>
     <div class="headcount-row">
-      <label for="headcountInput" style="margin:0;">人数を指定して自動入力</label>
-      <input type="number" id="headcountInput" min="2" max="20" placeholder="例: 5">
-      <button class="btn-small" id="headcountBtn">欄を作る</button>
+      <input type="number" id="headcountInput" min="2" max="40" placeholder="36" aria-label="人数">
+      <span class="headcount-unit">人ぶん</span>
+      <button class="btn-small" id="numberBtn">出席番号で作る</button>
+      <button class="btn-small" id="headcountBtn">空の欄を作る</button>
     </div>
     <label for="namesInput">名前を1行に1人ずつ入力してください</label>
-    <textarea id="namesInput">たなか
-さとう
-すずき
-やまだ
-いとう
-わたなべ</textarea>
-    <p class="hint">ルーレットは最大20人、あみだくじは最大10人まで対応します。</p>
+    <textarea id="namesInput" placeholder="たとえば&#10;たなか&#10;さとう&#10;すずき&#10;&#10;上の「出席番号で作る」で 1〜36 を入れることもできます"></textarea>
+    <p class="hint">ルーレットは最大40人、あみだくじは最大12人まで対応します。名前のかわりに出席番号を使うと、電子黒板に映しても個人名が出ません。</p>
+    <div class="absent-box">
+      <button class="absent-toggle" id="absentToggle" aria-expanded="false">▸ 今日のお休み（0人）</button>
+      <div class="absent-list" id="absentList" hidden></div>
+    </div>
     <div class="preset-row">
       <select id="presetSelect"><option value="">保存済みリストを選択…</option></select>
       <input type="text" id="presetNameInput" placeholder="保存名（例: 3年1組）">
@@ -351,7 +445,7 @@
 
   <div class="tab-row">
     <button class="tab-btn active" id="tabRouletteBtn">🎯 ひとりを選ぶ（ルーレット）</button>
-    <button class="tab-btn" id="tabAmidaBtn">🪜 全員に割り振る（あみだくじ）</button>
+    <button class="tab-btn" id="tabAmidaBtn">🪜 グループで割り振る（12人まで）</button>
   </div>
 
   <div class="toolbar-row">
@@ -363,10 +457,22 @@
   <div class="mode-panel active" id="panelRoulette">
     <div class="card big-target">
       <div class="wheel-area">
-        <div class="pointer"></div>
-        <canvas id="wheel" width="280" height="280"></canvas>
+        <div class="pointer" id="pointer"></div>
+        <div class="wheel-stack" id="wheelStack">
+          <canvas id="wheel" width="280" height="280" role="img" aria-label="抽選ルーレット"></canvas>
+          <div class="wheel-dim" id="wheelDim"></div>
+          <svg class="wheel-edge" id="wheelEdge" viewBox="0 0 100 100" aria-hidden="true">
+            <path id="wheelEdgePath" fill="none" stroke="#fff" stroke-width="2.5"
+                  vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+          </svg>
+        </div>
       </div>
       <div class="controls">
+        <div class="pickcount-row">
+          <label for="pickCount" style="margin:0;">選ぶ人数</label>
+          <select id="pickCount"></select>
+          <span>人</span>
+        </div>
         <button class="btn-main" id="spinBtn">スタート</button>
         <div class="checkbox-row">
           <input type="checkbox" id="excludeCheck">
@@ -374,7 +480,9 @@
         </div>
         <button class="btn-small" id="resetBtn">リストと履歴を元に戻す</button>
       </div>
-      <div class="result" id="rouletteResult"></div>
+      <p class="remaining-msg" id="remainingMsg" aria-live="polite"></p>
+      <div class="result" id="rouletteResult" role="status" aria-live="polite"></div>
+      <div class="undo-row"><button class="btn-undo" id="undoBtn" hidden>↩ 今のは取り消す</button></div>
       <div class="history-list" id="historyList" style="display:none;">
         <div class="history-title">これまでの結果</div>
         <ol id="historyOl"></ol>
@@ -415,6 +523,9 @@
   const resultsInput = document.getElementById('resultsInput');
   const headcountInput = document.getElementById('headcountInput');
   const headcountBtn = document.getElementById('headcountBtn');
+  const numberBtn = document.getElementById('numberBtn');
+  const absentToggle = document.getElementById('absentToggle');
+  const absentList = document.getElementById('absentList');
   const presetSelect = document.getElementById('presetSelect');
   const presetNameInput = document.getElementById('presetNameInput');
   const presetSaveBtn = document.getElementById('presetSaveBtn');
@@ -423,7 +534,21 @@
   const excludeCheck = document.getElementById('excludeCheck');
 
   const PRESET_KEY = 'lottery-tools-presets-v1';
-  let presets = {};
+  const MAX_ROULETTE = 40;   // 40人学級まで。以前は20人で、21人目以降が無警告で捨てられていた
+  const MAX_AMIDA = 12;
+  // プリセット名に「__proto__」などが来てもプロトタイプ汚染にならないよう、素のオブジェクトを使う
+  let presets = Object.create(null);
+
+  // 学校の共用PCや、プライベートモード・サイトデータ制限下では localStorage が例外を投げる。
+  // 投げっぱなしにすると「保存」を押しても何も起きないので、必ず結果を返して呼び出し側で伝える。
+  const safeStorage = {
+    get(key){
+      try{ return localStorage.getItem(key); }catch(e){ return null; }
+    },
+    set(key, value){
+      try{ localStorage.setItem(key, value); return true; }catch(e){ return false; }
+    }
+  };
 
   function setStatus(msg, isError){
     statusMsg.textContent = msg || '';
@@ -434,46 +559,138 @@
     return el.value.split('\n').map(s => s.trim()).filter(s => s.length > 0).slice(0, max || 999);
   }
 
+  function countLines(el){
+    return el.value.split('\n').map(s => s.trim()).filter(s => s.length > 0).length;
+  }
+
+  /* ---------- 今日のお休み ---------- */
+  /* 名簿そのものは書き換えない。欠席の子を名簿から消して放課後に戻す運用だと、
+     そのまま保存して名簿本体を壊す事故が起きるため */
+  const ABSENT_KEY = 'lottery-tools-absent-v1';
+  let absentSet = new Set();
+
+  function todayKey(){
+    const d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+  }
+  function loadAbsent(){
+    try{
+      const raw = safeStorage.get(ABSENT_KEY);
+      const o = raw ? JSON.parse(raw) : null;
+      // 日付が変わっていたら全員復帰させる。翌日も昨日の欠席者が
+      // 外れたままになるのがいちばん怖い
+      if(o && o.date === todayKey() && Array.isArray(o.names)) absentSet = new Set(o.names);
+    }catch(e){ absentSet = new Set(); }
+  }
+  function persistAbsent(){
+    safeStorage.set(ABSENT_KEY, JSON.stringify({ date: todayKey(), names: [...absentSet] }));
+  }
+  function allNames(){ return parseLines(namesInput, MAX_ROULETTE); }
+
+  function renderAbsent(){
+    const names = allNames();
+    // 名簿から消えた人は欠席リストにも残さない
+    [...absentSet].forEach((n) => { if(!names.includes(n)) absentSet.delete(n); });
+    absentToggle.textContent = (absentList.hidden ? '▸' : '▾') + ` 今日のお休み（${absentSet.size}人）`;
+    absentList.innerHTML = '';
+    if(names.length === 0){
+      const p = document.createElement('span');
+      p.className = 'hint';
+      p.textContent = '名簿を入力すると、ここで今日のお休みを選べます。';
+      absentList.appendChild(p);
+      return;
+    }
+    names.forEach((name) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'absent-chip' + (absentSet.has(name) ? ' off' : '');
+      b.textContent = name;
+      b.setAttribute('aria-pressed', absentSet.has(name) ? 'true' : 'false');
+      b.addEventListener('click', () => {
+        if(absentSet.has(name)) absentSet.delete(name); else absentSet.add(name);
+        persistAbsent();
+        renderAbsent();
+        if(typeof syncFromTextarea === 'function') syncFromTextarea();
+      });
+      absentList.appendChild(b);
+    });
+  }
+  absentToggle.addEventListener('click', () => {
+    absentList.hidden = !absentList.hidden;
+    absentToggle.setAttribute('aria-expanded', absentList.hidden ? 'false' : 'true');
+    renderAbsent();
+  });
+
+  // 絵文字などのサロゲートペアを途中で切ると「�」になるため、コードポイント単位で数える
+  function truncate(str, max){
+    const chars = [...str];
+    return chars.length > max ? chars.slice(0, max).join('') + '…' : str;
+  }
+
   function escapeHtml(str){
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
   }
 
-  headcountBtn.addEventListener('click', () => {
+  function askHeadcount(){
     const n = Math.floor(Number(headcountInput.value));
-    if(!n || n < 2 || n > 20){
-      setStatus('人数を2〜20の範囲で入力してください', true);
-      return;
+    if(!n || n < 2 || n > MAX_ROULETTE){
+      setStatus(`人数を2〜${MAX_ROULETTE}の範囲で入力してください`, true);
+      return null;
     }
-    const curNames = parseLines(namesInput);
-    const curResults = parseLines(resultsInput);
-    const nameLines = [];
-    const resultLines = [];
-    for(let i = 0; i < n; i++){
-      nameLines.push(curNames[i] || ('参加者' + (i + 1)));
-      resultLines.push(curResults[i] || ('結果' + (i + 1)));
+    // 名簿を打ち込んだ後にここを触ると、以前は確認なしで後ろの行が消えていた
+    const existing = countLines(namesInput);
+    if(existing > 0 && !confirm(`いま${existing}人分の名前が入っています。${n}人ぶんの欄に作り直すと、今の内容は置き換わります。よろしいですか？`)){
+      return null;
     }
-    namesInput.value = nameLines.join('\n');
-    resultsInput.value = resultLines.join('\n');
-    setStatus('');
+    return n;
+  }
+
+  // 出席番号なら電子黒板に映しても個人名が出ない。同姓の子がいても取り違えない。
+  // 区画に入る文字数も1〜2文字で済むので、40人でも盤面が読める
+  numberBtn.addEventListener('click', () => {
+    const n = askHeadcount();
+    if(n === null) return;
+    namesInput.value = Array.from({length:n}, (_, i) => String(i + 1)).join('\n');
+    setStatus(`出席番号 1〜${n} を入れました`, false);
+    namesInput.dispatchEvent(new Event('input'));
+  });
+
+  headcountBtn.addEventListener('click', () => {
+    const n = askHeadcount();
+    if(n === null) return;
+    // 以前は「参加者1」というダミー文字列を入れていたが、
+    // それを投影しても誰の役にも立たないので空行にする
+    namesInput.value = new Array(n).join('\n');
+    // あみだくじは名前と結果の行数を揃える必要があるので、結果側も同じ行数にしておく
+    if(countLines(resultsInput) === 0) resultsInput.value = new Array(n).join('\n');
+    setStatus(`${n}行の空欄を作りました。名前を入力してください`, false);
+    namesInput.focus();
     namesInput.dispatchEvent(new Event('input'));
   });
 
   function loadPresets(){
+    presets = Object.create(null);
     try{
-      const raw = localStorage.getItem(PRESET_KEY);
-      presets = raw ? (JSON.parse(raw) || {}) : {};
-    }catch(e){ presets = {}; }
+      const raw = safeStorage.get(PRESET_KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      if(parsed && typeof parsed === 'object'){
+        Object.keys(parsed).forEach((k) => { presets[k] = parsed[k]; });
+      }
+    }catch(e){ presets = Object.create(null); }
   }
-  function persistPresets(){ localStorage.setItem(PRESET_KEY, JSON.stringify(presets)); }
+  function persistPresets(){
+    return safeStorage.set(PRESET_KEY, JSON.stringify(presets));
+  }
   function renderPresetSelect(selected){
     presetSelect.innerHTML = '';
     const placeholder = document.createElement('option');
     placeholder.value = '';
     placeholder.textContent = '保存済みリストを選択…';
     presetSelect.appendChild(placeholder);
-    Object.keys(presets).forEach((name) => {
+    // 「1組」「10組」のような名前が数値キー扱いで先頭に並び替わらないよう、五十音順で固定する
+    Object.keys(presets).sort((a, b) => a.localeCompare(b, 'ja')).forEach((name) => {
       const opt = document.createElement('option');
       opt.value = name;
       opt.textContent = name;
@@ -494,16 +711,27 @@
   presetSaveBtn.addEventListener('click', () => {
     const name = presetNameInput.value.trim();
     if(!name){ setStatus('保存名を入力してください', true); return; }
+    // 打ち込んだ名簿が1クリックで消えないよう、上書きは必ず確認する
+    if(presets[name] && !confirm(`「${name}」はすでに保存されています。今の内容で上書きしますか？`)){
+      return;
+    }
     presets[name] = { namesText: namesInput.value, resultsText: resultsInput.value, exclude: excludeCheck.checked };
-    persistPresets();
+    if(!persistPresets()){
+      setStatus('このブラウザでは保存できませんでした（プライベートモードや保存容量の制限が考えられます）', true);
+      return;
+    }
     renderPresetSelect(name);
     setStatus(`「${name}」として保存しました`, false);
   });
   presetDeleteBtn.addEventListener('click', () => {
     const name = presetSelect.value;
     if(!name || !presets[name]) return;
+    if(!confirm(`保存済みリスト「${name}」を削除します。元に戻せません。よろしいですか？`)) return;
     delete presets[name];
-    persistPresets();
+    if(!persistPresets()){
+      setStatus('このブラウザでは保存内容を更新できませんでした', true);
+      return;
+    }
     renderPresetSelect('');
     presetNameInput.value = '';
     setStatus(`「${name}」を削除しました`, false);
@@ -531,7 +759,7 @@
   const soundToggleBtn = document.getElementById('soundToggleBtn');
   const bigModeBtn = document.getElementById('bigModeBtn');
   const exitBigBtn = document.getElementById('exitBigBtn');
-  let soundEnabled = localStorage.getItem('lottery-tools-sound-v1') === '1';
+  let soundEnabled = safeStorage.get('lottery-tools-sound-v1') === '1';
 
   function renderSoundBtn(){
     soundToggleBtn.textContent = soundEnabled ? '🔊 音: オン' : '🔈 音: オフ';
@@ -539,31 +767,96 @@
   }
   soundToggleBtn.addEventListener('click', () => {
     soundEnabled = !soundEnabled;
-    localStorage.setItem('lottery-tools-sound-v1', soundEnabled ? '1' : '0');
+    safeStorage.set('lottery-tools-sound-v1', soundEnabled ? '1' : '0');
     renderSoundBtn();
   });
   renderSoundBtn();
 
-  function beep(freq, duration){
-    if(!soundEnabled) return;
+  /* AudioContext はページに1つだけ持つ。以前は鳴らすたびに new していたため、
+     ブラウザの同時生成数の上限に達して2回目以降のスピンが無音になっていた。
+     自動再生の制限を外すには、ユーザー操作のコールスタックの中で resume する必要がある */
+  let audioCtx = null;
+  let noiseBuf = null;
+
+  function ensureAudio(){
+    if(!soundEnabled) return null;
     try{
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.frequency.value = freq;
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      gain.gain.setValueAtTime(0.15, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration / 1000);
-      osc.start();
-      osc.stop(ctx.currentTime + duration / 1000);
-    }catch(e){ /* audio not available; fail silently */ }
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+      if(!noiseBuf){
+        const len = Math.floor(audioCtx.sampleRate * 0.05);
+        noiseBuf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+        const data = noiseBuf.getChannelData(0);
+        for(let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      }
+      return audioCtx;
+    }catch(e){ return null; }
   }
+
+  function tone(freq, startOffset, dur, type, vol){
+    const c = audioCtx;
+    if(!c) return;
+    const t = c.currentTime + startOffset;
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(vol || 0.12, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(gain); gain.connect(c.destination);
+    osc.start(t); osc.stop(t + dur + 0.02);
+  }
+
+  // ルーレットが区画の境目を通過するたびの「カチ」。正弦波では「ピッ」になるので、
+  // 短いノイズをバンドパスに通して打撃音にする。u が大きい（終盤）ほど低く重くする
+  function playTick(u){
+    const c = ensureAudio();
+    if(!c) return;
+    const t = c.currentTime;
+    const src = c.createBufferSource();
+    src.buffer = noiseBuf;
+    src.playbackRate.value = 1.0 - 0.28 * u;
+    const bp = c.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 2000 - 700 * u;
+    bp.Q.value = 1.4;
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.10 + 0.10 * u, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+    src.connect(bp); bp.connect(g); g.connect(c.destination);
+    src.start(t); src.stop(t + 0.06);
+  }
+
+  function playTone(kind){
+    const c = ensureAudio();
+    if(!c) return;
+    if(kind === 'start'){
+      tone(160, 0, 0.12, 'triangle', 0.10);
+    }else if(kind === 'land'){
+      tone(220, 0, 0.10, 'triangle', 0.12);
+    }else if(kind === 'fanfare'){
+      tone(523.25, 0.00, 0.12, 'triangle', 0.13);
+      tone(659.25, 0.10, 0.12, 'triangle', 0.13);
+      tone(783.99, 0.20, 0.14, 'triangle', 0.14);
+      tone(1046.50, 0.32, 0.45, 'triangle', 0.15);
+      tone(523.25, 0.32, 0.45, 'sine', 0.07);
+    }else if(kind === 'trace'){
+      tone(660, 0, 0.20, 'sine', 0.12);
+    }
+  }
+
+  // あみだくじ側が使っている既存の呼び出しを生かすための薄いラッパ
+  function beep(){ playTone('trace'); }
 
   function setBigMode(on){
     document.body.classList.toggle('big-mode', on);
     bigModeBtn.textContent = on ? '🔍 大きく表示中' : '🔍 大きく表示';
     bigModeBtn.classList.toggle('on', on);
+    // 表示サイズが変わるので、その解像度で描き直さないとホイールの文字がぼやける
+    if(typeof drawWheel === 'function'){
+      requestAnimationFrame(() => drawWheel(entries));
+    }
   }
   bigModeBtn.addEventListener('click', () => setBigMode(true));
   exitBigBtn.addEventListener('click', () => setBigMode(false));
@@ -574,66 +867,279 @@
   const spinBtn = document.getElementById('spinBtn');
   const resetBtn = document.getElementById('resetBtn');
   const rouletteResult = document.getElementById('rouletteResult');
+  const pickCount = document.getElementById('pickCount');
+  const undoBtn = document.getElementById('undoBtn');
   const historyList = document.getElementById('historyList');
   const historyOl = document.getElementById('historyOl');
 
-  const colors = ['#2d6cdf','#43a047','#fb8c00','#8e24aa','#e53935','#00897b','#c0ca33','#5c6bc0','#f4511e','#039be5'];
+  // canvas 内の文字もページ本文と同じ書体にそろえる（従来は sans-serif 任せだった）
+  const BASE_FONT = '"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif';
+
+  /* 区画の配色。ビビッドな色と淡い色を交互に並べてある。
+     もとの10色は「緑とオレンジ」がP型色覚でほぼ同じ色に見え（色差6.5）、
+     「水色と青」は通常の色覚でも見分けにくかった（同18.2）。
+     色相が1軸に潰れる2色覚では明度差が頼りになるが、暗い色で明度差を稼ぐと
+     盤面全体が沈んでお祝いごとに見えなくなるため、明るい側で差を付けている。
+     隣り合う区画の色差は P型・D型で最小35.7、プロジェクタ投影後でも29.3。
+     並び順に意味があるので入れ替えないこと。 */
+  const colors = [
+    '#d4f000', '#3d8cff', '#e38400', '#7ddbff',
+    '#45ffba', '#0599dd', '#01a812', '#d8ceff',
+    '#ffe3ab', '#db42ea', '#ff3f23', '#feb3d7'
+  ];
+
+  function relLuminance(hex){
+    const v = [1,3,5].map((i) => {
+      const c = parseInt(hex.substr(i,2),16) / 255;
+      return c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
+    });
+    return 0.2126*v[0] + 0.7152*v[1] + 0.0722*v[2];
+  }
+  function contrastWith(lum, other){
+    const a = Math.max(lum, other) + 0.05, b = Math.min(lum, other) + 0.05;
+    return a / b;
+  }
+  // 下地の明るさで文字色を決める。明るさのしきい値を決め打ちすると
+  // 中間の明るさで読みにくいほうを選んでしまうので、実際の比を較べて選ぶ
+  const inkFor = {};
+  colors.forEach((c) => {
+    const lum = relLuminance(c);
+    const onBlack = contrastWith(lum, relLuminance('#1a1a1a'));
+    const onWhite = contrastWith(lum, 1.0);
+    inkFor[c] = onBlack >= onWhite
+      ? { text:'#1a1a1a', halo:'rgba(255,255,255,0.75)' }
+      : { text:'#ffffff', halo:'rgba(0,0,0,0.55)' };
+  });
+
+  /* 単純な colors[i % 12] だと、人数が13・25・37人のときに最後の区画と
+     最初の区画が同じ色になって境目が消える。末尾だけ別の色に差し替える */
+  function colorsFor(n){
+    const list = [];
+    for(let i = 0; i < n; i++) list.push(colors[i % colors.length]);
+    if(n > 2 && list[n-1] === list[0]){
+      const prev = list[n-2], next = list[0];
+      // 色相は2色覚だと1軸に潰れるので、明度がいちばん離れる色を選ぶ
+      let best = null, bestScore = -1;
+      colors.forEach((c) => {
+        if(c === prev || c === next) return;
+        const score = Math.min(
+          Math.abs(relLuminance(c) - relLuminance(prev)),
+          Math.abs(relLuminance(c) - relLuminance(next))
+        );
+        if(score > bestScore){ bestScore = score; best = c; }
+      });
+      if(best) list[n-1] = best;
+    }
+    return list;
+  }
 
   let entries = [];
   let currentRotation = 0;
   let spinning = false;
   let history = [];
+  let rafId = null;
+  let exhausted = false;      // 除外モードで全員引き終わったか
+  let pendingRebuild = false; // 除外した人を盤面から消す作業。次のスピン直前まで遅らせる
+  let pendingNamesEdit = false;
+  let currentSpin = null;     // 進行中のスピン（当選者と停止角）。スキップ時に使う
+  const pointer = document.getElementById('pointer');
+  const wheelStack = document.getElementById('wheelStack');
+  const wheelEdgePath = document.getElementById('wheelEdgePath');
 
-  function parseEntries(){ return parseLines(namesInput, 20); }
+  // 欠席の子は抽選の対象から差し引く（名簿そのものは触らない）
+  function parseEntries(){
+    return parseLines(namesInput, MAX_ROULETTE).filter((n) => !absentSet.has(n));
+  }
+
+  // canvas の見た目の大きさはCSSに任せ、描画解像度は端末の画素密度に合わせる。
+  // 以前は280px固定だったため、電子黒板に拡大投影すると文字がぼやけていた。
+  function syncCanvasSize(){
+    const rect = canvas.getBoundingClientRect();
+    const cssSize = Math.round(rect.width) || 320;
+    const dpr = window.devicePixelRatio || 1;
+    const backing = Math.round(cssSize * dpr);
+    if(canvas.width !== backing){
+      canvas.width = backing;
+      canvas.height = backing;
+    }
+    return { cssSize, dpr };
+  }
 
   function drawWheel(list){
-    const size = canvas.width;
+    const { cssSize, dpr } = syncCanvasSize();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const size = cssSize;
     const cx = size/2, cy = size/2, r = size/2 - 4;
     ctx.clearRect(0,0,size,size);
+
     if(list.length === 0){
       ctx.beginPath();
       ctx.arc(cx,cy,r,0,Math.PI*2);
       ctx.fillStyle = '#eef1f6';
       ctx.fill();
       ctx.fillStyle = '#8a93a3';
-      ctx.font = '14px sans-serif';
+      ctx.font = Math.round(size * 0.05) + 'px ' + BASE_FONT;
       ctx.textAlign = 'center';
       ctx.fillText('リストが空です', cx, cy);
       return;
     }
+
     const sliceAngle = (Math.PI*2) / list.length;
+    // 人数が増えるほど1区画が細くなるので、文字も半径と人数から決める。
+    // 区画の高さ（弧の幅）を超えない範囲で、できるだけ大きく。
+    const arcHeight = 2 * (r * 0.55) * Math.sin(sliceAngle / 2);
+    // 半径方向は「全角6文字が収まる大きさ」を上限にする。これ以上大きくすると
+    // 「わたなべゆうた」のような名前が途中で切れてしまう
+    const fontSize = Math.max(9, Math.min(arcHeight * 0.78, r / 7.1));
+    // 文字が収まる長さ。全角1文字≒fontSize幅として、描ける半径から逆算する
+    const maxChars = Math.max(2, Math.floor((r - fontSize * 1.1) / fontSize));
+
+    const sliceColors = colorsFor(list.length);
     list.forEach((name, i) => {
       const start = i * sliceAngle;
       const end = start + sliceAngle;
+      const fill = sliceColors[i];
       ctx.beginPath();
       ctx.moveTo(cx,cy);
       ctx.arc(cx,cy,r,start,end);
       ctx.closePath();
-      ctx.fillStyle = colors[i % colors.length];
+      ctx.fillStyle = fill;
       ctx.fill();
+      // 区画の切れ目。白線だけだと明るい色の区画で消えるので、暗線を重ねた二重線にする
+      const lw = Math.max(1, size * 0.005);
+      ctx.lineWidth = lw * 2;
+      ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+      ctx.stroke();
+      ctx.lineWidth = lw;
+      ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+      ctx.stroke();
+
+      const ink = inkFor[fill] || { text:'#fff', halo:'rgba(0,0,0,0.55)' };
       ctx.save();
       ctx.translate(cx,cy);
       ctx.rotate(start + sliceAngle/2);
       ctx.textAlign = 'right';
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 13px sans-serif';
-      const label = name.length > 6 ? name.slice(0,6) + '…' : name;
-      ctx.fillText(label, r - 12, 5);
+      ctx.textBaseline = 'middle';
+      ctx.font = 'bold ' + fontSize.toFixed(1) + 'px ' + BASE_FONT;
+      // 投影すると黒が浮いてコントラストが落ちるため、縁取りで下地から浮かせる
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = Math.max(2, fontSize * 0.22);
+      ctx.strokeStyle = ink.halo;
+      const label = truncate(name, maxChars);
+      ctx.strokeText(label, r - fontSize * 0.5, 0);
+      ctx.fillStyle = ink.text;
+      ctx.fillText(label, r - fontSize * 0.5, 0);
       ctx.restore();
     });
+
+    // 中心のハブ。楔が一点に集まる雑然とした見た目を抑える
+    ctx.beginPath();
+    ctx.arc(cx, cy, Math.max(8, size * 0.055), 0, Math.PI*2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(30,50,90,0.15)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  // 回転中に呼ばれても状態が壊れないよう、保留中の処理を必ず片付ける
+  function abortSpin(){
+    if(rafId !== null){ cancelAnimationFrame(rafId); rafId = null; }
+    clearTimeline();
+    hideSpotlight();
+    spinning = false;
+    currentSpin = null;
+    pendingRebuild = false;
+    spinBtn.disabled = false;
+    spinBtn.textContent = 'スタート';
+    canvas.style.opacity = '1';
+    pointer.style.transform = 'translateX(-50%)';
+  }
+
+  function snapWheelTo(deg){
+    currentRotation = deg;
+    canvas.style.transform = 'rotate(' + deg + 'deg)';
+  }
+
+  /* 演出の時間割。停止と同時に結果を出すと、子どもが盤面を読む前に答えが出てしまう。
+     止まってから0.9秒おいて発表することで、教室の「おーっ」が先に来る */
+  const T_NORMAL  = { spinMs:[3400,3900], holdMs:900, spotDelayMs:250, confetti:true,  pulse:true  };
+  const T_REDUCED = { spinMs:[0,0],       holdMs:250, spotDelayMs:50,  confetti:false, pulse:false };
+  const rmQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let reduced = rmQuery.matches;
+  if(rmQuery.addEventListener) rmQuery.addEventListener('change', (e) => { reduced = e.matches; });
+  function T(){ return reduced ? T_REDUCED : T_NORMAL; }
+
+  let timeoutIds = [];
+  function later(fn, ms){ timeoutIds.push(setTimeout(fn, ms)); }
+  function clearTimeline(){ timeoutIds.forEach(clearTimeout); timeoutIds = []; }
+
+  /* 速度の形。短く加速したあと、終端で速度が二次的にゼロへ落ちる。
+     これだけで、最後の数区画でカチカチの間隔が自然に伸びる */
+  function spinProgress(u){
+    const A = 0.10, TOT = 0.35;   // TOT = A/2 + (1-A)/3
+    if(u <= 0) return 0;
+    if(u >= 1) return 1;
+    if(u < A) return (u*u/(2*A)) / TOT;
+    const w = (u - A) / (1 - A);
+    return (A/2 + (1-A)*(1 - Math.pow(1-w,3))/3) / TOT;
+  }
+
+  // 当選区画は必ず真上に来るので、覆いの抜き穴の幅だけを人数に合わせればよい
+  function setSpotlightGeometry(n){
+    const half = 180 / n, r = 48, rad = Math.PI/180;
+    const x1 = 50 - r*Math.sin(half*rad), y1 = 50 - r*Math.cos(half*rad);
+    const x2 = 50 + r*Math.sin(half*rad);
+    const largeArc = half > 90 ? 1 : 0;
+    wheelStack.style.setProperty('--slice', String(360/n));
+    wheelEdgePath.setAttribute('d',
+      `M50,50 L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${largeArc} 1 ${x2.toFixed(2)},${y1.toFixed(2)} Z`);
+  }
+  function showSpotlight(){ wheelStack.classList.add('lit'); }
+  function hideSpotlight(){ wheelStack.classList.remove('lit'); }
+
+  function showConfetti(){
+    const box = document.createElement('div');
+    box.className = 'confetti-container';
+    for(let i = 0; i < 40; i++){
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      const sz = 6 + Math.random()*7;
+      p.style.left = (Math.random()*100) + 'vw';
+      p.style.width = sz + 'px';
+      p.style.height = (sz*0.6) + 'px';
+      p.style.background = colors[Math.floor(Math.random()*colors.length)];
+      if(Math.random() < 0.4) p.style.borderRadius = '50%';
+      p.style.animation = `fall ${1.4 + Math.random()*1.1}s linear ${Math.random()*0.4}s forwards`;
+      box.appendChild(p);
+    }
+    document.body.appendChild(box);
+    setTimeout(() => box.remove(), 3200);
   }
 
   function resetWheel(){
+    abortSpin();
     entries = parseEntries();
-    currentRotation = 0;
-    canvas.style.transition = 'none';
-    canvas.style.transform = 'rotate(0deg)';
+    exhausted = false;
+    pickResults = [];
+    pickQueue = 0;
+    snapWheelTo(0);
     drawWheel(entries);
     rouletteResult.innerHTML = '';
-    spinBtn.disabled = false;
+    undoBtn.hidden = true;
     history = [];
     renderHistory();
-    requestAnimationFrame(() => { canvas.style.transition = 'transform 4s cubic-bezier(.17,.67,.16,1)'; });
+    renderPickCount();
+    updateRemaining();
+  }
+
+  // 除外モードのとき「あと何人残っているか」は子どもが一番気にするので常に出す
+  function updateRemaining(){
+    const el = document.getElementById('remainingMsg');
+    if(!el) return;
+    if(!excludeCheck.checked){ el.textContent = ''; return; }
+    if(exhausted){ el.textContent = '全員が選ばれました。「リストと履歴を元に戻す」を押すと最初からやり直せます。'; return; }
+    el.textContent = `残り ${entries.length} 人`;
   }
 
   function renderHistory(){
@@ -645,68 +1151,348 @@
     historyOl.innerHTML = history.map(name => `<li>${escapeHtml(name)}</li>`).join('');
   }
 
+  // 前回の当選で減ったリストや、回転中に編集された名簿を盤面へ反映する。
+  // 当選直後にやると、強調表示したそばから盤面が描き変わってしまうので次のスピン直前に行う
+  function applyPending(){
+    if(pendingRebuild){
+      pendingRebuild = false;
+      hideSpotlight();
+      drawWheel(entries);
+      snapWheelTo(0);
+    }
+    if(pendingNamesEdit){
+      pendingNamesEdit = false;
+      syncFromTextarea();
+    }
+  }
+
+  /* 日直2人、給食当番4人。教室で1人だけ選ぶ場面はむしろ少ない。
+     1回5秒かかるので、4人を別々に引くと30秒を超えて子どもが飽きる */
+  let pickQueue = 0;       // あと何人続けて引くか
+  let pickResults = [];    // 今回まとめて選んだ人
+
+  function renderPickCount(){
+    const max = Math.min(10, Math.max(1, entries.length));
+    const keep = Math.min(Number(pickCount.value) || 1, max);
+    pickCount.innerHTML = '';
+    for(let i = 1; i <= max; i++){
+      const o = document.createElement('option');
+      o.value = String(i); o.textContent = String(i);
+      if(i === keep) o.selected = true;
+      pickCount.appendChild(o);
+    }
+    const n = Number(pickCount.value) || 1;
+    spinBtn.textContent = n > 1 ? `${n}人を選ぶ` : 'スタート';
+    // 2人以上を選ぶときは、同じ子が重複しないよう必ず除外する
+    if(n > 1){
+      excludeCheck.checked = true;
+      excludeCheck.disabled = true;
+    }else{
+      excludeCheck.disabled = false;
+    }
+  }
+
+  function startPick(){
+    const n = Math.min(Number(pickCount.value) || 1, entries.length);
+    pickQueue = n;
+    pickResults = [];
+    spin();
+  }
+
   function spin(){
     if(spinning) return;
-    entries = entries.length > 0 ? entries : parseEntries();
+    applyPending();
+    if(exhausted){
+      rouletteResult.innerHTML = '<span class="notice">全員が選ばれました。「リストと履歴を元に戻す」を押してください。</span>';
+      return;
+    }
     if(entries.length === 0){
-      rouletteResult.innerHTML = '<span style="color:#c0392b;font-size:13px;">名前を1つ以上入力してください</span>';
+      rouletteResult.innerHTML = '<span class="notice">名前を1つ以上入力してください</span>';
       return;
     }
     spinning = true;
-    spinBtn.disabled = true;
-    rouletteResult.innerHTML = '';
+    spinBtn.disabled = false;
+    spinBtn.textContent = 'スキップ';
+    undoBtn.hidden = true;
+    // まとめて選んでいる途中は、すでに出た人を消さずに残しておく
+    if(pickResults.length === 0) rouletteResult.innerHTML = '';
+    hideSpotlight();
+    clearTimeline();
 
-    const sliceAngleDeg = 360 / entries.length;
-    const winnerIndex = Math.floor(Math.random() * entries.length);
+    ensureAudio();      // 自動再生の制限を外すため、必ずクリックの流れの中で呼ぶ
+    playTone('start');
+
+    const n = entries.length;
+    const sliceAngleDeg = 360 / n;
+    const winnerIndex = Math.floor(Math.random() * n);
+    // 当選者は「名前そのもの」を先に控えておく。番号だけ持っていると、
+    // 回転中にリストが差し替わったとき別人や undefined が発表されてしまう
+    const winnerName = entries[winnerIndex];
     const winnerCenterDeg = (winnerIndex * sliceAngleDeg) + sliceAngleDeg/2;
     const baseTarget = (270 - winnerCenterDeg + 360) % 360;
     const extraSpins = 5 + Math.floor(Math.random()*3);
-    const finalRotation = currentRotation - (currentRotation % 360) + extraSpins*360 + baseTarget;
+    const fromDeg = currentRotation;
+    const toDeg = currentRotation - (currentRotation % 360) + extraSpins*360 + baseTarget;
+    currentSpin = { winner: winnerName, toDeg: toDeg };
+    setSpotlightGeometry(n);
 
-    currentRotation = finalRotation;
-    canvas.style.transform = 'rotate(' + finalRotation + 'deg)';
+    const conf = T();
+    let durMs = conf.spinMs[0] + Math.random() * (conf.spinMs[1] - conf.spinMs[0]);
+    // 2人目以降は短く回す。毎回フルの演出をすると4人で20秒を超え、
+    // 朝の会では子どもが飽きて私語が始まる
+    if(pickResults.length > 0) durMs *= 0.55;
 
-    let finished = false;
-    const onDone = () => {
-      if(finished) return;
-      finished = true;
-      canvas.removeEventListener('transitionend', onDone);
+    // requestAnimationFrame は、ウィンドウが最小化されていたり背面のタブだと
+    // 1フレームも動かない。回転が始まったまま戻らなくならないよう保険をかける
+    later(() => { if(spinning && currentSpin) skipToEnd(); }, durMs + 1500);
+
+    if(reduced){
+      // 視差軽減の設定時は回転を見せない。速く回すのは前庭系にはむしろ悪い
+      canvas.style.opacity = '0';
+      later(() => {
+        snapWheelTo(toDeg);
+        canvas.style.opacity = '1';
+        playTick(0.5);
+        finishSpin(winnerName);
+      }, 120);
+      return;
+    }
+
+    runSpin(fromDeg, toDeg, durMs, n, () => finishSpin(winnerName));
+  }
+
+  function runSpin(fromDeg, toDeg, durMs, n, onStop){
+    const sliceDeg = 360 / n;
+    // 2人だと区画が180度もあって数回しか鳴らないので、24度以下に細分する。
+    // 整数で割るので、実際の区画の境目は必ずカチの位置に含まれる
+    const tickSpacingDeg = sliceDeg / Math.ceil(sliceDeg / 24);
+    const total = toDeg - fromDeg;
+    const overshoot = 1.2;
+    let t0 = null;
+    let lastK = Math.floor((fromDeg - 270) / tickSpacingDeg);
+    let lastTickAt = -1e9;
+
+    function frame(now){
+      if(t0 === null) t0 = now;
+      const u = Math.min(1, (now - t0) / durMs);
+      const rot = fromDeg + total * spinProgress(u) + overshoot * Math.sin(Math.PI * u) * u;
+      canvas.style.transform = 'rotate(' + rot + 'deg)';
+
+      const k = Math.floor((rot - 270) / tickSpacingDeg);
+      if(k !== lastK){
+        lastK = k;
+        // 最高速では1フレームに十数区画を通過するので、鳴らす間隔に下限を設ける
+        if(now - lastTickAt >= 45){
+          playTick(u);
+          lastTickAt = now;
+        }
+      }
+      // カチのたびに針がはじかれる
+      const d = Math.max(0, 1 - (now - lastTickAt) / 90);
+      pointer.style.transform = 'translateX(-50%) rotate(' + (-8 * d).toFixed(2) + 'deg)';
+
+      if(u < 1){
+        rafId = requestAnimationFrame(frame);
+      }else{
+        canvas.style.transform = 'rotate(' + toDeg + 'deg)';
+        pointer.style.transform = 'translateX(-50%)';
+        rafId = null;
+        currentRotation = toDeg;
+        playTone('land');
+        onStop();
+      }
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function finishSpin(winnerName){
+    const conf = T();
+    currentSpin = null;   // 二重に発表されないよう、ここで進行中の印を消す
+    currentRotation = currentRotation % 360;
+    const more = pickQueue > 1;   // まだ続けて引く人がいるか
+    // 停止してすぐは何も起こさない。子どもが盤面を読む時間をつくる
+    later(showSpotlight, conf.spotDelayMs);
+    // 続けて引くときは間を詰める。毎回0.9秒待つと4人で20秒を超える
+    later(() => {
       spinning = false;
       spinBtn.disabled = false;
-      const winner = entries[winnerIndex];
-      rouletteResult.innerHTML = '<span class="name">🎉 ' + escapeHtml(winner) + '</span>';
-      beep(880, 250);
-      history.unshift(winner);
+      pickResults.push(winnerName);
+      rouletteResult.innerHTML = pickResults
+        .map((nm) => '<span class="name">🎉 ' + escapeHtml(nm) + '</span>')
+        .join(' ');
+      history.unshift(winnerName);
       renderHistory();
+
       if(excludeCheck.checked){
-        entries.splice(winnerIndex, 1);
+        const idx = entries.indexOf(winnerName);
+        if(idx !== -1) entries.splice(idx, 1);
+        if(entries.length === 0){
+          exhausted = true;
+          hideSpotlight();
+        }else{
+          // 盤面の描き直しは次のスピン直前まで待つ。いま描き直すと
+          // 当選区画の強調が消えてしまい、教師が結果を確認できない
+          pendingRebuild = true;
+        }
       }
-    };
-    canvas.addEventListener('transitionend', onDone);
-    setTimeout(onDone, 4200);
+      updateRemaining();
+
+      if(more && !exhausted && entries.length > 0){
+        // 途中の1人ごとに紙吹雪とファンファーレを鳴らすと教室がうるさすぎる
+        playTone('land');
+        pickQueue--;
+        later(spin, 350);
+      }else{
+        pickQueue = 0;
+        playTone('fanfare');
+        if(conf.confetti) showConfetti();
+        undoBtn.hidden = false;
+        renderPickCount();
+      }
+    }, more ? Math.min(conf.holdMs, 500) : conf.holdMs);
+  }
+
+  /* 押し間違い、子どものいたずら、当たった子が保健室にいた。
+     どれも週に1回は起きる。全リセットしかないと積み上げた履歴が消えてしまう */
+  function undoLast(){
+    if(spinning || history.length === 0) return;
+    const last = history.shift();
+    // 除外していた人を戻す。ただし名簿から消えている人は戻さない
+    if(excludeCheck.checked && allNames().includes(last) && !absentSet.has(last)){
+      if(!entries.includes(last)) entries.push(last);
+      exhausted = false;
+    }
+    pickResults = [];
+    renderHistory();
+    hideSpotlight();
+    pendingRebuild = false;
+    drawWheel(entries);
+    snapWheelTo(0);
+    rouletteResult.innerHTML = '<span class="notice">「' + escapeHtml(last) + '」の結果を取り消しました</span>';
+    undoBtn.hidden = history.length === 0;
+    updateRemaining();
+    renderPickCount();
+  }
+
+  function syncFromTextarea(){
+    entries = parseEntries();
+    exhausted = false;
+    pendingRebuild = false;
+    hideSpotlight();
+    snapWheelTo(0);
+    drawWheel(entries);
+    rouletteResult.innerHTML = '';
+    pickResults = [];
+    pickQueue = 0;
+    undoBtn.hidden = true;
+    renderPickCount();
+    if(!absentList.hidden) renderAbsent();
+    updateRemaining();
+    const total = countLines(namesInput);
+    if(total > MAX_ROULETTE){
+      setStatus(`ルーレットは${MAX_ROULETTE}人までです。${MAX_ROULETTE + 1}人目以降（${total - MAX_ROULETTE}人）は対象外になります`, true);
+    }
+  }
+
+  // 回転中にもう一度押したら、待たずに結果まで飛ばす。
+  // 40人を1人ずつ引くと3分かかるため、急ぐ場面の逃げ道として要る
+  function skipToEnd(){
+    if(!spinning || currentSpin === null) return;
+    if(rafId !== null){ cancelAnimationFrame(rafId); rafId = null; }
+    clearTimeline();
+    // 途中で止めても当選者は変わらない（スタートを押した時点で決まっている）
+    canvas.style.transform = 'rotate(' + currentSpin.toDeg + 'deg)';
+    currentRotation = currentSpin.toDeg;
+    pointer.style.transform = 'translateX(-50%)';
+    canvas.style.opacity = '1';
+    finishSpin(currentSpin.winner);
   }
 
   spinBtn.addEventListener('click', () => {
-    if(entries.length === 0){
-      entries = parseEntries();
-      drawWheel(entries);
-    }
-    spin();
+    if(spinning) skipToEnd();
+    else startPick();
+  });
+  pickCount.addEventListener('change', renderPickCount);
+  undoBtn.addEventListener('click', undoLast);
+  // 投影中に慌てて抜けられるように
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && document.body.classList.contains('big-mode')) setBigMode(false);
+  });
+
+  // 非表示のタブでは requestAnimationFrame が止まる。戻ってきたとき
+  // 回転が止まったままにならないよう、その場で結果まで進める
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden && spinning) skipToEnd();
   });
   resetBtn.addEventListener('click', resetWheel);
-  namesInput.addEventListener('input', () => {
+  excludeCheck.addEventListener('change', () => {
+    // 除外の入り切りを変えたら残りの数え方が変わるので、いったん仕切り直す
     if(!spinning){
       entries = parseEntries();
-      currentRotation = 0;
-      canvas.style.transition = 'none';
-      canvas.style.transform = 'rotate(0deg)';
+      exhausted = false;
+      pendingRebuild = false;
+      hideSpotlight();
       drawWheel(entries);
-      rouletteResult.innerHTML = '';
-      requestAnimationFrame(() => { canvas.style.transition = 'transform 4s cubic-bezier(.17,.67,.16,1)'; });
+      snapWheelTo(0);
     }
+    updateRemaining();
   });
+  namesInput.addEventListener('input', () => {
+    if(spinning){
+      pendingNamesEdit = true;   // 回転が終わってから反映する
+      return;
+    }
+    syncFromTextarea();
+  });
+  // 画面の回転やウィンドウ幅の変化、「大きく表示」の切替で見た目のサイズが変わるため描き直す
+  window.addEventListener('resize', () => { if(!spinning) drawWheel(entries); });
+
+  /* ---------- 前回の続きを覚えておく ---------- */
+  /* 保存済みリスト機能があっても、毎回プルダウンから選ぶ操作を覚えている人しか使えない。
+     朝の会の1分で回すには、開いた時点で前回の名簿が入っている必要がある */
+  const SESSION_KEY = 'lottery-tools-session-v1';
+  let saveTimer = null;
+
+  function persistSession(){
+    safeStorage.set(SESSION_KEY, JSON.stringify({
+      namesText: namesInput.value,
+      resultsText: resultsInput.value,
+      exclude: excludeCheck.checked
+    }));
+  }
+  function queuePersist(){
+    if(saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(persistSession, 500);
+  }
+  function restoreSession(){
+    try{
+      const raw = safeStorage.get(SESSION_KEY);
+      const o = raw ? JSON.parse(raw) : null;
+      if(o && typeof o.namesText === 'string' && o.namesText.trim()){
+        namesInput.value = o.namesText;
+        if(typeof o.resultsText === 'string' && o.resultsText.trim()) resultsInput.value = o.resultsText;
+        excludeCheck.checked = !!o.exclude;
+        return true;
+      }
+    }catch(e){ /* 壊れていたら復元しない */ }
+    return false;
+  }
+
+  namesInput.addEventListener('input', queuePersist);
+  resultsInput.addEventListener('input', queuePersist);
+  excludeCheck.addEventListener('change', queuePersist);
+
+  loadAbsent();
+  const restored = restoreSession();
   entries = parseEntries();
   drawWheel(entries);
+  renderPickCount();
+  renderAbsent();
+  updateRemaining();
+  if(restored){
+    // 黙って前回の内容を出すと「これ誰の名簿？」になるので、必ず知らせる
+    setStatus('前回の名簿を読み込みました', false);
+  }
 
   /* ---------- あみだくじ ---------- */
   const headcountBtn2 = headcountBtn; // shared button already wired above
@@ -779,8 +1565,8 @@
       amidaError.textContent = `名前(${amidaNames.length}件)と結果(${amidaResults.length}件)の行数を揃えてください`;
       return;
     }
-    if(amidaNames.length > 10){
-      amidaError.textContent = '10人までにしてください';
+    if(amidaNames.length > MAX_AMIDA){
+      amidaError.textContent = `あみだくじは${MAX_AMIDA}人までです（今は${amidaNames.length}人）。人数が多いときはルーレットをお使いください`;
       return;
     }
     amidaError.textContent = '';
@@ -850,7 +1636,7 @@
     if(resultCell){
       resultCell.innerHTML = `<span class="revealed">${escapeHtml(amidaResults[finalCol])}</span>`;
     }
-    beep(660, 200);
+    beep();
 
     if(!skipTrace){
       const traceLine = document.getElementById('traceLine');
