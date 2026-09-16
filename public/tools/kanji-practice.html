@@ -1653,8 +1653,214 @@
     });
     return map;
   })();
+  // 学校で必ず扱う「同じ読みで意味のちがう漢字」を、定番のものから追加する。
+  // 学年は下の wordGradeOf() で漢字配当表から自動計算するので、ここには書かない
+  // （書き間違いで、まだ習っていない漢字が出てしまうのを防ぐため）。
+  const EXTRA_HOMOPHONE_GROUPS = [
+    { yomi:'あつい', words:[
+      { word:'暑い', hint:'気温が 高い', example:'今日は 朝から 暑い。' },
+      { word:'熱い', hint:'さわると あついと 感じる', example:'熱い お茶を ふうふうして 飲む。' },
+      { word:'厚い', hint:'あつみが ある', example:'厚い 本を 読み終えた。' }
+    ]},
+    { yomi:'はやい', words:[
+      { word:'早い', hint:'時こくが はやい', example:'今朝は いつもより 早い 時間に 起きた。' },
+      { word:'速い', hint:'スピードが はやい', example:'兄は 走るのが 速い。' }
+    ]},
+    { yomi:'なおす', words:[
+      { word:'直す', hint:'こわれた ものを もとに もどす', example:'こわれた いすを 直す。' },
+      { word:'治す', hint:'病気や けがを よくする', example:'かぜを 早く 治す。' }
+    ]},
+    { yomi:'のぼる', words:[
+      { word:'上る', hint:'上の ほうへ 進む', example:'けむりが 空へ 上る。' },
+      { word:'登る', hint:'高い ところへ よじのぼる', example:'みんなで 山に 登る。' }
+    ]},
+    { yomi:'はなす', words:[
+      { word:'話す', hint:'ことばで つたえる', example:'友だちと 話す。' },
+      { word:'放す', hint:'つかんで いた ものを 自由に する', example:'つった 魚を 川に 放す。' }
+    ]},
+    { yomi:'なく', words:[
+      { word:'鳴く', hint:'動物が 声を 出す', example:'にわとりが 鳴く。' },
+      { word:'泣く', hint:'人が なみだを 流す', example:'妹が ころんで 泣く。' }
+    ]},
+    { yomi:'たつ', words:[
+      { word:'立つ', hint:'まっすぐな すがたに なる', example:'前に 出て 立つ。' },
+      { word:'建つ', hint:'建物が つくられる', example:'駅前に ビルが 建つ。' }
+    ]},
+    { yomi:'かえる', words:[
+      { word:'帰る', hint:'もとの ところへ もどる', example:'家に 帰る。' },
+      { word:'代える', hint:'ほかの ものに 役目を まかせる', example:'そうじ当番を 代える。' },
+      { word:'変える', hint:'ようすを ちがう ものに する', example:'へやの ならべ方を 変える。' }
+    ]},
+    { yomi:'あける', words:[
+      { word:'明ける', hint:'夜や 年が おわって 新しく なる', example:'年が 明ける。' },
+      { word:'開ける', hint:'とじて いた ものを ひらく', example:'まどを 開ける。' }
+    ]},
+    { yomi:'きく', words:[
+      { word:'聞く', hint:'耳で 音や 話を うけとる', example:'先生の 話を 聞く。' },
+      { word:'効く', hint:'ききめが ある', example:'薬が 効く。' }
+    ]},
+    { yomi:'うつす', words:[
+      { word:'写す', hint:'そのまま 書きとる', example:'黒板の 字を ノートに 写す。' },
+      { word:'映す', hint:'光や 画面に すがたを 出す', example:'白い かべに 映す。' }
+    ]},
+    { yomi:'そなえる', words:[
+      { word:'備える', hint:'その ときの ために 用意 する', example:'台風に 備える。' },
+      { word:'供える', hint:'神や ほとけに ささげる', example:'お墓に 花を 供える。' }
+    ]},
+    { yomi:'つとめる', words:[
+      { word:'努める', hint:'力を つくして がんばる', example:'けがを しないように 努める。' },
+      { word:'務める', hint:'役目を 受けもつ', example:'司会を 務める。' },
+      { word:'勤める', hint:'会社などで はたらく', example:'父は 銀行に 勤める。' }
+    ]},
+    { yomi:'おさめる', words:[
+      { word:'治める', hint:'国や 人を まとめて しずめる', example:'国を 治める。' },
+      { word:'収める', hint:'よい けっかを 手に 入れる', example:'よい 成績を 収める。' },
+      { word:'納める', hint:'お金や ものを わたす', example:'税金を 納める。' }
+    ]},
+    { yomi:'あらわす', words:[
+      { word:'表す', hint:'気もちや 考えを しめす', example:'うれしい 気もちを 表す。' },
+      { word:'現す', hint:'すがたを 見えるように する', example:'ようやく すがたを 現す。' }
+    ]},
+    { yomi:'さす', words:[
+      { word:'指す', hint:'ゆびや ことばで しめす', example:'地図の 上を 指す。' },
+      { word:'差す', hint:'かさなどを 上に かかげる', example:'雨が ふって きたので かさを 差す。' }
+    ]},
+    { yomi:'やぶれる', words:[
+      { word:'破れる', hint:'紙や 布が さける', example:'ノートが 破れる。' },
+      { word:'敗れる', hint:'しょうぶに 負ける', example:'決勝で 敗れる。' }
+    ]},
+    { yomi:'あう', words:[
+      { word:'会う', hint:'人と 顔を 合わせる', example:'公園で 友だちに 会う。' },
+      { word:'合う', hint:'ぴったり する', example:'くつの 大きさが 合う。' }
+    ]},
+    { yomi:'まわり', words:[
+      { word:'回り', hint:'ぐるぐる まわる こと', example:'時計回りに ならぶ。' },
+      { word:'周り', hint:'その ものの まわりの ぶぶん', example:'池の 周りを 歩く。' }
+    ]},
+    { yomi:'かえす', words:[
+      { word:'返す', hint:'借りた ものを もどす', example:'本を 図書館に 返す。' },
+      { word:'帰す', hint:'人を 家へ もどらせる', example:'弟を 先に 帰す。' }
+    ]},
+    { yomi:'あたたかい', words:[
+      { word:'温かい', hint:'食べ物や 心が あたたかい', example:'温かい スープを 飲む。' },
+      { word:'暖かい', hint:'気温が あたたかい', example:'今日は 春のように 暖かい。' }
+    ]},
+    { yomi:'うつる', words:[
+      { word:'写る', hint:'写真に すがたが 出る', example:'写真に みんなが 写る。' },
+      { word:'移る', hint:'場所が かわる', example:'新しい 教室に 移る。' },
+      { word:'映る', hint:'鏡や 画面に すがたが 出る', example:'鏡に 自分の 顔が 映る。' }
+    ]},
+    { yomi:'きる', words:[
+      { word:'切る', hint:'はさみなどで 分ける', example:'紙を はさみで 切る。' },
+      { word:'着る', hint:'服を 身に つける', example:'上着を 着る。' }
+    ]},
+    { yomi:'つくる', words:[
+      { word:'作る', hint:'手を 動かして こしらえる', example:'みんなで カレーを 作る。' },
+      { word:'造る', hint:'大きな ものを こしらえる', example:'新しい 船を 造る。' }
+    ]},
+    { yomi:'さめる', words:[
+      { word:'覚める', hint:'ねむりから おきる', example:'朝早く 目が 覚める。' },
+      { word:'冷める', hint:'熱が なくなる', example:'スープが 冷める。' }
+    ]},
+    { yomi:'おる', words:[
+      { word:'折る', hint:'まげて わける', example:'紙を 半分に 折る。' },
+      { word:'織る', hint:'糸を 組んで 布を つくる', example:'糸から 布を 織る。' }
+    ]},
+    { yomi:'わかれる', words:[
+      { word:'分かれる', hint:'いくつかに 分かれる', example:'道が 二つに 分かれる。' },
+      { word:'別れる', hint:'人と はなれる', example:'駅で 友だちと 別れる。' }
+    ]},
+    { yomi:'あがる', words:[
+      { word:'上がる', hint:'上の ほうへ 動く', example:'かいだんを 上がる。' },
+      { word:'挙がる', hint:'手や 名前が しめされる', example:'たくさんの 手が 挙がる。' }
+    ]},
+    { yomi:'はじめ', words:[
+      { word:'始め', hint:'ものごとを スタート する とき', example:'練習の 始めに 体そうを する。' },
+      { word:'初め', hint:'いちばん さいしょ', example:'今年の 初めに 目標を 立てた。' }
+    ]},
+    { yomi:'こうえん', words:[
+      { word:'公園', hint:'みんなが 遊べる 広い 場所', example:'公園で ボールを 使って 遊ぶ。' },
+      { word:'公演', hint:'大ぜいの 前で 音楽や げきを する こと', example:'音楽の 公演を 見に 行く。' }
+    ]},
+    { yomi:'いがい', words:[
+      { word:'以外', hint:'それを のぞいた ほか', example:'わたし以外は みんな 来た。' },
+      { word:'意外', hint:'思って いたのと ちがう', example:'意外な けっかに おどろく。' }
+    ]},
+    { yomi:'かんしん', words:[
+      { word:'関心', hint:'気に なって 心を 向ける こと', example:'星に 関心が ある。' },
+      { word:'感心', hint:'りっぱだと 心を 動かされる こと', example:'弟の 努力に 感心する。' }
+    ]},
+    { yomi:'きかい', words:[
+      { word:'機会', hint:'ちょうど よい とき', example:'話す 機会が やって きた。' },
+      { word:'機械', hint:'動いて 仕事を する そうち', example:'工場の 機械が 動く。' }
+    ]},
+    { yomi:'しゅうかん', words:[
+      { word:'週間', hint:'七日の あいだ', example:'読書週間が 始まる。' },
+      { word:'習慣', hint:'いつも して いる こと', example:'早ねの 習慣を つける。' }
+    ]},
+    { yomi:'ようい', words:[
+      { word:'用意', hint:'したくを する こと', example:'遠足の 用意を する。' },
+      { word:'容易', hint:'かんたんな こと', example:'この 問題は 容易に 解ける。' }
+    ]},
+    { yomi:'じしん', words:[
+      { word:'自信', hint:'自分を しんじる 気もち', example:'練習を つんで 自信が つく。' },
+      { word:'自身', hint:'自分 そのもの', example:'自分自身の 目で たしかめる。' }
+    ]},
+    { yomi:'せいかく', words:[
+      { word:'正確', hint:'まちがいが なく 正しい', example:'数を 正確に 数える。' },
+      { word:'性格', hint:'その人の 心の ようす', example:'明るい 性格の 友だち。' }
+    ]},
+    { yomi:'きょうそう', words:[
+      { word:'競争', hint:'勝とうと して きそう こと', example:'売り上げを 競争する。' },
+      { word:'競走', hint:'どちらが 速いか 走って くらべる こと', example:'五十メートル 競走で 一位に なる。' }
+    ]},
+    { yomi:'かいとう', words:[
+      { word:'回答', hint:'しつもんに 答える こと', example:'アンケートに 回答する。' },
+      { word:'解答', hint:'問題の 答え', example:'テストの 解答を 見直す。' }
+    ]}
+  ];
+
+  const KANJI_GRADE = (function(){
+    const m = new Map();
+    GRADE_KANJI.forEach(g => {
+      g.kanji.forEach(row => { if(!m.has(row[0])) m.set(row[0], g.grade); });
+    });
+    return m;
+  })();
+
+  // その言葉が「何年生で書けるようになるか」を、使っている漢字の中で
+  // いちばん上の学年から求める。配当表に無い漢字が混じっていたら null を返し、
+  // その言葉は出題に使わない。
+  function wordGradeOf(word){
+    let max = 0;
+    for(const ch of word){
+      if(!/[一-鿿]/.test(ch)) continue;
+      const g = KANJI_GRADE.get(ch);
+      if(!g) return null;
+      if(g > max) max = g;
+    }
+    return max || null;
+  }
+
+  function firstKanjiOf(word){
+    for(const ch of word){
+      if(/[一-鿿]/.test(ch)) return ch;
+    }
+    return word.charAt(0);
+  }
+
   const HOMOPHONE_GROUPS = (function(){
     const byYomi = new Map();
+    // 先に入れた方が優先される（下の重複除去で最初の1件を残すため）ので、
+    // このクイズ用に用意した例文つきのデータを先に登録する。
+    EXTRA_HOMOPHONE_GROUPS.forEach(gr => {
+      gr.words.forEach(w => {
+        const grade = wordGradeOf(w.word);
+        if(!grade) return;
+        if(!byYomi.has(gr.yomi)) byYomi.set(gr.yomi, []);
+        byYomi.get(gr.yomi).push({ char: firstKanjiOf(w.word), word: w.word, hint: w.hint, example: w.example, grade });
+      });
+    });
     GRADE_KANJI.forEach(g => {
       entriesOf(g.grade).forEach(entry => {
         const variants = [{ word: entry.word, yomi: entry.yomi, hint: entry.hint, example: entry.example }];
@@ -1688,6 +1894,21 @@
     if(filtered.length < 2) return null;
     if(!filtered.some(m => m.word === entry.word)) return null;
     return filtered;
+  }
+
+  // 同じ読み方クイズは「その学年の漢字」だけに絞ると数問しか作れないので、
+  // 成立する組み合わせの側から問題を作る（下の学年で習った漢字も出題対象にする）。
+  // 選択肢に出せるのは、これまでに習った漢字だけ、という条件は変えない。
+  function homophoneQuestionsFor(grade){
+    const out = [];
+    HOMOPHONE_GROUPS.forEach((members, yomi) => {
+      const filtered = members.filter(m => m.grade <= grade);
+      if(filtered.length < 2) return;
+      filtered.forEach(m => {
+        out.push({ char: m.char, word: m.word, yomi: yomi, hint: m.hint, example: m.example });
+      });
+    });
+    return out;
   }
   const GRADE_PREF_KEY = 'kanji-practice-last-grade-v1';
   function loadSelectedGrade(){
@@ -1808,13 +2029,18 @@
 
   // 「おくりがなクイズ」「にたかんじクイズ」は、その学年・条件に合う字だけを
   // 出題対象にする（通常モードは学年の全字が対象）。
+  // モードごとの「問題のもとになる一覧」。同じ読み方クイズだけは、その学年の
+  // 漢字一覧ではなく、成立する同じ読みの組み合わせから作った一覧を使う。
+  function questionSourceForMode(m){
+    if(m === 'homophone') return homophoneQuestionsFor(selectedGrade);
+    return ENTRIES;
+  }
+
   function poolIndicesForMode(m){
-    const all = ENTRIES.map((_, i) => i);
+    const source = questionSourceForMode(m);
+    const all = source.map((_, i) => i);
     if(m === 'okurigana'){
-      return all.filter(i => !!okuriganaInfo(ENTRIES[i]));
-    }
-    if(m === 'homophone'){
-      return all.filter(i => !!homophoneCandidatesFor(ENTRIES[i], selectedGrade));
+      return all.filter(i => !!okuriganaInfo(source[i]));
     }
     return all;
   }
@@ -1903,6 +2129,7 @@
 
   /* ---------- game state ---------- */
   let mode, gameGrade, totalOriginal, queue, currentIdx, currentChoices, currentVariant;
+  let gameSource = ENTRIES;
   let correctCount, streak, sessionBestStreak, firstTryCorrect, missedOnce;
   let awaitingNext = false;
 
@@ -1929,12 +2156,27 @@
   const streakNum = document.getElementById('streakNum');
   const correctNum = document.getElementById('correctNum');
 
+  // 出題の順番を決める。同じ読み方クイズは、例文の中で使い方を見せられる問題の方が
+  // 意味のちがいが分かりやすいので先に使い、ヒントだけの問題は数が足りないときに回す。
+  function orderedPoolFor(m){
+    const indices = shuffle(poolIndicesForMode(m));
+    if(m !== 'homophone') return indices;
+    const withSentence = [], hintOnly = [];
+    indices.forEach(i => {
+      const q = gameSource[i];
+      if(q.example && q.example.indexOf(q.word) !== -1) withSentence.push(i);
+      else hintOnly.push(i);
+    });
+    return withSentence.concat(hintOnly);
+  }
+
   function startGame(m, count){
     mode = m;
     gameGrade = selectedGrade;
-    const sourceIndices = poolIndicesForMode(m);
+    gameSource = questionSourceForMode(m);
+    const sourceIndices = orderedPoolFor(m);
     totalOriginal = Math.min(count, sourceIndices.length);
-    queue = shuffle(sourceIndices).slice(0, totalOriginal);
+    queue = sourceIndices.slice(0, totalOriginal);
     correctCount = 0;
     streak = 0;
     sessionBestStreak = 0;
@@ -2020,7 +2262,7 @@
     }
     currentIdx = queue.shift();
     updateTopRow();
-    const entry = ENTRIES[currentIdx];
+    const entry = gameSource[currentIdx];
     // 音読み／訓読みの両方が登録されている字は、出題のたびにどちらかを
     // ランダムに選ぶ（片方しか無い字は常にそちらになる）。
     currentVariant = pickReadingVariant(entry);
