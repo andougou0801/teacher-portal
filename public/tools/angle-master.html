@@ -93,6 +93,12 @@
   .place-tools{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
   .place-tools button{border:3px solid #e2e8f0;background:#fff;border-radius:14px;font-size:15px;font-weight:800;padding:13px 4px;cursor:pointer;font-family:inherit;color:#3b4a5c;}
   .place-tools button:active{transform:scale(0.95);background:#eaf2ff;}
+  .place-tip{background:#fff5e6;border:3px solid #f5a623;color:#8a5a00;border-radius:14px;padding:12px 14px;font-size:14.5px;font-weight:800;line-height:1.8;margin-bottom:12px;}
+  .place-tip .head{display:block;font-size:19px;color:#e8730c;margin-bottom:4px;}
+  .place-tip b{color:#d0480c;font-size:17px;}
+  .place-tip.shake{animation:tipShake .45s ease;}
+  @keyframes tipShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+  .perfect-line{text-align:center;font-size:14px;font-weight:800;color:#f5a623;margin:-4px 0 10px;}
 
   .judge{text-align:center;font-size:26px;font-weight:800;margin:4px 0 10px;min-height:34px;}
   .judge.ok{color:var(--ok);}
@@ -206,6 +212,7 @@
       </div>
 
       <div id="placeWrap" class="hidden">
+        <div class="place-tip hidden" id="placeTip"></div>
         <div class="place-guide">
           <b>①</b> 分度器の 中心（＋の しるし）を 角の <b>頂点</b>に あわせる<br>
           <b>②</b> 0の めもりの まっすぐな 線を 角の <b>辺</b>に かさねる<br>
@@ -218,6 +225,7 @@
           <button id="placeReset">もどす</button>
         </div>
         <button class="main-btn" id="placeOkBtn">ここで OK！</button>
+        <button class="sub-btn hidden" id="placeGiveUp">お手本を 見る</button>
       </div>
 
       <div id="hintWrap">
@@ -748,24 +756,68 @@ function placeSVG(t, st, ghost){
   s += placeOverlay(t);
   return svgWrap(s, PL.W, PL.H);
 }
-// 正しく置けているか みる
+// うごかす向きの ことば（画面の ベクトル → 子ども向けの ことば）
+function dirWord(dx, dy){
+  const a = norm360(Math.atan2(-dy, dx) * 180/Math.PI);
+  const i = Math.round(a/45) % 8;
+  return ["みぎ","みぎ上","うえ","ひだり上","ひだり","ひだり下","した","みぎ下"][i];
+}
+// 正しく置けているか みる（ピッタリ／せいかい／おしい／もういちど）
 function judgePlace(st, t){
-  const dc = Math.hypot(st.px - t.vx, st.py - t.vy);
-  let base = 0, bestDiff = 999;
-  for(let i=0;i<t.rays.length;i++){
-    const d = Math.abs(diff180(st.rot, t.rays[i]));
-    if(d < bestDiff){ bestDiff = d; base = i; }
+  const ideal = idealPlace(st, t);
+  const dcx = ideal.px - st.px, dcy = ideal.py - st.py;   // お手本まで うごかす向き
+  const dc = Math.hypot(dcx, dcy);
+  let da = 999, base = 0, bd = 999;
+  for(let i=0;i<2;i++){
+    const d = diff180(st.rot, t.rays[i]);
+    if(Math.abs(d) < Math.abs(da)) da = d;
+    if(Math.abs(d) < bd){ bd = Math.abs(d); base = i; }
   }
-  const other = t.rays[1-base];
-  const rel = norm360(other - st.rot);
-  const centerOk = dc <= 17;
-  const baseOk = bestDiff <= 5;
+  const ad = Math.abs(da);
+  const rel = norm360(t.rays[1-base] - st.rot);
   const sideOk = rel > 3 && rel < 177;
-  let why = "";
-  if(!centerOk) why = "分度器の 中心（＋の しるし）が、角の 頂点から ずれていたよ。";
-  else if(!baseOk) why = "0の めもりの まっすぐな 線が、角の 辺に かさなっていなかったよ。";
-  else if(!sideOk) why = "分度器の 丸いほうが、はかりたい 角の 上に きていなかったよ。半分（180°）まわして 置いてみよう。";
-  return {ok: centerOk && baseOk && sideOk, why: why, centerOk:centerOk, baseOk:baseOk, sideOk:sideOk};
+  const turnWord = (da > 0) ? "みぎ" : "ひだり";
+
+  // ① 丸いほうが 反対がわ
+  if(!sideOk){
+    if(dc <= 26 && ad <= 8){
+      return {level:"close", ok:false,
+        why:"中心も 0の めもりも いい ところ！ でも 分度器の 丸いほうが 反対がわに あるよ。半分（180°）まわせば ピッタリ！"};
+    }
+    return {level:"wrong", ok:false,
+      why:"分度器の 丸いほうが、はかりたい 角の 上に きていなかったよ。角を おおうように 置こう。"};
+  }
+  // ② ピッタリ
+  if(dc <= 7 && ad <= 2){
+    return {level:"perfect", ok:true,
+      why:"中心も 0の めもりの 線も、きれいに 合っているよ。"};
+  }
+  // ③ せいかい
+  if(dc <= 17 && ad <= 5){
+    const nearly = (dc > 9 || ad > 2.5)
+      ? "あと ほんの すこしで ピッタリ だったよ。"
+      : "きれいに 置けたね。";
+    return {level:"ok", ok:true, why:nearly};
+  }
+  // ④ おしい（もう一度 なおせる）
+  if(dc <= 44 && ad <= 14){
+    const parts = [];
+    if(ad > 5) parts.push("0の めもりの 線が あと <b>"+Math.max(1,Math.round(ad))+"°</b> ずれているよ。<b>"+turnWord+"</b>に そっと まわそう。");
+    if(dc > 17) parts.push("中心の ＋を もう ちょっと <b>"+dirWord(dcx, dcy)+"</b>に うごかそう。");
+    if(parts.length===0) parts.push("中心の ＋を もう ちょっと <b>"+dirWord(dcx, dcy)+"</b>に うごかそう。");
+    return {level:"close", ok:false, why:parts.join("<br>")};
+  }
+  // ⑤ もういちど
+  if(dc > 44 && ad > 14){
+    return {level:"wrong", ok:false,
+      why:"中心の ＋を 角の 頂点に 合わせて、0の めもりの まっすぐな 線を 辺に かさねよう。"};
+  }
+  if(dc > 44){
+    return {level:"wrong", ok:false,
+      why:"分度器の 中心（＋の しるし）が、角の 頂点から 大きく ずれていたよ。2本の 辺が 交わる ところに 合わせよう。"};
+  }
+  return {level:"wrong", ok:false,
+    why:"0の めもりの まっすぐな 線が、角の 辺に かさなっていなかったよ。"+turnWord+"に "+Math.round(ad)+"°くらい まわすと 合うよ。"};
 }
 // お手本の置き方（0のめもりを どちらの辺に かさねてもよい）
 function idealPlace(st, t){
@@ -1405,7 +1457,7 @@ function buildQueue(units, count){
 function startGame(units, count, preset){
   const qs = preset || buildQueue(units, count);
   if(qs.length===0){ alert("問題を つくれませんでした。もう一度 おためしください。"); return; }
-  game = { qs:qs, i:0, res:[], combo:0, maxCombo:0, t0:Date.now(), units:units.slice(), count:qs.length, answering:false, place:null };
+  game = { qs:qs, i:0, res:[], combo:0, maxCombo:0, t0:Date.now(), units:units.slice(), count:qs.length, answering:false, place:null, placeTotal:0, placePerfect:0 };
   showScreen("play");
   renderQ();
 }
@@ -1419,8 +1471,11 @@ function mountPlace(p){
   const svg = fig.querySelector("svg");
   const g = svg.querySelector("#prot");
   const st = {px:p.start.px, py:p.start.py, rot:p.start.rot};
-  const pl = {st:st, p:p, svg:svg, g:g, locked:false};
+  const pl = {st:st, p:p, svg:svg, g:g, locked:false, tries:0, lastWhy:""};
   game.place = pl;
+  $("placeTip").classList.add("hidden");
+  $("placeGiveUp").classList.add("hidden");
+  $("placeOkBtn").textContent = "ここで OK！";
 
   function apply(){
     st.px = clamp(st.px, 8, PL.W-8);
@@ -1503,6 +1558,7 @@ function renderQ(){
   $("afterWrap").classList.add("hidden");
   $("judge").textContent = "";
   $("judge").className = "judge";
+  Array.prototype.forEach.call(document.querySelectorAll(".perfect-line"), function(e){ e.remove(); });
   $("hintBox").classList.add("hidden");
   $("hintBtn").classList.remove("hidden");
   if(!isPlace && window.matchMedia && !window.matchMedia("(pointer:coarse)").matches) box.focus();
@@ -1526,9 +1582,9 @@ $("hintBtn").addEventListener("click", function(){
   $("hintBtn").classList.add("hidden");
 });
 
-function finishQuestion(p, ok, your, why){
+function finishQuestion(p, ok, your, why, tries){
   game.answering = false;
-  game.res.push({p:p, your:your, ok:ok, why:why||""});
+  game.res.push({p:p, your:your, ok:ok, why:why||"", tries:tries||0});
   if(ok){ game.combo++; if(game.combo>game.maxCombo) game.maxCombo=game.combo; }
   else game.combo = 0;
   recAdd(p.unit, ok);
@@ -1542,30 +1598,80 @@ function finishQuestion(p, ok, your, why){
   const j = $("judge");
   j.className = "judge " + (ok?"ok":"ng");
   if(ok) j.textContent = (game.combo>=3 ? "⭕ せいかい！ "+game.combo+"連続🔥" : "⭕ せいかい！");
-  else j.textContent = (p.kind==="place") ? "❌ おしい！" : ("❌ ざんねん… 正しくは "+p.ans+"°");
+  else j.textContent = (p.kind==="place") ? "❌ もういちど" : ("❌ ざんねん… 正しくは "+p.ans+"°");
   const lbl = (p.kind==="place") ? "おき方" : "しき";
-  $("solBox").innerHTML = '<span class="lbl">'+lbl+'</span><span class="formula">'+(why && !ok ? why+"<br>" : "")+p.sol+'</span><br>'+p.hint;
+  const showWhy = why && (!ok || p.kind==="place");
+  $("solBox").innerHTML = '<span class="lbl">'+lbl+'</span><span class="formula">'+(showWhy ? why+"<br>" : "")+p.sol+'</span><br>'+p.hint;
   $("nextBtn").textContent = (game.i === game.qs.length-1) ? "けっかを 見る →" : "つぎの問題 →";
   $("qCombo").textContent = game.combo>=2 ? ("🔥"+game.combo+"連続") : "";
   $("nextBtn").focus();
 }
 
-function checkPlace(){
+function checkPlace(giveUp){
   const pl = game && game.place;
   if(!pl || pl.locked || !game.answering) return;
   const p = pl.p;
-  const r = judgePlace(pl.st, p.target);
+  const r = giveUp ? {level:"wrong", ok:false, why:"お手本を 見て、おき方を たしかめよう。"} : judgePlace(pl.st, p.target);
+
+  // 「おしい」は まだ 終わりにせず、直す チャンスを あげる
+  if(r.level === "close"){
+    pl.tries++;
+    const tip = $("placeTip");
+    tip.innerHTML = '<span class="head">🔶 おしい！ あと ちょっと</span>' + r.why;
+    tip.classList.remove("hidden");
+    tip.classList.remove("shake"); void tip.offsetWidth; tip.classList.add("shake");
+    $("placeGiveUp").classList.remove("hidden");
+    $("placeOkBtn").textContent = "なおしたら もう一度 OK！";
+    pl.lastWhy = r.why;
+    return;
+  }
+
   pl.locked = true;
-  // お手本を かさねて見せる
   const ideal = idealPlace(pl.st, p.target);
   $("qFig").innerHTML = placeSVG(p.target, pl.st, ideal);
-  finishQuestion(p, r.ok, r.ok ? "◯" : "✕", r.why);
+  $("placeTip").classList.add("hidden");
+  $("placeGiveUp").classList.add("hidden");
+  $("placeOkBtn").textContent = "ここで OK！";
+
+  if(r.level === "perfect"){ REC.stars++; saveRec(REC); }
+  if(p.kind === "place"){ game.placeTotal++; if(r.level === "perfect") game.placePerfect++; }
+
+  finishQuestion(p, r.ok, r.level, r.why, pl.tries);
+  const j = $("judge");
+  if(r.level === "perfect") j.textContent = (pl.tries>0 ? "💯 なおして ピッタリ！" : "💯 ピッタリ！") + (game.combo>=3 ? " "+game.combo+"連続🔥" : "");
+  else if(r.level === "ok") j.textContent = (pl.tries>0 ? "⭕ なおせたね！ せいかい！" : (game.combo>=3 ? "⭕ せいかい！ "+game.combo+"連続🔥" : "⭕ せいかい！"));
+  else j.textContent = "❌ もういちど";
+  if(r.level === "perfect"){
+    $("judge").insertAdjacentHTML("afterend", '<div class="perfect-line">⭐ ピッタリ ボーナス！ スターを 1こ おまけ</div>');
+  }
   if(!r.ok) $("solBox").insertAdjacentHTML("beforeend", '<br><span style="color:#18a058">みどりの 点線が お手本の おき方だよ。</span>');
+}
+
+// まちがいの くせを 見て、ひとこと 足す
+function analyzeMiss(p, val){
+  const a = p.ans, d = Math.abs(val - a);
+  const notes = [];
+  const u = p.unit;
+  if(u === "protractor" && val === 180 - a)
+    notes.push("分度器には めもりが 2つ あるよ。0の 線から じゅんに ふえて いく ほうを 読もうね。");
+  else if(u === "iso" && val === a * 2)
+    notes.push("2つの 同じ 角の 合計を 答えて いないかな？ 2で わるのを わすれずに。");
+  else if(u === "iso" && a % 2 === 0 && val === a / 2)
+    notes.push("2で わりすぎて いないかな？");
+  else if((u === "para" || u === "line" || u === "ext") && val === 180 - a)
+    notes.push("一直線は 180°。ひく ほうと ひかれる ほうを、もう一度 たしかめて みよう。");
+  else if((u === "quad" || u === "poly" || u === "line") && val === 360 - a)
+    notes.push("1回転は 360°だよ。ひき算の ところを たしかめよう。");
+  else if(u === "poly" && (val === 540 - a || val === 720 - a))
+    notes.push("多角形の 角の 和（180×(辺の数−2)）から ひく ところを たしかめよう。");
+  if(d > 0 && d <= 5) notes.unshift("おしい！ あと <b>"+d+"°</b> だったね。");
+  else if(d > 0 && d <= 10) notes.unshift("ちょっとだけ ずれたね（"+d+"° ちがい）。");
+  return notes.join(" ");
 }
 
 function checkAnswer(){
   const p = game.qs[game.i];
-  if(p.kind === "place"){ checkPlace(); return; }
+  if(p.kind === "place"){ checkPlace(false); return; }
   const box = $("ansBox");
   const raw = box.value.trim();
   if(raw==="") { box.focus(); return; }
@@ -1575,7 +1681,13 @@ function checkAnswer(){
   box.disabled = true;
   box.classList.add(ok?"ok":"ng");
   $("qFig").innerHTML = p.svgAns;
-  finishQuestion(p, ok, val, "");
+  const note = ok ? "" : analyzeMiss(p, val);
+  finishQuestion(p, ok, val, note, 0);
+  if(!ok){
+    const d = Math.abs(val - p.ans);
+    if(d <= 5) $("judge").textContent = "❌ おしい！ あと "+d+"°（正しくは "+p.ans+"°）";
+    else if(d <= 10) $("judge").textContent = "❌ ちょっと ずれたね（正しくは "+p.ans+"°）";
+  }
 }
 $("checkBtn").addEventListener("click", checkAnswer);
 $("nextBtn").addEventListener("click", function(){
@@ -1626,7 +1738,8 @@ document.addEventListener("keydown", function(e){
     pl.st.px = pl.p.start.px; pl.st.py = pl.p.start.py; pl.st.rot = pl.p.start.rot;
     pl.apply();
   });
-  $("placeOkBtn").addEventListener("click", checkPlace);
+  $("placeOkBtn").addEventListener("click", function(){ checkPlace(false); });
+  $("placeGiveUp").addEventListener("click", function(){ checkPlace(true); });
 })();
 $("ansBox").addEventListener("input", function(){
   this.value = this.value.replace(/[^0-9]/g,"").slice(0,3);
@@ -1657,7 +1770,11 @@ function showResult(){
     if(!per[u]) per[u]={t:0,c:0};
     per[u].t++; if(r.ok) per[u].c++;
   });
-  $("resUnits").innerHTML = '<h2 class="section-title" style="margin-top:6px">単元べつ</h2>' + Object.keys(per).map(function(id){
+  const placeLine = game.placeTotal > 0
+    ? '<div class="note" style="margin:10px 0 14px">📐 分度器の おき方：'+game.placeTotal+'問中 <b style="font-size:19px">'+game.placePerfect+'問</b> が ピッタリ！'+
+      (game.placePerfect===game.placeTotal ? ' かんぺき✨' : '')+'</div>'
+    : '';
+  $("resUnits").innerHTML = placeLine + '<h2 class="section-title" style="margin-top:6px">単元べつ</h2>' + Object.keys(per).map(function(id){
     const p = Math.round(per[id].c/per[id].t*100);
     return '<div class="accrow"><div class="nm">'+UNIT_BY_ID[id].name+'</div>'+
       '<div class="b"><i style="width:'+p+'%;background:'+(p<60?"#f27c6a":p<85?"#f5b13a":"#5fc48a")+'"></i></div>'+
