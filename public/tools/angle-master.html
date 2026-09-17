@@ -86,6 +86,14 @@
   .pad button:active{transform:scale(0.95);background:#eaf2ff;}
   .pad button.wide{grid-column:span 1;font-size:18px;}
 
+  /* ---------- 分度器のおき方 ---------- */
+  .figbox.place-fig svg{touch-action:none;cursor:grab;}
+  .place-guide{background:#f4f8ff;border:2px solid #dce7f7;border-radius:14px;padding:11px 14px;font-size:13.5px;font-weight:800;color:#3b4a5c;line-height:1.8;margin-bottom:12px;}
+  .place-guide b{color:var(--accent-dark);}
+  .place-tools{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+  .place-tools button{border:3px solid #e2e8f0;background:#fff;border-radius:14px;font-size:15px;font-weight:800;padding:13px 4px;cursor:pointer;font-family:inherit;color:#3b4a5c;}
+  .place-tools button:active{transform:scale(0.95);background:#eaf2ff;}
+
   .judge{text-align:center;font-size:26px;font-weight:800;margin:4px 0 10px;min-height:34px;}
   .judge.ok{color:var(--ok);}
   .judge.ng{color:var(--ng);}
@@ -182,7 +190,7 @@
       <p class="qtext" id="qText"></p>
       <div class="figbox" id="qFig"></div>
 
-      <div class="ansrow">
+      <div class="ansrow" id="ansRow">
         <input class="ansbox" id="ansBox" type="text" inputmode="numeric" autocomplete="off" placeholder="?">
         <span class="deg">°</span>
       </div>
@@ -195,6 +203,24 @@
           <button class="wide" data-k="C">けす</button><button data-k="0">0</button><button class="wide" data-k="B">← 1つ</button>
         </div>
         <button class="main-btn" id="checkBtn">こたえあわせ</button>
+      </div>
+
+      <div id="placeWrap" class="hidden">
+        <div class="place-guide">
+          <b>①</b> 分度器の 中心（＋の しるし）を 角の <b>頂点</b>に あわせる<br>
+          <b>②</b> 0の めもりの まっすぐな 線を 角の <b>辺</b>に かさねる<br>
+          <b>③</b> 丸いほうが はかりたい 角の 上に くるように する<br>
+          <span style="color:#8a97a8">分度器を ゆびで うごかし、右はしの オレンジの ボタンで まわせます。</span>
+        </div>
+        <div class="place-tools">
+          <button id="rotL">↺ ひだり</button>
+          <button id="rotR">みぎ ↻</button>
+          <button id="placeReset">もどす</button>
+        </div>
+        <button class="main-btn" id="placeOkBtn">ここで OK！</button>
+      </div>
+
+      <div id="hintWrap">
         <button class="sub-btn" id="hintBtn">💡 ヒントを見る</button>
         <div class="hintbox hidden" id="hintBox"></div>
       </div>
@@ -623,6 +649,145 @@ function figProtractor(a, leftBase, showAnsSet){
 }
 
 /* =========================================================
+   分度器を うごかして おく（そうさする図）
+========================================================= */
+const PL = {W:600, H:420, R:140};      // 図の大きさと 分度器の半径
+function norm360(d){ return ((d % 360) + 360) % 360; }
+function diff180(a, b){            // 直線としての ずれ（-90〜90）
+  let d = norm360(a - b) % 180;
+  return d > 90 ? d - 180 : d;
+}
+function clamp(v, lo, hi){ return v<lo ? lo : (v>hi ? hi : v); }
+
+// 分度器そのもの（中心が原点・0のめもりの線が右向き）
+function protractorPiece(ghost){
+  const R = PL.R;
+  const col  = ghost ? "#18a058" : "#3c6690";
+  const fill = ghost ? "rgba(24,160,88,0.10)" : "rgba(222,236,252,0.74)";
+  const dash = ghost ? ' stroke-dasharray="8 5"' : "";
+  let s = '';
+  if(!ghost) s += '<rect x="'+(-R)+'" y="'+(-R)+'" width="'+(2*R)+'" height="'+(R+20)+'" fill="rgba(0,0,0,0)"/>';
+  s += '<path d="M'+(-R)+' 0 A'+R+' '+R+' 0 0 1 '+R+' 0 Z" fill="'+fill+'" stroke="'+col+'" stroke-width="2.6"'+dash+'/>';
+  if(!ghost){
+    for(let t=0;t<=180;t++){
+      const len = (t%10===0) ? 15 : (t%5===0 ? 10 : 5);
+      const a = t*D2R, c = Math.cos(a), sn = Math.sin(a);
+      s += '<line x1="'+f2(R*c)+'" y1="'+f2(-R*sn)+'" x2="'+f2((R-len)*c)+'" y2="'+f2(-(R-len)*sn)+'" stroke="#5d7185" stroke-width="'+(t%10===0?1.4:0.9)+'"/>';
+    }
+    for(let t=0;t<=180;t+=10){
+      const a=t*D2R, r=R-23;
+      s += '<text x="'+f2(r*Math.cos(a))+'" y="'+f2(-r*Math.sin(a)+4)+'" text-anchor="middle" font-size="10" font-weight="800" fill="#33506b" style="paint-order:stroke;stroke:#eaf1fb;stroke-width:3px">'+t+'</text>';
+    }
+    s += '<line x1="'+(-R)+'" y1="0" x2="'+R+'" y2="0" stroke="'+col+'" stroke-width="2.6"/>';
+    // 中心のしるし（＋）
+    s += '<line x1="-19" y1="0" x2="19" y2="0" stroke="#d92d20" stroke-width="2.2"/>';
+    s += '<line x1="0" y1="-17" x2="0" y2="13" stroke="#d92d20" stroke-width="2.2"/>';
+    s += '<circle cx="0" cy="0" r="5" fill="none" stroke="#d92d20" stroke-width="2.2"/>';
+    // まわす つまみ
+    s += '<g data-role="knob" style="cursor:grab">'+
+         '<circle cx="'+(R+24)+'" cy="0" r="30" fill="rgba(0,0,0,0)" data-role="knob"/>'+
+         '<circle cx="'+(R+24)+'" cy="0" r="18" fill="#fff3e0" stroke="#e8730c" stroke-width="2.8" data-role="knob"/>'+
+         '<path d="M'+(R+24+7.8)+' -7.8 A11 11 0 1 1 '+(R+24-7.8)+' -7.8" fill="none" stroke="#e8730c" stroke-width="2.8" stroke-linecap="round" data-role="knob"/>'+
+         '<path d="M'+(R+24-12.5)+' -9 L'+(R+24-3)+' -10.5 L'+(R+24-8)+' -2 Z" fill="#e8730c" data-role="knob"/></g>';
+  } else {
+    s += '<line x1="'+(-R)+'" y1="0" x2="'+R+'" y2="0" stroke="'+col+'" stroke-width="2.6"'+dash+'/>';
+    s += '<circle cx="0" cy="0" r="5" fill="none" stroke="'+col+'" stroke-width="2.2"/>';
+  }
+  return s;
+}
+function protGroup(id, st, ghost){
+  return '<g id="'+id+'" transform="translate('+f2(st.px)+','+f2(st.py)+') rotate('+f2(-st.rot)+')"'+
+         (ghost?' opacity="0.95" pointer-events="none"':'')+'>'+protractorPiece(ghost)+'</g>';
+}
+// 問題の図（動かない部分）
+function placeBase(t){
+  const P = (deg, len) => [ t.vx + len*Math.cos(deg*D2R), t.vy - len*Math.sin(deg*D2R) ];
+  let s = '';
+  if(t.tri){
+    const a = P(t.rays[0], t.legs[0]), b = P(t.rays[1], t.legs[1]);
+    s += '<polygon points="'+f2(t.vx)+','+f2(t.vy)+' '+f2(a[0])+','+f2(a[1])+' '+f2(b[0])+','+f2(b[1])+
+         '" fill="rgba(220,235,250,0.85)" stroke="#20486f" stroke-width="3.4" stroke-linejoin="round"/>';
+  } else {
+    for(let i=0;i<t.rays.length;i++){
+      const e = P(t.rays[i], t.legs[i]);
+      s += '<line x1="'+f2(t.vx)+'" y1="'+f2(t.vy)+'" x2="'+f2(e[0])+'" y2="'+f2(e[1])+'" stroke="#20486f" stroke-width="3.6" stroke-linecap="round"/>';
+    }
+    if(t.extra !== undefined){
+      const e = P(t.extra, t.extraLen);
+      s += '<line x1="'+f2(t.vx)+'" y1="'+f2(t.vy)+'" x2="'+f2(e[0])+'" y2="'+f2(e[1])+'" stroke="#20486f" stroke-width="3.6" stroke-linecap="round"/>';
+    }
+  }
+  // はかる角のしるし
+  const lo = t.rays[0], hi = t.rays[0] + t.deg;
+  s += '<path d="'+arcPath([t.vx,t.vy], 42, -hi*D2R, -lo*D2R)+'" fill="none" stroke="'+ARC_C+'" stroke-width="3"/>';
+  const mid = lo + t.deg/2;
+  s += labelSVG([t.vx + 70*Math.cos(mid*D2R), t.vy - 70*Math.sin(mid*D2R)], {unknown:true});
+  s += '<circle cx="'+f2(t.vx)+'" cy="'+f2(t.vy)+'" r="5" fill="#20486f"/>';
+  return s;
+}
+// 分度器の上からも 辺が 見えるように、細く 引きなおす
+function placeOverlay(t){
+  const P = (deg, len) => [ t.vx + len*Math.cos(deg*D2R), t.vy - len*Math.sin(deg*D2R) ];
+  let s = '<g pointer-events="none">';
+  const dirs = t.rays.slice();
+  if(t.extra !== undefined) dirs.push(t.extra);
+  for(let i=0;i<dirs.length;i++){
+    const e = P(dirs[i], i<2 ? t.legs[i] : t.extraLen);
+    s += '<line x1="'+f2(t.vx)+'" y1="'+f2(t.vy)+'" x2="'+f2(e[0])+'" y2="'+f2(e[1])+'" stroke="#16375c" stroke-width="2.2" stroke-linecap="round" opacity="0.9"/>';
+  }
+  const lo = t.rays[0], hi = t.rays[0] + t.deg;
+  s += '<path d="'+arcPath([t.vx,t.vy], 42, -hi*D2R, -lo*D2R)+'" fill="none" stroke="'+ARC_C+'" stroke-width="2.4" opacity="0.95"/>';
+  s += '<circle cx="'+f2(t.vx)+'" cy="'+f2(t.vy)+'" r="4.5" fill="#16375c"/>';
+  s += '</g>';
+  return s;
+}
+function placeSVG(t, st, ghost){
+  let s = placeBase(t);
+  if(ghost) s += protGroup("protGhost", ghost, true);
+  s += protGroup("prot", st, false);
+  s += placeOverlay(t);
+  return svgWrap(s, PL.W, PL.H);
+}
+// 正しく置けているか みる
+function judgePlace(st, t){
+  const dc = Math.hypot(st.px - t.vx, st.py - t.vy);
+  let base = 0, bestDiff = 999;
+  for(let i=0;i<t.rays.length;i++){
+    const d = Math.abs(diff180(st.rot, t.rays[i]));
+    if(d < bestDiff){ bestDiff = d; base = i; }
+  }
+  const other = t.rays[1-base];
+  const rel = norm360(other - st.rot);
+  const centerOk = dc <= 17;
+  const baseOk = bestDiff <= 5;
+  const sideOk = rel > 3 && rel < 177;
+  let why = "";
+  if(!centerOk) why = "分度器の 中心（＋の しるし）が、角の 頂点から ずれていたよ。";
+  else if(!baseOk) why = "0の めもりの まっすぐな 線が、角の 辺に かさなっていなかったよ。";
+  else if(!sideOk) why = "分度器の 丸いほうが、はかりたい 角の 上に きていなかったよ。半分（180°）まわして 置いてみよう。";
+  return {ok: centerOk && baseOk && sideOk, why: why, centerOk:centerOk, baseOk:baseOk, sideOk:sideOk};
+}
+// お手本の置き方（0のめもりを どちらの辺に かさねてもよい）
+function idealPlace(st, t){
+  const cands = [];
+  for(let i=0;i<2;i++){
+    for(const add of [0,180]){
+      const rot = norm360(t.rays[i] + add);
+      const rel = norm360(t.rays[1-i] - rot);
+      if(rel > 1 && rel < 179) cands.push({px:t.vx, py:t.vy, rot:rot});
+    }
+  }
+  if(cands.length===0) return {px:t.vx, py:t.vy, rot:norm360(t.rays[0])};
+  let best = cands[0], bd = 999;
+  for(const c of cands){
+    let d = Math.abs(norm360(st.rot - c.rot));
+    if(d > 180) d = 360 - d;
+    if(d < bd){ bd = d; best = c; }
+  }
+  return best;
+}
+
+/* =========================================================
    問題をつくる（単元ごと）
 ========================================================= */
 function Q(o){ return o; }
@@ -644,6 +809,37 @@ function genProtractor(){
     svg:figs[0], svgAns:figs[1],
     hint:"分度器の 0のめもりに 辺が 合っている ほうの 数字を 読もう。2つ あるめもりを まちがえないように！",
     sol:"0から じゅんに ふえていく めもりを 読むと "+a+"°"
+  });
+}
+
+/* --- 分度器の おき方 --- */
+function genPlace(){
+  const kind = pick(["angle","angle","line","tri"]);
+  const deg = rnd(5,31)*5;               // 25°〜155°
+  const bis = rnd(0,11)*30 + rnd(-8,8);
+  const t = {
+    vx: 300 + rnd(-34,34),
+    vy: 222 + rnd(-22,22),
+    rays: [norm360(bis - deg/2), norm360(bis + deg/2)],
+    legs: [128, 137],
+    deg: deg
+  };
+  if(kind==="line"){ t.extra = norm360(bis - deg/2 + 180); t.extraLen = 128; }
+  if(kind==="tri"){ t.tri = true; t.legs = [126, 140]; }
+  const start = {
+    px: clamp(t.vx + pick([-140,140]), 150, 412),
+    py: clamp(t.vy + 132, 152, 398),
+    rot: 0
+  };
+  const q = kind==="line" ? "直線の 上に できた 角です。分度器を うごかして、正しく 置きましょう。"
+          : kind==="tri"  ? "三角形の ?の 角を はかります。分度器を うごかして、正しく 置きましょう。"
+          : "分度器を うごかして、?の 角を はかれるように 置きましょう。";
+  return Q({
+    unit:"place", kind:"place",
+    q:q, ans:deg, target:t, start:start,
+    svg: placeSVG(t, start, null),
+    hint:"分度器の 上を ゆびで おして うごかせるよ。まず 中心の ＋を 角の 頂点に ぴったり 合わせよう。そのあと 右はしの オレンジの まるい ボタンを うごかすと、分度器が まわるよ。",
+    sol:"中心を 頂点に、0の めもりの 線を 辺に かさねると、この角は "+deg+"° と 読めます。"
   });
 }
 
@@ -1015,6 +1211,7 @@ function genExt(){
    単元の一覧
 ========================================================= */
 const UNITS = [
+  {id:"place",      name:"分度器のおき方",       grade:"4年", gen:genPlace},
   {id:"protractor", name:"分度器をよむ",        grade:"4年", gen:genProtractor},
   {id:"line",       name:"一直線と1回転の角",   grade:"4年", gen:genLine},
   {id:"set",        name:"三角じょうぎの角",     grade:"4年", gen:genSetSquare},
@@ -1208,29 +1405,107 @@ function buildQueue(units, count){
 function startGame(units, count, preset){
   const qs = preset || buildQueue(units, count);
   if(qs.length===0){ alert("問題を つくれませんでした。もう一度 おためしください。"); return; }
-  game = { qs:qs, i:0, res:[], combo:0, maxCombo:0, t0:Date.now(), units:units.slice(), count:qs.length };
+  game = { qs:qs, i:0, res:[], combo:0, maxCombo:0, t0:Date.now(), units:units.slice(), count:qs.length, answering:false, place:null };
   showScreen("play");
   renderQ();
 }
 $("startBtn").addEventListener("click", function(){ startGame(selUnits, selCount, null); });
 
+/* ---- 分度器を動かす図をつくる ---- */
+function mountPlace(p){
+  const fig = $("qFig");
+  fig.classList.add("place-fig");
+  fig.innerHTML = placeSVG(p.target, p.start, null);
+  const svg = fig.querySelector("svg");
+  const g = svg.querySelector("#prot");
+  const st = {px:p.start.px, py:p.start.py, rot:p.start.rot};
+  const pl = {st:st, p:p, svg:svg, g:g, locked:false};
+  game.place = pl;
+
+  function apply(){
+    st.px = clamp(st.px, 8, PL.W-8);
+    st.py = clamp(st.py, 8, PL.H-8);
+    st.rot = norm360(st.rot);
+    g.setAttribute("transform", "translate("+f2(st.px)+","+f2(st.py)+") rotate("+f2(-st.rot)+")");
+  }
+  pl.apply = apply;
+
+  function toSvg(ev){
+    const m = svg.getScreenCTM();
+    if(!m) return [st.px, st.py];
+    const q = svg.createSVGPoint();
+    q.x = ev.clientX; q.y = ev.clientY;
+    const r = q.matrixTransform(m.inverse());
+    return [r.x, r.y];
+  }
+  function roleOf(el){
+    while(el && el !== g){
+      const r = el.getAttribute && el.getAttribute("data-role");
+      if(r) return r;
+      el = el.parentNode;
+    }
+    return null;
+  }
+  let mode = null, off = [0,0];
+  g.addEventListener("pointerdown", function(ev){
+    if(pl.locked) return;
+    mode = (roleOf(ev.target) === "knob") ? "rot" : "move";
+    const q = toSvg(ev);
+    if(mode === "move") off = [q[0]-st.px, q[1]-st.py];
+    try{ g.setPointerCapture(ev.pointerId); }catch(e){}
+    ev.preventDefault();
+  });
+  g.addEventListener("pointermove", function(ev){
+    if(!mode || pl.locked) return;
+    const q = toSvg(ev);
+    if(mode === "move"){ st.px = q[0]-off[0]; st.py = q[1]-off[1]; }
+    else { st.rot = Math.atan2(-(q[1]-st.py), q[0]-st.px) * 180/Math.PI; }
+    apply();
+    ev.preventDefault();
+  });
+  ["pointerup","pointercancel","lostpointercapture"].forEach(function(k){
+    g.addEventListener(k, function(ev){
+      mode = null;
+      try{ g.releasePointerCapture(ev.pointerId); }catch(e){}
+    });
+  });
+  apply();
+}
+function placeRotate(d){
+  const pl = game && game.place;
+  if(!pl || pl.locked) return;
+  pl.st.rot += d;
+  pl.apply();
+}
+
 function renderQ(){
   const p = game.qs[game.i];
+  const isPlace = (p.kind === "place");
+  game.answering = true;
+  game.place = null;
   $("qCount").textContent = (game.i+1)+" / "+game.qs.length;
   $("qBar").style.width = (game.i/game.qs.length*100)+"%";
   $("qCombo").textContent = game.combo>=2 ? ("🔥"+game.combo+"連続") : "";
   $("qUnit").textContent = UNIT_BY_ID[p.unit].name;
   $("qText").textContent = p.q;
-  $("qFig").innerHTML = p.svg;
+  if(isPlace){
+    mountPlace(p);
+  } else {
+    $("qFig").classList.remove("place-fig");
+    $("qFig").innerHTML = p.svg;
+  }
   const box = $("ansBox");
   box.value = ""; box.className = "ansbox"; box.disabled = false;
-  $("padWrap").classList.remove("hidden");
+  $("ansRow").classList.toggle("hidden", isPlace);
+  $("padWrap").classList.toggle("hidden", isPlace);
+  $("placeWrap").classList.toggle("hidden", !isPlace);
+  $("hintWrap").classList.remove("hidden");
   $("afterWrap").classList.add("hidden");
   $("judge").textContent = "";
   $("judge").className = "judge";
   $("hintBox").classList.add("hidden");
   $("hintBtn").classList.remove("hidden");
-  if(window.matchMedia && !window.matchMedia("(pointer:coarse)").matches) box.focus();
+  if(!isPlace && window.matchMedia && !window.matchMedia("(pointer:coarse)").matches) box.focus();
 }
 
 function keyIn(k){
@@ -1251,33 +1526,56 @@ $("hintBtn").addEventListener("click", function(){
   $("hintBtn").classList.add("hidden");
 });
 
-function checkAnswer(){
-  const box = $("ansBox");
-  const raw = box.value.trim();
-  if(raw==="") { box.focus(); return; }
-  const val = parseInt(raw,10);
-  if(isNaN(val)) { box.value=""; return; }
-  const p = game.qs[game.i];
-  const ok = (val === p.ans);
-  box.disabled = true;
-  box.classList.add(ok?"ok":"ng");
-  game.res.push({p:p, your:val, ok:ok});
+function finishQuestion(p, ok, your, why){
+  game.answering = false;
+  game.res.push({p:p, your:your, ok:ok, why:why||""});
   if(ok){ game.combo++; if(game.combo>game.maxCombo) game.maxCombo=game.combo; }
   else game.combo = 0;
   recAdd(p.unit, ok);
   if(game.maxCombo > REC.bestCombo){ REC.bestCombo = game.maxCombo; saveRec(REC); }
   updStars(ok);
 
-  $("qFig").innerHTML = p.svgAns;
   $("padWrap").classList.add("hidden");
+  $("placeWrap").classList.add("hidden");
+  $("hintWrap").classList.add("hidden");
   $("afterWrap").classList.remove("hidden");
   const j = $("judge");
   j.className = "judge " + (ok?"ok":"ng");
-  j.textContent = ok ? (game.combo>=3 ? "⭕ せいかい！ "+game.combo+"連続🔥" : "⭕ せいかい！") : "❌ ざんねん… 正しくは "+p.ans+"°";
-  $("solBox").innerHTML = '<span class="lbl">しき</span><span class="formula">'+p.sol+'</span><br>'+p.hint;
+  if(ok) j.textContent = (game.combo>=3 ? "⭕ せいかい！ "+game.combo+"連続🔥" : "⭕ せいかい！");
+  else j.textContent = (p.kind==="place") ? "❌ おしい！" : ("❌ ざんねん… 正しくは "+p.ans+"°");
+  const lbl = (p.kind==="place") ? "おき方" : "しき";
+  $("solBox").innerHTML = '<span class="lbl">'+lbl+'</span><span class="formula">'+(why && !ok ? why+"<br>" : "")+p.sol+'</span><br>'+p.hint;
   $("nextBtn").textContent = (game.i === game.qs.length-1) ? "けっかを 見る →" : "つぎの問題 →";
   $("qCombo").textContent = game.combo>=2 ? ("🔥"+game.combo+"連続") : "";
   $("nextBtn").focus();
+}
+
+function checkPlace(){
+  const pl = game && game.place;
+  if(!pl || pl.locked || !game.answering) return;
+  const p = pl.p;
+  const r = judgePlace(pl.st, p.target);
+  pl.locked = true;
+  // お手本を かさねて見せる
+  const ideal = idealPlace(pl.st, p.target);
+  $("qFig").innerHTML = placeSVG(p.target, pl.st, ideal);
+  finishQuestion(p, r.ok, r.ok ? "◯" : "✕", r.why);
+  if(!r.ok) $("solBox").insertAdjacentHTML("beforeend", '<br><span style="color:#18a058">みどりの 点線が お手本の おき方だよ。</span>');
+}
+
+function checkAnswer(){
+  const p = game.qs[game.i];
+  if(p.kind === "place"){ checkPlace(); return; }
+  const box = $("ansBox");
+  const raw = box.value.trim();
+  if(raw==="") { box.focus(); return; }
+  const val = parseInt(raw,10);
+  if(isNaN(val)) { box.value=""; return; }
+  const ok = (val === p.ans);
+  box.disabled = true;
+  box.classList.add(ok?"ok":"ng");
+  $("qFig").innerHTML = p.svgAns;
+  finishQuestion(p, ok, val, "");
 }
 $("checkBtn").addEventListener("click", checkAnswer);
 $("nextBtn").addEventListener("click", function(){
@@ -1287,16 +1585,49 @@ $("nextBtn").addEventListener("click", function(){
 });
 document.addEventListener("keydown", function(e){
   if(SC.play.classList.contains("hidden")) return;
-  const answering = !$("padWrap").classList.contains("hidden");
+  const answering = !!(game && game.answering);
   if(e.key==="Enter"){
     e.preventDefault();
     if(answering) checkAnswer(); else $("nextBtn").click();
     return;
   }
   if(!answering) return;
+  const pl = game.place;
+  if(pl && !pl.locked){
+    const step = e.shiftKey ? 10 : 1;
+    if(e.key==="ArrowLeft"){ e.preventDefault(); placeRotate(step); return; }
+    if(e.key==="ArrowRight"){ e.preventDefault(); placeRotate(-step); return; }
+    if(e.key==="ArrowUp"){ e.preventDefault(); pl.st.py -= step*2; pl.apply(); return; }
+    if(e.key==="ArrowDown"){ e.preventDefault(); pl.st.py += step*2; pl.apply(); return; }
+    return;
+  }
   if(e.key>="0" && e.key<="9"){ if(document.activeElement!==$("ansBox")){ e.preventDefault(); keyIn(e.key); } }
   else if(e.key==="Backspace"){ if(document.activeElement!==$("ansBox")){ e.preventDefault(); keyIn("B"); } }
 });
+
+/* ---- 分度器のおき方モードのボタン ---- */
+(function(){
+  function holdable(id, fn){
+    const el = $(id);
+    let timer = null, rep = null;
+    function stop(){ clearTimeout(timer); clearInterval(rep); timer=null; rep=null; }
+    el.addEventListener("pointerdown", function(ev){
+      fn();
+      timer = setTimeout(function(){ rep = setInterval(fn, 55); }, 380);
+      try{ el.setPointerCapture(ev.pointerId); }catch(e){}
+    });
+    ["pointerup","pointercancel","pointerleave","lostpointercapture"].forEach(function(k){ el.addEventListener(k, stop); });
+  }
+  holdable("rotL", function(){ placeRotate(1); });
+  holdable("rotR", function(){ placeRotate(-1); });
+  $("placeReset").addEventListener("click", function(){
+    const pl = game && game.place;
+    if(!pl || pl.locked) return;
+    pl.st.px = pl.p.start.px; pl.st.py = pl.p.start.py; pl.st.rot = pl.p.start.rot;
+    pl.apply();
+  });
+  $("placeOkBtn").addEventListener("click", checkPlace);
+})();
 $("ansBox").addEventListener("input", function(){
   this.value = this.value.replace(/[^0-9]/g,"").slice(0,3);
 });
@@ -1336,6 +1667,11 @@ function showResult(){
   const wrong = game.res.filter(r=>!r.ok);
   if(wrong.length){
     $("resMiss").innerHTML = '<h2 class="section-title" style="margin-top:14px">まちがえた 問題</h2>' + wrong.map(function(r,i){
+      if(r.p.kind === "place"){
+        return '<div class="missitem">'+(i+1)+'. '+UNIT_BY_ID[r.p.unit].name+'<br>'+
+          '<span class="yours">'+(r.why || "おき方が ちがったよ。")+'</span><br>'+
+          '<span style="color:#8a97a8">'+r.p.sol+'</span></div>';
+      }
       return '<div class="missitem">'+(i+1)+'. '+UNIT_BY_ID[r.p.unit].name+'<br>'+
         'じぶんの答え <span class="yours">'+r.your+'°</span> ／ 正しい答え <span class="right">'+r.p.ans+'°</span><br>'+
         '<span style="color:#8a97a8">しき：'+r.p.sol+'</span></div>';
