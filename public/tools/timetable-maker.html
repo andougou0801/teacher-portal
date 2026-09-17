@@ -112,6 +112,19 @@
     font-size: 14px;
   }
   .backup-bar button:hover { background: #dde3ea; }
+  .last-backup-note {
+    text-align: center;
+    font-size: 13px;
+    color: #777;
+    margin-top: 12px;
+  }
+  .last-backup-note.warn {
+    color: #b3610a;
+    background: #fff3e0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-weight: bold;
+  }
 
   /* 週選択 */
   .week-bar {
@@ -154,6 +167,47 @@
     color: #d94040;
   }
   .week-bar button.danger:hover { background-color: #fbd6d6; }
+  .week-bar button.accent {
+    background-color: #e3f0e8;
+    color: #1f7a4d;
+    font-weight: bold;
+  }
+  .week-bar button.accent:hover { background-color: #cfe6da; }
+  .week-bar button.accent.current {
+    background-color: #1f9d55;
+    color: #fff;
+  }
+
+  /* これからの予定 */
+  .upcoming-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .upcoming-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff8e6;
+    border: 1px solid #f0dcae;
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .upcoming-item:hover { background: #fdefcf; }
+  .upcoming-item .upcoming-date {
+    font-weight: bold;
+    color: #b3610a;
+  }
+  .upcoming-item .upcoming-left {
+    font-size: 12px;
+    color: #fff;
+    background: #b3610a;
+    border-radius: 10px;
+    padding: 2px 8px;
+  }
+  .upcoming-item.soon .upcoming-left { background: #d94040; }
 
   .class-info {
     display: flex;
@@ -467,17 +521,29 @@
     background: #2d6cdf;
     height: 100%;
     border-radius: 6px 0 0 6px;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
   .progress-bar.over { background: #1f9d55; }
+  /* 予定込み(薄い色)は実施済みの背後に表示 */
+  .progress-bar.planned {
+    background: #b9cdf0;
+    z-index: 0;
+  }
+  .progress-bar.done { z-index: 1; }
   .progress-label {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: #333;
+    /* バーの上でも読めるように白い縁取りを付ける */
+    text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
+    z-index: 2;
   }
   .progress-none {
     color: #ccc;
@@ -504,6 +570,14 @@
     color: #fff;
     border-color: #2d6cdf;
   }
+  .saved-list button.this-week {
+    border-color: #1f9d55;
+    color: #1f7a4d;
+    font-weight: bold;
+  }
+  .saved-list button.future { color: #8a97a8; }
+  .saved-list button.current.this-week,
+  .saved-list button.current.future { color: #fff; }
   .empty-note {
     color: #999;
     font-size: 13px;
@@ -526,6 +600,17 @@
     padding: 6px 10px;
     margin-top: 10px;
   }
+  .confirm-week-btn {
+    margin-top: 6px;
+    background: #b3610a;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .confirm-week-btn:hover { background: #96510a; }
 
   /* 印刷 */
   @media print {
@@ -575,6 +660,35 @@
       border-color: transparent;
       background: transparent;
     }
+
+    /* メモ欄は先生用。既定では児童に配るプリントに出さない */
+    body:not(.print-memo) table.timetable .col-memo { display: none; }
+
+    /* 土日を足して行が増えても1枚に収まるよう自動で縮める */
+    body[data-print-rows="6"] table.timetable th { font-size: 14px; }
+    body[data-print-rows="6"] table.timetable .day-head { font-size: 16px; }
+    body[data-print-rows="6"] table.timetable input,
+    body[data-print-rows="6"] table.timetable select,
+    body[data-print-rows="6"] table.timetable textarea { font-size: 14px; }
+    body[data-print-rows="6"] table.timetable textarea.content { min-height: 34px; }
+    body[data-print-rows="6"] table.timetable textarea.asa { min-height: 32px; }
+    body[data-print-rows="6"] table.timetable textarea.homework,
+    body[data-print-rows="6"] table.timetable textarea.mochimono,
+    body[data-print-rows="6"] table.timetable textarea.memo { min-height: 46px; font-size: 13px; }
+
+    body[data-print-rows="7"] table.timetable th { font-size: 13px; }
+    body[data-print-rows="7"] table.timetable .day-head { font-size: 15px; }
+    body[data-print-rows="7"] table.timetable .day-date { font-size: 11px; }
+    body[data-print-rows="7"] table.timetable th,
+    body[data-print-rows="7"] table.timetable td { padding: 3px; }
+    body[data-print-rows="7"] table.timetable input,
+    body[data-print-rows="7"] table.timetable select,
+    body[data-print-rows="7"] table.timetable textarea { font-size: 13px; }
+    body[data-print-rows="7"] table.timetable textarea.content { min-height: 28px; }
+    body[data-print-rows="7"] table.timetable textarea.asa { min-height: 26px; }
+    body[data-print-rows="7"] table.timetable textarea.homework,
+    body[data-print-rows="7"] table.timetable textarea.mochimono,
+    body[data-print-rows="7"] table.timetable textarea.memo { min-height: 36px; font-size: 12px; }
   }
 </style>
 </head>
@@ -601,6 +715,7 @@
         <input type="date" id="weekStart">
       </div>
       <button id="prevWeekBtn">&laquo; 前の週</button>
+      <button id="thisWeekBtn" class="accent">今週</button>
       <button id="nextWeekBtn">次の週 &raquo;</button>
       <button id="copyPrevBtn">前週の内容をコピー</button>
       <button id="applyPatternBtn">定型を適用</button>
@@ -620,9 +735,15 @@
     <div class="day-toggle">
       <label><input type="checkbox" id="includeSatCheckbox"> 土曜日を追加(この週だけ)</label>
       <label><input type="checkbox" id="includeSunCheckbox"> 日曜日を追加(この週だけ)</label>
+      <label><input type="checkbox" id="printMemoCheckbox"> メモ欄も印刷する(通常は先生用なので印刷しません)</label>
     </div>
     <div class="pattern-note no-print" id="patternNote" style="display:none;"></div>
     <div class="save-status" id="saveStatus"></div>
+  </div>
+
+  <div class="card no-print" id="upcomingCard">
+    <h2>これからの予定</h2>
+    <div class="upcoming-list" id="upcomingList"></div>
   </div>
 
   <details class="card no-print">
@@ -644,6 +765,9 @@
       <input type="date" id="annualDateInput">
       <input type="text" id="annualTextInput" placeholder="行事名など(例: 運動会)">
       <button id="addAnnualBtn" type="button">追加</button>
+    </div>
+    <div class="day-toggle" style="margin-top:0; margin-bottom:12px;">
+      <label><input type="checkbox" id="showPastEventsCheckbox"> 終わった予定も表示する</label>
     </div>
     <div class="table-wrap">
       <table class="annual-table">
@@ -683,11 +807,14 @@
 
   <div class="card no-print">
     <h2>教科ごとの授業回数</h2>
-    <div class="empty-note" style="margin-bottom:10px;">「目標(年間)」に年間標準時数を入れると、累計との進捗バーが表示されます(累計は年度が変わるとリセットされます)</div>
+    <div class="empty-note" style="margin-bottom:10px;">
+      「実施済み」は今日までに終わった授業の回数、「予定込み」は先の予定も足した見込みです。<br>
+      「目標(年間)」に年間標準時数を入れると、実施済み(濃い色)と予定込み(薄い色)の進捗バーが表示されます。
+    </div>
     <div class="table-wrap">
       <table class="stats-table">
         <thead>
-          <tr><th>教科</th><th>今週</th><th>累計</th><th>目標(年間)</th><th>進捗</th></tr>
+          <tr><th>教科</th><th>今週</th><th>実施済み</th><th>予定込み</th><th>目標(年間)</th><th>進捗</th></tr>
         </thead>
         <tbody id="statsBody"></tbody>
       </table>
@@ -709,6 +836,7 @@
       <button id="importBtn" type="button">データを読み込む</button>
       <input type="file" id="importFileInput" accept="application/json" style="display:none;">
     </div>
+    <div id="lastBackupNote" class="last-backup-note"></div>
     <div class="save-status" id="backupStatus"></div>
   </div>
 </div>
@@ -720,6 +848,8 @@
   const PATTERN_KEY = "timetable_pattern";
   const TARGET_KEY = "timetable_targets";
   const HIRAGANA_KEY = "timetable_hiragana_mode";
+  const PRINT_MEMO_KEY = "timetable_print_memo";
+  const LAST_BACKUP_KEY = "timetable_last_backup";
 
   const DAY_NAMES = ["月", "火", "水", "木", "金", "土", "日"];
   const DAY_NAMES_HIRA = ["げつ", "か", "すい", "もく", "きん", "ど", "にち"];
@@ -772,6 +902,9 @@
   const annualTextInput = document.getElementById("annualTextInput");
   const includeSatCheckbox = document.getElementById("includeSatCheckbox");
   const includeSunCheckbox = document.getElementById("includeSunCheckbox");
+  const printMemoCheckbox = document.getElementById("printMemoCheckbox");
+  const showPastEventsCheckbox = document.getElementById("showPastEventsCheckbox");
+  const upcomingList = document.getElementById("upcomingList");
   const hiraganaCheckbox = document.getElementById("hiraganaCheckbox");
 
   let activeYear = null;   // 現在表示中の年度(4月始まり)
@@ -781,6 +914,7 @@
   let TARGETS = {};
   let PATTERN_DATA = null;
   let HIRAGANA_MODE = localStorage.getItem(HIRAGANA_KEY) === "1";
+  let PRINT_MEMO = localStorage.getItem(PRINT_MEMO_KEY) === "1";
 
   /* ---------- 日付・年度ユーティリティ ---------- */
 
@@ -1066,6 +1200,7 @@
     ANNUAL_EVENTS.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
     saveAnnualEvents();
     renderAnnualList();
+    renderUpcoming();
     refreshTableIfNeeded();
   }
 
@@ -1073,6 +1208,7 @@
     ANNUAL_EVENTS = ANNUAL_EVENTS.filter(ev => ev.id !== id);
     saveAnnualEvents();
     renderAnnualList();
+    renderUpcoming();
     refreshTableIfNeeded();
   }
 
@@ -1086,20 +1222,84 @@
     fillValues();
   }
 
+  function todayStr() {
+    return toDateStr(new Date());
+  }
+
+  // 2つの日付の差(日数)。未来ならプラス
+  function daysUntil(dateStr) {
+    const ms = parseDateStr(dateStr) - parseDateStr(todayStr());
+    return Math.round(ms / 86400000);
+  }
+
+  // 直近の予定を上部に表示(クリックでその週へ移動)
+  function renderUpcoming() {
+    upcomingList.innerHTML = "";
+    const today = todayStr();
+    const upcoming = ANNUAL_EVENTS
+      .filter(ev => ev.date >= today)
+      .sort((a, b) => (a.date < b.date ? -1 : 1))
+      .slice(0, 6);
+
+    if (upcoming.length === 0) {
+      const note = document.createElement("div");
+      note.className = "empty-note";
+      note.textContent = "これから先の予定は登録されていません(「年間予定」から追加できます)";
+      upcomingList.appendChild(note);
+      return;
+    }
+
+    upcoming.forEach(ev => {
+      const left = daysUntil(ev.date);
+      const item = document.createElement("div");
+      item.className = "upcoming-item" + (left <= 7 ? " soon" : "");
+      item.title = "クリックするとこの週を開きます";
+
+      const dateSpan = document.createElement("span");
+      dateSpan.className = "upcoming-date";
+      const dow = DAY_NAMES[(parseDateStr(ev.date).getDay() + 6) % 7];
+      dateSpan.textContent = formatShort(ev.date) + "(" + dow + ")";
+
+      const textSpan = document.createElement("span");
+      textSpan.textContent = ev.text;
+
+      const leftSpan = document.createElement("span");
+      leftSpan.className = "upcoming-left";
+      leftSpan.textContent = left === 0 ? "今日" : "あと" + left + "日";
+
+      item.appendChild(dateSpan);
+      item.appendChild(textSpan);
+      item.appendChild(leftSpan);
+      item.addEventListener("click", () => {
+        const monday = getMonday(ev.date);
+        weekStartInput.value = monday;
+        loadAndRender(monday);
+      });
+      upcomingList.appendChild(item);
+    });
+  }
+
   function renderAnnualList() {
     annualBody.innerHTML = "";
-    if (ANNUAL_EVENTS.length === 0) {
+    const today = todayStr();
+    const showPast = showPastEventsCheckbox.checked;
+    const list = showPast ? ANNUAL_EVENTS : ANNUAL_EVENTS.filter(ev => ev.date >= today);
+
+    if (list.length === 0) {
       const tr = document.createElement("tr");
       const td = document.createElement("td");
       td.colSpan = 3;
       td.className = "empty-note";
-      td.textContent = "まだ登録されていません";
+      td.textContent = ANNUAL_EVENTS.length === 0
+        ? "まだ登録されていません"
+        : "これから先の予定はありません(「終わった予定も表示する」で過去分を確認できます)";
       tr.appendChild(td);
       annualBody.appendChild(tr);
       return;
     }
-    ANNUAL_EVENTS.forEach(ev => {
+    list.forEach(ev => {
       const tr = document.createElement("tr");
+      if (ev.date < today) tr.style.opacity = "0.5";
 
       const tdDate = document.createElement("td");
       const dow = DAY_NAMES[(parseDateStr(ev.date).getDay() + 6) % 7];
@@ -1337,6 +1537,8 @@
   function buildBody() {
     tableBody.innerHTML = "";
     const monday = currentData.monday;
+    // 行数に応じて印刷時の文字サイズを自動調整するため記録しておく
+    document.body.dataset.printRows = getVisibleDayIndices(currentData).length;
     getVisibleDayIndices(currentData).forEach(d => {
       const tr = document.createElement("tr");
       const dateStr = addDays(monday, d);
@@ -1460,30 +1662,49 @@
       .filter(Boolean);
   }
 
+  // 1週間分を「今日までに実施した分」と「これからの予定分」に分けて数える
+  function countWeekSplit(week) {
+    const done = {}, planned = {};
+    const today = todayStr();
+    // 定型パターンのまま未編集の週は、実施したか確定していないので実施済みに入れない
+    const confirmed = !week.fromPattern;
+    (week.days || []).forEach((day, d) => {
+      const dateStr = addDays(week.monday, d);
+      const isDone = confirmed && dateStr <= today;
+      for (let i = 1; i <= NUM_PERIODS; i++) {
+        const p = day["period" + i];
+        if (!p || p.crossed || !p.subject) continue;
+        const bucket = isDone ? done : planned;
+        bucket[p.subject] = (bucket[p.subject] || 0) + 1;
+      }
+    });
+    return { done, planned };
+  }
+
   function updateStats() {
     if (!currentData) return;
     const weekly = countPeriodsInDays(currentData.days);
-    const cumulative = {};
-    getAllWeeksData()
-      // 定型パターンから自動で埋めただけで未編集の週は、まだ実際に授業をしたか
-      // 確定していないため累計には含めない
-      .filter(w => !w.fromPattern)
-      .forEach(w => {
-        const c = countPeriodsInDays(w.days);
-        Object.keys(c).forEach(k => { cumulative[k] = (cumulative[k] || 0) + c[k]; });
-      });
+    const doneTotals = {}, plannedTotals = {};
+    getAllWeeksData().forEach(w => {
+      const split = countWeekSplit(w);
+      Object.keys(split.done).forEach(k => { doneTotals[k] = (doneTotals[k] || 0) + split.done[k]; });
+      Object.keys(split.planned).forEach(k => { plannedTotals[k] = (plannedTotals[k] || 0) + split.planned[k]; });
+    });
 
     const allSubjects = SUBJECTS.slice();
-    Object.keys(cumulative).forEach(s => { if (!allSubjects.includes(s)) allSubjects.push(s); });
-    Object.keys(weekly).forEach(s => { if (!allSubjects.includes(s)) allSubjects.push(s); });
+    [doneTotals, plannedTotals, weekly].forEach(obj => {
+      Object.keys(obj).forEach(s => { if (!allSubjects.includes(s)) allSubjects.push(s); });
+    });
 
     statsBody.innerHTML = "";
-    let weeklyTotal = 0, cumulativeTotal = 0;
+    let weeklyTotal = 0, doneTotal = 0, withPlanTotal = 0;
     allSubjects.forEach(s => {
       const w = weekly[s] || 0;
-      const c = cumulative[s] || 0;
+      const done = doneTotals[s] || 0;
+      const withPlan = done + (plannedTotals[s] || 0);
       weeklyTotal += w;
-      cumulativeTotal += c;
+      doneTotal += done;
+      withPlanTotal += withPlan;
       const tr = document.createElement("tr");
 
       const tdName = document.createElement("td");
@@ -1493,8 +1714,12 @@
       const tdWeek = document.createElement("td");
       tdWeek.textContent = w;
 
-      const tdCum = document.createElement("td");
-      tdCum.textContent = c;
+      const tdDone = document.createElement("td");
+      tdDone.textContent = done;
+
+      const tdPlan = document.createElement("td");
+      tdPlan.textContent = withPlan;
+      if (withPlan > done) tdPlan.style.color = "#6b86ad";
 
       const tdTarget = document.createElement("td");
       const targetInput = document.createElement("input");
@@ -1518,16 +1743,27 @@
       const tdProgress = document.createElement("td");
       const target = TARGETS[s];
       if (target) {
-        const pct = Math.round((c / target) * 100);
+        const donePct = Math.round((done / target) * 100);
+        const planPct = Math.round((withPlan / target) * 100);
         const wrap = document.createElement("div");
         wrap.className = "progress-wrap";
-        const bar = document.createElement("div");
-        bar.className = "progress-bar" + (pct >= 100 ? " over" : "");
-        bar.style.width = Math.min(pct, 100) + "%";
+        wrap.title = "実施済み " + done + "回 / 予定込み " + withPlan + "回 / 目標 " + target + "回";
+
+        const planBar = document.createElement("div");
+        planBar.className = "progress-bar planned";
+        planBar.style.width = Math.min(planPct, 100) + "%";
+
+        const doneBar = document.createElement("div");
+        doneBar.className = "progress-bar done" + (donePct >= 100 ? " over" : "");
+        doneBar.style.width = Math.min(donePct, 100) + "%";
+
         const label = document.createElement("span");
         label.className = "progress-label";
-        label.textContent = pct + "%";
-        wrap.appendChild(bar);
+        // 数字の内訳は「実施済み」「予定込み」の列で見られるので、バーには実施済みの割合だけ出す
+        label.textContent = donePct + "%";
+
+        wrap.appendChild(planBar);
+        wrap.appendChild(doneBar);
         wrap.appendChild(label);
         tdProgress.appendChild(wrap);
       } else {
@@ -1537,7 +1773,8 @@
 
       tr.appendChild(tdName);
       tr.appendChild(tdWeek);
-      tr.appendChild(tdCum);
+      tr.appendChild(tdDone);
+      tr.appendChild(tdPlan);
       tr.appendChild(tdTarget);
       tr.appendChild(tdProgress);
       statsBody.appendChild(tr);
@@ -1545,19 +1782,11 @@
 
     const totalTr = document.createElement("tr");
     totalTr.className = "stat-total";
-    const tdT = document.createElement("td");
-    tdT.textContent = "合計";
-    const tdTw = document.createElement("td");
-    tdTw.textContent = weeklyTotal;
-    const tdTc = document.createElement("td");
-    tdTc.textContent = cumulativeTotal;
-    const tdTBlank1 = document.createElement("td");
-    const tdTBlank2 = document.createElement("td");
-    totalTr.appendChild(tdT);
-    totalTr.appendChild(tdTw);
-    totalTr.appendChild(tdTc);
-    totalTr.appendChild(tdTBlank1);
-    totalTr.appendChild(tdTBlank2);
+    ["合計", weeklyTotal, doneTotal, withPlanTotal, "", ""].forEach(v => {
+      const td = document.createElement("td");
+      td.textContent = v;
+      totalTr.appendChild(td);
+    });
     statsBody.appendChild(totalTr);
   }
 
@@ -1603,7 +1832,13 @@
         } catch (e) { /* fallthrough: 月〜金として扱う */ }
       }
       const last = addDays(monday, lastOffset);
-      btn.textContent = formatShort(monday) + " 〜 " + formatShort(last);
+      const thisMonday = getMonday(todayStr());
+      let mark = "";
+      if (monday === thisMonday) mark = " ★今週";
+      else if (monday > thisMonday) mark = " (予定)";
+      btn.textContent = formatShort(monday) + " 〜 " + formatShort(last) + mark;
+      if (monday === thisMonday) btn.classList.add("this-week");
+      if (monday > thisMonday) btn.classList.add("future");
       if (currentData && monday === currentData.monday) btn.classList.add("current");
       btn.addEventListener("click", () => {
         weekStartInput.value = monday;
@@ -1625,6 +1860,7 @@
 
     renderSubjectEditor();
     renderAnnualList();
+    renderUpcoming();
     buildPatternHeader();
     buildPatternBody();
     fillPatternValues();
@@ -1654,13 +1890,33 @@
     updatePrintHeader();
     updatePatternNote();
     renderSavedList();
+    // 「今週」ボタンは、今週を開いているときだけ濃い色にする
+    document.getElementById("thisWeekBtn")
+      .classList.toggle("current", currentData.monday === getMonday(todayStr()));
+  }
+
+  function applyPrintMemoSetting() {
+    document.body.classList.toggle("print-memo", PRINT_MEMO);
   }
 
   function updatePatternNote() {
     const note = document.getElementById("patternNote");
     if (currentData && currentData.fromPattern) {
       note.style.display = "block";
-      note.textContent = "この週はまだ定型パターンのままです(未編集)。内容を編集すると授業回数の集計(累計)に反映されます。";
+      note.textContent = "この週はまだ定型パターンのままです(未編集)。授業回数には数えていません。";
+      // 定型どおりに授業をした週は編集する内容がないので、編集せずに確定できるようにする
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "confirm-week-btn";
+      btn.textContent = "定型どおり実施したので確定する";
+      btn.addEventListener("click", () => {
+        currentData.fromPattern = false;
+        saveCurrentWeek();
+        updateStats();
+        updatePatternNote();
+      });
+      note.appendChild(document.createElement("br"));
+      note.appendChild(btn);
     } else {
       note.style.display = "none";
       note.textContent = "";
@@ -1683,6 +1939,12 @@
 
   document.getElementById("nextWeekBtn").addEventListener("click", () => {
     const monday = addDays(currentData.monday, 7);
+    weekStartInput.value = monday;
+    loadAndRender(monday);
+  });
+
+  document.getElementById("thisWeekBtn").addEventListener("click", () => {
+    const monday = getMonday(todayStr());
     weekStartInput.value = monday;
     loadAndRender(monday);
   });
@@ -1793,6 +2055,16 @@
     loadAndRender(monday);
   });
 
+  printMemoCheckbox.addEventListener("change", () => {
+    PRINT_MEMO = printMemoCheckbox.checked;
+    localStorage.setItem(PRINT_MEMO_KEY, PRINT_MEMO ? "1" : "0");
+    applyPrintMemoSetting();
+  });
+
+  showPastEventsCheckbox.addEventListener("change", () => {
+    renderAnnualList();
+  });
+
   hiraganaCheckbox.addEventListener("change", () => {
     HIRAGANA_MODE = hiraganaCheckbox.checked;
     localStorage.setItem(HIRAGANA_KEY, HIRAGANA_MODE ? "1" : "0");
@@ -1807,7 +2079,7 @@
 
   /* ---------- データのバックアップ(書き出し/読み込み) ---------- */
 
-  const OWN_KEY_PREFIXES = [STORAGE_PREFIX, SUBJECT_KEY, ANNUAL_KEY, PATTERN_KEY, TARGET_KEY, HIRAGANA_KEY];
+  const OWN_KEY_PREFIXES = [STORAGE_PREFIX, SUBJECT_KEY, ANNUAL_KEY, PATTERN_KEY, TARGET_KEY, HIRAGANA_KEY, PRINT_MEMO_KEY];
 
   function isOwnKey(key) {
     return OWN_KEY_PREFIXES.some(p => key.startsWith(p));
@@ -1839,7 +2111,38 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    localStorage.setItem(LAST_BACKUP_KEY, toDateStr(new Date()));
+    renderLastBackupNote();
     showBackupStatus("書き出しました");
+  }
+
+  // 最後にバックアップした日を表示し、間が空いたら注意を促す
+  function renderLastBackupNote() {
+    const note = document.getElementById("lastBackupNote");
+    const last = localStorage.getItem(LAST_BACKUP_KEY);
+    const weekCount = Object.keys(localStorage).filter(k => k.startsWith(STORAGE_PREFIX)).length;
+
+    if (!last) {
+      if (weekCount === 0) {
+        note.className = "last-backup-note";
+        note.textContent = "まだ書き出していません";
+      } else {
+        note.className = "last-backup-note warn";
+        note.textContent = "まだ一度も書き出していません。" + weekCount + "週分のデータがこのブラウザにしかありません。";
+      }
+      return;
+    }
+
+    const days = -daysUntil(last);
+    const d = parseDateStr(last);
+    const label = d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate();
+    if (days >= 30) {
+      note.className = "last-backup-note warn";
+      note.textContent = "最後の書き出し: " + label + "(" + days + "日前)。そろそろバックアップをおすすめします。";
+    } else {
+      note.className = "last-backup-note";
+      note.textContent = "最後の書き出し: " + label + (days === 0 ? "(今日)" : "(" + days + "日前)");
+    }
   }
 
   function importAllData(file) {
@@ -1866,6 +2169,7 @@
       keys.forEach(k => localStorage.setItem(k, data[k]));
       switchToYear(activeYear);
       loadAndRender(currentData.monday);
+      renderLastBackupNote();
       showBackupStatus("読み込みました");
     };
     reader.readAsText(file);
@@ -1885,9 +2189,12 @@
   (function init() {
     try { migrateLegacyDataOnce(); } catch (e) { /* localStorageが使えない環境などでは移行をスキップ */ }
     hiraganaCheckbox.checked = HIRAGANA_MODE;
+    printMemoCheckbox.checked = PRINT_MEMO;
+    applyPrintMemoSetting();
     const monday = firstMondayOfSchoolYear(currentSchoolYear());
     weekStartInput.value = monday;
     loadAndRender(monday);
+    renderLastBackupNote();
   })();
 </script>
 
