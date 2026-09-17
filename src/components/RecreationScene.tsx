@@ -72,8 +72,12 @@ export default function RecreationScene({ type }: { type: RecreationSceneType })
   const cy = 80;
 
   return (
-    <svg viewBox="0 0 240 160" className="h-full w-full" aria-hidden="true">
-      <rect width="240" height="160" rx="16" fill={BACKGROUNDS[type]} />
+    <svg
+      viewBox="0 0 240 160"
+      className="h-full w-full"
+      aria-hidden="true"
+      style={{ backgroundColor: BACKGROUNDS[type] }}
+    >
 
       {type === "tag" && (
         <g>

@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import RecreationScene from "@/components/RecreationScene";
-import {
-  recreations,
-  recreationCategories,
-  sortRecreations,
-} from "@/lib/recreations";
-import { getCategoryBorderColor } from "@/lib/categoryColor";
+import RecreationFilter from "@/components/RecreationFilter";
+import { recreations } from "@/lib/recreations";
 
 export const metadata: Metadata = {
   title: "学級レク特集 | 全国教員支援ポータル",
-  description: `〇〇鬼などのそとあそびから、ハンカチ落としなどの室内遊びまで。時間・場所・人数・やり方が一目でわかる学級レク集（全${recreations.length}種類）。`,
+  description: `〇〇鬼などのそとあそびから、ハンカチ落としなどの室内遊びまで。場面・場所・学年で絞り込める学級レク集（全${recreations.length}種類）。所要時間・準備・安全面の確認つき。`,
 };
 
 export default function RecreationsPage() {
@@ -26,64 +21,56 @@ export default function RecreationsPage() {
         <h1 className="mt-2 mb-2 text-2xl font-bold">🏃 学級レク特集</h1>
         <p className="mx-auto max-w-lg text-sm text-muted">
           全{recreations.length}種類。〇〇鬼などのそとあそびから、ハンカチ落としのような室内レクまで、
-          気になるものをタップするとやり方をイラスト付きで紹介します。
+          「こんなときに」「場所」「学年」で絞り込めます。
         </p>
         <p className="mx-auto mt-2 max-w-lg text-sm text-muted">
           各カテゴリーの中は、短い時間でできるものから順に並んでいます（同じ時間なら準備物が要らないものが先）。
         </p>
       </div>
 
-      <div className="mb-8 rounded-2xl border border-line bg-white p-5">
+      <div className="mb-6 rounded-2xl border border-line bg-white p-5">
         <h2 className="mb-2 text-sm font-bold text-navy">はじめる前に決めておくこと</h2>
         <ul className="flex flex-col gap-1.5 text-sm text-muted">
           <li>・遊んでよい範囲（コート）と、終わりの合図を先に伝える。</li>
+          <li>
+            ・<strong className="font-bold text-navy">「あと1回」は最初に約束しておく。</strong>
+            「時計の〇分で終わり」「あと2回やったら終わり」と先に言っておくと、「もう1回！」で長引きません。
+          </li>
           <li>・勝ち負けのあるレクは、負けた人が長く待たない終わり方にしておく。</li>
           <li>・見学の子には「音楽係」「得点係」など、参加できる役割を用意しておく。</li>
         </ul>
       </div>
 
-      {recreationCategories.map((category) => {
-        const items = sortRecreations(
-          recreations.filter((rec) => rec.category === category),
-        );
-        return (
-          <div key={category} className="mb-10">
-            <h2 className="mb-3 text-sm font-bold text-navy">
-              {category}（{items.length}件）
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {items.map((rec) => (
-                <Link
-                  key={rec.slug}
-                  href={`/lessons/recreations/${rec.slug}`}
-                  className={`overflow-hidden rounded-2xl border border-line border-l-4 bg-white ${getCategoryBorderColor(rec.category)}`}
-                >
-                  <div className="h-28">
-                    <RecreationScene type={rec.scene} />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-sm font-bold">
-                      {rec.emoji} {rec.title}
-                    </h3>
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      <span className="rounded-full bg-background px-2 py-0.5 text-[13px] font-bold text-navy">
-                        ⏱ {rec.duration}
-                      </span>
-                      <span className="rounded-full bg-background px-2 py-0.5 text-[13px] font-bold text-navy">
-                        👥 {rec.groupSize}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        );
-      })}
+      <div className="mb-6 rounded-2xl border border-line bg-white p-5">
+        <h2 className="mb-2 text-sm font-bold text-navy">45分1コマの組み立て例</h2>
+        <ol className="flex flex-col gap-1.5 text-sm text-muted">
+          <li>
+            <span className="font-bold text-navy">① 準備・説明（10分）</span>
+            ：机を下げる、ルールを全員で確認する。
+          </li>
+          <li>
+            <span className="font-bold text-navy">② 短いもので体をほぐす（5〜10分）</span>
+            ：じゃんけん列車、ボール送りリレーなど、全員がすぐ動けるもの。
+          </li>
+          <li>
+            <span className="font-bold text-navy">③ メイン（15〜20分）</span>
+            ：ドッジボール、けいどろ、ビンゴ大会など、盛り上がるものを1つだけ。
+          </li>
+          <li>
+            <span className="font-bold text-navy">④ 静かに終わる（5分）</span>
+            ：10秒ぴったりチャレンジなど。次の授業への切りかえがしやすくなります。
+          </li>
+        </ol>
+        <p className="mt-2 text-[13px] text-muted">
+          ※各レクの「所要時間」に準備・片づけは入っていません。詳細ページの「準備」の目安と合わせて計画してください。
+        </p>
+      </div>
+
+      <RecreationFilter items={recreations} />
 
       <div className="rounded-2xl border border-accent bg-[#EAF2FA] p-5 text-center">
         <p className="text-sm text-navy">
-          5分以内でできる短い活動をお探しなら、
+          朝の会や授業の導入に使う、もっと短い活動をお探しなら、
           <Link href="/lessons/icebreakers" className="font-bold text-accent underline">
             アイスブレイク大特集
           </Link>

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import IcebreakerScene from "@/components/IcebreakerScene";
 import { icebreakers, getIcebreakerBySlug } from "@/lib/icebreakers";
+import { getRecreationByIcebreakerSlug } from "@/lib/recreations";
 import FavoriteButton from "@/components/FavoriteButton";
 
 export function generateStaticParams() {
@@ -28,6 +29,8 @@ export default async function IcebreakerDetailPage(
   if (!ib) {
     notFound();
   }
+
+  const relatedRecreation = getRecreationByIcebreakerSlug(ib.slug);
 
   return (
     <section className="mx-auto max-w-2xl px-8 py-14">
@@ -91,7 +94,7 @@ export default async function IcebreakerDetailPage(
       </div>
 
       {ib.tip && (
-        <div className="mt-4 rounded-2xl bg-warn-bg p-4 text-sm text-warn">
+        <div className="mt-4 rounded-2xl bg-good-bg p-4 text-sm text-good">
           💡 <span className="font-bold">コツ：</span>
           {ib.tip}
         </div>
@@ -102,6 +105,26 @@ export default async function IcebreakerDetailPage(
           🔄 <span className="font-bold">アレンジ：</span>
           {ib.variation}
         </div>
+      )}
+
+      {relatedRecreation && (
+        <Link
+          href={`/lessons/recreations/${relatedRecreation.slug}`}
+          className="mt-4 flex items-center gap-3 rounded-2xl border border-line bg-white p-4 hover:border-accent"
+        >
+          <span className="text-xl" aria-hidden="true">
+            {relatedRecreation.emoji}
+          </span>
+          <span className="text-sm">
+            <span className="font-bold">学級レク特集にも掲載</span>
+            <span className="block text-muted">
+              学活やお楽しみ会で長めに遊ぶときの進め方（{relatedRecreation.duration}・安全面の確認つき）
+            </span>
+          </span>
+          <span className="ml-auto shrink-0 text-sm text-accent" aria-hidden="true">
+            →
+          </span>
+        </Link>
       )}
     </section>
   );

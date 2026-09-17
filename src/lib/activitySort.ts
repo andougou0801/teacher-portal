@@ -13,10 +13,14 @@ function parseDurationRange(duration: string): [number, number] {
   const values: number[] = [];
   // 「5〜10分」のように、範囲の場合は後ろの数字にだけ単位が付く点に注意。
   for (const [, start, end, unit] of duration.matchAll(
-    /(\d+)(?:\s*[〜～]\s*(\d+))?\s*(秒|分)/g,
+    /(\d+)(?:\s*[〜～\-–—]\s*(\d+))?\s*(秒|分|時間)/g,
   )) {
-    const toMinutes = (value: string) =>
-      unit === "秒" ? Number(value) / 60 : Number(value);
+    const toMinutes = (value: string) => {
+      const amount = Number(value);
+      if (unit === "秒") return amount / 60;
+      if (unit === "時間") return amount * 60;
+      return amount;
+    };
     values.push(toMinutes(start));
     if (end) values.push(toMinutes(end));
   }
@@ -24,7 +28,10 @@ function parseDurationRange(duration: string): [number, number] {
   return [Math.min(...values), Math.max(...values)];
 }
 
-/** 準備物が実質不要（「なし」「なし（あれば〜）」）なら true。 */
+/**
+ * 準備物の欄が「なし」で始まる（「なし」「なし（あれば〜）」など）なら true。
+ * 「先に出すかどうか」の並べ替えに使うだけの、ゆるい判定。
+ */
 function needsNoMaterials(materials: string): boolean {
   return materials.startsWith("なし");
 }

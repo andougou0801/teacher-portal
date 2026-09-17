@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   title: "検索結果 | 全国教員支援ポータル",
 };
 
+export const revalidate = 60;
+
 function matches(query: string, ...fields: string[]) {
   const normalized = query.trim().toLowerCase();
   if (!normalized) return true;
@@ -81,7 +83,7 @@ export default async function SearchPage(props: PageProps<"/search">) {
             「{query}」の検索結果（{totalResults}件）
           </>
         ) : (
-          "すべてのツール・記事・公式サイト"
+          "すべてのツール・記事・アイスブレイク・学級レク・公式サイト"
         )}
       </h1>
 

@@ -75,7 +75,7 @@ export default function FavoritesList({
   if (items.length === 0) {
     return (
       <p className="text-center text-sm text-muted">
-        まだお気に入りがありません。気になるツールや記事の☆マークをタップしてみてください。
+        まだお気に入りがありません。気になるツール・記事・アイスブレイク・学級レクの☆マークをタップしてみてください。
       </p>
     );
   }

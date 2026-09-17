@@ -59,7 +59,8 @@ export default async function LessonsPage() {
           </div>
           <h2 className="mt-1 text-base font-bold">🏃 学級レク特集</h2>
           <p className="mt-1 text-sm text-muted">
-            〇〇鬼などのそとあそびから、ハンカチ落としのような室内レクまで。安全面の確認つき
+            〇〇鬼などのそとあそびから、ハンカチ落としのような室内レクまで。
+            「お楽しみ会」「雨の日」など場面・場所・学年で絞り込めます
           </p>
         </div>
         <span className="shrink-0 text-accent">→</span>

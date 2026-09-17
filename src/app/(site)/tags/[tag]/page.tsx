@@ -5,6 +5,8 @@ import { icebreakers } from "@/lib/icebreakers";
 import { recreations } from "@/lib/recreations";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
+export const revalidate = 60;
+
 export async function generateMetadata(
   props: PageProps<"/tags/[tag]">,
 ): Promise<Metadata> {

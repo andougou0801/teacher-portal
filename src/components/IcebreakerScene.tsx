@@ -14,8 +14,12 @@ export default function IcebreakerScene({ type }: { type: SceneType }) {
   const cy = 80;
 
   return (
-    <svg viewBox="0 0 240 160" className="h-full w-full">
-      <rect width="240" height="160" rx="16" fill="#EAF2FA" />
+    <svg
+      viewBox="0 0 240 160"
+      className="h-full w-full"
+      aria-hidden="true"
+      style={{ backgroundColor: "#EAF2FA" }}
+    >
 
       {type === "circle" && (
         <g>
