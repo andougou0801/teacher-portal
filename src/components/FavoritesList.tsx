@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useFavorites } from "@/lib/favorites";
 import { getIcebreakerBySlug } from "@/lib/icebreakers";
+import { getRecreationBySlug } from "@/lib/recreations";
 import type { Article } from "@/lib/articles";
 import type { Tool } from "@/lib/tools";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -53,6 +54,18 @@ export default function FavoritesList({
           icon: ib.emoji,
           title: ib.title,
           summary: `⏱ ${ib.duration}・👥 ${ib.groupSize}`,
+        };
+      }
+      if (kind === "recreation") {
+        const rec = getRecreationBySlug(slug);
+        if (!rec) return null;
+        return {
+          kind: "recreation" as const,
+          slug,
+          href: `/lessons/recreations/${rec.slug}`,
+          icon: rec.emoji,
+          title: rec.title,
+          summary: `⏱ ${rec.duration}・👥 ${rec.groupSize}`,
         };
       }
       return null;

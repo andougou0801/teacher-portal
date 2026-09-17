@@ -4,6 +4,7 @@ import { getPublishedArticles, getVisibleTools } from "@/lib/content";
 import { officialLinks } from "@/lib/officialLinks";
 import { aiGuides } from "@/lib/aiGuides";
 import { icebreakers } from "@/lib/icebreakers";
+import { recreations } from "@/lib/recreations";
 import { categories } from "@/lib/categories";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
@@ -40,13 +41,17 @@ export default async function SearchPage(props: PageProps<"/search">) {
   const matchedIcebreakers = icebreakers.filter((ib) =>
     matches(query, ib.title, ib.category, ib.place, ...ib.steps),
   );
+  const matchedRecreations = recreations.filter((rec) =>
+    matches(query, rec.title, rec.category, rec.place, ...rec.steps),
+  );
   const hasQuery = query.trim().length > 0;
   const totalResults =
     matchedTools.length +
     matchedArticles.length +
     matchedLinks.length +
     matchedGuides.length +
-    matchedIcebreakers.length;
+    matchedIcebreakers.length +
+    matchedRecreations.length;
   const hasResults = totalResults > 0;
 
   return (
@@ -173,6 +178,30 @@ export default async function SearchPage(props: PageProps<"/search">) {
                 </h3>
                 <p className="mt-1 text-sm text-muted">
                   ⏱ {ib.duration}・👥 {ib.groupSize}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {matchedRecreations.length > 0 && (
+        <div className="mb-10">
+          <h2 className="mb-3 text-sm font-bold text-navy">
+            学級レク（{matchedRecreations.length}件）
+          </h2>
+          <div className="grid gap-3 md:grid-cols-3">
+            {matchedRecreations.map((rec) => (
+              <Link
+                key={rec.slug}
+                href={`/lessons/recreations/${rec.slug}`}
+                className={`rounded-2xl border border-line border-l-4 bg-white p-4 ${getCategoryBorderColor(rec.category)}`}
+              >
+                <h3 className="text-sm font-bold">
+                  {rec.emoji} {rec.title}
+                </h3>
+                <p className="mt-1 text-sm text-muted">
+                  ⏱ {rec.duration}・👥 {rec.groupSize}
                 </p>
               </Link>
             ))}

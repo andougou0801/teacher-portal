@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getPublishedArticles } from "@/lib/content";
 import { icebreakers } from "@/lib/icebreakers";
+import { recreations } from "@/lib/recreations";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
@@ -34,7 +35,7 @@ export default async function LessonsPage() {
 
       <Link
         href="/lessons/icebreakers"
-        className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-accent bg-[#EAF2FA] p-5"
+        className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-accent bg-[#EAF2FA] p-5"
       >
         <div>
           <div className="text-[13px] font-extrabold tracking-wide text-accent">
@@ -43,6 +44,22 @@ export default async function LessonsPage() {
           <h2 className="mt-1 text-base font-bold">🎉 アイスブレイク大特集</h2>
           <p className="mt-1 text-sm text-muted">
             時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集
+          </p>
+        </div>
+        <span className="shrink-0 text-accent">→</span>
+      </Link>
+
+      <Link
+        href="/lessons/recreations"
+        className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-accent bg-[#EAF2FA] p-5"
+      >
+        <div>
+          <div className="text-[13px] font-extrabold tracking-wide text-accent">
+            NEW・{recreations.length}個掲載
+          </div>
+          <h2 className="mt-1 text-base font-bold">🏃 学級レク特集</h2>
+          <p className="mt-1 text-sm text-muted">
+            〇〇鬼などのそとあそびから、ハンカチ落としのような室内レクまで。安全面の確認つき
           </p>
         </div>
         <span className="shrink-0 text-accent">→</span>

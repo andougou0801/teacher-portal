@@ -22,7 +22,7 @@ export default async function FavoritesPage() {
         </div>
         <h1 className="mt-2 mb-2 text-2xl font-bold">⭐ お気に入り</h1>
         <p className="mx-auto max-w-lg text-sm text-muted">
-          このブラウザだけに保存されます。会員登録・サーバー保存は不要です。ツール・記事・アイスブレイクの
+          このブラウザだけに保存されます。会員登録・サーバー保存は不要です。ツール・記事・アイスブレイク・学級レクの
           ☆マークをタップすると、ここに追加されます。
         </p>
       </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getPublishedArticles, getVisibleTools } from "@/lib/content";
 import { icebreakers } from "@/lib/icebreakers";
+import { recreations } from "@/lib/recreations";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export async function generateMetadata(
@@ -28,7 +29,12 @@ export default async function TagPage(props: PageProps<"/tags/[tag]">) {
       article.situation === decoded,
   );
   const matchedIcebreakers = icebreakers.filter((ib) => ib.category === decoded);
-  const total = matchedTools.length + matchedArticles.length + matchedIcebreakers.length;
+  const matchedRecreations = recreations.filter((rec) => rec.category === decoded);
+  const total =
+    matchedTools.length +
+    matchedArticles.length +
+    matchedIcebreakers.length +
+    matchedRecreations.length;
 
   return (
     <section className="mx-auto max-w-4xl px-8 py-14">
@@ -40,7 +46,7 @@ export default async function TagPage(props: PageProps<"/tags/[tag]">) {
           🏷 「{decoded}」に関するもの（{total}件）
         </h1>
         <p className="mx-auto max-w-lg text-sm text-muted">
-          ツール・記事・アイスブレイクを横断して、このタグに関係するものを表示しています。
+          ツール・記事・アイスブレイク・学級レクを横断して、このタグに関係するものを表示しています。
         </p>
       </div>
 
@@ -95,7 +101,7 @@ export default async function TagPage(props: PageProps<"/tags/[tag]">) {
       )}
 
       {matchedIcebreakers.length > 0 && (
-        <div>
+        <div className="mb-10">
           <h2 className="mb-3 text-sm font-bold text-navy">
             アイスブレイク（{matchedIcebreakers.length}件）
           </h2>
@@ -111,6 +117,30 @@ export default async function TagPage(props: PageProps<"/tags/[tag]">) {
                 </h3>
                 <p className="mt-1 text-sm text-muted">
                   ⏱ {ib.duration}・👥 {ib.groupSize}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {matchedRecreations.length > 0 && (
+        <div>
+          <h2 className="mb-3 text-sm font-bold text-navy">
+            学級レク（{matchedRecreations.length}件）
+          </h2>
+          <div className="grid gap-3 md:grid-cols-3">
+            {matchedRecreations.map((rec) => (
+              <Link
+                key={rec.slug}
+                href={`/lessons/recreations/${rec.slug}`}
+                className={`rounded-2xl border border-line border-l-4 bg-white p-4 ${getCategoryBorderColor(rec.category)}`}
+              >
+                <h3 className="text-sm font-bold">
+                  {rec.emoji} {rec.title}
+                </h3>
+                <p className="mt-1 text-sm text-muted">
+                  ⏱ {rec.duration}・👥 {rec.groupSize}
                 </p>
               </Link>
             ))}

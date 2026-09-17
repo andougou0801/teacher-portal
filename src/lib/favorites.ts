@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 const STORAGE_KEY = "teacher-portal-favorites";
 const CHANGE_EVENT = "teacher-portal-favorites-changed";
 
-export type FavoriteKind = "tool" | "article" | "icebreaker";
+export type FavoriteKind = "tool" | "article" | "icebreaker" | "recreation";
 
 function makeId(kind: FavoriteKind, slug: string): string {
   return `${kind}:${slug}`;
