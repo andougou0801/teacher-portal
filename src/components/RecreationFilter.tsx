@@ -30,13 +30,27 @@ const GRADE_YEARS: Record<RecreationGrade, [number, number]> = {
 /** ["低学年","中学年"] → 「1〜4年むき」のように短くまとめる。 */
 function gradeLabel(grades: RecreationGrade[]): string {
   const years = grades.flatMap((grade) => GRADE_YEARS[grade]);
-  const min = Math.min(...years);
-  const max = Math.max(...years);
-  return `${min}〜${max}年むき`;
+  return `${Math.min(...years)}〜${Math.max(...years)}年むき`;
 }
 
-function toggle<T>(set: T[], value: T): T[] {
-  return set.includes(value) ? set.filter((item) => item !== value) : [...set, value];
+function toggle<T>(list: T[], value: T): T[] {
+  return list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+}
+
+type Conditions = {
+  places: RecreationPlace[];
+  grades: RecreationGrade[];
+  occasion: RecreationOccasion | null;
+  noMaterialsOnly: boolean;
+};
+
+function matches(item: Recreation, conditions: Conditions): boolean {
+  const { places, grades, occasion, noMaterialsOnly } = conditions;
+  if (places.length > 0 && !item.places.some((place) => places.includes(place))) return false;
+  if (grades.length > 0 && !item.grades.some((grade) => grades.includes(grade))) return false;
+  if (occasion && !item.occasions.includes(occasion)) return false;
+  if (noMaterialsOnly && !needsNoMaterials(item.materials)) return false;
+  return true;
 }
 
 const chipBase =
@@ -49,22 +63,22 @@ export default function RecreationFilter({ items }: { items: Recreation[] }) {
   const [grades, setGrades] = useState<RecreationGrade[]>([]);
   const [occasion, setOccasion] = useState<RecreationOccasion | null>(null);
   const [noMaterialsOnly, setNoMaterialsOnly] = useState(false);
+  const [sortByTime, setSortByTime] = useState(false);
 
+  const conditions: Conditions = { places, grades, occasion, noMaterialsOnly };
   const filtered = useMemo(
-    () =>
-      items.filter((item) => {
-        if (places.length > 0 && !item.places.some((place) => places.includes(place))) {
-          return false;
-        }
-        if (grades.length > 0 && !item.grades.some((grade) => grades.includes(grade))) {
-          return false;
-        }
-        if (occasion && !item.occasions.includes(occasion)) return false;
-        if (noMaterialsOnly && !needsNoMaterials(item.materials)) return false;
-        return true;
-      }),
+    () => items.filter((item) => matches(item, conditions)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- conditions は毎回作り直す入れ物なので、中身を依存に並べる
     [items, places, grades, occasion, noMaterialsOnly],
   );
+
+  /**
+   * チップに出す件数。そのチップを押したときに何件になるかを先に見せたいので、
+   * 「同じ列の条件だけを、そのチップ1つに置きかえた状態」で数える。
+   */
+  function countIfSelected(override: Partial<Conditions>): number {
+    return items.filter((item) => matches(item, { ...conditions, ...override })).length;
+  }
 
   const isFiltered =
     places.length > 0 || grades.length > 0 || occasion !== null || noMaterialsOnly;
@@ -76,72 +90,117 @@ export default function RecreationFilter({ items }: { items: Recreation[] }) {
     setNoMaterialsOnly(false);
   }
 
+  const groups = sortByTime
+    ? [{ key: "すべて", label: `短い順（${filtered.length}件）`, list: sortRecreations(filtered) }]
+    : recreationCategories
+        .map((category) => ({
+          key: category,
+          label: `${category}（${filtered.filter((item) => item.category === category).length}件）`,
+          list: sortRecreations(filtered.filter((item) => item.category === category)),
+        }))
+        .filter((group) => group.list.length > 0);
+
   return (
     <div>
       <div className="mb-6 rounded-2xl border border-line bg-white p-5">
         <div className="mb-3">
           <div className="mb-1.5 text-sm font-bold text-navy">こんなときに</div>
           <div className="flex flex-wrap gap-2">
-            {recreationOccasions.map((item) => (
-              <button
-                key={item}
-                type="button"
-                aria-pressed={occasion === item}
-                onClick={() => setOccasion(occasion === item ? null : item)}
-                className={`${chipBase} ${occasion === item ? chipOn : chipOff}`}
-              >
-                {item}
-              </button>
-            ))}
+            {recreationOccasions.map((item) => {
+              const on = occasion === item;
+              return (
+                <button
+                  key={item}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setOccasion(on ? null : item)}
+                  className={`${chipBase} ${on ? chipOn : chipOff}`}
+                >
+                  {item}
+                  <span className="ml-1 font-normal opacity-80">
+                    {countIfSelected({ occasion: on ? null : item })}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         <div className="mb-3">
           <div className="mb-1.5 text-sm font-bold text-navy">場所</div>
           <div className="flex flex-wrap gap-2">
-            {recreationPlaces.map((item) => (
-              <button
-                key={item}
-                type="button"
-                aria-pressed={places.includes(item)}
-                onClick={() => setPlaces(toggle(places, item))}
-                className={`${chipBase} ${places.includes(item) ? chipOn : chipOff}`}
-              >
-                {item}
-              </button>
-            ))}
-            <button
-              type="button"
-              aria-pressed={noMaterialsOnly}
-              onClick={() => setNoMaterialsOnly(!noMaterialsOnly)}
-              className={`${chipBase} ${noMaterialsOnly ? chipOn : chipOff}`}
-            >
-              準備物なし
-            </button>
+            {recreationPlaces.map((item) => {
+              const on = places.includes(item);
+              return (
+                <button
+                  key={item}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setPlaces(toggle(places, item))}
+                  className={`${chipBase} ${on ? chipOn : chipOff}`}
+                >
+                  {item}
+                  <span className="ml-1 font-normal opacity-80">
+                    {countIfSelected({ places: toggle(places, item) })}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         <div>
           <div className="mb-1.5 text-sm font-bold text-navy">学年</div>
           <div className="flex flex-wrap gap-2">
-            {recreationGrades.map((item) => (
-              <button
-                key={item}
-                type="button"
-                aria-pressed={grades.includes(item)}
-                onClick={() => setGrades(toggle(grades, item))}
-                className={`${chipBase} ${grades.includes(item) ? chipOn : chipOff}`}
-              >
-                {item}
-              </button>
-            ))}
+            {recreationGrades.map((item) => {
+              const on = grades.includes(item);
+              return (
+                <button
+                  key={item}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setGrades(toggle(grades, item))}
+                  className={`${chipBase} ${on ? chipOn : chipOff}`}
+                >
+                  {item}
+                  <span className="ml-1 font-normal opacity-80">
+                    {countIfSelected({ grades: toggle(grades, item) })}
+                  </span>
+                </button>
+              );
+            })}
           </div>
+          <p className="mt-1.5 text-[13px] text-muted">
+            ※数字は、押したときに表示される件数です。
+          </p>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line pt-3">
-          <p aria-live="polite" className="text-sm font-bold text-navy">
-            {filtered.length}件を表示中
-          </p>
+        <div className="mt-2 flex flex-wrap gap-x-5 border-t border-line pt-1">
+          <label className="flex w-fit cursor-pointer items-center gap-2 py-2 text-sm font-bold text-navy">
+            <input
+              type="checkbox"
+              checked={noMaterialsOnly}
+              onChange={(event) => setNoMaterialsOnly(event.target.checked)}
+              className="h-4 w-4 accent-[#1f7a9e]"
+            />
+            準備物がいらないものだけ（{countIfSelected({ noMaterialsOnly: !noMaterialsOnly })}件）
+          </label>
+          <label className="flex w-fit cursor-pointer items-center gap-2 py-2 text-sm font-bold text-navy">
+            <input
+              type="checkbox"
+              checked={sortByTime}
+              onChange={(event) => setSortByTime(event.target.checked)}
+              className="h-4 w-4 accent-[#1f7a9e]"
+            />
+            種類で分けず、時間が短い順に並べる
+          </label>
+        </div>
+
+        <div
+          aria-live="polite"
+          className="mt-3 flex flex-wrap items-center gap-3 border-t border-line pt-3"
+        >
+          <p className="text-sm font-bold text-navy">{filtered.length}件を表示中</p>
           {isFiltered && (
             <button
               type="button"
@@ -151,65 +210,56 @@ export default function RecreationFilter({ items }: { items: Recreation[] }) {
               条件をすべて外す
             </button>
           )}
+          {filtered.length === 0 && (
+            <p className="text-sm text-muted">
+              この条件に合う学級レクはありませんでした。条件を1つ外してみてください。
+            </p>
+          )}
         </div>
       </div>
 
-      {filtered.length === 0 && (
-        <p className="mb-10 text-center text-sm text-muted">
-          この条件に合う学級レクはありませんでした。条件を1つ外してみてください。
-        </p>
-      )}
-
-      {recreationCategories.map((category) => {
-        const list = sortRecreations(
-          filtered.filter((item) => item.category === category),
-        );
-        if (list.length === 0) return null;
-        return (
-          <div key={category} className="mb-10">
-            <h2 className="mb-3 text-sm font-bold text-navy">
-              {category}（{list.length}件）
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {list.map((rec) => (
-                <Link
-                  key={rec.slug}
-                  href={`/lessons/recreations/${rec.slug}`}
-                  className={`overflow-hidden rounded-2xl border border-line border-l-4 bg-white transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${getRecreationBorderColor(rec.category)}`}
-                >
-                  <div className="h-28">
-                    <RecreationScene type={rec.scene} />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-sm font-bold">
-                      <span aria-hidden="true">{rec.emoji} </span>
-                      {rec.title}
-                    </h3>
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      <span className="rounded-full bg-background px-2 py-0.5 text-[13px] font-bold text-navy">
-                        <span aria-hidden="true">⏱ </span>
-                        <span className="sr-only">所要時間 </span>
-                        {rec.duration}
+      {groups.map((group) => (
+        <div key={group.key} className="mb-10">
+          <h2 className="mb-3 text-sm font-bold text-navy">{group.label}</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {group.list.map((rec) => (
+              <Link
+                key={rec.slug}
+                href={`/lessons/recreations/${rec.slug}`}
+                className={`overflow-hidden rounded-2xl border border-line border-l-4 bg-white transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${getRecreationBorderColor(rec.category)}`}
+              >
+                <div className="h-28">
+                  <RecreationScene type={rec.scene} />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-sm font-bold">
+                    <span aria-hidden="true">{rec.emoji} </span>
+                    {rec.title}
+                  </h3>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    <span className="rounded-full bg-background px-2 py-0.5 text-[13px] font-bold text-navy">
+                      <span aria-hidden="true">⏱ </span>
+                      <span className="sr-only">所要時間 </span>
+                      {rec.duration}
+                    </span>
+                    <span className="rounded-full bg-background px-2 py-0.5 text-[13px] font-bold text-navy">
+                      <span aria-hidden="true">📍 </span>
+                      <span className="sr-only">場所 </span>
+                      {rec.places.join("・")}
+                    </span>
+                    {needsNoMaterials(rec.materials) && (
+                      <span className="rounded-full bg-good-bg px-2 py-0.5 text-[13px] font-bold text-good">
+                        準備なし
                       </span>
-                      <span className="rounded-full bg-background px-2 py-0.5 text-[13px] font-bold text-navy">
-                        <span aria-hidden="true">📍 </span>
-                        <span className="sr-only">場所 </span>
-                        {rec.places.join("・")}
-                      </span>
-                      {needsNoMaterials(rec.materials) && (
-                        <span className="rounded-full bg-good-bg px-2 py-0.5 text-[13px] font-bold text-good">
-                          準備なし
-                        </span>
-                      )}
-                    </div>
-                    <p className="mt-1.5 text-[13px] text-muted">{gradeLabel(rec.grades)}</p>
+                    )}
                   </div>
-                </Link>
-              ))}
-            </div>
+                  <p className="mt-1.5 text-[13px] text-muted">{gradeLabel(rec.grades)}</p>
+                </div>
+              </Link>
+            ))}
           </div>
-        );
-      })}
+        </div>
+      ))}
     </div>
   );
 }

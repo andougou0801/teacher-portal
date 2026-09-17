@@ -150,6 +150,14 @@ export default async function RecreationDetailPage(
         </div>
       )}
 
+      {rec.inclusion && (
+        <div className="mt-4 rounded-2xl border border-accent bg-white p-4 text-sm text-navy">
+          <span aria-hidden="true">🤝 </span>
+          <span className="font-bold">みんなが入れるように：</span>
+          {rec.inclusion}
+        </div>
+      )}
+
       {rec.tip && (
         <div className="mt-4 rounded-2xl bg-good-bg p-4 text-sm text-good">
           <span aria-hidden="true">💡 </span>
