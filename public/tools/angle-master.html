@@ -160,7 +160,7 @@
       <div class="preset-grid">
         <button class="preset-btn" data-preset="g4"><span class="emoji">4️⃣</span>4年生</button>
         <button class="preset-btn" data-preset="g5"><span class="emoji">5️⃣</span>5年生</button>
-        <button class="preset-btn selected" data-preset="all"><span class="emoji">🌏</span>ぜんぶ</button>
+        <button class="preset-btn" data-preset="all"><span class="emoji">🌏</span>ぜんぶ</button>
         <button class="preset-btn" data-preset="weak"><span class="emoji">🔥</span>にがて</button>
       </div>
 
@@ -1356,8 +1356,14 @@ function updStars(pop){
 }
 
 /* ---------- ホーム ---------- */
-let selUnits = UNITS.map(u=>u.id);
+let selUnits = [];        // さいしょは どれも えらばれていない
 let selCount = 10;
+
+function syncStartBtn(){
+  const b = $("startBtn");
+  b.disabled = (selUnits.length === 0);
+  b.textContent = b.disabled ? "↑ 単元を えらんでね" : "スタート！";
+}
 
 function renderUnits(){
   const box = $("unitList");
@@ -1374,11 +1380,11 @@ function renderUnits(){
     el.addEventListener("click", function(){
       const id = el.getAttribute("data-u");
       const i = selUnits.indexOf(id);
-      if(i>=0){ if(selUnits.length<=1) return; selUnits.splice(i,1); }
+      if(i>=0) selUnits.splice(i,1);
       else selUnits.push(id);
       markPreset(null);
       renderUnits();
-      $("startBtn").disabled = selUnits.length===0;
+      syncStartBtn();
     });
   });
 }
@@ -1396,7 +1402,7 @@ Array.prototype.forEach.call(document.querySelectorAll(".preset-btn"), function(
     else selUnits = weakUnits();
     markPreset(p);
     renderUnits();
-    $("startBtn").disabled = selUnits.length===0;
+    syncStartBtn();
   });
 });
 Array.prototype.forEach.call(document.querySelectorAll(".count-btn"), function(b){
@@ -1461,7 +1467,10 @@ function startGame(units, count, preset){
   showScreen("play");
   renderQ();
 }
-$("startBtn").addEventListener("click", function(){ startGame(selUnits, selCount, null); });
+$("startBtn").addEventListener("click", function(){
+  if(selUnits.length === 0) return;
+  startGame(selUnits, selCount, null);
+});
 
 /* ---- 分度器を動かす図をつくる ---- */
 function mountPlace(p){
@@ -1818,6 +1827,7 @@ $("homeBtn").addEventListener("click", function(){
 renderUnits();
 renderRec();
 updStars(false);
+syncStartBtn();
 </script>
 </body>
 </html>
