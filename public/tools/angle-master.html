@@ -132,7 +132,14 @@
   .judge.ng{color:var(--ng);}
   .solbox{background:#f4f8ff;border:2px solid #dce7f7;border-radius:14px;padding:14px 16px;font-size:15px;font-weight:800;color:#3b4a5c;line-height:1.7;margin-bottom:12px;}
   .solbox .lbl{display:inline-block;background:var(--accent);color:#fff;border-radius:8px;padding:2px 10px;font-size:12px;margin-right:8px;}
-  .solbox .formula{font-size:19px;color:var(--accent-dark);}
+  .solbox .formula{font-size:19px;color:var(--accent-dark);margin-top:6px;}
+  .solbox .solwhy{display:inline;}
+  .solbox .solhint{margin-top:10px;font-size:14px;color:#3b4a5c;font-weight:800;line-height:1.7;}
+  .fml{display:block;font-size:20px;color:var(--accent-dark);line-height:1.5;letter-spacing:.02em;}
+  .fstep{display:block;font-size:13.5px;color:#5b6b7f;margin-top:8px;}
+  .fstep:first-child{margin-top:0;}
+  .missitem .fml{font-size:16px;color:#5a6a7e;}
+  .missitem .fstep{font-size:12px;}
   .hintbox{background:#fff8e1;border:2px dashed #f5a623;color:#a06800;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:800;line-height:1.6;margin-bottom:12px;}
 
   /* ---------- result ---------- */
@@ -1024,6 +1031,22 @@ function idealPlace(st, t){
    問題をつくる（単元ごと）
 ========================================================= */
 function Q(o){ return o; }
+
+/* しきの 書き方（教科書のように まとめて ひく）
+   180 − (30 + 40)
+   ＝ 180 − 70
+   ＝ 110                              */
+function fmlLine(s){ return '<span class="fml">'+s+'</span>'; }
+function fSub(total, parts){
+  const ps = parts.filter(v => v !== null && v !== undefined && !isNaN(v));
+  if(ps.length === 0) return fmlLine(String(total));
+  if(ps.length === 1) return fmlLine(total+" − "+ps[0]+" ＝ "+(total-ps[0]));
+  const sum = ps.reduce((a,b)=>a+b, 0);
+  return fmlLine(total+" − ("+ps.join(" + ")+")") +
+         fmlLine("＝ "+total+" − "+sum) +
+         fmlLine("＝ "+(total-sum));
+}
+function fStep(label, body){ return '<span class="fstep">'+label+'</span>'+body; }
 const UNKNOWN = {unknown:true};
 function ansLab(v){ return {v:v, solved:true}; }
 
@@ -1143,7 +1166,7 @@ function genLine(){
       q:"一直線の 上に できた 角です。?は 何度ですか。",
       ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"一直線の 角は 180°。のこりを ひき算で もとめよう。",
-      sol:"180 − "+others.join(" − ")+" = "+ans
+      sol:fSub(180, others)
     });
   }
   if(kind === "round"){
@@ -1172,7 +1195,7 @@ function genLine(){
       q:"1つの点の まわりに できた 角です。?は 何度ですか。",
       ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"1回転した 角は 360°だよ。",
-      sol:"360 − "+others.join(" − ")+" = "+ans
+      sol:fSub(360, others)
     });
   }
   // 交わった2本の直線
@@ -1189,7 +1212,7 @@ function genLine(){
     q:"2本の 直線が 交わって います。?は 何度ですか。",
     ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
     hint: target===2 ? "向かい合った 角は 同じ 大きさに なるよ。" : "一直線の 角は 180°。となりの 角から ひこう。",
-    sol: target===2 ? ("向かい合った角だから "+b+"° と同じで "+ans) : ("180 − "+b+" = "+ans)
+    sol: target===2 ? fStep("向かい合った 角は 同じ 大きさ", fmlLine("? ＝ "+ans)) : fSub(180, [b])
   });
 }
 
@@ -1210,7 +1233,7 @@ function genSetSquare(){
       q:"三角じょうぎの 角です。?は 何度ですか。",
       ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"三角じょうぎは 90°・60°・30° と 90°・45°・45° の 2まい。3つの 角の 和は 180°。",
-      sol:"180 − "+ang.filter((v,i)=>i!==ui).join(" − ")+" = "+ans
+      sol:fSub(180, ang.filter((v,i)=>i!==ui))
     });
   }
   if(kind === "combo"){
@@ -1228,7 +1251,7 @@ function genSetSquare(){
       q:"三角じょうぎを 2まい ならべました。むらさきの ?は 何度ですか。",
       ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"2つの 角を たせば もとめられるよ。",
-      sol:p[0]+" + "+p[1]+" = "+ans
+      sol:fmlLine(p[0]+" + "+p[1]+" ＝ "+ans)
     });
   }
   // 大きい角から 一部をひく
@@ -1247,7 +1270,7 @@ function genSetSquare(){
     q:"ぜんたいの 角が "+whole+"° です。?は 何度ですか。",
     ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
     hint:"ぜんたいから わかっている 角を ひこう。",
-    sol:whole+" − "+part+" = "+ans
+    sol:fSub(whole, [part])
   });
 }
 
@@ -1278,7 +1301,7 @@ function genTri(){
     q: right ? "直角三角形です。?は 何度ですか。" : "三角形の 角です。?は 何度ですか。",
     ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
     hint:"三角形の 3つの 角の 大きさの 和は 180°。",
-    sol:"180 − "+others.join(" − ")+" = "+ans
+    sol:fSub(180, others)
   });
 }
 
@@ -1298,7 +1321,7 @@ function genIso(){
       q:"3つの 辺の 長さが 等しい 三角形です。?は 何度ですか。",
       ans:60, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"正三角形の 3つの 角は ぜんぶ 同じ 大きさ。",
-      sol:"180 ÷ 3 = 60"
+      sol:fmlLine("180 ÷ 3 ＝ 60")
     });
   }
   // 頂点0が頂角、辺 0-1 と 2-0 が等しい → 底角は 1 と 2
@@ -1314,14 +1337,14 @@ function genIso(){
     mB = [ansLab(apex), {v:base}, null];
     q = "二等辺三角形です。?は 何度ですか。";
     hint = "二等辺三角形では、しるしの ついた 2つの 辺の あいだに ない 角（2つ）が 同じ 大きさ。180°から その 2つ分を ひこう。";
-    sol = "180 − "+base+" − "+base+" = "+ans;
+    sol = fSub(180, [base, base]);
   } else {
     ans = base;
     mA = [{v:apex}, UNKNOWN, null];
     mB = [{v:apex}, ansLab(base), null];
     q = "二等辺三角形です。?は 何度ですか。";
     hint = "二等辺三角形では、しるしの ついた 2つの 辺の あいだに ない 角（2つ）が 同じ 大きさ。のこりを 2で わろう。";
-    sol = "(180 − "+apex+") ÷ 2 = "+ans;
+    sol = fmlLine("(180 − "+apex+") ÷ 2") + fmlLine("＝ "+(180-apex)+" ÷ 2") + fmlLine("＝ "+ans);
   }
   const figs = figPoly(ang, [mA,mB], {strict:true, ticks:[[0,1,2],[2,0,2]]});
   if(!figs) return null;
@@ -1348,7 +1371,7 @@ function genQuad(){
     q:"四角形の 角です。?は 何度ですか。",
     ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
     hint:"四角形の 4つの 角の 大きさの 和は 360°。（三角形 2つ分だね）",
-    sol:"360 − "+others.join(" − ")+" = "+ans
+    sol:fSub(360, others)
   });
 }
 
@@ -1372,7 +1395,7 @@ function genPara(){
       q:"上と下の 辺が 平行な 台形です。?は 何度ですか。",
       ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"平行な 2本の 辺に はさまれた となりどうしの 角を たすと 180°に なるよ。",
-      sol:"180 − "+ang[known]+" = "+ans
+      sol:fSub(180, [ang[known]])
     });
   }
   const a = rnd(9,16)*5;   // 45〜80
@@ -1389,7 +1412,7 @@ function genPara(){
     q:(kind==="rhom"?"ひし形":"平行四辺形")+"です。?は 何度ですか。",
     ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
     hint:"向かい合った 角は 同じ 大きさ。となりの 角と たすと 180°。",
-    sol: (ui===2) ? ("向かい合った角だから "+a+"° と同じで "+ans) : ("180 − "+a+" = "+ans)
+    sol: (ui===2) ? fStep("向かい合った 角は 同じ 大きさ", fmlLine("? ＝ "+ans)) : fSub(180, [a])
   });
 }
 
@@ -1411,7 +1434,7 @@ function genPoly(){
       q:nm+"の "+n+"つの 角の 大きさの 和は 何度ですか。",
       ans:(n-2)*180, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"1つの ちょう点から 対角線を ひくと、三角形が "+(n-2)+"こ できるよ。",
-      sol:"180 × "+(n-2)+" = "+((n-2)*180)
+      sol:fmlLine("180 × "+(n-2)+" ＝ "+((n-2)*180))
     });
   }
   if(kind === "regular"){
@@ -1429,7 +1452,8 @@ function genPoly(){
       q:nm+"です。1つの 角 ?は 何度ですか。",
       ans:reg, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"まず "+n+"つの 角の 和（180×"+(n-2)+"）を もとめて、"+n+"で わろう。",
-      sol:"180 × "+(n-2)+" = "+((n-2)*180)+"、　"+((n-2)*180)+" ÷ "+n+" = "+reg
+      sol:fStep("角の 和", fmlLine("180 × "+(n-2)+" ＝ "+((n-2)*180))) +
+          fStep("1つ分", fmlLine(((n-2)*180)+" ÷ "+n+" ＝ "+reg))
     });
   }
   // 1つの角をもとめる
@@ -1450,7 +1474,7 @@ function genPoly(){
     q:nm+"の 角です。?は 何度ですか。",
     ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
     hint:nm+"の 角の 和は 180×"+(n-2)+" = "+((n-2)*180)+"° だよ。",
-    sol:((n-2)*180)+" − "+others.join(" − ")+" = "+ans
+    sol:fSub((n-2)*180, others)
   });
 }
 
@@ -1523,8 +1547,8 @@ function genTriAdv(){
       q:"大きい 三角形の 中に、小さい 三角形が すっぽり 入っています。?は 何度ですか。",
       ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"?の となりに できた 小さい 三角形を 見よう。2つの 角が わかるから、のこりの 角が もとめられるね。そのあと、3つの 角が 一直線に ならぶことを つかうよ。",
-      sol:"となりの 小さい三角形で： 180 − "+B+" − "+bfd+" = "+bdf+"<br>"+
-          "3つの 角が 一直線に ならぶので： 180 − "+bdf+" − "+cde+" = "+ans
+      sol:fStep("となりの 小さい三角形で", fSub(180, [B, bfd])) +
+          fStep("3つの 角が 一直線に ならぶので", fSub(180, [bdf, cde]))
     });
   }
 
@@ -1572,7 +1596,8 @@ function genTriAdv(){
       q:"大きい 三角形の 中に、小さい 三角形が あります。?は 何度ですか。",
       ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"2つの 三角形は、同じ 角を 1つ 分け合っているよ。まず 大きい 三角形で その 角を もとめよう。",
-      sol:"大きい三角形： 180 − "+B+" − "+C+" = "+A+"（2つの 三角形が 分け合う 角）<br>小さい三角形： 180 − "+A+" − "+d+" = "+ans
+      sol:fStep("大きい三角形（2つの 三角形が 分け合う 角）", fSub(180, [B, C])) +
+          fStep("小さい三角形", fSub(180, [A, d]))
     });
   }
 
@@ -1611,9 +1636,9 @@ function genTriAdv(){
       q:"三角形の 中に 点を とって、2つの ちょう点と むすびました。?は 何度ですか。",
       ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
       hint:"まず 大きい 三角形で、のこり 2つの 角の 和を もとめよう（180からひく）。そこから "+x+"°と "+y+"°を ひくと、小さい 三角形の のこり 2つの 角の 和が わかるよ。",
-      sol:"180 − "+A+" = "+(180-A)+"（大きい三角形の のこり 2つの 角の 和）<br>"+
-          (180-A)+" − "+x+" − "+y+" = "+(180-A-x-y)+"（小さい三角形の のこり 2つの 角の 和）<br>"+
-          "180 − "+(180-A-x-y)+" = "+ans
+      sol:fStep("大きい三角形の のこり 2つの 角の 和", fSub(180, [A])) +
+          fStep("小さい三角形の のこり 2つの 角の 和", fSub(180-A, [x, y])) +
+          fStep("小さい三角形で", fSub(180, [180-A-x-y]))
     });
   }
 
@@ -1647,7 +1672,7 @@ function genTriAdv(){
     q:"三角形を 1本の 線で 2つに 分けました。?は 何度ですか。",
     ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
     hint:"2つの 角が わかっている ほうの 三角形から 先に 計算しよう。そのあと 一直線の 180°を つかうよ。",
-    sol:"小さい三角形： 180 − "+B+" − "+bad+" = "+adb+"<br>一直線： 180 − "+adb+" = "+ans
+    sol:fStep("小さい三角形", fSub(180, [B, bad])) + fStep("一直線の 角", fSub(180, [adb]))
   });
 }
 
@@ -1673,7 +1698,9 @@ function genExt(){
     q:"辺を のばして できた 角です。?は 何度ですか。",
     ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
     hint:"まず 三角形の のこりの 角を もとめよう。そのあと 一直線の 180°から ひくよ。（はなれた 2つの 角の 和とも 同じ！）",
-    sol:"180 − "+ang[0]+" − "+ang[2]+" = "+ang[v]+"、　180 − "+ang[v]+" = "+ans+"　（"+ang[0]+" + "+ang[2]+" = "+ans+"）"
+    sol:fStep("三角形の のこりの 角", fSub(180, [ang[0], ang[2]])) +
+        fStep("一直線の 角", fSub(180, [ang[v]])) +
+        fStep("はなれた 2つの 角の 和とも 同じ", fmlLine(ang[0]+" + "+ang[2]+" ＝ "+ans))
   });
 }
 
@@ -1717,7 +1744,7 @@ function makeProblem(unitId){
     q:"一直線の 上に できた 角です。?は 何度ですか。",
     ans:b, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
     hint:"一直線の 角は 180°。のこりを ひき算で もとめよう。",
-    sol:"180 − "+a+" = "+b
+    sol:fSub(180, [a])
   });
 }
 
@@ -2081,7 +2108,10 @@ function finishQuestion(p, ok, your, why, tries){
   else j.textContent = (p.kind==="place") ? "❌ もういちど" : ("❌ ざんねん… 正しくは "+p.ans+"°");
   const lbl = (p.kind==="place") ? "おき方" : (p.kind==="guess" ? "こたえ" : "しき");
   const showWhy = why && (!ok || p.kind==="place" || p.kind==="guess");
-  $("solBox").innerHTML = '<span class="lbl">'+lbl+'</span><span class="formula">'+(showWhy ? why+"<br>" : "")+p.sol+'</span><br>'+p.hint;
+  $("solBox").innerHTML = '<span class="lbl">'+lbl+'</span>'+
+    (showWhy ? '<span class="solwhy">'+why+'</span>' : '')+
+    '<div class="formula">'+p.sol+'</div>'+
+    '<div class="solhint">'+p.hint+'</div>';
   $("nextBtn").textContent = (game.i === game.qs.length-1) ? "けっかを 見る →" : "つぎの問題 →";
   $("qCombo").textContent = game.combo>=2 ? ("🔥"+game.combo+"連続") : "";
   $("nextBtn").focus();
