@@ -727,6 +727,74 @@ function figFan(secs, markSets, opt){
   return out;
 }
 
+/* ---------- 組み合わせ図形（三角形の中の三角形など） ---------- */
+function rot2(d, deg){
+  const c=Math.cos(deg*D2R), s=Math.sin(deg*D2R);
+  return [d[0]*c - d[1]*s, d[0]*s + d[1]*c];
+}
+function unit2(a, b){
+  const dx=b[0]-a[0], dy=b[1]-a[1], L=Math.hypot(dx,dy)||1;
+  return [dx/L, dy/L];
+}
+function signedAng(d1, d2){                 // d1 から d2 への 向き（＋は反時計回り）
+  return Math.atan2(d1[0]*d2[1]-d1[1]*d2[0], d1[0]*d2[0]+d1[1]*d2[1]) * 180/Math.PI;
+}
+function rayInt(p1, d1, p2, d2){            // 2本の 直線の 交わる ところ
+  const det = d1[0]*(-d2[1]) - d1[1]*(-d2[0]);
+  if(Math.abs(det) < 1e-9) return null;
+  const rx = p2[0]-p1[0], ry = p2[1]-p1[1];
+  const t = (rx*(-d2[1]) - ry*(-d2[0])) / det;
+  return [p1[0]+t*d1[0], p1[1]+t*d1[1]];
+}
+// spec: {pts:{名前:[x,y]}, polys:[{names, fill}], lines:[[名前,名前]], dots:[名前]}
+// markSets[si]: [{at, from, to, deg, lab}]
+function figCombo(spec, markSets, opt){
+  opt = Object.assign({W:560, H:400, pad:86, tilt:null, minSep:58}, opt);
+  const names = Object.keys(spec.pts);
+  const tilt = (opt.tilt === null) ? rnd(-15,15) : opt.tilt;
+  const raw = rotatePts(names.map(n=>spec.pts[n]), tilt);
+  const fit = makeFit(raw, opt.W, opt.H, opt.pad);
+  const P = {};
+  names.forEach((n,i)=> P[n] = fit(raw[i]));
+
+  // ラベルが 重なったり はみ出したり しないか
+  const anchors = markSets[0].map(m => markGeom(P[m.at], P[m.from], P[m.to], m.deg, m.lab).lp);
+  for(let i=0;i<anchors.length;i++){
+    const q = anchors[i];
+    if(q[0]<30 || q[0]>opt.W-30 || q[1]<24 || q[1]>opt.H-24) return null;
+    for(let j=i+1;j<anchors.length;j++){
+      if(Math.hypot(anchors[i][0]-anchors[j][0], anchors[i][1]-anchors[j][1]) < opt.minSep) return null;
+    }
+  }
+
+  let base = "";
+  (spec.polys||[]).forEach(function(po){
+    base += '<polygon points="'+po.names.map(n=>f2(P[n][0])+","+f2(P[n][1])).join(" ")+
+            '" fill="'+(po.fill||"#dcebfa")+'" stroke="#20486f" stroke-width="3.4" stroke-linejoin="round"/>';
+  });
+  (spec.lines||[]).forEach(function(l){
+    base += '<line x1="'+f2(P[l[0]][0])+'" y1="'+f2(P[l[0]][1])+'" x2="'+f2(P[l[1]][0])+'" y2="'+f2(P[l[1]][1])+
+            '" stroke="#20486f" stroke-width="3.2" stroke-linecap="round"/>';
+  });
+  (spec.dots||names).forEach(function(n){
+    base += '<circle cx="'+f2(P[n][0])+'" cy="'+f2(P[n][1])+'" r="4.5" fill="#20486f"/>';
+  });
+
+  const out = markSets.map(function(marks){
+    let s = base;
+    marks.forEach(function(m){ s += angleMark(P[m.at], P[m.from], P[m.to], m.deg, m.lab); });
+    return svgWrap(s, opt.W, opt.H);
+  });
+  out.cmp = null;
+  for(const m of markSets[0]){
+    if(m.lab && m.lab.unknown){
+      const gm = markGeom(P[m.at], P[m.from], P[m.to], m.deg, m.lab);
+      out.cmp = {vx:P[m.at][0], vy:P[m.at][1], ts:gm.ts, W:opt.W, H:opt.H};
+    }
+  }
+  return out;
+}
+
 /* ---------- 分度器の図 ---------- */
 function figProtractor(a, leftBase, showAnsSet){
   const W=600, H=360, cx=300, cy=312, R=252;
@@ -1386,6 +1454,203 @@ function genPoly(){
   });
 }
 
+/* --- 三角形の角（応用・三角形の中の三角形） --- */
+function genTriAdv(){
+  const kind = pick(["nest2","nest2","nest","inner","inner","split"]);
+
+  // 外側の 三角形を つくる
+  let A,B,C;
+  for(let t=0;t<80;t++){
+    A = rnd(7,16)*5; B = rnd(7,16)*5; C = 180-A-B;   // 35°〜80°
+    if(C>=35 && C<=110) break;
+    C = -1;
+  }
+  if(C<0) return null;
+  const raw = solvePoly([A,B,C], null, true);
+  if(!raw) return null;
+  const VA = raw[0], VB = raw[1], VC = raw[2];
+  const lenAB = Math.hypot(VB[0]-VA[0], VB[1]-VA[1]);
+  const lenAC = Math.hypot(VC[0]-VA[0], VC[1]-VA[1]);
+  const lenBC = Math.hypot(VC[0]-VB[0], VC[1]-VB[1]);
+
+  if(kind === "nest2"){
+    // 大きい三角形の 3つの 辺に ちょう点を おいた、ほんとうの 入れ子の 三角形
+    // ちょう点Dの 位置と 角の 組み合わせは、F・Eが 辺の 上に のる ものだけ
+    const cands = [];
+    for(let t=0.30; t<=0.70001; t+=0.05){
+      const Dt = [VB[0]+(VC[0]-VB[0])*t, VB[1]+(VC[1]-VB[1])*t];
+      const angBDA = Math.abs(signedAng(unit2(Dt,VB), unit2(Dt,VA)));
+      const maxB = Math.min(angBDA-24, 155-B);
+      const maxC = Math.min(180-angBDA-24, 155-C);
+      if(maxB >= 35 && maxC >= 35) cands.push({t:t, D:Dt, maxB:maxB, maxC:maxC});
+    }
+    if(cands.length === 0) return null;
+    const ch = pick(cands);
+    const bdf = rnd(7, Math.floor(ch.maxB/5))*5;    // ∠BDF
+    const cde = rnd(7, Math.floor(ch.maxC/5))*5;    // ∠CDE
+    const ans = 180 - bdf - cde;                    // ∠FDE
+    const bfd = 180 - B - bdf;                      // ∠BFD
+    const ced = 180 - C - cde;                      // ∠CED
+    if(ans < 35 || ans > 120) return null;
+    if(bfd < 25 || ced < 25 || bfd > 130 || ced > 130) return null;
+    const D = ch.D;
+    const uDB = unit2(D, VB), uDC = unit2(D, VC), uDA = unit2(D, VA);
+    const dF = rot2(uDB, Math.sign(signedAng(uDB, uDA)) * bdf);
+    const dE = rot2(uDC, Math.sign(signedAng(uDC, uDA)) * cde);
+    const F = rayInt(D, dF, VA, unit2(VA, VB));
+    const E = rayInt(D, dE, VA, unit2(VA, VC));
+    if(!F || !E) return null;
+    // F は 辺AB の 上、E は 辺AC の 上に あるか
+    const fA = Math.hypot(F[0]-VA[0], F[1]-VA[1]), fB = Math.hypot(F[0]-VB[0], F[1]-VB[1]);
+    const eA = Math.hypot(E[0]-VA[0], E[1]-VA[1]), eC = Math.hypot(E[0]-VC[0], E[1]-VC[1]);
+    if(Math.abs(fA+fB-lenAB) > lenAB*0.02 || Math.abs(eA+eC-lenAC) > lenAC*0.02) return null;
+    if(fA < lenAB*0.2 || fB < lenAB*0.2 || eA < lenAC*0.2 || eC < lenAC*0.2) return null;
+    const spec = {
+      pts:{A:VA, B:VB, C:VC, D:D, E:E, F:F},
+      polys:[{names:["A","B","C"]}, {names:["D","E","F"], fill:"rgba(255,226,193,0.9)"}],
+      dots:["A","B","C","D","E","F"]
+    };
+    const mk = lab => ([
+      {at:"B", from:"A", to:"C", deg:B, lab:{v:B}},
+      {at:"F", from:"B", to:"D", deg:bfd, lab:{v:bfd}},
+      {at:"D", from:"E", to:"C", deg:cde, lab:{v:cde}},
+      {at:"D", from:"F", to:"E", deg:ans, lab:lab}
+    ]);
+    const figs = figCombo(spec, [mk(UNKNOWN), mk(ansLab(ans))], {tilt:rnd(-9,9), W:610, H:440, pad:80, minSep:48});
+    if(!figs) return null;
+    return Q({
+      unit:"tri2",
+      q:"大きい 三角形の 中に、小さい 三角形が すっぽり 入っています。?は 何度ですか。",
+      ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
+      hint:"?の となりに できた 小さい 三角形を 見よう。2つの 角が わかるから、のこりの 角が もとめられるね。そのあと、3つの 角が 一直線に ならぶことを つかうよ。",
+      sol:"となりの 小さい三角形で： 180 − "+B+" − "+bfd+" = "+bdf+"<br>"+
+          "3つの 角が 一直線に ならぶので： 180 − "+bdf+" − "+cde+" = "+ans
+    });
+  }
+
+  if(kind === "nest"){
+    // 大きい三角形の 中に、頂点を 1つ 共有する 小さい三角形
+    // 内側の三角形が つぶれない 角の 組み合わせだけを えらぶ
+    const total = 180 - A;                  // ∠ADE + ∠AED
+    const r = lenAC / lenAB;
+    const cand = [];
+    for(let a=30; a<=total-25; a+=5){
+      const dd = total - a;
+      if(dd < 25 || dd > 130) continue;
+      const kk = Math.sin(dd*D2R) / Math.sin(a*D2R);
+      if(kk > 0.60*r && kk < 1.62*r) cand.push(a);
+    }
+    if(cand.length === 0) return null;
+    const ans = pick(cand);
+    const d = total - ans;                  // ∠ADE
+    // AD と AE が どちらも 辺の 中ほどに 来るような 位置を えらぶ
+    const k = Math.sin(d*D2R) / Math.sin(ans*D2R);     // AE = k × AD
+    const lo = Math.max(0.54, 0.50*lenAC/(k*lenAB));
+    const hi = Math.min(0.88, 0.90*lenAC/(k*lenAB));
+    if(!(hi - lo > 0.04)) return null;
+    const t1 = lo + Math.random()*(hi-lo);
+    const AD = lenAB * t1;
+    const AE = k * AD;
+    const uAB = unit2(VA, VB), uAC = unit2(VA, VC);
+    const D = [VA[0]+uAB[0]*AD, VA[1]+uAB[1]*AD];
+    const E = [VA[0]+uAC[0]*AE, VA[1]+uAC[1]*AE];
+    const spec = {
+      pts:{A:VA, B:VB, C:VC, D:D, E:E},
+      polys:[{names:["A","B","C"]}, {names:["A","D","E"], fill:"rgba(255,226,193,0.85)"}],
+      dots:["A","B","C","D","E"]
+    };
+    const mk = lab => ([
+      {at:"B", from:"A", to:"C", deg:B, lab:{v:B}},
+      {at:"C", from:"B", to:"A", deg:C, lab:{v:C}},
+      {at:"D", from:"A", to:"E", deg:d, lab:{v:d}},
+      {at:"E", from:"D", to:"A", deg:ans, lab:lab}
+    ]);
+    const figs = figCombo(spec, [mk(UNKNOWN), mk(ansLab(ans))], {});
+    if(!figs) return null;
+    return Q({
+      unit:"tri2",
+      q:"大きい 三角形の 中に、小さい 三角形が あります。?は 何度ですか。",
+      ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
+      hint:"2つの 三角形は、同じ 角を 1つ 分け合っているよ。まず 大きい 三角形で その 角を もとめよう。",
+      sol:"大きい三角形： 180 − "+B+" − "+C+" = "+A+"（2つの 三角形が 分け合う 角）<br>小さい三角形： 180 − "+A+" − "+d+" = "+ans
+    });
+  }
+
+  if(kind === "inner"){
+    // 三角形の 中の 点から 2つの 頂点に 線を ひいた 図
+    const x = rnd(3,Math.floor((B-20)/5))*5;
+    const y = rnd(3,Math.floor((C-20)/5))*5;
+    if(!(x>=15 && y>=15 && x<=B-20 && y<=C-20)) return null;
+    const ans = A + x + y;
+    if(ans < 95 || ans > 165) return null;
+    const uBA = unit2(VB, VA), uBC = unit2(VB, VC);
+    const uCA = unit2(VC, VA), uCB = unit2(VC, VB);
+    const dB = rot2(uBA, Math.sign(signedAng(uBA, uBC)) * x);
+    const dC = rot2(uCA, Math.sign(signedAng(uCA, uCB)) * y);
+    const P = rayInt(VB, dB, VC, dC);
+    if(!P) return null;
+    // 点が 三角形の 中に あるか（辺から 少し はなれているか）
+    const hB = Math.hypot(P[0]-VB[0], P[1]-VB[1]), hC = Math.hypot(P[0]-VC[0], P[1]-VC[1]);
+    if(hB < lenBC*0.3 || hC < lenBC*0.3) return null;
+    const spec = {
+      pts:{A:VA, B:VB, C:VC, P:P},
+      polys:[{names:["A","B","C"]}, {names:["B","P","C"], fill:"rgba(255,226,193,0.85)"}],
+      lines:[["B","P"],["C","P"]],
+      dots:["A","B","C","P"]
+    };
+    const mk = lab => ([
+      {at:"A", from:"B", to:"C", deg:A, lab:{v:A}},
+      {at:"B", from:"A", to:"P", deg:x, lab:{v:x}},
+      {at:"C", from:"P", to:"A", deg:y, lab:{v:y}},
+      {at:"P", from:"B", to:"C", deg:ans, lab:lab}
+    ]);
+    const figs = figCombo(spec, [mk(UNKNOWN), mk(ansLab(ans))], {});
+    if(!figs) return null;
+    return Q({
+      unit:"tri2",
+      q:"三角形の 中に 点を とって、2つの ちょう点と むすびました。?は 何度ですか。",
+      ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
+      hint:"まず 大きい 三角形で、のこり 2つの 角の 和を もとめよう（180からひく）。そこから "+x+"°と "+y+"°を ひくと、小さい 三角形の のこり 2つの 角の 和が わかるよ。",
+      sol:"180 − "+A+" = "+(180-A)+"（大きい三角形の のこり 2つの 角の 和）<br>"+
+          (180-A)+" − "+x+" − "+y+" = "+(180-A-x-y)+"（小さい三角形の のこり 2つの 角の 和）<br>"+
+          "180 − "+(180-A-x-y)+" = "+ans
+    });
+  }
+
+  // 三角形を 1本の線で 2つに 分けた 図
+  const bad = rnd(4,Math.floor((A-15)/5))*5;      // ∠BAD
+  if(!(bad>=20 && bad<=A-15)) return null;
+  const adb = 180 - B - bad;
+  const ans = 180 - adb;                           // ∠ADC
+  if(adb < 25 || ans < 40 || ans > 155) return null;
+  const uAB = unit2(VA, VB), uAC = unit2(VA, VC);
+  const dA = rot2(uAB, Math.sign(signedAng(uAB, uAC)) * bad);
+  const D = rayInt(VA, dA, VB, unit2(VB, VC));
+  if(!D) return null;
+  const tB = Math.hypot(D[0]-VB[0], D[1]-VB[1]), tC = Math.hypot(D[0]-VC[0], D[1]-VC[1]);
+  if(tB < lenBC*0.28 || tC < lenBC*0.28) return null;
+  const spec = {
+    pts:{A:VA, B:VB, C:VC, D:D},
+    polys:[{names:["A","B","D"], fill:"rgba(255,226,193,0.85)"}, {names:["A","D","C"]}],
+    lines:[["A","D"]],
+    dots:["A","B","C","D"]
+  };
+  const mk = lab => ([
+    {at:"B", from:"A", to:"D", deg:B, lab:{v:B}},
+    {at:"A", from:"B", to:"D", deg:bad, lab:{v:bad}},
+    {at:"D", from:"A", to:"C", deg:ans, lab:lab}
+  ]);
+  const figs = figCombo(spec, [mk(UNKNOWN), mk(ansLab(ans))], {});
+  if(!figs) return null;
+  return Q({
+    unit:"tri2",
+    q:"三角形を 1本の 線で 2つに 分けました。?は 何度ですか。",
+    ans:ans, svg:figs[0], svgAns:figs[1], cmp:figs.cmp,
+    hint:"2つの 角が わかっている ほうの 三角形から 先に 計算しよう。そのあと 一直線の 180°を つかうよ。",
+    sol:"小さい三角形： 180 − "+B+" − "+bad+" = "+adb+"<br>一直線： 180 − "+adb+" = "+ans
+  });
+}
+
 /* --- 三角形の外角 --- */
 function genExt(){
   let a,b,c;
@@ -1426,6 +1691,7 @@ const UNITS = [
   {id:"quad",       name:"四角形の角",          grade:"5年", gen:genQuad},
   {id:"para",       name:"平行四辺形・ひし形・台形", grade:"5年", gen:genPara},
   {id:"poly",       name:"多角形の角",          grade:"5年", gen:genPoly},
+  {id:"tri2",       name:"三角形の角（応用）",   grade:"発展", gen:genTriAdv},
   {id:"ext",        name:"三角形の外角",        grade:"発展", gen:genExt}
 ];
 const UNIT_BY_ID = {};
