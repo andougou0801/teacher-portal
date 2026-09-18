@@ -434,6 +434,7 @@ const GRADE_UNITS = {
     { id: "g4-tanniatari", name: "単位量あたりの大きさ", domain: "数量関係", gen: g4TanniAtari },
   ],
   5: [
+    { id: "g5-koubaisuu-kouyakusuu", name: "公倍数・公約数", domain: "数と計算", gen: g5KoubaisuuKouyakusuu },
     { id: "g5-shousuu-kakewari", name: "小数のかけ算・わり算", domain: "数と計算", gen: g5ShousuuKakewari },
     { id: "g5-bunsuu-ihoubo", name: "分数のたし算・ひき算（異分母）", domain: "数と計算", gen: g5BunsuuIhoubo },
     { id: "g5-bunsuu-seisuu", name: "分数×整数・分数÷整数", domain: "数と計算", gen: g5BunsuuSeisuu },
@@ -873,6 +874,31 @@ function g4TanniAtari() {
 }
 
 /* ===== 学年5 ===== */
+function g5KoubaisuuKouyakusuu() {
+  let isKouyaku = Math.random() < 0.5;
+  let a = ri(2, 20), b = ri(2, 20);
+  let guard = 0;
+  while (a === b && guard < 20) { b = ri(2, 20); guard++; }
+  if (isKouyaku) {
+    let g = gcd(a, b);
+    let text = pick([
+      "たて" + a + "cm、よこ" + b + "cmの長方形の紙に、あまりが出ないように同じ大きさの正方形をしきつめます。正方形の1辺の長さをいちばん長くすると、何cmになりますか。",
+      "おり紙が" + a + "まい、色紙が" + b + "まいあります。あまりが出ないように、できるだけ多くの子どもに同じ数ずつ配ります。何人に配れますか。",
+      a + "と" + b + "の最大公約数を求めましょう。",
+    ]);
+    let tani = text.includes("cm") ? "cm" : (text.includes("人") ? "人" : "");
+    return { text, answerHTML: g + tani, shiki: a + "と" + b + "の最大公約数＝" + g };
+  }
+  let g2 = gcd(a, b);
+  let l = (a * b) / g2;
+  let text = pick([
+    "赤いランプは" + a + "秒ごとに、青いランプは" + b + "秒ごとに光ります。同時に光った瞬間から、次に同時に光るのは何秒後ですか。",
+    "バスAは" + a + "分おきに、バスBは" + b + "分おきに発車します。同時に出発したあと、次に同時に発車するのは何分後ですか。",
+    a + "と" + b + "の最小公倍数を求めましょう。",
+  ]);
+  let tani2 = text.includes("秒") ? "秒後" : (text.includes("分") ? "分後" : "");
+  return { text, answerHTML: l + tani2, shiki: a + "と" + b + "の最小公倍数＝" + l };
+}
 function g5ShousuuKakewari() {
   let type = Math.random() < 0.5;
   if (type) {
