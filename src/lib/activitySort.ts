@@ -28,6 +28,11 @@ function parseDurationRange(duration: string): [number, number] {
   return [Math.min(...values), Math.max(...values)];
 }
 
+/** 「15〜20分」なら 20 のように、かかる時間の上限（分）を返す。絞り込み用。 */
+export function getMaxMinutes(duration: string): number {
+  return parseDurationRange(duration)[1];
+}
+
 /**
  * 準備物の欄が「なし」で始まる（「なし」「なし（あれば〜）」など）なら true。
  * 「先に出すかどうか」の並べ替えに使うだけの、ゆるい判定。

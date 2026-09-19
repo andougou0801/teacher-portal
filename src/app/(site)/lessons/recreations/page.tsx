@@ -21,7 +21,7 @@ export default function RecreationsPage() {
         <h1 className="mt-2 mb-2 text-2xl font-bold">🏃 学級レク特集</h1>
         <p className="mx-auto max-w-lg text-sm text-muted">
           全{recreations.length}種類。〇〇鬼などのそとあそびから、ハンカチ落としのような室内レクまで、
-          「こんなときに」「場所」「学年」で絞り込めます。
+          「こんなときに」「かかる時間」「場所」「学年」で絞り込めます。
         </p>
         <p className="mx-auto mt-2 max-w-lg text-[13px] text-muted">
           「はじめる前に決めておくこと」と「45分1コマの組み立て例」は、ページのいちばん下にまとめています。

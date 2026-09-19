@@ -15,6 +15,25 @@ import {
   type RecreationOccasion,
   type RecreationPlace,
 } from "@/lib/recreations";
+import { getMaxMinutes } from "@/lib/activitySort";
+
+/** 「あと何分ある？」で選べるようにするための時間の区切り。 */
+const TIME_BUCKETS = [
+  { label: "10分くらい", max: 10 },
+  { label: "15分くらい", max: 15 },
+  { label: "20分くらい", max: 20 },
+  { label: "30分くらい", max: 30 },
+] as const;
+
+type TimeLabel = (typeof TIME_BUCKETS)[number]["label"];
+
+/** そのレクがどの区切りに入るか（かかる時間の上限で決める）。 */
+function timeLabelOf(item: Recreation): TimeLabel {
+  const minutes = getMaxMinutes(item.duration);
+  return (
+    TIME_BUCKETS.find((bucket) => minutes <= bucket.max) ?? TIME_BUCKETS[3]
+  ).label;
+}
 
 /** 準備物が実質不要（「なし」で始まる）かどうか。カードの「準備なし」バッジに使う。 */
 function needsNoMaterials(materials: string): boolean {
@@ -34,20 +53,26 @@ function gradeLabel(grades: RecreationGrade[]): string {
 }
 
 function toggle<T>(list: T[], value: T): T[] {
-  return list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+  return list.includes(value)
+    ? list.filter((item) => item !== value)
+    : [...list, value];
 }
 
 type Conditions = {
   places: RecreationPlace[];
   grades: RecreationGrade[];
+  times: TimeLabel[];
   occasion: RecreationOccasion | null;
   noMaterialsOnly: boolean;
 };
 
 function matches(item: Recreation, conditions: Conditions): boolean {
-  const { places, grades, occasion, noMaterialsOnly } = conditions;
-  if (places.length > 0 && !item.places.some((place) => places.includes(place))) return false;
-  if (grades.length > 0 && !item.grades.some((grade) => grades.includes(grade))) return false;
+  const { places, grades, times, occasion, noMaterialsOnly } = conditions;
+  if (places.length > 0 && !item.places.some((place) => places.includes(place)))
+    return false;
+  if (grades.length > 0 && !item.grades.some((grade) => grades.includes(grade)))
+    return false;
+  if (times.length > 0 && !times.includes(timeLabelOf(item))) return false;
   if (occasion && !item.occasions.includes(occasion)) return false;
   if (noMaterialsOnly && !needsNoMaterials(item.materials)) return false;
   return true;
@@ -61,15 +86,22 @@ const chipOn = "border-accent bg-accent text-white";
 export default function RecreationFilter({ items }: { items: Recreation[] }) {
   const [places, setPlaces] = useState<RecreationPlace[]>([]);
   const [grades, setGrades] = useState<RecreationGrade[]>([]);
+  const [times, setTimes] = useState<TimeLabel[]>([]);
   const [occasion, setOccasion] = useState<RecreationOccasion | null>(null);
   const [noMaterialsOnly, setNoMaterialsOnly] = useState(false);
   const [sortByTime, setSortByTime] = useState(false);
 
-  const conditions: Conditions = { places, grades, occasion, noMaterialsOnly };
+  const conditions: Conditions = {
+    places,
+    grades,
+    times,
+    occasion,
+    noMaterialsOnly,
+  };
   const filtered = useMemo(
     () => items.filter((item) => matches(item, conditions)),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- conditions は毎回作り直す入れ物なので、中身を依存に並べる
-    [items, places, grades, occasion, noMaterialsOnly],
+    [items, places, grades, times, occasion, noMaterialsOnly],
   );
 
   /**
@@ -77,26 +109,40 @@ export default function RecreationFilter({ items }: { items: Recreation[] }) {
    * 「同じ列の条件だけを、そのチップ1つに置きかえた状態」で数える。
    */
   function countIfSelected(override: Partial<Conditions>): number {
-    return items.filter((item) => matches(item, { ...conditions, ...override })).length;
+    return items.filter((item) => matches(item, { ...conditions, ...override }))
+      .length;
   }
 
   const isFiltered =
-    places.length > 0 || grades.length > 0 || occasion !== null || noMaterialsOnly;
+    places.length > 0 ||
+    grades.length > 0 ||
+    times.length > 0 ||
+    occasion !== null ||
+    noMaterialsOnly;
 
   function reset() {
     setPlaces([]);
     setGrades([]);
+    setTimes([]);
     setOccasion(null);
     setNoMaterialsOnly(false);
   }
 
   const groups = sortByTime
-    ? [{ key: "すべて", label: `短い順（${filtered.length}件）`, list: sortRecreations(filtered) }]
+    ? [
+        {
+          key: "すべて",
+          label: `短い順（${filtered.length}件）`,
+          list: sortRecreations(filtered),
+        },
+      ]
     : recreationCategories
         .map((category) => ({
           key: category,
           label: `${category}（${filtered.filter((item) => item.category === category).length}件）`,
-          list: sortRecreations(filtered.filter((item) => item.category === category)),
+          list: sortRecreations(
+            filtered.filter((item) => item.category === category),
+          ),
         }))
         .filter((group) => group.list.length > 0);
 
@@ -124,56 +170,91 @@ export default function RecreationFilter({ items }: { items: Recreation[] }) {
               );
             })}
           </div>
+          <p className="mt-1.5 text-[13px] text-muted">
+            ※「雨の日」は教室だけでできるものです。数字は、押したときに表示される件数です。
+          </p>
         </div>
 
         <div className="mb-3">
-          <div className="mb-1.5 text-sm font-bold text-navy">場所</div>
+          <div className="mb-1.5 text-sm font-bold text-navy">かかる時間</div>
           <div className="flex flex-wrap gap-2">
-            {recreationPlaces.map((item) => {
-              const on = places.includes(item);
+            {TIME_BUCKETS.map((bucket) => {
+              const on = times.includes(bucket.label);
               return (
                 <button
-                  key={item}
+                  key={bucket.label}
                   type="button"
                   aria-pressed={on}
-                  onClick={() => setPlaces(toggle(places, item))}
+                  onClick={() => setTimes(toggle(times, bucket.label))}
                   className={`${chipBase} ${on ? chipOn : chipOff}`}
                 >
-                  {item}
+                  {bucket.label}
                   <span className="ml-1 font-normal opacity-80">
-                    {countIfSelected({ places: toggle(places, item) })}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div>
-          <div className="mb-1.5 text-sm font-bold text-navy">学年</div>
-          <div className="flex flex-wrap gap-2">
-            {recreationGrades.map((item) => {
-              const on = grades.includes(item);
-              return (
-                <button
-                  key={item}
-                  type="button"
-                  aria-pressed={on}
-                  onClick={() => setGrades(toggle(grades, item))}
-                  className={`${chipBase} ${on ? chipOn : chipOff}`}
-                >
-                  {item}
-                  <span className="ml-1 font-normal opacity-80">
-                    {countIfSelected({ grades: toggle(grades, item) })}
+                    {countIfSelected({ times: toggle(times, bucket.label) })}
                   </span>
                 </button>
               );
             })}
           </div>
           <p className="mt-1.5 text-[13px] text-muted">
-            ※数字は、押したときに表示される件数です。
+            ※遊ぶ時間の目安です。机を下げる・道具を出す時間は入っていません。
           </p>
         </div>
+
+        <details className="mb-2 border-t border-line pt-2">
+          <summary className="cursor-pointer py-1 text-sm font-bold text-navy">
+            場所・学年でさらにしぼる
+          </summary>
+
+          <div className="mt-2 mb-3">
+            <div className="mb-1.5 text-sm font-bold text-navy">場所</div>
+            <div className="flex flex-wrap gap-2">
+              {recreationPlaces.map((item) => {
+                const on = places.includes(item);
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => setPlaces(toggle(places, item))}
+                    className={`${chipBase} ${on ? chipOn : chipOff}`}
+                  >
+                    {item}
+                    <span className="ml-1 font-normal opacity-80">
+                      {countIfSelected({ places: toggle(places, item) })}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-1.5 text-sm font-bold text-navy">学年</div>
+            <div className="flex flex-wrap gap-2">
+              {recreationGrades.map((item) => {
+                const on = grades.includes(item);
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => setGrades(toggle(grades, item))}
+                    className={`${chipBase} ${on ? chipOn : chipOff}`}
+                  >
+                    {item}
+                    <span className="ml-1 font-normal opacity-80">
+                      {countIfSelected({ grades: toggle(grades, item) })}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-1.5 text-[13px] text-muted">
+              ※その学年で、そのまま使えるものに付けています。ほとんどのレクは中学年で使えます。
+            </p>
+          </div>
+        </details>
 
         <div className="mt-2 flex flex-wrap gap-x-5 border-t border-line pt-1">
           <label className="flex w-fit cursor-pointer items-center gap-2 py-2 text-sm font-bold text-navy">
@@ -183,7 +264,8 @@ export default function RecreationFilter({ items }: { items: Recreation[] }) {
               onChange={(event) => setNoMaterialsOnly(event.target.checked)}
               className="h-4 w-4 accent-[#1f7a9e]"
             />
-            準備物がいらないものだけ（{countIfSelected({ noMaterialsOnly: !noMaterialsOnly })}件）
+            準備物がいらないものだけ（
+            {countIfSelected({ noMaterialsOnly: !noMaterialsOnly })}件）
           </label>
           <label className="flex w-fit cursor-pointer items-center gap-2 py-2 text-sm font-bold text-navy">
             <input
@@ -200,7 +282,9 @@ export default function RecreationFilter({ items }: { items: Recreation[] }) {
           aria-live="polite"
           className="mt-3 flex flex-wrap items-center gap-3 border-t border-line pt-3"
         >
-          <p className="text-sm font-bold text-navy">{filtered.length}件を表示中</p>
+          <p className="text-sm font-bold text-navy">
+            {filtered.length}件を表示中
+          </p>
           {isFiltered && (
             <button
               type="button"
@@ -253,7 +337,9 @@ export default function RecreationFilter({ items }: { items: Recreation[] }) {
                       </span>
                     )}
                   </div>
-                  <p className="mt-1.5 text-[13px] text-muted">{gradeLabel(rec.grades)}</p>
+                  <p className="mt-1.5 text-[13px] text-muted">
+                    {gradeLabel(rec.grades)}
+                  </p>
                 </div>
               </Link>
             ))}
