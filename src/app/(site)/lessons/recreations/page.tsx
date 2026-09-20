@@ -33,7 +33,7 @@ export default function RecreationsPage() {
       <div className="mb-6 flex flex-col gap-2">
         <details className="rounded-2xl border border-line bg-white px-5 py-3">
           <summary className="cursor-pointer text-sm font-bold text-navy">
-            はじめる前に決めておくこと（4つ）
+            はじめる前に決めておくこと（5つ）
           </summary>
           <ul className="mt-2 flex flex-col gap-1.5 text-sm text-muted">
             <li>・遊んでよい範囲（コート）と、終わりの合図を先に伝える。</li>
@@ -42,6 +42,11 @@ export default function RecreationsPage() {
               「時計の〇分で終わり」「あと2回やったら終わり」と先に言っておくと、「もう1回！」で長引きません。
             </li>
             <li>・勝ち負けのあるレクは、負けた人が長く待たない終わり方にしておく。</li>
+            <li>
+              ・
+              <strong className="font-bold text-navy">天気と気温を先に確認する。</strong>
+              暑い時期の外あそびは水分をとる時間を1回はさみ、体育館は窓を開けてから始めます。雨上がりでぬかるんでいる日・遊具がぬれている日は、外の遊びは見送ります。
+            </li>
             <li>
               ・
               <strong className="font-bold text-navy">
