@@ -192,6 +192,23 @@
 
   .rank-note{font-size:13px;color:#667;font-weight:800;line-height:1.9;text-align:center;margin-top:6px;}
 
+  /* ---- 画面内の確認（端末によっては確認ダイアログが出ないため、自前で出す） ---- */
+  .ask-back{
+    position:fixed;inset:0;background:rgba(20,30,50,0.45);
+    display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;
+  }
+  .ask-box{
+    background:#fff;border-radius:20px;padding:22px 20px;max-width:360px;width:100%;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);text-align:center;
+  }
+  .ask-box p{margin:0 0 16px;font-size:16px;font-weight:800;color:#2a3442;line-height:1.8;}
+  .ask-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .ask-row button{
+    border:3px solid #e2e8f0;background:#fff;border-radius:14px;padding:13px 6px;
+    font-size:15px;font-weight:800;color:#667;cursor:pointer;font-family:inherit;
+  }
+  .ask-row button.yes{border-color:var(--ng);color:var(--ng);}
+
   @media (max-width:560px){
     .mode-grid{grid-template-columns:1fr;}
     .choice-grid{grid-template-columns:1fr 1fr;}
@@ -298,6 +315,7 @@
       <div class="sea-top">
         <span class="pill">🌊 水深 <b id="depthNum">0</b> m</span>
         <span class="pill">⭐ <b id="gameScore">0</b></span>
+        <span class="pill" id="secPill">⏱ のこり <b id="secNum">10</b> びょう</span>
         <span class="pill life" id="lifeRow">❤️❤️❤️</span>
       </div>
       <div class="lane">
@@ -326,6 +344,7 @@
         <div class="msg" id="goMsg"></div>
       </div>
       <p class="rank-note" id="goBest"></p>
+      <div id="goMissed"></div>
       <button class="main-btn orange" id="retryGameBtn" style="margin-top:14px;">もういちど もぐる</button>
       <button class="sub-btn" id="goHomeBtn">さいしょの画面へ</button>
     </div>
@@ -480,10 +499,13 @@ function makeKoubaiQuestion(){
 }
 
 function koubaiExplain(a, b){
-  const ma = multiplesOf(a, Math.max(6, Math.ceil(lcm(a,b) * 2 / a)));
-  const mb = multiplesOf(b, Math.max(6, Math.ceil(lcm(a,b) * 2 / b)));
-  const com = commonOf(ma, mb);
+  // 2つの行は「同じところまで」書き出す。片方だけ先まで並べると、本当は公倍数なのに
+  // もう一方の行に無いせいで緑にならない数が出てしまい、まちがった見え方になる。
   const L = lcm(a, b);
+  const ceiling = L * 2;
+  const ma = multiplesOf(a, Math.floor(ceiling / a));
+  const mb = multiplesOf(b, Math.floor(ceiling / b));
+  const com = commonOf(ma, mb);
   return listExplain([
     { label: a + 'の倍数', nums: ma, common: com, best: [L] },
     { label: b + 'の倍数', nums: mb, common: com, best: [L] }
@@ -615,14 +637,40 @@ const WORD_GCD = [
   }
 ];
 
+// 文章題は、計算の前に「どちらを使うか」を自分で選ばせる。
+// ここを選べることが、この単元でいちばん大事な力なので、ヒントで答えを先に教えない。
+function makeChoiceQuestion(){
+  const useLcm = Math.random() < 0.5;
+  const [a, b] = pick(useLcm ? PAIRS_LCM : PAIRS_GCD);
+  const v = useLcm ? lcm(a, b) : gcd(a, b);
+  const q = pick(useLcm ? WORD_LCM : WORD_GCD).make(a, b, v);
+  const correct = useLcm ? '最小公倍数' : '最大公約数';
+  return {
+    kind:'chips', chips:['最小公倍数', '最大公約数'], isWordChoice:true,
+    text: q.text,
+    sub:'この問題は、どちらを使って考えますか。',
+    answer: [correct],
+    explainFn: () => {
+      const base = useLcm ? koubaiExplain(a, b) : kouyakuExplain(a, b);
+      const why = useLcm
+        ? '<p class="concl" style="color:#8a7340;">「ぴったり重なる・同時になる・正方形をつくる」ときは、どちらの倍数にもなる数をさがすので <b>最小公倍数</b>。</p>'
+        : '<p class="concl" style="color:#8a7340;">「あまりが出ないように分ける・できるだけ大きく切る」ときは、どちらもわりきれる数をさがすので <b>最大公約数</b>。</p>';
+      return '<h4>どちらを使う？</h4>' + why + base.replace(/^<h4>.*?<\/h4>/, '')
+        + '<p class="concl">だから、こたえは <em>' + v + ' ' + q.unit + '</em></p>';
+    }
+  };
+}
+
 function makeWordQuestion(){
+  // 3問に1問は「どちらを使うか」だけを問う（計算より先に判断の練習）
+  if(Math.random() < 0.34) return makeChoiceQuestion();
   if(Math.random() < 0.5){
     const [a, b] = pick(PAIRS_LCM);
     const L = lcm(a, b);
     const q = pick(WORD_LCM).make(a, b, L);
     return {
       kind:'inputs', count:1, unit: q.unit,
-      text: q.text, sub: q.sub, answer: [q.answer],
+      text: q.text, sub: '', answer: [q.answer],
       explainFn: () => {
         const base = koubaiExplain(a, b);
         return '<h4>考え方：最小公倍数をつかう</h4>' + base.replace(/^<h4>.*?<\/h4>/, '');
@@ -634,7 +682,7 @@ function makeWordQuestion(){
   const q = pick(WORD_GCD).make(a, b, G);
   return {
     kind:'inputs', count:1, unit: q.unit,
-    text: q.text, sub: q.sub, answer: [q.answer],
+    text: q.text, sub: '', answer: [q.answer],
     explainFn: () => {
       const base = kouyakuExplain(a, b);
       return '<h4>考え方：最大公約数をつかう</h4>' + base.replace(/^<h4>.*?<\/h4>/, '');
@@ -831,6 +879,34 @@ function renderQuestion(){
   }
 }
 
+/* ---- まちがえ方に合わせた returns ----
+   この単元のいちばんのつまずきは「公倍数と公約数の取りちがえ」なので、
+   ただ×にせず、何とまちがえたのかを名前で伝え、見当のつけ方も添える。 */
+function wrongMessage(q, given){
+  const ans = q.answer.join('、');
+  const v = given && given.length === 1 ? given[0] : null;
+  const nums = (q.text.match(/\d+/g) || []).map(Number);
+
+  if(v !== null && nums.length >= 2){
+    const [a, b] = nums;
+    const G = gcd(a, b), L = lcm(a, b);
+    if(/最大公約数/.test(q.text)){
+      if(v === L) return '❌ それは ' + a + ' と ' + b + ' の「最小公倍数」だよ。さがすのは 公約数（どちらもわりきれる数）。';
+      if(v === a * b) return '❌ かけ算した数だね。公約数は わる数だから、' + Math.min(a,b) + ' より大きくならないよ。';
+      if(v > Math.min(a, b)) return '❌ ちがうよ。最大公約数は ' + Math.min(a,b) + ' より大きくならないよ（どちらもわりきる数だから）。';
+      if(v > 0 && (a % v !== 0 || b % v !== 0)) return '❌ ' + v + ' では ' + (a % v !== 0 ? a : b) + ' をわりきれないよ。こたえは ' + ans;
+    }
+    if(/最小公倍数/.test(q.text)){
+      if(v === G) return '❌ それは ' + a + ' と ' + b + ' の「最大公約数」だよ。さがすのは 公倍数（どちらの倍数にもなる数）。';
+      if(v === a * b && v !== L) return '❌ おしい！ ' + (a*b) + ' も公倍数だけど、いちばん小さくはないよ。';
+      if(v > 0 && v < Math.max(a, b)) return '❌ ちがうよ。最小公倍数は ' + Math.max(a,b) + ' より小さくならないよ（どちらの倍数でもあるから）。';
+      if(v > 0 && (v % a !== 0 || v % b !== 0)) return '❌ ' + v + ' は ' + (v % a !== 0 ? a : b) + ' の倍数ではないよ。こたえは ' + ans;
+    }
+  }
+  if(q.kind === 'chips') return '❌ ちがうよ。こたえは ' + ans;
+  return '❌ ちがうよ。こたえは ' + ans;
+}
+
 /* ---- 画面の数字ボタン ---- */
 let activeInput = null;
 
@@ -933,14 +1009,15 @@ function doCheck(){
       inp.style.borderColor = Number(inp.value) === currentQ.answer[i] ? 'var(--ok)' : 'var(--ng)';
     });
   } else {
+    // 選択肢は数（約数など）のときと、ことば（最小公倍数／最大公約数）のときがあるので
+    // どちらも同じ扱いにできるよう、文字列にそろえて見くらべる。
     const chips = Array.from(area.querySelectorAll('.chip'));
-    const chosen = chips.filter(c => c.classList.contains('on')).map(c => Number(c.dataset.n));
-    const ansSet = currentQ.answer.slice().sort((a,b)=>a-b).join(',');
-    ok = chosen.slice().sort((a,b)=>a-b).join(',') === ansSet;
+    const ansArr = currentQ.answer.map(String);
+    const chosen = chips.filter(c => c.classList.contains('on')).map(c => c.dataset.n);
+    ok = chosen.slice().sort().join('|') === ansArr.slice().sort().join('|');
     chips.forEach(c => {
       c.disabled = true;
-      const n = Number(c.dataset.n);
-      const isAns = currentQ.answer.indexOf(n) !== -1;
+      const isAns = ansArr.indexOf(c.dataset.n) !== -1;
       const chose = c.classList.contains('on');
       c.classList.remove('on');
       if(isAns) c.classList.add('ans-ok');
@@ -957,7 +1034,14 @@ function doCheck(){
   Array.from(area.querySelectorAll('.num-input')).forEach(el => el.classList.remove('active'));
   if(ok) quizCorrect++;
   const fb = document.getElementById('feedback');
-  fb.textContent = ok ? '⭕ せいかい！' : '❌ おしい！ こたえは ' + currentQ.answer.join('、');
+  if(ok){
+    fb.textContent = '⭕ せいかい！';
+  } else {
+    const given = currentQ.kind === 'inputs'
+      ? Array.from(area.querySelectorAll('.num-input')).map(i => Number(i.value))
+      : null;
+    fb.textContent = wrongMessage(currentQ, given);
+  }
   fb.className = 'feedback ' + (ok ? 'ok' : 'ng');
   document.getElementById('explainArea').innerHTML =
     '<div class="explain">' + currentQ.explainFn() + '</div>';
@@ -987,7 +1071,7 @@ function nextQuestion(){
 
 /* ---------- レベルアップモード（ゲーム） ---------- */
 const TIME_LIMIT = 10000; // 10秒
-let gLives = 3, gScore = 0, gDepth = 0, gCombo = 0;
+let gLives = 3, gScore = 0, gDepth = 0, gCombo = 0, gMissed = [], gRecentLabels = [];
 let gQuestion = null, gDeadline = 0, gTimerId = null, gLocked = false;
 
 function gameQuestion(depth){
@@ -1044,7 +1128,7 @@ function gameQuestion(depth){
 }
 
 function startGame(){
-  gLives = 3; gScore = 0; gDepth = 0; gCombo = 0;
+  gLives = 3; gScore = 0; gDepth = 0; gCombo = 0; gMissed = []; gRecentLabels = [];
   show('game');
   nextGameQuestion();
 }
@@ -1055,7 +1139,16 @@ function renderLives(){
 
 function nextGameQuestion(){
   gLocked = false;
-  gQuestion = gameQuestion(gDepth);
+  // 同じ種類が続くと、考えずに前と同じやり方で押せてしまう（弁別の練習にならない）。
+  // 3問続いたら、別の種類が出るまで作り直す。
+  let q = gameQuestion(gDepth);
+  if(gRecentLabels.length >= 2 && gRecentLabels[0] === gRecentLabels[1]){
+    let guard = 0;
+    while(q.label === gRecentLabels[0] && guard < 40){ q = gameQuestion(gDepth); guard++; }
+  }
+  gRecentLabels.unshift(q.label);
+  gRecentLabels = gRecentLabels.slice(0, 2);
+  gQuestion = q;
   document.getElementById('gameLabel').textContent = gQuestion.label;
   document.getElementById('gameText').textContent = gQuestion.text;
   document.getElementById('gameFeedback').textContent = '';
@@ -1092,6 +1185,11 @@ function tickGame(){
   document.getElementById('timerInner').style.width = (ratio * 100) + '%';
   // サメは時間が減るほど右（ダイバー）に近づく
   document.getElementById('sharkEl').style.left = ((1 - ratio) * 72) + '%';
+  // バーだけだと「あと何秒か」が分からないので、数字でも出す
+  const sec = Math.max(0, Math.ceil(left / 1000));
+  const secNum = document.getElementById('secNum');
+  if(secNum.textContent !== String(sec)) secNum.textContent = String(sec);
+  document.getElementById('secPill').style.color = sec <= 3 ? '#ffd0c4' : '';
   if(left <= 0 && !gLocked){
     timeUp();
   }
@@ -1160,11 +1258,14 @@ function loseLife(msg){
   const fb = document.getElementById('gameFeedback');
   fb.textContent = msg + (gLives > 0 ? '（のこり ' + gLives + '）' : '');
   fb.className = 'feedback ng';
+  // まちがえた問題は記録しておき、おわったときに見返せるようにする
+  gMissed.push({ text: gQuestion.label + '　' + gQuestion.text, answer: gQuestion.answer });
+  // 正解を読む時間が要るので、正解のときより長めに止める
   setTimeout(() => {
     if(screens.game.classList.contains('hidden')) return;
     if(gLives <= 0) endGame();
     else nextGameQuestion();
-  }, 1200);
+  }, 2400);
 }
 
 function endGame(){
@@ -1182,8 +1283,52 @@ function endGame(){
   document.getElementById('goBest').textContent = isBest
     ? '🎉 さいこう記録こうしん！'
     : 'さいこう記録：' + Math.max(best, gScore) + ' 点';
+
+  // まちがえた問題をふり返る（ここが次の学習につながる）
+  const missWrap = document.getElementById('goMissed');
+  missWrap.innerHTML = '';
+  if(gMissed.length){
+    const box = document.createElement('div');
+    box.className = 'explain';
+    box.style.marginTop = '14px';
+    let html = '<h4>まちがえた問題（ここを見直そう）</h4>';
+    gMissed.forEach(m => {
+      html += '<p class="concl" style="margin:0 0 6px;">' + m.text + ' → <em>' + m.answer + '</em></p>';
+    });
+    box.innerHTML = html;
+    missWrap.appendChild(box);
+  }
   renderHomeRecord();
   show('gameover');
+}
+
+/* ---------- 画面内の確認 ----------
+   学校の端末やiframeの中では window.confirm が止められて必ず false になり、
+   「やめる」を押しても何も起きないことがある。そのため自前の確認を出す。 */
+function askYesNo(message, onYes, onNo){
+  const back = document.createElement('div');
+  back.className = 'ask-back';
+  const box = document.createElement('div');
+  box.className = 'ask-box';
+  const p = document.createElement('p');
+  p.textContent = message;
+  const row = document.createElement('div');
+  row.className = 'ask-row';
+  const no = document.createElement('button');
+  no.type = 'button';
+  no.textContent = 'つづける';
+  const yes = document.createElement('button');
+  yes.type = 'button';
+  yes.className = 'yes';
+  yes.textContent = 'やめる';
+  const close = () => { if(back.parentNode) document.body.removeChild(back); };
+  no.addEventListener('click', () => { close(); if(onNo) onNo(); });
+  yes.addEventListener('click', () => { close(); if(onYes) onYes(); });
+  back.addEventListener('click', e => { if(e.target === back){ close(); if(onNo) onNo(); } });
+  row.appendChild(no); row.appendChild(yes);
+  box.appendChild(p); box.appendChild(row);
+  back.appendChild(box);
+  document.body.appendChild(back);
 }
 
 /* ---------- イベント ---------- */
@@ -1196,16 +1341,25 @@ document.getElementById('backHomeFromUnits').addEventListener('click', () => { r
 document.getElementById('checkBtn').addEventListener('click', doCheck);
 document.getElementById('nextBtn').addEventListener('click', nextQuestion);
 document.getElementById('quitQuizBtn').addEventListener('click', () => {
-  if(quizIdx > 0 && !confirm('とちゅうですが やめますか？')) return;
-  show('units');
+  if(quizIdx === 0 && !answered){ renderUnitList(); show('units'); return; }
+  askYesNo('とちゅうですが やめますか？', () => { renderUnitList(); show('units'); });
 });
 document.getElementById('againBtn').addEventListener('click', startBasic);
 document.getElementById('toUnitsBtn').addEventListener('click', () => { renderUnitList(); show('units'); });
 document.getElementById('resultHomeBtn').addEventListener('click', () => { renderHomeRecord(); show('home'); });
 document.getElementById('quitGameBtn').addEventListener('click', () => {
+  // 確認の間だけ時計を止め、つづける場合は「止めた時点の残り時間」から再開する。
+  // （時間を満タンに戻すと、やめるボタンが時間かせぎに使えてしまう）
+  const remain = Math.max(0, gDeadline - Date.now());
   stopTimer();
-  if(!confirm('とちゅうですが やめますか？')){ if(!gLocked){ gDeadline = Date.now() + TIME_LIMIT; gTimerId = setInterval(tickGame, 50); } return; }
-  renderHomeRecord(); show('home');
+  askYesNo('とちゅうですが やめますか？',
+    () => { renderHomeRecord(); show('home'); },
+    () => {
+      if(!gLocked && !screens.game.classList.contains('hidden')){
+        gDeadline = Date.now() + remain;
+        gTimerId = setInterval(tickGame, 50);
+      }
+    });
 });
 document.getElementById('retryGameBtn').addEventListener('click', startGame);
 document.getElementById('goHomeBtn').addEventListener('click', () => { renderHomeRecord(); show('home'); });
