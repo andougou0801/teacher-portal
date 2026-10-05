@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>公倍数・公約数マスター</title>
+<!-- 外部への通信はしません（フォントも端末にあるものだけを使います） -->
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+    --ok:#18a058;
+    --ng:#e0453a;
+    --bai:#2d6cdf;
+    --yaku:#e07b39;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"M PLUS Rounded 1c","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#333;
+    min-height:100vh;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:16px 14px 60px;}
+  .hidden{display:none !important;}
+
+  .app-header{display:flex;align-items:center;justify-content:space-between;padding:10px 4px 14px;gap:10px;flex-wrap:wrap;}
+  .app-title{font-size:21px;font-weight:800;color:var(--accent-dark);display:flex;align-items:center;gap:8px;}
+  .icon-btn{background:#fff;border:2px solid #e2e8f0;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,0.06);font-family:inherit;}
+  .icon-btn:active{transform:scale(0.92);}
+
+  .card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(30,50,90,0.08);margin-bottom:16px;}
+  h2.section-title{margin:0 0 12px;font-size:16px;color:#555;font-weight:800;}
+  .lead{font-size:13.5px;color:#667;line-height:1.9;margin:0 0 14px;}
+
+  /* ---- モード選択 ---- */
+  .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .mode-btn{
+    border:3px solid #e2e8f0;background:#fafcff;border-radius:18px;padding:20px 14px;
+    cursor:pointer;text-align:left;display:flex;gap:12px;align-items:flex-start;
+    font-family:inherit;transition:all .15s;
+  }
+  .mode-btn:active{transform:scale(0.98);}
+  .mode-btn .emoji{font-size:30px;flex:none;}
+  .mode-btn b{display:block;font-size:16px;color:#333;line-height:1.6;}
+  .mode-btn span{display:block;font-size:12px;color:#8a97a8;margin-top:4px;line-height:1.7;font-weight:700;}
+  .mode-btn.basic:hover{border-color:var(--accent);}
+  .mode-btn.game{border-color:#ffd7b0;background:#fffaf5;}
+  .mode-btn.game:hover{border-color:#ff9f45;}
+
+  /* ---- 単元リスト ---- */
+  .unit-list{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:6px;}
+  .unit-chip{
+    display:flex;align-items:center;gap:12px;border:3px solid #e2e8f0;background:#fafcff;
+    border-radius:14px;padding:14px 14px;cursor:pointer;transition:all .15s;
+    font-family:inherit;text-align:left;width:100%;
+  }
+  .unit-chip:active{transform:scale(0.99);}
+  .unit-chip .no{
+    width:30px;height:30px;border-radius:50%;background:#e2e8f0;color:#667;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex:none;
+  }
+  .unit-chip .name{font-weight:800;font-size:15.5px;color:#3b4a5c;line-height:1.4;}
+  .unit-chip .name small{display:block;font-size:11.5px;color:#8a97a8;margin-top:3px;font-weight:700;}
+  .unit-chip .acc{margin-left:auto;font-size:12px;font-weight:800;color:#8a97a8;white-space:nowrap;text-align:right;}
+  .unit-chip .acc b{display:block;font-size:15px;color:var(--ok);}
+
+  .count-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+  .count-btn{border:3px solid #e2e8f0;background:#fafcff;border-radius:14px;padding:13px 4px;font-size:15px;font-weight:800;cursor:pointer;color:#555;font-family:inherit;}
+  .count-btn.selected{border-color:var(--accent);background:#eaf2ff;color:var(--accent-dark);}
+
+  .main-btn{width:100%;border:none;border-radius:16px;background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:#fff;font-size:19px;font-weight:800;padding:17px;cursor:pointer;box-shadow:0 4px 0 #1a459b;font-family:inherit;}
+  .main-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #1a459b;}
+  .main-btn.orange{background:linear-gradient(180deg,#ff9f45,#f07c10);box-shadow:0 4px 0 #c96406;}
+  .main-btn.orange:active{box-shadow:0 1px 0 #c96406;}
+  .sub-btn{width:100%;border:2px solid #e2e8f0;border-radius:14px;background:#fff;color:#667;font-size:14px;font-weight:800;padding:12px;cursor:pointer;margin-top:10px;font-family:inherit;}
+
+  /* ---- おぼえようカード ---- */
+  .teach{background:#eef5ff;border:3px solid #cfe0ff;border-radius:16px;padding:14px 16px;margin-bottom:16px;}
+  .teach h3{margin:0 0 8px;font-size:15px;color:var(--accent-dark);font-weight:800;}
+  .teach p{margin:0 0 6px;font-size:13.5px;line-height:1.95;color:#44506a;font-weight:700;}
+  .teach .ex{background:#fff;border-radius:10px;padding:8px 12px;font-size:13px;color:#555;line-height:1.9;font-weight:700;}
+
+  /* ---- 問題画面 ---- */
+  .q-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;flex-wrap:wrap;}
+  .q-progress{font-size:13px;font-weight:800;color:#8a97a8;}
+  .progress-bar{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:16px;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,#5b9cff,#2d6cdf);border-radius:99px;transition:width .3s;}
+
+  .q-text{font-size:19px;font-weight:800;color:#2a3442;line-height:1.95;margin-bottom:6px;}
+  .q-sub{font-size:13px;color:#8a97a8;font-weight:700;margin-bottom:16px;line-height:1.8;}
+
+  .num-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;}
+  .num-input{
+    width:92px;padding:14px 10px;border:3px solid #d8dfea;border-radius:14px;
+    font-size:22px;font-weight:800;text-align:center;font-family:inherit;color:#2a3442;
+    background:#fff;
+  }
+  .num-input:focus{outline:none;border-color:var(--accent);}
+  .num-input.active{border-color:var(--accent);background:#eaf2ff;box-shadow:0 0 0 4px rgba(45,108,223,0.14);}
+  .num-unit{font-size:16px;font-weight:800;color:#667;}
+
+  /* ---- 画面の数字ボタン ---- */
+  .numpad{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px;
+    max-width:420px;
+  }
+  .numpad button{
+    border:3px solid #d8dfea;background:#fff;border-radius:14px;padding:14px 0;
+    font-size:22px;font-weight:800;color:#2a3442;cursor:pointer;font-family:inherit;
+  }
+  .numpad button:active{transform:scale(0.95);background:#eaf2ff;}
+  .numpad button.util{font-size:16px;color:#667;background:#f4f7fb;}
+  .numpad-hint{font-size:12px;color:#8a97a8;font-weight:700;margin:0 0 8px;}
+
+  .chip-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .chip{
+    min-width:54px;padding:12px 14px;border:3px solid #d8dfea;background:#fff;border-radius:14px;
+    font-size:18px;font-weight:800;color:#44506a;cursor:pointer;font-family:inherit;
+  }
+  .chip.on{border-color:var(--accent);background:#eaf2ff;color:var(--accent-dark);}
+  .chip:disabled{opacity:.55;cursor:default;}
+  .chip.ans-ok{border-color:var(--ok);background:#e8f7ee;color:#0f7a42;}
+  .chip.ans-ng{border-color:var(--ng);background:#fdecea;color:#b3261e;}
+
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .choice-btn{
+    border:3px solid #d8dfea;background:#fff;border-radius:16px;padding:18px 10px;
+    font-size:22px;font-weight:800;color:#2a3442;cursor:pointer;font-family:inherit;
+  }
+  .choice-btn:active{transform:scale(0.98);}
+  .choice-btn.ok{border-color:var(--ok);background:#e8f7ee;color:#0f7a42;}
+  .choice-btn.ng{border-color:var(--ng);background:#fdecea;color:#b3261e;}
+  .choice-btn:disabled{cursor:default;}
+
+  .feedback{font-size:17px;font-weight:800;margin:4px 0 12px;min-height:26px;line-height:1.7;}
+  .feedback.ok{color:var(--ok);}
+  .feedback.ng{color:var(--ng);}
+
+  /* ---- 解説（書き出し） ---- */
+  .explain{background:#fffdf5;border:3px solid #ffe3a3;border-radius:16px;padding:14px 16px;margin-bottom:14px;}
+  .explain h4{margin:0 0 10px;font-size:14px;color:#a06800;font-weight:800;}
+  .list-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+  .list-label{font-size:13px;font-weight:800;color:#667;min-width:92px;padding-top:6px;}
+  .list-nums{display:flex;flex-wrap:wrap;gap:5px;}
+  .nchip{
+    min-width:34px;padding:5px 8px;border-radius:9px;background:#f0f3f8;color:#55607a;
+    font-size:14px;font-weight:800;text-align:center;
+  }
+  .nchip.common{background:#d9f0e2;color:#0f7a42;}
+  .nchip.best{background:var(--ok);color:#fff;box-shadow:0 0 0 3px #b9e6cc;}
+  .explain .concl{font-size:14px;font-weight:800;color:#44506a;line-height:1.9;margin:8px 0 0;}
+  .explain .concl em{font-style:normal;color:var(--ok);font-size:17px;}
+
+  /* ---- 結果 ---- */
+  .result-big{text-align:center;padding:10px 0 4px;}
+  .result-big .emoji{font-size:58px;}
+  .result-big .score{font-size:30px;font-weight:800;color:var(--accent-dark);margin-top:6px;}
+  .result-big .msg{font-size:15px;font-weight:800;color:#667;margin-top:8px;line-height:1.8;}
+
+  /* ---- ゲーム（深海） ---- */
+  .sea{
+    background:linear-gradient(180deg,#2a6fb0 0%, #11406e 60%, #082a4d 100%);
+    border-radius:20px;padding:14px;margin-bottom:14px;position:relative;overflow:hidden;
+  }
+  .sea-top{display:flex;justify-content:space-between;align-items:center;color:#fff;font-weight:800;font-size:13px;margin-bottom:10px;gap:8px;flex-wrap:wrap;}
+  .sea-top .pill{background:rgba(255,255,255,0.18);border-radius:99px;padding:5px 12px;white-space:nowrap;}
+  .lane{
+    position:relative;height:52px;background:rgba(255,255,255,0.10);border-radius:14px;overflow:hidden;
+  }
+  .lane .diver{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:28px;}
+  .lane .shark{position:absolute;left:0;top:50%;transform:translateY(-50%);font-size:30px;transition:left .12s linear;}
+  .lane .shark.bite{animation:biteShake .45s ease;}
+  @keyframes biteShake{0%,100%{transform:translateY(-50%) scale(1);}30%{transform:translateY(-50%) scale(1.35) rotate(-8deg);}60%{transform:translateY(-50%) scale(1.2) rotate(6deg);}}
+  .timer-bar{height:8px;background:rgba(255,255,255,0.18);border-radius:99px;overflow:hidden;margin-top:10px;}
+  .timer-inner{height:100%;background:linear-gradient(90deg,#8ee6a0,#ffe169,#ff8a7a);border-radius:99px;}
+
+  .game-q{background:#fff;border-radius:18px;padding:18px;margin-bottom:12px;text-align:center;}
+  .game-q .label{font-size:12.5px;font-weight:800;color:#8a97a8;margin-bottom:6px;}
+  .game-q .text{font-size:24px;font-weight:800;color:#2a3442;line-height:1.7;}
+
+  .life{font-size:20px;letter-spacing:2px;}
+
+  .combo-pop{
+    position:absolute;right:14px;top:10px;color:#ffe169;font-weight:800;font-size:15px;
+    opacity:0;transform:translateY(6px);
+  }
+  .combo-pop.show{animation:comboUp .8s ease;}
+  @keyframes comboUp{0%{opacity:0;transform:translateY(6px);}30%{opacity:1;transform:translateY(-2px);}100%{opacity:0;transform:translateY(-12px);}}
+
+  .rank-note{font-size:13px;color:#667;font-weight:800;line-height:1.9;text-align:center;margin-top:6px;}
+
+  @media (max-width:560px){
+    .mode-grid{grid-template-columns:1fr;}
+    .choice-grid{grid-template-columns:1fr 1fr;}
+    .q-text{font-size:17px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="app-header">
+    <div class="app-title">🌊 公倍数・公約数マスター</div>
+    <button class="icon-btn" id="homeBtn" title="さいしょの画面にもどる">🏠</button>
+  </div>
+
+  <!-- ========== ホーム ========== -->
+  <div id="screen-home">
+    <div class="card">
+      <h2 class="section-title">どちらで れんしゅうする？</h2>
+      <p class="lead">5年生の「倍数と約数」の単元です。まずは<b>きほんモード</b>でやり方をおぼえて、できるようになったら<b>レベルアップモード</b>でタイムアタックにちょうせんしよう。</p>
+      <div class="mode-grid">
+        <button class="mode-btn basic" id="toBasicBtn">
+          <span class="emoji">📘</span>
+          <span>
+            <b>きほんモード</b>
+            <span>じかんせいげんなし。まちがえても、書き出して考え方をたしかめられます。</span>
+          </span>
+        </button>
+        <button class="mode-btn game" id="toGameBtn">
+          <span class="emoji">🦈</span>
+          <span>
+            <b>レベルアップモード</b>
+            <span>10びょう以内にこたえないとサメに食べられる！どこまで深くもぐれるかな。</span>
+          </span>
+        </button>
+      </div>
+    </div>
+    <div class="card" id="homeRecordCard">
+      <h2 class="section-title">きろく</h2>
+      <p class="rank-note" id="homeRecord"></p>
+    </div>
+  </div>
+
+  <!-- ========== 基本モード：単元えらび ========== -->
+  <div id="screen-units" class="hidden">
+    <div class="card">
+      <h2 class="section-title">📘 きほんモード：どの学習をする？</h2>
+      <p class="lead">じゅんばんに すすめると わかりやすいよ。</p>
+      <div class="unit-list" id="unitList"></div>
+    </div>
+    <div class="card">
+      <h2 class="section-title">なんもん やる？</h2>
+      <div class="count-grid" id="countGrid"></div>
+      <button class="main-btn" id="startBasicBtn">はじめる</button>
+      <button class="sub-btn" id="backHomeFromUnits">もどる</button>
+    </div>
+  </div>
+
+  <!-- ========== 基本モード：問題 ========== -->
+  <div id="screen-quiz" class="hidden">
+    <div class="card">
+      <div class="q-top">
+        <div class="q-progress" id="quizProgress"></div>
+        <div class="q-progress" id="quizScore"></div>
+      </div>
+      <div class="progress-bar"><div class="progress-inner" id="quizBar" style="width:0%"></div></div>
+
+      <div class="teach hidden" id="teachCard">
+        <h3 id="teachTitle"></h3>
+        <div id="teachBody"></div>
+      </div>
+
+      <div class="q-text" id="qText"></div>
+      <div class="q-sub" id="qSub"></div>
+
+      <div id="answerArea"></div>
+
+      <div class="feedback" id="feedback"></div>
+      <div id="explainArea"></div>
+
+      <button class="main-btn hidden" id="checkBtn">こたえあわせ</button>
+      <button class="main-btn hidden" id="nextBtn">つぎの もんだい</button>
+      <button class="sub-btn" id="quitQuizBtn">やめる</button>
+    </div>
+  </div>
+
+  <!-- ========== 基本モード：結果 ========== -->
+  <div id="screen-result" class="hidden">
+    <div class="card">
+      <div class="result-big">
+        <div class="emoji" id="resultEmoji">🎉</div>
+        <div class="score" id="resultScore"></div>
+        <div class="msg" id="resultMsg"></div>
+      </div>
+      <button class="main-btn" id="againBtn" style="margin-top:14px;">もういちど</button>
+      <button class="sub-btn" id="toUnitsBtn">ほかの学習をえらぶ</button>
+      <button class="sub-btn" id="resultHomeBtn">さいしょの画面へ</button>
+    </div>
+  </div>
+
+  <!-- ========== ゲーム ========== -->
+  <div id="screen-game" class="hidden">
+    <div class="sea">
+      <div class="sea-top">
+        <span class="pill">🌊 水深 <b id="depthNum">0</b> m</span>
+        <span class="pill">⭐ <b id="gameScore">0</b></span>
+        <span class="pill life" id="lifeRow">❤️❤️❤️</span>
+      </div>
+      <div class="lane">
+        <div class="shark" id="sharkEl">🦈</div>
+        <div class="diver">🤿</div>
+      </div>
+      <div class="timer-bar"><div class="timer-inner" id="timerInner" style="width:100%"></div></div>
+      <div class="combo-pop" id="comboPop"></div>
+    </div>
+
+    <div class="game-q">
+      <div class="label" id="gameLabel"></div>
+      <div class="text" id="gameText"></div>
+    </div>
+    <div class="choice-grid" id="gameChoices"></div>
+    <div class="feedback" id="gameFeedback"></div>
+    <button class="sub-btn" id="quitGameBtn">やめる</button>
+  </div>
+
+  <!-- ========== ゲーム結果 ========== -->
+  <div id="screen-gameover" class="hidden">
+    <div class="card">
+      <div class="result-big">
+        <div class="emoji" id="goEmoji">🦈</div>
+        <div class="score" id="goScore"></div>
+        <div class="msg" id="goMsg"></div>
+      </div>
+      <p class="rank-note" id="goBest"></p>
+      <button class="main-btn orange" id="retryGameBtn" style="margin-top:14px;">もういちど もぐる</button>
+      <button class="sub-btn" id="goHomeBtn">さいしょの画面へ</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   公倍数・公約数マスター（小学5年「倍数と約数」）
+   - 指導の順序は学習指導要領の配列に合わせている：
+     倍数 → 公倍数・最小公倍数 → 約数 → 公約数・最大公約数 → 活用（文章題）
+   - 数値は、書き出して確かめられる大きさ（おおむね100まで）にとどめている。
+   ========================================================= */
+
+/* ---------- 基本の計算 ---------- */
+function gcd(a, b){ a = Math.abs(a); b = Math.abs(b); while(b){ const t = a % b; a = b; b = t; } return a; }
+function lcm(a, b){ return a / gcd(a, b) * b; }
+function divisorsOf(n){
+  const out = [];
+  for(let i = 1; i * i <= n; i++){
+    if(n % i === 0){ out.push(i); if(i !== n / i) out.push(n / i); }
+  }
+  return out.sort((x, y) => x - y);
+}
+function multiplesOf(n, count){
+  const out = [];
+  for(let i = 1; i <= count; i++) out.push(n * i);
+  return out;
+}
+function commonOf(a, b){ return a.filter(x => b.indexOf(x) !== -1); }
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+function lsGet(k, def){ try{ const v = localStorage.getItem(k); return v === null ? def : v; }catch(e){ return def; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+
+/* ---------- 出題に使う数の組 ---------- */
+// 最小公倍数が100以下におさまる組だけを使う（書き出して確かめられる範囲）
+const PAIRS_LCM = [
+  [2,3],[2,5],[3,4],[3,5],[4,5],[4,6],[2,7],[3,6],[5,6],[6,8],
+  [4,10],[6,9],[8,12],[6,10],[9,12],[10,15],[12,18],[3,8],[6,15],[8,10],
+  [4,14],[12,16],[5,10],[7,14],[9,15],[10,12],[14,21],[12,20]
+];
+// 最大公約数が1より大きくなる組（公約数をさがす意味があるもの）
+const PAIRS_GCD = [
+  [12,18],[16,24],[20,30],[24,36],[18,27],[15,25],[28,42],[30,45],
+  [16,20],[21,28],[24,32],[36,48],[14,21],[18,24],[27,36],[32,40],
+  [20,50],[42,56],[30,42],[24,60],[45,60],[36,54]
+];
+const NUMS_DIVISOR = [12,16,18,20,24,28,30,32,36,40,42,45,48,54,56,60,64,72];
+const BASES_MULTIPLE = [2,3,4,5,6,7,8,9,11,12];
+
+/* ---------- 単元の定義 ---------- */
+const UNITS = [
+  {
+    id:'bai', name:'① 倍数（ばいすう）', sub:'ある数を1倍、2倍、3倍…した数',
+    teachTitle:'おぼえよう：倍数',
+    teachBody:'<p>ある数を <b>1倍、2倍、3倍…</b> してできる数を、その数の <b>倍数</b> といいます。</p>'
+      + '<div class="ex">3の倍数 → 3、6、9、12、15、…<br>（3×1、3×2、3×3、3×4、3×5、…）<br>※ 0は倍数にふくめません。</div>'
+  },
+  {
+    id:'koubai', name:'② 公倍数と最小公倍数', sub:'2つの数に共通な倍数のうち、いちばん小さい数',
+    teachTitle:'おぼえよう：公倍数・最小公倍数',
+    teachBody:'<p>2つの数に <b>共通な倍数</b> を <b>公倍数</b>、そのうち <b>いちばん小さい数</b> を <b>最小公倍数</b> といいます。</p>'
+      + '<div class="ex">4の倍数 → 4、8、<b>12</b>、16、20、<b>24</b>、…<br>6の倍数 → 6、<b>12</b>、18、<b>24</b>、…<br>公倍数 → 12、24、… ／ 最小公倍数 → <b>12</b></div>'
+  },
+  {
+    id:'yaku', name:'③ 約数（やくすう）', sub:'わりきることができる数',
+    teachTitle:'おぼえよう：約数',
+    teachBody:'<p>ある数を <b>わりきることができる数</b> を、その数の <b>約数</b> といいます。</p>'
+      + '<div class="ex">12の約数 → 1、2、3、4、6、12<br>（1×12、2×6、3×4 のように、かけ算のペアでさがすと見つけやすい）</div>'
+  },
+  {
+    id:'kouyaku', name:'④ 公約数と最大公約数', sub:'2つの数に共通な約数のうち、いちばん大きい数',
+    teachTitle:'おぼえよう：公約数・最大公約数',
+    teachBody:'<p>2つの数に <b>共通な約数</b> を <b>公約数</b>、そのうち <b>いちばん大きい数</b> を <b>最大公約数</b> といいます。</p>'
+      + '<div class="ex">12の約数 → <b>1</b>、<b>2</b>、<b>3</b>、4、<b>6</b>、12<br>18の約数 → <b>1</b>、<b>2</b>、<b>3</b>、<b>6</b>、9、18<br>公約数 → 1、2、3、6 ／ 最大公約数 → <b>6</b></div>'
+  },
+  {
+    id:'tsukau', name:'⑤ つかってみよう（文章題）', sub:'どちらを使うか考えて答える',
+    teachTitle:'考え方：どっちを使う？',
+    teachBody:'<p><b>「同時に」「ぴったり重なる」「正方形をつくる」</b> → 最小公倍数</p>'
+      + '<p><b>「あまりが出ないように分ける」「できるだけ大きく切る」</b> → 最大公約数</p>'
+      + '<div class="ex">まよったら、小さい数で書き出して たしかめてみよう。</div>'
+  }
+];
+
+/* ---------- 問題づくり（基本モード） ---------- */
+// 返す形：{ kind, text, sub, answer, check(), explain() }
+function makeBaiQuestion(){
+  const base = pick(BASES_MULTIPLE);
+  if(Math.random() < 0.5){
+    // 小さいほうから3つ書く
+    const ans = multiplesOf(base, 3);
+    return {
+      kind:'inputs', count:3,
+      text: base + ' の倍数を、小さいほうから 3つ 書きましょう。',
+      sub:'※ 0は倍数にふくめません。',
+      answer: ans,
+      explainFn: () => listExplain([
+        { label: base + 'の倍数', nums: multiplesOf(base, 6), common: [], best: [] }
+      ], base + ' × 1、' + base + ' × 2、' + base + ' × 3 … と計算していくと見つかります。',
+      '小さいほうから3つは <em>' + ans.join('、') + '</em>')
+    };
+  }
+  // 倍数をえらぶ
+  const cand = shuffle(
+    multiplesOf(base, 4).concat(
+      [base + 1, base * 2 + 1, base * 3 - 1, base + 3].filter(n => n % base !== 0 && n > 0)
+    )
+  ).slice(0, 8);
+  const correct = cand.filter(n => n % base === 0);
+  return {
+    kind:'chips', chips: cand.sort((a,b) => a-b),
+    text: '次の数の中から、' + base + ' の倍数を すべて えらびましょう。',
+    sub:'えらんだものが青くなります。',
+    answer: correct,
+    explainFn: () => listExplain([
+      { label: base + 'の倍数', nums: multiplesOf(base, 6), common: [], best: [] }
+    ], base + ' でわりきれる数が ' + base + ' の倍数です。',
+    'こたえは <em>' + correct.sort((a,b)=>a-b).join('、') + '</em>')
+  };
+}
+
+function makeKoubaiQuestion(){
+  const [a, b] = pick(PAIRS_LCM);
+  const L = lcm(a, b);
+  if(Math.random() < 0.45){
+    // 公倍数を2つ
+    return {
+      kind:'inputs', count:2,
+      text: a + ' と ' + b + ' の公倍数を、小さいほうから 2つ 書きましょう。',
+      sub:'※ 2つの数に共通な倍数のことです。',
+      answer: [L, L * 2],
+      explainFn: () => koubaiExplain(a, b)
+    };
+  }
+  return {
+    kind:'inputs', count:1,
+    text: a + ' と ' + b + ' の最小公倍数は いくつですか。',
+    sub:'',
+    answer: [L],
+    explainFn: () => koubaiExplain(a, b)
+  };
+}
+
+function koubaiExplain(a, b){
+  const ma = multiplesOf(a, Math.max(6, Math.ceil(lcm(a,b) * 2 / a)));
+  const mb = multiplesOf(b, Math.max(6, Math.ceil(lcm(a,b) * 2 / b)));
+  const com = commonOf(ma, mb);
+  const L = lcm(a, b);
+  return listExplain([
+    { label: a + 'の倍数', nums: ma, common: com, best: [L] },
+    { label: b + 'の倍数', nums: mb, common: com, best: [L] }
+  ], '両方に出てくる数（みどり）が公倍数です。',
+  '公倍数は ' + com.slice(0, 3).join('、') + '… ／ 最小公倍数は <em>' + L + '</em>');
+}
+
+function makeYakuQuestion(){
+  const n = pick(NUMS_DIVISOR);
+  const divs = divisorsOf(n);
+  if(Math.random() < 0.5){
+    // 約数をすべてえらぶ
+    const wrong = [];
+    for(let i = 2; i <= n && wrong.length < 4; i++){
+      if(n % i !== 0 && divs.indexOf(i) === -1 && wrong.indexOf(i) === -1 && i <= n) wrong.push(i);
+    }
+    const chips = shuffle(divs.concat(wrong)).slice(0, Math.min(10, divs.length + wrong.length)).sort((x,y)=>x-y);
+    const correct = chips.filter(x => n % x === 0);
+    return {
+      kind:'chips', chips: chips,
+      text: '次の数の中から、' + n + ' の約数を すべて えらびましょう。',
+      sub:'※ ' + n + ' をわりきれる数が約数です。',
+      answer: correct,
+      explainFn: () => yakuExplain(n)
+    };
+  }
+  return {
+    kind:'inputs', count:1,
+    text: n + ' の約数は 全部で 何個 ありますか。',
+    sub:'※ 1 と ' + n + ' も約数にふくめます。',
+    answer: [divs.length],
+    explainFn: () => yakuExplain(n)
+  };
+}
+
+function yakuExplain(n){
+  const divs = divisorsOf(n);
+  const pairs = [];
+  for(let i = 1; i * i <= n; i++){
+    if(n % i === 0) pairs.push(i + ' × ' + (n / i));
+  }
+  return listExplain([
+    { label: n + 'の約数', nums: divs, common: [], best: [] }
+  ], 'かけ算のペアでさがすと、もれがありません。<br>' + pairs.join('　／　'),
+  '約数は <em>' + divs.length + '個</em>（' + divs.join('、') + '）');
+}
+
+function makeKouyakuQuestion(){
+  const [a, b] = pick(PAIRS_GCD);
+  const G = gcd(a, b);
+  const common = divisorsOf(G);
+  if(Math.random() < 0.45){
+    const chips = shuffle(
+      common.concat(divisorsOf(a).filter(x => common.indexOf(x) === -1).slice(0, 3))
+    ).sort((x,y)=>x-y);
+    return {
+      kind:'chips', chips: chips,
+      text: a + ' と ' + b + ' の公約数を すべて えらびましょう。',
+      sub:'※ 両方をわりきれる数のことです。',
+      answer: chips.filter(x => a % x === 0 && b % x === 0),
+      explainFn: () => kouyakuExplain(a, b)
+    };
+  }
+  return {
+    kind:'inputs', count:1,
+    text: a + ' と ' + b + ' の最大公約数は いくつですか。',
+    sub:'',
+    answer: [G],
+    explainFn: () => kouyakuExplain(a, b)
+  };
+}
+
+function kouyakuExplain(a, b){
+  const da = divisorsOf(a), db = divisorsOf(b);
+  const com = commonOf(da, db);
+  const G = gcd(a, b);
+  return listExplain([
+    { label: a + 'の約数', nums: da, common: com, best: [G] },
+    { label: b + 'の約数', nums: db, common: com, best: [G] }
+  ], '両方に出てくる数（みどり）が公約数です。',
+  '公約数は ' + com.join('、') + ' ／ 最大公約数は <em>' + G + '</em>');
+}
+
+/* ---- 文章題 ---- */
+const WORD_LCM = [
+  {
+    make: (a, b, L) => ({
+      text: 'たて ' + a + ' cm、横 ' + b + ' cm の長方形のタイルを、すきまなくならべて正方形を作ります。いちばん小さい正方形の一辺は何 cm ですか。',
+      sub:'ヒント：たても横もぴったりになる長さ',
+      unit:'cm', answer: L
+    })
+  },
+  {
+    make: (a, b, L) => ({
+      text: 'バスは ' + a + ' 分おき、電車は ' + b + ' 分おきに出発します。午前9時に同時に出発しました。次に同時に出発するのは 何分後ですか。',
+      sub:'ヒント：どちらも出発する時こく',
+      unit:'分後', answer: L
+    })
+  },
+  {
+    make: (a, b, L) => ({
+      text: '赤いランプは ' + a + ' 秒おき、青いランプは ' + b + ' 秒おきに光ります。今同時に光りました。次に同時に光るのは 何秒後ですか。',
+      sub:'ヒント：どちらも光る時間',
+      unit:'秒後', answer: L
+    })
+  }
+];
+const WORD_GCD = [
+  {
+    make: (a, b, G) => ({
+      text: 'えんぴつ ' + a + ' 本と、ノート ' + b + ' さつを、あまりが出ないように、できるだけ多くの人に同じ数ずつ分けます。何人に分けられますか。',
+      sub:'ヒント：どちらもぴったり分けられる人数',
+      unit:'人', answer: G
+    })
+  },
+  {
+    make: (a, b, G) => ({
+      text: 'たて ' + a + ' cm、横 ' + b + ' cm の長方形の紙を、あまりが出ないように同じ大きさの正方形に切り分けます。いちばん大きい正方形の一辺は何 cm ですか。',
+      sub:'ヒント：たても横もぴったり切れる長さ',
+      unit:'cm', answer: G
+    })
+  },
+  {
+    make: (a, b, G) => ({
+      text: '赤い花 ' + a + ' 本と、白い花 ' + b + ' 本を、あまりが出ないように、できるだけ多くの花たばに同じ数ずつ分けます。花たばはいくつできますか。',
+      sub:'ヒント：どちらもぴったり分けられる数',
+      unit:'たば', answer: G
+    })
+  }
+];
+
+function makeWordQuestion(){
+  if(Math.random() < 0.5){
+    const [a, b] = pick(PAIRS_LCM);
+    const L = lcm(a, b);
+    const q = pick(WORD_LCM).make(a, b, L);
+    return {
+      kind:'inputs', count:1, unit: q.unit,
+      text: q.text, sub: q.sub, answer: [q.answer],
+      explainFn: () => {
+        const base = koubaiExplain(a, b);
+        return '<h4>考え方：最小公倍数をつかう</h4>' + base.replace(/^<h4>.*?<\/h4>/, '');
+      }
+    };
+  }
+  const [a, b] = pick(PAIRS_GCD);
+  const G = gcd(a, b);
+  const q = pick(WORD_GCD).make(a, b, G);
+  return {
+    kind:'inputs', count:1, unit: q.unit,
+    text: q.text, sub: q.sub, answer: [q.answer],
+    explainFn: () => {
+      const base = kouyakuExplain(a, b);
+      return '<h4>考え方：最大公約数をつかう</h4>' + base.replace(/^<h4>.*?<\/h4>/, '');
+    }
+  };
+}
+
+const MAKERS = {
+  bai: makeBaiQuestion,
+  koubai: makeKoubaiQuestion,
+  yaku: makeYakuQuestion,
+  kouyaku: makeKouyakuQuestion,
+  tsukau: makeWordQuestion
+};
+
+/* ---------- 解説の見た目 ---------- */
+function listExplain(rows, hintHtml, conclHtml){
+  let html = '<h4>書き出して たしかめよう</h4>';
+  rows.forEach(r => {
+    html += '<div class="list-row"><div class="list-label">' + r.label + '</div><div class="list-nums">';
+    r.nums.forEach(n => {
+      let cls = 'nchip';
+      if(r.best.indexOf(n) !== -1) cls += ' best';
+      else if(r.common.indexOf(n) !== -1) cls += ' common';
+      html += '<span class="' + cls + '">' + n + '</span>';
+    });
+    html += '</div></div>';
+  });
+  if(hintHtml) html += '<p class="concl" style="color:#8a7340;">' + hintHtml + '</p>';
+  html += '<p class="concl">' + conclHtml + '</p>';
+  return html;
+}
+
+/* ---------- 画面きりかえ ---------- */
+const screens = {
+  home: document.getElementById('screen-home'),
+  units: document.getElementById('screen-units'),
+  quiz: document.getElementById('screen-quiz'),
+  result: document.getElementById('screen-result'),
+  game: document.getElementById('screen-game'),
+  gameover: document.getElementById('screen-gameover')
+};
+function show(name){
+  Object.keys(screens).forEach(k => screens[k].classList.toggle('hidden', k !== name));
+  window.scrollTo(0, 0);
+}
+
+/* ---------- 記録 ---------- */
+const KEY_BEST = 'lcm-gcd-master-best-v1';
+const KEY_STATS = 'lcm-gcd-master-stats-v1';
+function loadStats(){
+  try{ return JSON.parse(lsGet(KEY_STATS, '{}')) || {}; }catch(e){ return {}; }
+}
+function saveStats(s){ lsSet(KEY_STATS, JSON.stringify(s)); }
+function recordUnit(unitId, correct, total){
+  const s = loadStats();
+  if(!s[unitId]) s[unitId] = { c:0, t:0 };
+  s[unitId].c += correct;
+  s[unitId].t += total;
+  saveStats(s);
+}
+function renderHomeRecord(){
+  const best = Number(lsGet(KEY_BEST, '0'));
+  const s = loadStats();
+  let done = 0, corr = 0;
+  Object.keys(s).forEach(k => { done += s[k].t; corr += s[k].c; });
+  let html = '';
+  html += '🦈 レベルアップモードの さいこう記録：<b>' + best + '</b> 点<br>';
+  html += '📘 きほんモードで といた もんだい：<b>' + done + '</b> 問';
+  if(done > 0) html += '（正かい ' + Math.round(corr / done * 100) + '％）';
+  document.getElementById('homeRecord').innerHTML = html;
+}
+
+/* ---------- 基本モード ---------- */
+let selectedUnit = UNITS[0].id;
+let selectedCount = 10;
+let quizList = [], quizIdx = 0, quizCorrect = 0, currentQ = null, answered = false;
+
+function renderUnitList(){
+  const wrap = document.getElementById('unitList');
+  const s = loadStats();
+  wrap.innerHTML = '';
+  UNITS.forEach((u, i) => {
+    const st = s[u.id];
+    const acc = st && st.t > 0 ? Math.round(st.c / st.t * 100) + '%' : '—';
+    const b = document.createElement('button');
+    b.className = 'unit-chip' + (u.id === selectedUnit ? ' on' : '');
+    b.style.borderColor = u.id === selectedUnit ? 'var(--accent)' : '';
+    b.style.background = u.id === selectedUnit ? '#eaf2ff' : '';
+    b.innerHTML = '<span class="no">' + (i + 1) + '</span>'
+      + '<span class="name">' + u.name.replace(/^[①②③④⑤]\s*/, '') + '<small>' + u.sub + '</small></span>'
+      + '<span class="acc">せいかい率<b>' + acc + '</b></span>';
+    b.addEventListener('click', () => { selectedUnit = u.id; renderUnitList(); });
+    wrap.appendChild(b);
+  });
+}
+
+function renderCountGrid(){
+  const wrap = document.getElementById('countGrid');
+  wrap.innerHTML = '';
+  [5, 10, 15].forEach(n => {
+    const b = document.createElement('button');
+    b.className = 'count-btn' + (n === selectedCount ? ' selected' : '');
+    b.textContent = n + 'もん';
+    b.addEventListener('click', () => { selectedCount = n; renderCountGrid(); });
+    wrap.appendChild(b);
+  });
+}
+
+function startBasic(){
+  quizList = [];
+  const maker = MAKERS[selectedUnit];
+  const seen = new Set();
+  let guard = 0;
+  while(quizList.length < selectedCount && guard < 500){
+    guard++;
+    const q = maker();
+    if(seen.has(q.text)) continue;
+    seen.add(q.text);
+    quizList.push(q);
+  }
+  quizIdx = 0; quizCorrect = 0;
+  const unit = UNITS.find(u => u.id === selectedUnit);
+  document.getElementById('teachTitle').textContent = unit.teachTitle;
+  document.getElementById('teachBody').innerHTML = unit.teachBody;
+  document.getElementById('teachCard').classList.remove('hidden');
+  show('quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  currentQ = quizList[quizIdx];
+  document.getElementById('quizProgress').textContent = (quizIdx + 1) + ' / ' + quizList.length + ' 問目';
+  document.getElementById('quizScore').textContent = 'せいかい ' + quizCorrect;
+  document.getElementById('quizBar').style.width = (quizIdx / quizList.length * 100) + '%';
+  document.getElementById('qText').textContent = currentQ.text;
+  document.getElementById('qSub').textContent = currentQ.sub || '';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('explainArea').innerHTML = '';
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.getElementById('checkBtn').classList.remove('hidden');
+
+  const area = document.getElementById('answerArea');
+  area.innerHTML = '';
+  if(currentQ.kind === 'inputs'){
+    const row = document.createElement('div');
+    row.className = 'num-row';
+    for(let i = 0; i < currentQ.count; i++){
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.inputMode = 'none';      // 画面の数字ボタンで入れるので、端末のキーボードは出さない
+      inp.readOnly = true;         // タップしても文字キーボードが出ないようにする
+      inp.className = 'num-input';
+      inp.dataset.i = String(i);
+      inp.addEventListener('click', () => setActiveInput(inp));
+      row.appendChild(inp);
+      if(i < currentQ.count - 1){
+        const sep = document.createElement('span');
+        sep.className = 'num-unit';
+        sep.textContent = '、';
+        row.appendChild(sep);
+      }
+    }
+    if(currentQ.unit){
+      const u = document.createElement('span');
+      u.className = 'num-unit';
+      u.textContent = currentQ.unit;
+      row.appendChild(u);
+    }
+    area.appendChild(row);
+
+    if(currentQ.count > 1){
+      const hint = document.createElement('p');
+      hint.className = 'numpad-hint';
+      hint.textContent = '※ 入れたいマスをタップしてから、数字をえらんでね。';
+      area.appendChild(hint);
+    }
+    area.appendChild(buildNumpad());
+    setActiveInput(row.querySelector('input'));
+  } else {
+    const grid = document.createElement('div');
+    grid.className = 'chip-grid';
+    currentQ.chips.forEach(n => {
+      const b = document.createElement('button');
+      b.className = 'chip';
+      b.textContent = n;
+      b.dataset.n = String(n);
+      b.addEventListener('click', () => { if(!answered) b.classList.toggle('on'); });
+      grid.appendChild(b);
+    });
+    area.appendChild(grid);
+  }
+}
+
+/* ---- 画面の数字ボタン ---- */
+let activeInput = null;
+
+function setActiveInput(inp){
+  if(!inp || answered) return;
+  activeInput = inp;
+  const area = document.getElementById('answerArea');
+  Array.from(area.querySelectorAll('.num-input')).forEach(el => {
+    el.classList.toggle('active', el === inp);
+  });
+}
+
+function typeDigit(d){
+  if(answered) return;
+  const area = document.getElementById('answerArea');
+  const inputs = Array.from(area.querySelectorAll('.num-input'));
+  if(!activeInput || inputs.indexOf(activeInput) === -1) setActiveInput(inputs[0]);
+  if(!activeInput) return;
+  if(activeInput.value.length >= 4) return;   // 5年生であつかう数の大きさには十分
+  activeInput.value += d;
+}
+
+function eraseDigit(){
+  if(answered || !activeInput) return;
+  activeInput.value = activeInput.value.slice(0, -1);
+}
+
+function clearInputs(){
+  if(answered) return;
+  const area = document.getElementById('answerArea');
+  const inputs = Array.from(area.querySelectorAll('.num-input'));
+  inputs.forEach(i => { i.value = ''; });
+  setActiveInput(inputs[0]);
+}
+
+function buildNumpad(){
+  const pad = document.createElement('div');
+  pad.className = 'numpad';
+  ['1','2','3','4','5','6','7','8','9','0'].forEach(d => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = d;
+    b.addEventListener('click', () => typeDigit(d));
+    pad.appendChild(b);
+  });
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.className = 'util';
+  back.textContent = '⌫ 1つけす';
+  back.style.gridColumn = 'span 2';
+  back.addEventListener('click', eraseDigit);
+  pad.appendChild(back);
+
+  const clr = document.createElement('button');
+  clr.type = 'button';
+  clr.className = 'util';
+  clr.textContent = 'ぜんぶけす';
+  clr.style.gridColumn = 'span 3';
+  clr.addEventListener('click', clearInputs);
+  pad.appendChild(clr);
+  return pad;
+}
+
+// パソコンのキーボードからも入力できるようにしておく
+document.addEventListener('keydown', e => {
+  if(screens.quiz.classList.contains('hidden')) return;
+  if(answered){
+    if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('nextBtn').click(); }
+    return;
+  }
+  if(/^[0-9]$/.test(e.key)){ e.preventDefault(); typeDigit(e.key); }
+  else if(e.key === 'Backspace'){ e.preventDefault(); eraseDigit(); }
+  else if(e.key === 'Enter'){ e.preventDefault(); doCheck(); }
+  else if(e.key === 'ArrowRight' || e.key === 'Tab'){
+    const inputs = Array.from(document.getElementById('answerArea').querySelectorAll('.num-input'));
+    const i = inputs.indexOf(activeInput);
+    if(inputs.length > 1 && i !== -1){ e.preventDefault(); setActiveInput(inputs[(i + 1) % inputs.length]); }
+  } else if(e.key === 'ArrowLeft'){
+    const inputs = Array.from(document.getElementById('answerArea').querySelectorAll('.num-input'));
+    const i = inputs.indexOf(activeInput);
+    if(inputs.length > 1 && i !== -1){ e.preventDefault(); setActiveInput(inputs[(i - 1 + inputs.length) % inputs.length]); }
+  }
+});
+
+function doCheck(){
+  if(answered) return;
+  let ok = false;
+  const area = document.getElementById('answerArea');
+  if(currentQ.kind === 'inputs'){
+    const inputs = Array.from(area.querySelectorAll('input'));
+    if(inputs.some(i => i.value === '')) {
+      document.getElementById('feedback').textContent = 'こたえを ぜんぶ 入力してね';
+      document.getElementById('feedback').className = 'feedback ng';
+      return;
+    }
+    const vals = inputs.map(i => Number(i.value));
+    ok = vals.length === currentQ.answer.length && vals.every((v, i) => v === currentQ.answer[i]);
+    inputs.forEach((inp, i) => {
+      inp.disabled = true;
+      inp.style.borderColor = Number(inp.value) === currentQ.answer[i] ? 'var(--ok)' : 'var(--ng)';
+    });
+  } else {
+    const chips = Array.from(area.querySelectorAll('.chip'));
+    const chosen = chips.filter(c => c.classList.contains('on')).map(c => Number(c.dataset.n));
+    const ansSet = currentQ.answer.slice().sort((a,b)=>a-b).join(',');
+    ok = chosen.slice().sort((a,b)=>a-b).join(',') === ansSet;
+    chips.forEach(c => {
+      c.disabled = true;
+      const n = Number(c.dataset.n);
+      const isAns = currentQ.answer.indexOf(n) !== -1;
+      const chose = c.classList.contains('on');
+      c.classList.remove('on');
+      if(isAns) c.classList.add('ans-ok');
+      else if(chose) c.classList.add('ans-ng');
+    });
+  }
+  answered = true;
+  activeInput = null;
+  const pad = area.querySelector('.numpad');
+  if(pad){
+    pad.style.opacity = '.45';
+    Array.from(pad.querySelectorAll('button')).forEach(b => { b.disabled = true; });
+  }
+  Array.from(area.querySelectorAll('.num-input')).forEach(el => el.classList.remove('active'));
+  if(ok) quizCorrect++;
+  const fb = document.getElementById('feedback');
+  fb.textContent = ok ? '⭕ せいかい！' : '❌ おしい！ こたえは ' + currentQ.answer.join('、');
+  fb.className = 'feedback ' + (ok ? 'ok' : 'ng');
+  document.getElementById('explainArea').innerHTML =
+    '<div class="explain">' + currentQ.explainFn() + '</div>';
+  document.getElementById('checkBtn').classList.add('hidden');
+  document.getElementById('nextBtn').classList.remove('hidden');
+  document.getElementById('quizScore').textContent = 'せいかい ' + quizCorrect;
+}
+
+function nextQuestion(){
+  quizIdx++;
+  if(quizIdx >= quizList.length){
+    recordUnit(selectedUnit, quizCorrect, quizList.length);
+    const rate = quizCorrect / quizList.length;
+    document.getElementById('resultEmoji').textContent = rate === 1 ? '🏆' : rate >= 0.8 ? '🎉' : rate >= 0.5 ? '💪' : '📘';
+    document.getElementById('resultScore').textContent = quizList.length + '問中 ' + quizCorrect + '問 せいかい';
+    document.getElementById('resultMsg').textContent =
+      rate === 1 ? 'ぜんもん せいかい！ レベルアップモードに ちょうせんしてみよう。'
+      : rate >= 0.8 ? 'よくできました！ この調子でつづけよう。'
+      : rate >= 0.5 ? 'あと少し！ 書き出して たしかめる と かくじつだよ。'
+      : 'もういちど「おぼえよう」を読んで、ゆっくりやってみよう。';
+    renderHomeRecord();
+    show('result');
+    return;
+  }
+  renderQuestion();
+}
+
+/* ---------- レベルアップモード（ゲーム） ---------- */
+const TIME_LIMIT = 10000; // 10秒
+let gLives = 3, gScore = 0, gDepth = 0, gCombo = 0;
+let gQuestion = null, gDeadline = 0, gTimerId = null, gLocked = false;
+
+function gameQuestion(depth){
+  // 水深が深くなるほど、大きい数・考える手間のある問題になる
+  const level = depth < 60 ? 1 : depth < 150 ? 2 : 3;
+  const types = level === 1 ? ['lcm','gcd','isbai'] : ['lcm','gcd','isbai','isyaku','lcm','gcd'];
+  const type = pick(types);
+
+  if(type === 'isbai'){
+    const base = pick(level === 1 ? [2,3,4,5,6] : [4,6,7,8,9,12]);
+    const n = base * (2 + Math.floor(Math.random() * 8)) + (Math.random() < 0.5 ? 0 : pick([1,2,3]));
+    const yes = n % base === 0;
+    return {
+      label: (yes || !yes) ? '倍数かな？' : '',
+      text: n + ' は ' + base + ' の倍数？',
+      choices: ['はい', 'いいえ'],
+      answer: yes ? 'はい' : 'いいえ'
+    };
+  }
+  if(type === 'isyaku'){
+    const n = pick(NUMS_DIVISOR);
+    const d = pick(divisorsOf(n).concat([Math.min(n - 1, 7), 11, 13]));
+    const yes = n % d === 0;
+    return {
+      label:'約数かな？',
+      text: d + ' は ' + n + ' の約数？',
+      choices: ['はい', 'いいえ'],
+      answer: yes ? 'はい' : 'いいえ'
+    };
+  }
+  if(type === 'lcm'){
+    const pool = level === 1 ? PAIRS_LCM.filter(p => lcm(p[0],p[1]) <= 36)
+               : level === 2 ? PAIRS_LCM.filter(p => lcm(p[0],p[1]) <= 72)
+               : PAIRS_LCM;
+    const [a, b] = pick(pool.length ? pool : PAIRS_LCM);
+    const L = lcm(a, b);
+    const wrongs = new Set();
+    wrongs.add(a * b);
+    wrongs.add(L + a);
+    wrongs.add(L - Math.min(a, b));
+    wrongs.add(a + b);
+    const opts = shuffle([L].concat(Array.from(wrongs).filter(x => x !== L && x > 0).slice(0, 3)));
+    return { label:'最小公倍数', text: a + ' と ' + b, choices: opts.map(String), answer: String(L) };
+  }
+  const pool = level === 1 ? PAIRS_GCD.filter(p => p[0] <= 24 && p[1] <= 36) : PAIRS_GCD;
+  const [a, b] = pick(pool.length ? pool : PAIRS_GCD);
+  const G = gcd(a, b);
+  const wrongs = new Set();
+  divisorsOf(G).forEach(d => { if(d !== G) wrongs.add(d); });
+  wrongs.add(G * 2);
+  wrongs.add(Math.min(a, b));
+  const opts = shuffle([G].concat(shuffle(Array.from(wrongs).filter(x => x !== G && x > 0)).slice(0, 3)));
+  return { label:'最大公約数', text: a + ' と ' + b, choices: opts.map(String), answer: String(G) };
+}
+
+function startGame(){
+  gLives = 3; gScore = 0; gDepth = 0; gCombo = 0;
+  show('game');
+  nextGameQuestion();
+}
+
+function renderLives(){
+  document.getElementById('lifeRow').textContent = '❤️'.repeat(gLives) + '🖤'.repeat(Math.max(0, 3 - gLives));
+}
+
+function nextGameQuestion(){
+  gLocked = false;
+  gQuestion = gameQuestion(gDepth);
+  document.getElementById('gameLabel').textContent = gQuestion.label;
+  document.getElementById('gameText').textContent = gQuestion.text;
+  document.getElementById('gameFeedback').textContent = '';
+  document.getElementById('gameFeedback').className = 'feedback';
+  document.getElementById('depthNum').textContent = gDepth;
+  document.getElementById('gameScore').textContent = gScore;
+  renderLives();
+
+  const wrap = document.getElementById('gameChoices');
+  wrap.innerHTML = '';
+  gQuestion.choices.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'choice-btn';
+    b.textContent = c;
+    b.addEventListener('click', () => answerGame(c, b));
+    wrap.appendChild(b);
+  });
+
+  const shark = document.getElementById('sharkEl');
+  shark.classList.remove('bite');
+  shark.style.left = '0%';
+  document.getElementById('timerInner').style.width = '100%';
+
+  gDeadline = Date.now() + TIME_LIMIT;
+  if(gTimerId) clearInterval(gTimerId);
+  // requestAnimationFrame は画面が隠れていると止まることがあるので、
+  // 残り時間は時刻の差で計算し、表示だけを一定間かくで更新する。
+  gTimerId = setInterval(tickGame, 50);
+}
+
+function tickGame(){
+  const left = gDeadline - Date.now();
+  const ratio = Math.max(0, Math.min(1, left / TIME_LIMIT));
+  document.getElementById('timerInner').style.width = (ratio * 100) + '%';
+  // サメは時間が減るほど右（ダイバー）に近づく
+  document.getElementById('sharkEl').style.left = ((1 - ratio) * 72) + '%';
+  if(left <= 0 && !gLocked){
+    timeUp();
+  }
+}
+
+function stopTimer(){
+  if(gTimerId){ clearInterval(gTimerId); gTimerId = null; }
+}
+
+function answerGame(choice, btn){
+  if(gLocked) return;
+  gLocked = true;
+  stopTimer();
+  const ok = choice === gQuestion.answer;
+  const buttons = Array.from(document.getElementById('gameChoices').children);
+  buttons.forEach(b => {
+    b.disabled = true;
+    if(b.textContent === gQuestion.answer) b.classList.add('ok');
+    else if(b === btn) b.classList.add('ng');
+  });
+  const fb = document.getElementById('gameFeedback');
+  if(ok){
+    const left = Math.max(0, gDeadline - Date.now());
+    const timeBonus = Math.round(left / 1000) * 10;
+    gCombo++;
+    const comboBonus = gCombo >= 2 ? (gCombo - 1) * 20 : 0;
+    const add = 100 + timeBonus + comboBonus;
+    gScore += add;
+    gDepth += 10;
+    fb.textContent = '⭕ せいかい！ +' + add + '点';
+    fb.className = 'feedback ok';
+    if(gCombo >= 2){
+      const cp = document.getElementById('comboPop');
+      cp.textContent = gCombo + ' れんぞく！';
+      cp.classList.remove('show');
+      void cp.offsetWidth;
+      cp.classList.add('show');
+    }
+    document.getElementById('gameScore').textContent = gScore;
+    document.getElementById('depthNum').textContent = gDepth;
+    setTimeout(() => { if(screens.game.classList.contains('hidden')) return; nextGameQuestion(); }, 850);
+  } else {
+    gCombo = 0;
+    loseLife('❌ ざんねん！ こたえは ' + gQuestion.answer);
+  }
+}
+
+function timeUp(){
+  gLocked = true;
+  stopTimer();
+  const buttons = Array.from(document.getElementById('gameChoices').children);
+  buttons.forEach(b => {
+    b.disabled = true;
+    if(b.textContent === gQuestion.answer) b.classList.add('ok');
+  });
+  gCombo = 0;
+  loseLife('⏰ 時間ぎれ！ こたえは ' + gQuestion.answer);
+}
+
+function loseLife(msg){
+  gLives--;
+  const shark = document.getElementById('sharkEl');
+  shark.style.left = '72%';
+  shark.classList.add('bite');
+  renderLives();
+  const fb = document.getElementById('gameFeedback');
+  fb.textContent = msg + (gLives > 0 ? '（のこり ' + gLives + '）' : '');
+  fb.className = 'feedback ng';
+  setTimeout(() => {
+    if(screens.game.classList.contains('hidden')) return;
+    if(gLives <= 0) endGame();
+    else nextGameQuestion();
+  }, 1200);
+}
+
+function endGame(){
+  stopTimer();
+  const best = Number(lsGet(KEY_BEST, '0'));
+  const isBest = gScore > best;
+  if(isBest) lsSet(KEY_BEST, String(gScore));
+  document.getElementById('goEmoji').textContent = isBest ? '🏆' : '🦈';
+  document.getElementById('goScore').textContent = gScore + ' 点（水深 ' + gDepth + ' m）';
+  document.getElementById('goMsg').textContent =
+    gDepth >= 200 ? 'すごい！ 深海たんけん たいせい！'
+    : gDepth >= 100 ? 'いいぞ！ もう少しで深海だ。'
+    : gDepth >= 50 ? 'この調子！ 書き出し方をおぼえると もっと速くなるよ。'
+    : 'きほんモードで やり方を たしかめてから もういちど！';
+  document.getElementById('goBest').textContent = isBest
+    ? '🎉 さいこう記録こうしん！'
+    : 'さいこう記録：' + Math.max(best, gScore) + ' 点';
+  renderHomeRecord();
+  show('gameover');
+}
+
+/* ---------- イベント ---------- */
+document.getElementById('toBasicBtn').addEventListener('click', () => {
+  renderUnitList(); renderCountGrid(); show('units');
+});
+document.getElementById('toGameBtn').addEventListener('click', startGame);
+document.getElementById('startBasicBtn').addEventListener('click', startBasic);
+document.getElementById('backHomeFromUnits').addEventListener('click', () => { renderHomeRecord(); show('home'); });
+document.getElementById('checkBtn').addEventListener('click', doCheck);
+document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+document.getElementById('quitQuizBtn').addEventListener('click', () => {
+  if(quizIdx > 0 && !confirm('とちゅうですが やめますか？')) return;
+  show('units');
+});
+document.getElementById('againBtn').addEventListener('click', startBasic);
+document.getElementById('toUnitsBtn').addEventListener('click', () => { renderUnitList(); show('units'); });
+document.getElementById('resultHomeBtn').addEventListener('click', () => { renderHomeRecord(); show('home'); });
+document.getElementById('quitGameBtn').addEventListener('click', () => {
+  stopTimer();
+  if(!confirm('とちゅうですが やめますか？')){ if(!gLocked){ gDeadline = Date.now() + TIME_LIMIT; gTimerId = setInterval(tickGame, 50); } return; }
+  renderHomeRecord(); show('home');
+});
+document.getElementById('retryGameBtn').addEventListener('click', startGame);
+document.getElementById('goHomeBtn').addEventListener('click', () => { renderHomeRecord(); show('home'); });
+document.getElementById('homeBtn').addEventListener('click', () => {
+  stopTimer();
+  renderHomeRecord(); show('home');
+});
+
+renderHomeRecord();
+renderUnitList();
+renderCountGrid();
+</script>
+</body>
+</html>

@@ -258,6 +258,17 @@ export const tools: Tool[] = [
     status: "live",
     file: "/tools/angle-master.html",
   },
+  {
+    slug: "lcm-gcd-master",
+    name: "公倍数・公約数マスター",
+    description:
+      "5年「倍数と約数」の単元を、指導の順序（倍数→公倍数・最小公倍数→約数→公約数・最大公約数→文章題での活用）に沿って練習できます。きほんモードは時間制限なしで、答え合わせのたびに倍数や約数を書き出した表を見せ、共通の数と最小公倍数・最大公約数が色で分かるようにしています。レベルアップモードは10秒以内に答えないとサメに追いつかれる深海たんけん。正解すると水深が深くなり、深くなるほど数が大きくなります。連続正解ボーナスと最高記録の保存つき。単元ごとの正答率も記録されます。",
+    icon: "🌊",
+    tags: ["算数", "無料"],
+    audience: "student",
+    status: "live",
+    file: "/tools/lcm-gcd-master.html",
+  },
 ];
 
 export function getToolBySlug(slug: string): Tool | undefined {
