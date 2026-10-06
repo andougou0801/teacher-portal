@@ -44,7 +44,7 @@
   }
   .tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
   /* レイアウト */
-  .layout{display:grid;grid-template-columns:290px 1fr;gap:16px;align-items:start;}
+  .layout{display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:start;}
   @media(max-width:820px){.layout{grid-template-columns:1fr;}}
   /* 選択肢 */
   .opt-group{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
@@ -73,6 +73,34 @@
   }
   .btn.sub:hover{background:#eef3fd;}
   .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  /* 設定パネルを3つにまとめる（たてに長くなりすぎないように） */
+  .sec{border:1px solid #e9e3d6;border-radius:12px;margin-bottom:10px;background:#fcfbf7;}
+  .sec > summary{
+    list-style:none;cursor:pointer;padding:9px 12px;border-radius:12px;
+    font-size:13px;font-weight:700;color:#333;display:flex;align-items:center;gap:7px;
+  }
+  .sec > summary::-webkit-details-marker{display:none;}
+  .sec > summary::before{content:"▶";font-size:9px;color:#aaa;}
+  .sec[open] > summary::before{content:"▼";}
+  .sec > summary:hover{background:#f3efe4;}
+  .sec .tag{
+    margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;
+    background:#fdf1d8;color:#8a6a16;
+  }
+  .sec .tag.ok{background:#e4edff;color:#28509c;}
+  .sec-body{padding:2px 12px 10px;}
+  .sec-body .row{margin-bottom:12px;}
+  .sec-body .row:last-child{margin-bottom:2px;}
+  .sec-body .opt-group{margin-bottom:0;}
+  .sec-body select{margin-bottom:0;}
+  .sec-body .hint{margin:6px 0 0;}
+  #panel .opt{font-size:11.5px;padding:5px 9px;}
+  #panel .opt-group{gap:5px;}
+  /* いま効かない設定は、うすく出して理由を書く */
+  .opt-group.off{opacity:.38;}
+  .opt-group.off .opt{pointer-events:none;}
+  .why{font-size:10.5px;color:#9a6a2a;margin:5px 0 0;line-height:1.5;}
+  body.nohint .hint-x{display:none;}
   .hint{font-size:11px;color:var(--muted);margin:-10px 0 14px;line-height:1.6;}
   /* 原稿表示 */
   .paper-head{
@@ -94,7 +122,7 @@
     font-family:"Hiragino Mincho ProN","Yu Mincho","MS Mincho",serif;
     color:#1d1d1d;
   }
-  .paper p{margin:0 0 1.1em;text-indent:1em;}
+  .paper p{margin:0;text-indent:1em;}            /* 段落の切れ目は一字下げだけ。空きは入れない（教科書と同じ） */
   .paper p:last-child{margin-bottom:0;}
   .paper.tate{
     writing-mode:vertical-rl;height:520px;max-width:100%;
@@ -103,7 +131,7 @@
   .layout > *{min-width:0;}          /* たて書きが画面幅をこえて広がらないように */
   #bodyArea{min-width:0;overflow:hidden;}
   .genko-wrap{max-width:100%;}
-  .paper.tate p{margin:0 0 0 1.1em;}
+  .paper.tate p{margin:0;}
   ruby rt{font-size:0.5em;color:#555;font-weight:400;letter-spacing:0;}
   .bn{display:inline-block;}                     /* 分かち書きのかたまりを割らない */
   /* 書体（UDフォントはWindowsの標準搭載を使うのでオフラインで動く） */
@@ -261,7 +289,7 @@
     font-family:"Hiragino Mincho ProN","Yu Mincho","MS Mincho",serif;
     font-size:15px;line-height:2.0;height:100%;
   }
-  .a4content p{margin:0 0 0.85em;text-indent:1em;}
+  .a4content p{margin:0;text-indent:1em;}
   .a4content p:last-child{margin-bottom:0;}
   .a4page .paper{border:none;background:#fff;padding:0;font-size:inherit;line-height:inherit;font-family:inherit;}
   .a4page .genko{font-family:inherit;}
@@ -315,116 +343,167 @@
     <div class="card noprint" id="panel">
       <h2>じょうけんをえらぶ</h2>
 
-      <label>学年</label>
-      <select id="grade">
-        <option value="1">小学1年</option>
-        <option value="2">小学2年</option>
-        <option value="3" selected>小学3年</option>
-        <option value="4">小学4年</option>
-        <option value="5">小学5年</option>
-        <option value="6">小学6年</option>
-      </select>
+      <!-- ① どの文章を出すか -->
+      <details class="sec" id="sec1" open>
+        <summary>どの文章を出すか</summary>
+        <div class="sec-body">
+          <div class="row">
+            <label>学年</label>
+            <select id="grade">
+              <option value="1">小学1年</option>
+              <option value="2">小学2年</option>
+              <option value="3" selected>小学3年</option>
+              <option value="4">小学4年</option>
+              <option value="5">小学5年</option>
+              <option value="6">小学6年</option>
+            </select>
+          </div>
 
-      <label style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:12px;color:#555;margin-bottom:12px;">
+          <div class="row">
+            <label>文章の種類</label>
+            <div class="opt-group" id="typeOpts">
+              <button class="opt on" data-v="any">おまかせ</button>
+              <button class="opt" data-v="説明文">説明文</button>
+              <button class="opt" data-v="物語文">物語文</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <label>テーマ</label>
+            <select id="theme"><option value="any">おまかせ（すべて）</option></select>
+          </div>
+
+          <div class="row">
+            <label>出典</label>
+            <div class="opt-group" id="originOpts">
+              <button class="opt on" data-v="any">おまかせ</button>
+              <button class="opt" data-v="オリジナル">オリジナルのみ</button>
+              <button class="opt" data-v="再話">名作の再話のみ</button>
+            </div>
+            <p class="hint hint-x">「再話」は、著作権の切れた名作・昔話をこのツールが書き直したものです。もとの作品名は下に表示されます。</p>
+          </div>
+
+          <div class="row">
+            <label>文章の分量</label>
+            <div class="opt-group" id="lenOpts">
+              <button class="opt on" data-v="any">おまかせ</button>
+              <button class="opt" data-v="short">みじかい</button>
+              <button class="opt" data-v="mid">ふつう</button>
+              <button class="opt" data-v="long">長め</button>
+            </div>
+            <p class="hint hint-x">みじかい＝原稿用紙1枚まで（〜450字）／ふつう＝450〜800字／長め＝800字以上。音読にかかる目安の時間は、文章を出したあと教員用メモに学年別で出ます。</p>
+          </div>
+        </div>
+      </details>
+
+      <label style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:12px;color:#555;margin:12px 0;">
         <input type="checkbox" id="unusedFirst" checked> まだ配っていない文章を先に出す
       </label>
       <button class="btn" id="makeBtn">この条件で文章をつくる</button>
       <button class="btn sub" id="resumeBtn" style="display:none;width:100%;margin-top:8px;"></button>
-      <p class="hint" id="stockInfo" style="margin-top:10px;"></p>
+      <p class="hint" id="stockInfo" style="margin:10px 0 14px;"></p>
 
+      <!-- ② 読みやすさ（画面にも紙にも効く） -->
+      <details class="sec" id="sec2" open>
+        <summary>読みやすさ<span class="tag ok">画面と紙</span></summary>
+        <div class="sec-body">
+          <div class="row">
+            <label>フリガナ</label>
+            <div class="opt-group" id="rubyOpts">
+              <button class="opt on" data-v="grade">学年に合わせて</button>
+              <button class="opt" data-v="all">多めにつける</button>
+              <button class="opt" data-v="none">つけない</button>
+            </div>
+            <p class="hint hint-x">「学年に合わせて」＝その学年でこれから習う漢字と、まだ習っていない漢字にフリガナをつけます（教科書と同じ考え方）。「多めに」＝用意された読みをすべてつけます。</p>
+          </div>
 
-      <label>文章の種類</label>
-      <div class="opt-group" id="typeOpts">
-        <button class="opt on" data-v="any">おまかせ</button>
-        <button class="opt" data-v="説明文">説明文</button>
-        <button class="opt" data-v="物語文">物語文</button>
-      </div>
+          <div class="row">
+            <label>表示のしかた</label>
+            <div class="opt-group" id="viewOpts">
+              <button class="opt on" data-v="yoko">よこ書き</button>
+              <button class="opt" data-v="tate">たて書き</button>
+              <button class="opt" data-v="genko">原稿用紙（よこ）</button>
+              <button class="opt" data-v="genkoV">原稿用紙（たて）</button>
+            </div>
+          </div>
 
-      <label>テーマ</label>
-      <select id="theme"><option value="any">おまかせ（すべて）</option></select>
+          <div class="row">
+            <label>書体</label>
+            <div class="opt-group" id="fontOpts">
+              <button class="opt" data-v="mincho">明朝</button>
+              <button class="opt" data-v="gothic">ゴシック</button>
+              <button class="opt on" data-v="ud">UDフォント</button>
+            </div>
+            <p class="hint hint-x">読むのが苦手な子には「UDフォント」が読みやすいことがあります（Windowsの標準フォントを使うので、追加のインストールは不要です）。</p>
+          </div>
 
-      <label>出典</label>
-      <div class="opt-group" id="originOpts">
-        <button class="opt on" data-v="any">おまかせ</button>
-        <button class="opt" data-v="オリジナル">オリジナルのみ</button>
-        <button class="opt" data-v="再話">名作の再話のみ</button>
-      </div>
-      <p class="hint">「再話」は、著作権の切れた名作・昔話をこのツールが書き直したものです。もとの作品名は下に表示されます。</p>
+          <div class="row">
+            <div class="slider-row">
+              <label style="margin:0;white-space:nowrap;">文字の大きさ</label>
+              <input type="range" id="fsize" min="14" max="30" value="17">
+            </div>
+          </div>
 
-      <label>文章の分量</label>
-      <div class="opt-group" id="lenOpts">
-        <button class="opt on" data-v="any">おまかせ</button>
-        <button class="opt" data-v="short">みじかい</button>
-        <button class="opt" data-v="mid">ふつう</button>
-        <button class="opt" data-v="long">長め</button>
-      </div>
-      <p class="hint">みじかい＝原稿用紙1枚まで（〜450字）／ふつう＝450〜800字／長め＝800字以上。音読にかかる目安の時間は、文章を出したあと教員用メモに学年別で出ます。</p>
+          <div class="row">
+            <label>行間（行と行の あいだ）</label>
+            <div class="opt-group" id="lhOpts">
+              <button class="opt" data-v="narrow">せまい</button>
+              <button class="opt on" data-v="normal">ふつう</button>
+              <button class="opt" data-v="wide">広い</button>
+            </div>
+          </div>
 
-      <label>フリガナ</label>
-      <div class="opt-group" id="rubyOpts">
-        <button class="opt on" data-v="grade">学年に合わせて</button>
-        <button class="opt" data-v="all">多めにつける</button>
-        <button class="opt" data-v="none">つけない</button>
-      </div>
-      <p class="hint">「学年に合わせて」＝その学年でこれから習う漢字と、まだ習っていない漢字にフリガナをつけます（教科書と同じ考え方）。「多めに」＝用意された読みをすべてつけます。</p>
+          <div class="row">
+            <label>1行の字数</label>
+            <div class="opt-group" id="cplOpts">
+              <button class="opt on" data-v="auto">おまかせ</button>
+              <button class="opt" data-v="20">20字</button>
+              <button class="opt" data-v="25">25字</button>
+              <button class="opt" data-v="30">30字</button>
+            </div>
+            <p class="hint hint-x">行を見失いやすい子には「行間：広い」と「1行：20字」が読みやすいことがあります。<br>原稿用紙は「おまかせ」のとき、紙に合わせて1行（1列）の字数を自動で決めます。20字づめで固定したいときは「20字」を選んでください。</p>
+          </div>
+        </div>
+      </details>
 
-      <label>印刷のしかた</label>
-      <div class="opt-group" id="fitOpts">
-        <button class="opt on" data-v="page">1枚に収める</button>
-        <button class="opt" data-v="size">文字の大きさを優先</button>
-      </div>
-      <p class="hint">「文字の大きさを優先」にすると、文字を小さくせずに、収まらない分を2枚目へ送ります。読むのが苦手な子に配るときに使ってください。</p>
+      <!-- ③ 紙に印刷するときだけ効く -->
+      <details class="sec" id="sec3">
+        <summary>紙に印刷するとき<span class="tag">紙だけ</span></summary>
+        <div class="sec-body">
+          <p class="hint" style="margin:0 0 10px;">ここの3つは<b>印刷した紙だけ</b>が変わります。画面の見え方は変わりません。</p>
 
-      <label>用紙の向き</label>
-      <div class="opt-group" id="oriOpts">
-        <button class="opt on" data-v="portrait">たて（A4）</button>
-        <button class="opt" data-v="landscape">よこ（A4横）</button>
-      </div>
-      <p class="hint">向きは<b>ここで選んでください</b>。印刷ダイアログの「用紙の向き」を横にしても、ツール側の指定が優先されるため変わりません。「たて書き」「原稿用紙（たて）」は、よこ向きの紙にすると1行（1列）が短くなって読みやすくなります。</p>
+          <div class="row">
+            <label>印刷のしかた</label>
+            <div class="opt-group" id="fitOpts">
+              <button class="opt on" data-v="page">1枚に収める</button>
+              <button class="opt" data-v="size">文字の大きさを優先</button>
+            </div>
+            <p class="hint hint-x">「文字の大きさを優先」にすると、文字を小さくせずに、収まらない分を2枚目へ送ります。読むのが苦手な子に配るときに使ってください。</p>
+          </div>
 
-      <label>段組み（よこ書きのとき）</label>
-      <div class="opt-group" id="colsOpts">
-        <button class="opt on" data-v="1">1段</button>
-        <button class="opt" data-v="2">2段</button>
-      </div>
-      <p class="hint">よこ向きの紙に「よこ書き」で印刷すると1行が長くなりすぎます。「2段」にすると新聞のように2列に分かれ、1行が短くなります（よこ書きのときだけ効きます）。</p>
+          <div class="row">
+            <label>用紙の向き</label>
+            <div class="opt-group" id="oriOpts">
+              <button class="opt on" data-v="portrait">たて（A4）</button>
+              <button class="opt" data-v="landscape">よこ（A4横）</button>
+            </div>
+            <p class="hint hint-x">向きは<b>ここで選んでください</b>。印刷ダイアログの「用紙の向き」を横にしても、ツール側の指定が優先されるため変わりません。「たて書き」「原稿用紙（たて）」は、よこ向きの紙にすると1列が短くなって読みやすくなります。</p>
+          </div>
 
-      <label>書体</label>
-      <div class="opt-group" id="fontOpts">
-        <button class="opt" data-v="mincho">明朝</button>
-        <button class="opt" data-v="gothic">ゴシック</button>
-        <button class="opt on" data-v="ud">UDフォント</button>
-      </div>
-      <p class="hint">読むのが苦手な子には「UDフォント」が読みやすいことがあります（Windowsの標準フォントを使うので、追加のインストールは不要です）。</p>
+          <div class="row">
+            <label>段組み</label>
+            <div class="opt-group" id="colsOpts">
+              <button class="opt on" data-v="1">1段</button>
+              <button class="opt" data-v="2">2段</button>
+            </div>
+            <p class="hint hint-x">よこ向きの紙に「よこ書き」で印刷すると1行が長くなりすぎます。「2段」にすると新聞のように2列に分かれ、1行が短くなります。</p>
+          </div>
+        </div>
+      </details>
 
-      <label>表示のしかた</label>
-      <div class="opt-group" id="viewOpts">
-        <button class="opt on" data-v="yoko">よこ書き</button>
-        <button class="opt" data-v="tate">たて書き</button>
-        <button class="opt" data-v="genko">原稿用紙（よこ）</button>
-        <button class="opt" data-v="genkoV">原稿用紙（たて）</button>
-      </div>
-
-      <div class="slider-row">
-        <label style="margin:0;white-space:nowrap;">文字の大きさ</label>
-        <input type="range" id="fsize" min="14" max="30" value="17">
-      </div>
-
-      <label>行間（行と行の あいだ）</label>
-      <div class="opt-group" id="lhOpts">
-        <button class="opt" data-v="narrow">せまい</button>
-        <button class="opt on" data-v="normal">ふつう</button>
-        <button class="opt" data-v="wide">広い</button>
-      </div>
-
-      <label>1行の字数</label>
-      <div class="opt-group" id="cplOpts">
-        <button class="opt on" data-v="auto">おまかせ</button>
-        <button class="opt" data-v="20">20字</button>
-        <button class="opt" data-v="25">25字</button>
-        <button class="opt" data-v="30">30字</button>
-      </div>
-      <p class="hint">行を見失いやすい子には「行間：広い」と「1行：20字」が読みやすいことがあります。画面にも印刷にも反映されます。<br>原稿用紙は「おまかせ」のとき、紙に合わせて1行（1列）の字数を自動で決めます。20字づめで固定したいときは「20字」を選んでください。</p>
+      <label style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:11px;color:#777;margin:12px 0 0;">
+        <input type="checkbox" id="showHints"> それぞれの説明を出す
+      </label>
     </div>
 
     <!-- 出力 -->
@@ -522,6 +601,18 @@
         <li><b>いっしょに読める作品</b>…同じテーマの作品を、学年の近い順に3つ提示。読み広げに使えます。</li>
         <li><b>文章のデータ</b>…字数・段落数・文の数・一文の平均字数・漢字の割合・音読の目安時間を自動計算。</li>
         <li><b>フリガナがつく語の一覧</b>…その学年でまだ習わない語と読みを一覧表示。</li>
+      </ul>
+      <h3>設定パネルの見方</h3>
+      <ul>
+        <li>設定は3つにまとまっています。見出しをおすと、開いたり閉じたりできます（開き具合はおぼえます）。
+          <ul>
+            <li><b>どの文章を出すか</b>…学年・種類・テーマ・出典・分量。ここを変えると、次に出てくる文章が変わります。</li>
+            <li><b>読みやすさ</b>（<b>画面と紙</b>）…フリガナ・表示のしかた・書体・文字の大きさ・行間・1行の字数。画面がすぐに変わり、印刷にも反映されます。</li>
+            <li><b>紙に印刷するとき</b>（<b>紙だけ</b>）…印刷のしかた・用紙の向き・段組み。<b>画面の見た目は変わりません</b>。印刷した紙だけが変わります。</li>
+          </ul>
+        </li>
+        <li>いま効かない設定は、うすく表示して理由を出します（例：原稿用紙のときの「行間」、たて書きのときの「段組み」）。</li>
+        <li>それぞれの設定のくわしい説明は、パネルのいちばん下の<b>「それぞれの説明を出す」</b>にチェックを入れると出ます。</li>
       </ul>
       <h3>読みやすさの調整</h3>
       <ul>
@@ -8148,6 +8239,7 @@ function loadUsed(){
 loadUsed();
 /* 設定の記憶（学年・書体・表示・文字サイズなど。毎朝えらび直さなくてよいように） */
 const PREF_KEY="yomu_pref_v1";
+const PANEL_KEY="yomu_panel_v1";
 function savePref(){
   try{
     localStorage.setItem(PREF_KEY, JSON.stringify({
@@ -8171,6 +8263,49 @@ function loadPref(){
   if(p.fsize) $("#fsize").value=p.fsize;
 }
 
+
+/* いまの「表示のしかた」では効かない設定を、うすくして理由を出す */
+function setAvail(sel, ok, why){
+  const g=$(sel); if(!g) return;
+  g.classList.toggle("off", !ok);
+  const row=g.closest(".row"); if(!row) return;
+  let w=row.querySelector(".why");
+  if(!ok){
+    if(!w){ w=document.createElement("p"); w.className="why"; row.appendChild(w); }
+    w.textContent="※ "+why;
+  }else if(w){ w.remove(); }
+}
+function syncAvail(){
+  const genko = state.view==="genko" || state.view==="genkoV";
+  setAvail("#lhOpts",   !genko, "原稿用紙はマス目なので、行間は変わりません。");
+  setAvail("#colsOpts", state.view==="yoko", "「よこ書き」のときだけ使えます。");
+}
+/* 説明文（ヒント）の出し入れと、3つのセクションの開き具合をおぼえる */
+function applyPanelPref(){
+  const sh=$("#showHints");
+  document.body.classList.toggle("nohint", !(sh && sh.checked));
+}
+function savePanelPref(){
+  try{
+    localStorage.setItem(PANEL_KEY, JSON.stringify({
+      hints: !!($("#showHints")||{}).checked,
+      s1: $("#sec1") ? $("#sec1").open : true,
+      s2: $("#sec2") ? $("#sec2").open : true,
+      s3: $("#sec3") ? $("#sec3").open : false
+    }));
+  }catch(e){}
+}
+function loadPanelPref(){
+  let p=null;
+  try{ p=JSON.parse(localStorage.getItem(PANEL_KEY)||"null"); }catch(e){}
+  if(p){
+    if($("#showHints")) $("#showHints").checked = !!p.hints;
+    if($("#sec1")) $("#sec1").open = p.s1!==false;
+    if($("#sec2")) $("#sec2").open = p.s2!==false;
+    if($("#sec3")) $("#sec3").open = !!p.s3;
+  }
+  applyPanelPref();
+}
 function saveUsed(){
   try{ localStorage.setItem(useKey(),JSON.stringify(usedLog)); }catch(e){}
 }
@@ -8298,7 +8433,7 @@ initOptGroup("#typeOpts","type",()=>{updateStock();savePref();});
 initOptGroup("#originOpts","origin",()=>{updateStock();savePref();});
 initOptGroup("#lenOpts","len",()=>{updateStock();savePref();});
 initOptGroup("#rubyOpts","ruby",()=>{ savePref(); if(current) showText(current); });
-initOptGroup("#viewOpts","view",()=>{ savePref(); if(current) showText(current); });
+initOptGroup("#viewOpts","view",()=>{ savePref(); syncAvail(); if(current) showText(current); });
 initOptGroup("#fontOpts","font",()=>{ savePref(); if(current) showText(current); });
 initOptGroup("#fitOpts","fit",()=>savePref());
 initOptGroup("#lhOpts","lh",()=>{ savePref(); if(current) showText(current); });
@@ -8306,6 +8441,10 @@ initOptGroup("#cplOpts","cpl",()=>{ savePref(); if(current) showText(current); }
 initOptGroup("#oriOpts","ori",()=>{ savePref(); applyOrient(); });
 initOptGroup("#colsOpts","cols",()=>savePref());
 initOptGroup("#listFilter","listFilter",renderList);
+
+/* 説明の出し入れ・セクションの開閉をおぼえる */
+if($("#showHints")) $("#showHints").addEventListener("change",()=>{ applyPanelPref(); savePanelPref(); });
+["#sec1","#sec2","#sec3"].forEach(s=>{ const d=$(s); if(d) d.addEventListener("toggle",savePanelPref); });
 
 /* テーマ選択肢 */
 const themes=[...new Set(TEXTS.map(t=>t.theme))];
@@ -9031,6 +9170,8 @@ $("#clearUseBtn").addEventListener("click",()=>{
 
 loadPref();        // 前回えらんだ学年・書体・表示を思い出す
 applyOrient();     // 用紙の向きを @page に反映する
+loadPanelPref();   // 説明の出し入れ・セクションの開閉
+syncAvail();       // いま効かない設定をうすくする
 renderList();
 updateStock();
 </script>
