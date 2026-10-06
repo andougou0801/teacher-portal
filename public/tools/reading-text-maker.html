@@ -174,7 +174,10 @@
   .genko.v{
     grid-template-columns:none;grid-template-rows:repeat(20,var(--ch));
     grid-auto-flow:column;grid-auto-columns:var(--cw);
-    direction:rtl;width:auto;height:calc(var(--ch) * 20);
+    direction:rtl;height:calc(var(--ch) * 20);
+    /* マス目の線は左端から引かれるので、紙の幅ぴったりではなく「列の数ぶん」にする。
+       そうしないと文字だけ右に寄って、マスと1/3マスずれる */
+    width:max-content;margin-left:auto;
   }
   .genko.v .gcell{flex-direction:row-reverse;justify-content:flex-start;direction:ltr;}
   .genko.v .gcell .grt{
@@ -539,6 +542,14 @@
       </div>
       <input type="text" class="searchbox noprint" id="searchBox" placeholder="題名・テーマ・作者などで検索（例：宮沢／生きもの／星）">
       <p class="hint" id="listCount"></p>
+      <div class="btn-row noprint" style="margin-bottom:6px;">
+        <label style="margin:0;align-self:center;">用紙の向き</label>
+        <div class="opt-group" id="oriOpts2" style="margin:0;">
+          <button class="opt small on" data-v="portrait">たて（A4）</button>
+          <button class="opt small" data-v="landscape">よこ（A4横）</button>
+        </div>
+        <span class="hint" style="margin:0;align-self:center;">一覧は「よこ」のほうが収まります。「文章をつくる」の設定と共通です。</span>
+      </div>
       <div class="btn-row noprint">
         <button class="btn sub" id="printListBtn">この一覧を印刷する</button>
         <button class="btn sub" id="batchPrintBtn">チェックした作品をまとめて印刷</button>
@@ -612,6 +623,7 @@
           </ul>
         </li>
         <li>いま効かない設定は、うすく表示して理由を出します（例：原稿用紙のときの「行間」、たて書きのときの「段組み」）。</li>
+        <li><b>用紙の向き</b>は「作品一覧」タブにも同じボタンがあり、どちらで変えても共通です。一覧表や「まとめて印刷」も、この向きで印刷されます（一覧表は「よこ」のほうが収まります）。</li>
         <li>それぞれの設定のくわしい説明は、パネルのいちばん下の<b>「それぞれの説明を出す」</b>にチェックを入れると出ます。</li>
       </ul>
       <h3>読みやすさの調整</h3>
@@ -8258,7 +8270,7 @@ function loadPref(){
   const sync=(sel,v)=>document.querySelectorAll(sel+" .opt").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
   sync("#fontOpts",state.font); sync("#viewOpts",state.view); sync("#rubyOpts",state.ruby);
   sync("#lenOpts",state.len);   sync("#typeOpts",state.type); sync("#originOpts",state.origin); sync("#fitOpts",state.fit); sync("#lhOpts",state.lh); sync("#cplOpts",state.cpl);
-  sync("#oriOpts",state.ori); sync("#colsOpts",state.cols);
+  sync("#oriOpts",state.ori); sync("#oriOpts2",state.ori); sync("#colsOpts",state.cols);
   if(p.grade) $("#grade").value=p.grade;
   if(p.fsize) $("#fsize").value=p.fsize;
 }
@@ -8439,6 +8451,7 @@ initOptGroup("#fitOpts","fit",()=>savePref());
 initOptGroup("#lhOpts","lh",()=>{ savePref(); if(current) showText(current); });
 initOptGroup("#cplOpts","cpl",()=>{ savePref(); if(current) showText(current); });
 initOptGroup("#oriOpts","ori",()=>{ savePref(); applyOrient(); });
+initOptGroup("#oriOpts2","ori",()=>{ savePref(); applyOrient(); });
 initOptGroup("#colsOpts","cols",()=>savePref());
 initOptGroup("#listFilter","listFilter",renderList);
 
@@ -8817,6 +8830,9 @@ function makeMemoPage(t){
 /* 用紙の向き（たて／よこ）。印刷ダイアログではなく、ここで @page を書きかえる */
 function applyOrient(){
   const land = state.ori==="landscape";
+  // 「文章をつくる」と「作品一覧」の2か所のボタンを同じ状態にそろえる
+  ["#oriOpts","#oriOpts2"].forEach(sel=>
+    document.querySelectorAll(sel+" .opt").forEach(b=>b.classList.toggle("on", b.dataset.v===state.ori)));
   const st=$("#pageRule");
   if(st) st.textContent="@page{size:A4 "+(land?"landscape":"portrait")+";margin:15mm;}";
   const sheet=$("#a4sheet");
@@ -8840,6 +8856,13 @@ function applyCpl(content){
   if(paper.classList.contains("tate")){
     paper.style.height   = n ? (n+1.5)+"em" : "100%";
     paper.style.maxWidth = "";
+    // よこ向きの紙などで、指定した字数が紙の高さに入らないときは紙の高さまでにする
+    // （はみ出して切れるより、1列が少し短くなるほうがよい）
+    const box=content.closest(".a4body");
+    if(n && box && box.clientHeight){
+      const fs=parseFloat(getComputedStyle(content).fontSize)||16;
+      if((n+1.5)*fs > box.clientHeight) paper.style.height = box.clientHeight+"px";
+    }
   }else{
     paper.style.maxWidth = n ? (n+1)+"em" : "";
     paper.style.height   = "";
@@ -8908,8 +8931,10 @@ function fitA4(page, keepSize){
     const fixedCols=cplNum();                 // 1行の字数を指定していれば、それを守る
     const t = TEXTS.find(x=>x.id===page.dataset.tid);
     let cols=fixedCols||20, cw=Math.round(printBaseSize(g)*1.9);
-    const set=()=>{ gk.style.setProperty("--cw",cw+"px");
-                    gk.style.setProperty("--ch",Math.round(cw*1.45)+"px");
+    // マス目の線と文字がぴったり重なるよう、マスの大きさは整数pxにする
+    const set=()=>{ const w=Math.round(cw);
+                    gk.style.setProperty("--cw",w+"px");
+                    gk.style.setProperty("--ch",Math.round(w*1.45)+"px");
                     regrid(gk,cols); };
     // 紙の形に合う「1行（1列）の字数」をえらぶ。
     // よこ向きの紙にたて書きの原稿用紙を刷るときは、1列を短くして列を増やすほうがマスが大きい。
@@ -8994,13 +9019,18 @@ function printA4(pages){
     // 「文字の大きさを優先」のときは、縮めるより先に2枚目へ送る
     if(state.fit==="size" && !p.dataset.memo){
       fitA4(p,true);                       // 画面で選んだ大きさのまま置く
+      const group=[p];
       let guard=0, cur=p;
       while(overflows(cur.querySelector(".a4body")) && guard++<6){
         const ex=splitIfNeeded(cur);
         if(!ex) break;
-        cur.after(ex); fitA4(ex,true); cur=ex;
+        cur.after(ex); fitA4(ex,true); cur=ex; group.push(ex);
       }
-      if(overflows(cur.querySelector(".a4body"))){ if(!fitA4(cur)) overflow++; }
+      // 分けても収まらない紙は、その紙だけ小さくして収める。
+      // （最後の1枚だけ直すと、1枚目が切れたまま印刷されてしまう）
+      group.forEach(pg=>{
+        if(overflows(pg.querySelector(".a4body")) && !fitA4(pg)) overflow++;
+      });
       return;
     }
     if(fitA4(p)) return;
@@ -9019,7 +9049,10 @@ function printA4(pages){
   }
   document.body.classList.add("print-a4");
   window.print();
-  setTimeout(()=>document.body.classList.remove("print-a4"),800);
+  setTimeout(()=>{
+    document.body.classList.remove("print-a4");
+    sheet.innerHTML="";          // 次の「一覧を印刷」に白紙が混ざらないよう片づける
+  },800);
   return true;
 }
 
@@ -9066,6 +9099,8 @@ function renderList(){
       ? (usedLog[b.id]||"").localeCompare(usedLog[a.id]||"") || a.grade-b.grade
       : a.grade-b.grade || a.id.localeCompare(b.id));
   const tb=$("#listTable tbody");
+  // 作りなおしてもチェックが消えないようにおぼえておく
+  const checked=new Set([...tb.querySelectorAll("input.pick:checked")].map(cb=>cb.dataset.id));
   tb.innerHTML=rows.map(t=>{
     const isOrig=t.origin==="オリジナル";
     const src=isOrig
@@ -9086,6 +9121,7 @@ function renderList(){
     TEXTS.filter(t=>t.origin==="再話").length+"作品／配布済み"+
     TEXTS.filter(t=>usedLog[t.id]).length+"作品）";
   tb.querySelectorAll("input.pick").forEach(cb=>{
+    if(checked.has(cb.dataset.id)) cb.checked=true;         // さっきのチェックを戻す
     cb.addEventListener("click",e=>e.stopPropagation());   // 行クリックと分ける
   });
   tb.querySelectorAll("tr").forEach(tr=>{
@@ -9112,7 +9148,11 @@ document.querySelectorAll(".tab").forEach(b=>{
   b.addEventListener("click",()=>switchTab(b.dataset.tab));
 });
 
-$("#printListBtn").addEventListener("click",()=>window.print());
+$("#printListBtn").addEventListener("click",()=>{
+  applyOrient();                    // 一覧も「用紙の向き」にしたがう
+  $("#a4sheet").innerHTML="";       // 前に印刷した紙が残っていたら消す
+  window.print();
+});
 $("#searchBox").addEventListener("input",renderList);
 $("#listGrade").addEventListener("change",renderList);
 $("#checkAll").addEventListener("click",e=>{
