@@ -659,6 +659,128 @@
   }
   .subject-add button:hover { background-color: #1f54b8; }
 
+  /* 行事の計画表 */
+  .plan-pick, .plan-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .plan-pick label, .plan-bar label { font-size: 14px; color: #555; }
+  .plan-pick select, .plan-pick input[type="text"],
+  .plan-bar input[type="text"], .plan-bar input[type="date"],
+  .plan-range input[type="date"] {
+    margin-left: 4px;
+    padding: 7px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .plan-pick input[type="text"] { min-width: 200px; }
+  .plan-pick button, .plan-bar button {
+    background: #e8ecf2;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+  }
+  .plan-pick button:hover, .plan-bar button:hover { background: #d8dfe9; }
+  .plan-pick button.import-main-btn, .plan-bar button.import-main-btn {
+    background: #2d6cdf;
+    color: #fff;
+  }
+  .plan-pick button.import-main-btn:hover,
+  .plan-bar button.import-main-btn:hover { background: #1f54b8; }
+  .plan-pick button.danger { background: #fdeaea; color: #b02a37; }
+  .plan-pick button.danger:hover { background: #f8d7da; }
+  .plan-range {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #555;
+  }
+  .plan-print-title {
+    display: none;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  table.plan-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  table.plan-table th, table.plan-table td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    vertical-align: top;
+    text-align: center;
+  }
+  table.plan-table th {
+    background-color: #eaf2ff;
+    color: #2d6cdf;
+    font-size: 15px;
+  }
+  table.plan-table th.plan-col-date { width: 140px; }
+  table.plan-table th.plan-col-dow { width: 60px; }
+  table.plan-table th.plan-col-note { width: 160px; }
+  table.plan-table th.plan-col-del { width: 44px; }
+  table.plan-table td.plan-dow { font-weight: bold; color: #555; vertical-align: middle; }
+  /* 土日は色を変えて、行事の前後が分かりやすいようにする */
+  table.plan-table tr.plan-sat td.plan-dow { color: #2d6cdf; }
+  table.plan-table tr.plan-sun td.plan-dow,
+  table.plan-table tr.plan-holiday td.plan-dow { color: #b02a37; }
+  table.plan-table tr.plan-eventday { background-color: #fff8e6; }
+  table.plan-table input[type="date"] {
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 14px;
+    background: transparent;
+  }
+  table.plan-table textarea {
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 56px;
+    background: transparent;
+    box-sizing: border-box;
+  }
+  table.plan-table input:hover, table.plan-table textarea:hover,
+  table.plan-table input:focus, table.plan-table textarea:focus {
+    border-color: #cdd8e8;
+    background: #fbfdff;
+    outline: none;
+  }
+  .plan-del-btn {
+    background: none;
+    border: none;
+    color: #c0392b;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 4px 6px;
+  }
+  .plan-holiday-name {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    color: #b02a37;
+  }
+  /* 日にちの文字は紙にだけ出す */
+  .plan-date-print { display: none; }
+
   /* 時間割テーブル(曜日=縦, 時限=横) */
   .table-wrap { overflow-x: auto; }
   table.timetable {
@@ -1130,6 +1252,54 @@
     body.printing-units table.unit-table th,
     body.printing-units table.unit-table td { font-size: 10px; padding: 3px; border: 1px solid #999; }
     body.printing-units .unit-chip { font-size: 10px; background: transparent; padding: 0; display: block; }
+    /* 行事の計画表。1枚に収めず、長ければ次のページへ続ける */
+    body.printing-plan .card { display: none !important; }
+    body.printing-plan #tabTimetable,
+    body.printing-plan #tabUnits { display: none !important; }
+    body.printing-plan #tabPlans { display: block !important; }
+    body.printing-plan #planCard { display: block !important; }
+    body.printing-plan #planPickCard { display: none !important; }
+    body.tab-plans-active #tabTimetable,
+    body.tab-plans-active #tabUnits { display: none !important; }
+    body.tab-plans-active #planPickCard { display: none !important; }
+    body.printing-plan .plan-print-title,
+    body.tab-plans-active .plan-print-title { display: block; }
+    /* 計画表を開いたままCtrl+Pを押したときに、時間割が出てしまわないようにする */
+    body:not(.tab-plans-active):not(.printing-plan) #tabPlans { display: none !important; }
+
+    table.plan-table { min-width: 0; width: 100%; }
+    table.plan-table th, table.plan-table td {
+      border: 1px solid #888;
+      padding: 4px;
+      font-size: 13px;
+    }
+    /* 見出しの行は、ページが変わるたびに出す */
+    table.plan-table thead { display: table-header-group; }
+    table.plan-table tr { page-break-inside: avoid; break-inside: avoid; }
+    table.plan-table textarea { display: none !important; }
+    /* 日にちはカレンダーの部品ではなく文字で出す */
+    table.plan-table input[type="date"] { display: none !important; }
+    table.plan-table .plan-date-print {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+    }
+    table.plan-table th.plan-col-date { width: 70px; }
+    table.plan-table th.plan-col-dow { width: 46px; }
+    table.plan-table td.plan-dow { vertical-align: middle; }
+    table.plan-table .print-text {
+      display: block;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.35;
+      color: #333;
+      padding: 2px;
+      min-height: 1.35em;
+    }
+
     /* 年間指導計画タブを開いたままCtrl+Pを押しても、その表が印刷されるようにする */
     body:not(.tab-units-active):not(.printing-units) #unitPlanCard { display: none !important; }
     body.tab-units-active #tabTimetable { display: none !important; }
@@ -1187,6 +1357,7 @@
 <div class="tab-bar no-print">
   <button id="tabTimetableBtn" type="button" class="tab-btn active">時間割</button>
   <button id="tabUnitsBtn" type="button" class="tab-btn">年間指導計画</button>
+  <button id="tabPlansBtn" type="button" class="tab-btn">行事の計画表</button>
 </div>
 
 <div class="container">
@@ -1419,6 +1590,68 @@
     </details>
   </div>
  </div>
+
+ <div id="tabPlans" hidden>
+  <div class="card no-print" id="planPickCard">
+    <h2>行事の計画表</h2>
+    <div class="empty-note" style="margin-bottom:12px; text-align:left;">
+      修学旅行・運動会など、大きな行事に向けた動きを日ごとに書きためておく表です。
+      行事ごとに1枚ずつ作れます。書いた内容はこの端末に年度ごとに保存されます。<br>
+      書き方の例 — 教員の動き:「7:30 集合 / 8:00 出発式 / 宿舎へ点呼報告」、
+      児童の動き:「しおりの読み合わせ」、備考:「バス会社へ最終連絡」。
+      欄の中では改行できるので、時刻ごとに行を分けて書けます。
+    </div>
+    <div class="plan-pick">
+      <label>計画表
+        <select id="planSelect"></select>
+      </label>
+      <input type="text" id="newPlanName" placeholder="新しい計画表の名前(例: 修学旅行)">
+      <button id="addPlanBtn" type="button" class="import-main-btn">作る</button>
+      <button id="deletePlanBtn" type="button" class="danger">この計画表を削除</button>
+    </div>
+  </div>
+
+  <div class="card" id="planCard" hidden>
+    <h2 class="no-print">計画表</h2>
+    <div class="plan-bar no-print">
+      <label>行事名
+        <input type="text" id="planTitleInput" placeholder="例: 修学旅行">
+      </label>
+      <label>行事の日
+        <input type="date" id="planEventDate" title="当日が決まっていれば入れてください。空でもかまいません">
+      </label>
+      <button id="printPlanBtn" type="button">この表を印刷</button>
+    </div>
+    <div class="plan-bar no-print">
+      <button id="addPlanRowBtn" type="button" class="import-main-btn">行を追加</button>
+      <span class="plan-range">
+        期間から並べる
+        <input type="date" id="planRangeFrom">
+        〜
+        <input type="date" id="planRangeTo">
+        <button id="fillPlanRangeBtn" type="button">日付を入れる</button>
+      </span>
+      <button id="sortPlanBtn" type="button">日付順に並べる</button>
+      <span class="empty-note" id="planStatus"></span>
+    </div>
+    <div id="planPrintTitle" class="plan-print-title"></div>
+    <div class="table-wrap">
+      <table class="plan-table" id="planTable">
+        <thead>
+          <tr>
+            <th class="plan-col-date">日にち</th>
+            <th class="plan-col-dow">曜日</th>
+            <th>教員の動き</th>
+            <th>児童の動き</th>
+            <th class="plan-col-note">備考</th>
+            <th class="plan-col-del no-print"></th>
+          </tr>
+        </thead>
+        <tbody id="planBody"></tbody>
+      </table>
+    </div>
+  </div>
+ </div>
 </div>
 
 <script>
@@ -1433,6 +1666,7 @@
   const LAST_BACKUP_KEY = "timetable_last_backup";
   const SHOW_BREAKS_KEY = "timetable_show_breaks";
   const UNIT_KEY = "timetable_unit_plan";
+  const PLANS_KEY = "timetable_event_plans";
 
   const DAY_NAMES = ["月", "火", "水", "木", "金", "土", "日"];
   const DAY_NAMES_HIRA = ["げつ", "か", "すい", "もく", "きん", "ど", "にち"];
@@ -1529,6 +1763,8 @@
   let CARRY = {};   // ツールを使い始める前(前期など)に実施した時数
   let PATTERN_DATA = null;
   let UNIT_PLAN = { grade: "", book: "", units: [] };
+  // 行事の計画表。{ plans: [{id, name, eventDate, rows:[{date,teacher,student,note}]}], activeId }
+  let EVENT_PLANS = { plans: [], activeId: "" };
   let HIRAGANA_MODE = localStorage.getItem(HIRAGANA_KEY) === "1";
   let PRINT_MEMO = localStorage.getItem(PRINT_MEMO_KEY) === "1";
   // 休み時間の欄は既定で表示(一度オフにすると記憶する)
@@ -2665,7 +2901,9 @@
     const p = loadPattern();
     PATTERN_DATA = p ? clonePatternDays(p) : emptyPatternDays();
     UNIT_PLAN = loadUnitPlan();
+    EVENT_PLANS = loadEventPlans();
 
+    renderPlans();
     renderUnitPlan();        // 先に学年を画面へ反映してから
     renderTextbookList();    // 「単元データあり」の判定を行う
     renderSubjectEditor();
@@ -2814,9 +3052,10 @@
 
   // 入力欄は高さが固定なので、そのまま印刷すると書いた文字が下に隠れて切れてしまう。
   // 印刷の直前だけ、中身を同じ場所の文字(div)に写して紙の幅で折り返させる。
+  // 紙では入力欄を隠し、書いた文字をそのまま出す(入力欄だと長い文が切れてしまうため)
   function expandCellsForPrint() {
     restoreCellsAfterPrint();
-    document.querySelectorAll("#timetable textarea").forEach(el => {
+    document.querySelectorAll("#timetable textarea, #planTable textarea").forEach(el => {
       const div = document.createElement("div");
       div.className = "print-text";
       div.textContent = el.value;
@@ -2825,7 +3064,8 @@
   }
 
   function restoreCellsAfterPrint() {
-    document.querySelectorAll("#timetable .print-text").forEach(el => el.remove());
+    document.querySelectorAll("#timetable .print-text, #planTable .print-text")
+      .forEach(el => el.remove());
   }
 
   // 「印刷する」ボタンだけでなく、Ctrl+Pから印刷したときも効くようにする
@@ -3139,15 +3379,24 @@
 
   // タブの切り替え
   function showTab(which) {
-    const isUnits = which === "units";
-    document.getElementById("tabTimetable").hidden = isUnits;
-    document.getElementById("tabUnits").hidden = !isUnits;
-    document.getElementById("tabTimetableBtn").classList.toggle("active", !isUnits);
-    document.getElementById("tabUnitsBtn").classList.toggle("active", isUnits);
-    document.body.classList.toggle("tab-units-active", isUnits);
+    const tabs = {
+      timetable: ["tabTimetable", "tabTimetableBtn"],
+      units: ["tabUnits", "tabUnitsBtn"],
+      plans: ["tabPlans", "tabPlansBtn"]
+    };
+    if (!tabs[which]) which = "timetable";
+    Object.keys(tabs).forEach(key => {
+      const [paneId, btnId] = tabs[key];
+      document.getElementById(paneId).hidden = (key !== which);
+      document.getElementById(btnId).classList.toggle("active", key === which);
+    });
+    // Ctrl+Pで印刷したとき、開いているタブの中身が出るようにする
+    document.body.classList.toggle("tab-units-active", which === "units");
+    document.body.classList.toggle("tab-plans-active", which === "plans");
   }
   document.getElementById("tabTimetableBtn").addEventListener("click", () => showTab("timetable"));
   document.getElementById("tabUnitsBtn").addEventListener("click", () => showTab("units"));
+  document.getElementById("tabPlansBtn").addEventListener("click", () => showTab("plans"));
 
   function unitKeyFor(year) { return UNIT_KEY + "_" + year; }
 
@@ -3398,6 +3647,339 @@
 
   document.getElementById("applyStdHoursBtn").addEventListener("click", () => applyStandardHours(false));
   document.getElementById("replaceStdHoursBtn").addEventListener("click", () => applyStandardHours(true));
+
+  /* ---------- 行事の計画表 ---------- */
+
+  function plansKeyFor(year) { return PLANS_KEY + "_" + year; }
+
+  function loadEventPlans() {
+    const raw = localStorage.getItem(plansKeyFor(activeYear));
+    if (raw) {
+      try {
+        const obj = JSON.parse(raw);
+        if (obj && Array.isArray(obj.plans)) {
+          return { plans: obj.plans, activeId: obj.activeId || "" };
+        }
+      } catch (e) { /* 壊れていたら作り直す */ }
+    }
+    return { plans: [], activeId: "" };
+  }
+
+  function saveEventPlans() {
+    localStorage.setItem(plansKeyFor(activeYear), JSON.stringify(EVENT_PLANS));
+  }
+
+  function activePlan() {
+    return EVENT_PLANS.plans.find(p => p.id === EVENT_PLANS.activeId) || null;
+  }
+
+  function newPlanRow(date) {
+    return { date: date || "", teacher: "", student: "", note: "" };
+  }
+
+  function showPlanStatus(text) {
+    const el = document.getElementById("planStatus");
+    if (!el) return;
+    el.textContent = text;
+    clearTimeout(showPlanStatus._t);
+    showPlanStatus._t = setTimeout(() => { el.textContent = ""; }, 4000);
+  }
+
+  // 計画表の選択肢と、表の中身をまとめて描き直す
+  function renderPlans() {
+    const select = document.getElementById("planSelect");
+    const card = document.getElementById("planCard");
+    select.innerHTML = "";
+
+    if (EVENT_PLANS.plans.length === 0) {
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "(まだありません)";
+      select.appendChild(opt);
+      select.disabled = true;
+      document.getElementById("deletePlanBtn").disabled = true;
+      card.hidden = true;
+      return;
+    }
+    select.disabled = false;
+    document.getElementById("deletePlanBtn").disabled = false;
+
+    EVENT_PLANS.plans.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.id;
+      opt.textContent = p.name || "(名前なし)";
+      select.appendChild(opt);
+    });
+    if (!activePlan()) EVENT_PLANS.activeId = EVENT_PLANS.plans[0].id;
+    select.value = EVENT_PLANS.activeId;
+
+    card.hidden = false;
+    const plan = activePlan();
+    document.getElementById("planTitleInput").value = plan.name || "";
+    document.getElementById("planEventDate").value = plan.eventDate || "";
+    renderPlanTable();
+  }
+
+  function renderPlanTable() {
+    const plan = activePlan();
+    const body = document.getElementById("planBody");
+    body.innerHTML = "";
+    if (!plan) return;
+
+    if (plan.rows.length === 0) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 6;
+      td.className = "empty-note";
+      td.textContent = "「行を追加」か「期間から並べる」で日にちを入れてください";
+      tr.appendChild(td);
+      body.appendChild(tr);
+    }
+
+    plan.rows.forEach((row, index) => {
+      const tr = document.createElement("tr");
+
+      // 日にち
+      const tdDate = document.createElement("td");
+      const dateInput = document.createElement("input");
+      dateInput.type = "date";
+      dateInput.value = row.date || "";
+      dateInput.addEventListener("change", () => {
+        row.date = dateInput.value;
+        saveEventPlans();
+        renderPlanTable();   // 曜日と色を付け直す
+      });
+      tdDate.appendChild(dateInput);
+      // 紙ではカレンダーの部品ではなく、日付の文字を出す
+      const datePrint = document.createElement("span");
+      datePrint.className = "plan-date-print";
+      datePrint.textContent = isValidDateStr(row.date) ? formatShort(row.date) : "";
+      tdDate.appendChild(datePrint);
+
+      // 曜日(日にちから自動)
+      const tdDow = document.createElement("td");
+      tdDow.className = "plan-dow";
+      if (isValidDateStr(row.date)) {
+        const dow = (parseDateStr(row.date).getDay() + 6) % 7;
+        tdDow.textContent = DAY_NAMES[dow];
+        if (dow === 5) tr.classList.add("plan-sat");
+        if (dow === 6) tr.classList.add("plan-sun");
+        const hol = holidayNameOf(row.date);
+        if (hol) {
+          tr.classList.add("plan-holiday");
+          const span = document.createElement("span");
+          span.className = "plan-holiday-name";
+          span.textContent = hol;
+          tdDow.appendChild(span);
+        }
+        if (plan.eventDate && row.date === plan.eventDate) tr.classList.add("plan-eventday");
+      }
+
+      // 自由に書く3つの欄(見出しで分かるので、例文は中に出さない)
+      const makeArea = (key) => {
+        const td = document.createElement("td");
+        const area = document.createElement("textarea");
+        area.value = row[key] || "";
+        area.addEventListener("input", () => {
+          row[key] = area.value;
+          savePlansSoon();
+        });
+        // 欄から離れたときは待たずに保存する
+        area.addEventListener("blur", () => {
+          clearTimeout(savePlansSoon._t);
+          saveEventPlans();
+        });
+        td.appendChild(area);
+        return td;
+      };
+
+      const tdDel = document.createElement("td");
+      tdDel.className = "no-print";
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "plan-del-btn";
+      del.textContent = "×";
+      del.title = "この行を削除";
+      del.addEventListener("click", () => {
+        plan.rows.splice(index, 1);
+        saveEventPlans();
+        renderPlanTable();
+      });
+      tdDel.appendChild(del);
+
+      tr.appendChild(tdDate);
+      tr.appendChild(tdDow);
+      tr.appendChild(makeArea("teacher"));
+      tr.appendChild(makeArea("student"));
+      tr.appendChild(makeArea("note"));
+      tr.appendChild(tdDel);
+      body.appendChild(tr);
+    });
+
+    // 印刷用の見出し
+    const title = document.getElementById("planPrintTitle");
+    const parts = [plan.name || "行事の計画表"];
+    if (plan.eventDate && isValidDateStr(plan.eventDate)) {
+      parts.push("(" + formatDateWithDow(plan.eventDate) + ")");
+    }
+    title.textContent = parts.join(" ");
+  }
+
+  // 打っている最中に毎回書き込まないよう、少し待ってから保存する
+  function savePlansSoon() {
+    clearTimeout(savePlansSoon._t);
+    savePlansSoon._t = setTimeout(saveEventPlans, 400);
+  }
+
+  document.getElementById("addPlanBtn").addEventListener("click", () => {
+    const input = document.getElementById("newPlanName");
+    const name = input.value.trim();
+    if (!name) { showToast("計画表の名前を入れてください"); input.focus(); return; }
+    const plan = {
+      id: Date.now() + "_" + Math.random().toString(36).slice(2),
+      name,
+      eventDate: "",
+      rows: [newPlanRow()]
+    };
+    EVENT_PLANS.plans.push(plan);
+    EVENT_PLANS.activeId = plan.id;
+    saveEventPlans();
+    input.value = "";
+    renderPlans();
+    showToast("「" + name + "」を作りました");
+  });
+
+  document.getElementById("planSelect").addEventListener("change", e => {
+    EVENT_PLANS.activeId = e.target.value;
+    saveEventPlans();
+    renderPlans();
+  });
+
+  document.getElementById("deletePlanBtn").addEventListener("click", () => {
+    const plan = activePlan();
+    if (!plan) return;
+    const written = plan.rows.filter(r => r.teacher || r.student || r.note).length;
+    const msg = "「" + (plan.name || "名前なし") + "」を削除します。\n" +
+      (written ? "書き込みのある行が" + written + "行あります。" : "") +
+      "\nこの操作は元に戻せません。よろしいですか?";
+    if (!confirm(msg)) return;
+    EVENT_PLANS.plans = EVENT_PLANS.plans.filter(p => p.id !== plan.id);
+    EVENT_PLANS.activeId = EVENT_PLANS.plans.length ? EVENT_PLANS.plans[0].id : "";
+    saveEventPlans();
+    renderPlans();
+    showToast("削除しました");
+  });
+
+  document.getElementById("planTitleInput").addEventListener("input", e => {
+    const plan = activePlan();
+    if (!plan) return;
+    plan.name = e.target.value;
+    savePlansSoon();
+    // 選択肢の名前も合わせて直す(作り直すと入力が途切れるので文字だけ変える)
+    const opt = document.getElementById("planSelect").querySelector('option[value="' + plan.id + '"]');
+    if (opt) opt.textContent = plan.name || "(名前なし)";
+    renderPlanTitleOnly();
+  });
+
+  function renderPlanTitleOnly() {
+    const plan = activePlan();
+    if (!plan) return;
+    const parts = [plan.name || "行事の計画表"];
+    if (plan.eventDate && isValidDateStr(plan.eventDate)) {
+      parts.push("(" + formatDateWithDow(plan.eventDate) + ")");
+    }
+    document.getElementById("planPrintTitle").textContent = parts.join(" ");
+  }
+
+  document.getElementById("planEventDate").addEventListener("change", e => {
+    const plan = activePlan();
+    if (!plan) return;
+    plan.eventDate = e.target.value;
+    saveEventPlans();
+    renderPlanTable();   // 当日の行に色を付ける
+  });
+
+  document.getElementById("addPlanRowBtn").addEventListener("click", () => {
+    const plan = activePlan();
+    if (!plan) return;
+    // 最後の行の翌日を初期値にしておくと、続けて入れやすい
+    const last = [...plan.rows].reverse().find(r => isValidDateStr(r.date));
+    plan.rows.push(newPlanRow(last ? addDays(last.date, 1) : ""));
+    saveEventPlans();
+    renderPlanTable();
+  });
+
+  document.getElementById("fillPlanRangeBtn").addEventListener("click", () => {
+    const plan = activePlan();
+    if (!plan) return;
+    const from = document.getElementById("planRangeFrom").value;
+    const to = document.getElementById("planRangeTo").value;
+    if (!isValidDateStr(from) || !isValidDateStr(to)) {
+      showPlanStatus("始まりと終わりの日を入れてください");
+      return;
+    }
+    if (to < from) {
+      showPlanStatus("終わりの日が始まりの日より前になっています");
+      return;
+    }
+    const days = [];
+    let cur = from;
+    while (cur <= to) {
+      days.push(cur);
+      if (days.length > 120) { showPlanStatus("期間が長すぎます(120日まで)"); return; }
+      cur = addDays(cur, 1);
+    }
+    // すでにある日にちは足さない(書いた内容を消さないため)
+    const have = new Set(plan.rows.map(r => r.date).filter(Boolean));
+    const added = days.filter(d => !have.has(d));
+    // 中身が何も入っていない空行は、日付を入れるついでに片づける
+    plan.rows = plan.rows.filter(r => r.date || r.teacher || r.student || r.note);
+    added.forEach(d => plan.rows.push(newPlanRow(d)));
+    sortPlanRows(plan);
+    saveEventPlans();
+    renderPlanTable();
+    showPlanStatus(added.length + "日ぶんの行を足しました" +
+      (added.length < days.length ? "(" + (days.length - added.length) + "日はすでにありました)" : ""));
+  });
+
+  // 日付のない行は、並べ替えても最後に残す
+  function sortPlanRows(plan) {
+    plan.rows.sort((a, b) => {
+      if (!a.date && !b.date) return 0;
+      if (!a.date) return 1;
+      if (!b.date) return -1;
+      return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+    });
+  }
+
+  document.getElementById("sortPlanBtn").addEventListener("click", () => {
+    const plan = activePlan();
+    if (!plan) return;
+    sortPlanRows(plan);
+    saveEventPlans();
+    renderPlanTable();
+    showPlanStatus("日付順に並べました");
+  });
+
+  // 計画表だけを印刷する
+  document.getElementById("printPlanBtn").addEventListener("click", () => {
+    const plan = activePlan();
+    if (!plan) return;
+    saveEventPlans();
+    document.body.classList.add("printing-plan");
+    const originalTitle = document.title;
+    document.title = document.getElementById("planPrintTitle").textContent || originalTitle;
+    let restored = false;
+    const restore = () => {
+      if (restored) return;
+      restored = true;
+      document.body.classList.remove("printing-plan");
+      document.title = originalTitle;
+    };
+    window.addEventListener("afterprint", restore, { once: true });
+    window.print();
+    setTimeout(restore, 5000);
+  });
 
   // 「単元データあり」の表示を全教科ぶん更新する
   function refreshAllTextbookBadges() {
@@ -4274,7 +4856,7 @@
   /* ---------- データのバックアップ(書き出し/読み込み) ---------- */
 
   const OWN_KEY_PREFIXES = [STORAGE_PREFIX, SUBJECT_KEY, ANNUAL_KEY, PATTERN_KEY, TARGET_KEY, CARRY_KEY,
-    HIRAGANA_KEY, PRINT_MEMO_KEY, SHOW_BREAKS_KEY, UNIT_KEY, LAST_BACKUP_KEY];
+    HIRAGANA_KEY, PRINT_MEMO_KEY, SHOW_BREAKS_KEY, UNIT_KEY, PLANS_KEY, LAST_BACKUP_KEY];
 
   function isOwnKey(key) {
     return OWN_KEY_PREFIXES.some(p => key.startsWith(p));
