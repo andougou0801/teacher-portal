@@ -3879,6 +3879,8 @@
     return String(text || "")
       .replace(/[　\s]+/g, " ")
       .replace(/^[\s,、.:：\-−―・]+/, "")
+      // 「令和8年度」のような年度の表記は行事名ではないので落とす
+      .replace(/^(?:令和|平成|昭和)?\s*(?:[0-9０-９]{1,2}|元)\s*年度\s*/, "")
       // 日付を取り除いた後に残る曜日表記「(月)」「月曜日」を落とす
       .replace(/^[(（]\s*[月火水木金土日]\s*[)）]\s*/, "")
       .replace(/^[月火水木金土日]曜日?(?=\s|$)\s*/, "")
@@ -3887,29 +3889,77 @@
       .trim();
   }
 
-  // 1つのセル/行から日付を読み取る。baseMonthは「5(月)」のように日だけの表記で使う
+  // 1つのセル/行から日付を読み取る。baseMonthは「5(月)」のように日だけの表記で使う。
+  // 「８月１日」のような全角数字の資料が多いので、半角に直してから照合する。
+  // toHalfWidthは1文字を1文字に置き換えるだけなので、位置(index)は元の文字列とずれない。
   function parseDateFrom(text, baseMonth) {
-    const s = String(text || "").trim();
+    const raw = String(text || "");
+    const s = toHalfWidth(raw);
+    // 見つけた日付が元の文字列のどこにあったかを一緒に返す(期間の判定と切り取りに使う)
+    const at = (m, info, matchStart, matchLen) => {
+      const start = matchStart === undefined ? m.index : matchStart;
+      const len = matchLen === undefined ? m[0].length : matchLen;
+      return Object.assign(info, { matched: raw.substr(start, len), index: start, length: len });
+    };
     let m;
+    // 和暦(令和8年9月3日)。学校の資料でよく使われるので、西暦に直して読む
+    if ((m = /(令和|平成|昭和)\s*(\d{1,2}|元)\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日/.exec(s))) {
+      const base = { "令和": 2018, "平成": 1988, "昭和": 1925 }[m[1]];
+      const n = m[2] === "元" ? 1 : +m[2];
+      return at(m, { year: base + n, month: +m[3], day: +m[4] });
+    }
     if ((m = /(20\d{2})[-\/年](\d{1,2})[-\/月](\d{1,2})/.exec(s))) {
-      return { year: +m[1], month: +m[2], day: +m[3], matched: m[0] };
+      return at(m, { year: +m[1], month: +m[2], day: +m[3] });
     }
     if ((m = /(\d{1,2})\s*月\s*(\d{1,2})\s*日/.exec(s))) {
-      return { month: +m[1], day: +m[2], matched: m[0] };
+      return at(m, { month: +m[1], day: +m[2] });
     }
     if ((m = /(?:^|[^\d])(\d{1,2})\s*[\/／]\s*(\d{1,2})(?![\d\/])/.exec(s))) {
-      return { month: +m[1], day: +m[2], matched: m[1] + "/" + m[2] };
+      // 先頭の1文字(区切り)は日付に含めない
+      const lead = m[0].length - m[0].replace(/^[^\d]/, "").length;
+      return at(m, { month: +m[1], day: +m[2] }, m.index + lead, m[0].length - lead);
     }
     if ((m = /^\s*(\d{1,2})\s*[(（]\s*([月火水木金土日])\s*[)）]/.exec(s))) {
-      return { month: baseMonth, day: +m[1], matched: m[0] };
+      return at(m, { month: baseMonth, day: +m[1] });
     }
     if ((m = /^\s*(\d{1,2})\s*日/.exec(s))) {
-      return { month: baseMonth, day: +m[1], matched: m[0] };
+      return at(m, { month: baseMonth, day: +m[1] });
     }
-    if (/^\s*\d{1,2}\s*$/.test(s)) {
-      return { month: baseMonth, day: +s, matched: s, weak: true };
+    if ((m = /^\s*(\d{1,2})\s*$/.exec(s))) {
+      return at(m, { month: baseMonth, day: +m[1], weak: true });
     }
     return null;
+  }
+
+  // 「12月27日から1月7日」「9月3日（木）〜9月5日（土）」のような期間の区切り。
+  // 日付のうしろに曜日が付いていることが多いので、それも読み飛ばす。
+  const DATE_RANGE_SEP =
+    /^\s*(?:[(（]\s*[月火水木金土日]\s*[)）])?\s*(?:から|より|まで|〜|～|~|ー|―|–|−|-)\s*/;
+
+  // 日付のうしろが期間になっていれば、終わりの日付と、消すべき文字数を返す
+  function parseDateRange(cellText, found, baseMonth) {
+    const after = String(cellText || "").slice(found.index + found.length);
+    const sep = DATE_RANGE_SEP.exec(toHalfWidth(after));
+    if (!sep) return null;
+    const tail = after.slice(sep[0].length);
+    const end = parseDateFrom(tail, found.month || baseMonth);
+    // 「冬休み1月7日に…」のように離れた日付を拾わないよう、すぐ後ろにあるものだけ
+    if (!end || end.index !== 0 || end.weak) return null;
+    if (!(end.day >= 1 && end.day <= 31 && end.month >= 1 && end.month <= 12)) return null;
+    return { end, consumed: sep[0].length + end.length };
+  }
+
+  // 始まりの日から終わりの日までを1日ずつに展開する
+  function datesBetween(startISO, endISO) {
+    const out = [];
+    const cur = parseDateStr(startISO), last = parseDateStr(endISO);
+    if (isNaN(cur.getTime()) || isNaN(last.getTime()) || last < cur) return null;
+    while (cur <= last) {
+      out.push(toDateStr(cur));
+      if (out.length > 62) return null;   // 長すぎる期間は展開しない
+      cur.setDate(cur.getDate() + 1);
+    }
+    return out;
   }
 
   // 年度(4月始まり)から西暦を決める
@@ -3920,11 +3970,11 @@
   // 資料全体から「◯月」の手がかりを探す(シート名・見出し行)
   function detectBaseMonth(rows) {
     for (const r of rows) {
-      const m = /(\d{1,2})\s*月/.exec(r.sheet || "");
+      const m = /(\d{1,2})\s*月/.exec(toHalfWidth(r.sheet || ""));
       if (m && +m[1] >= 1 && +m[1] <= 12) return +m[1];
     }
     for (const r of rows.slice(0, 12)) {
-      const line = r.cells.join(" ");
+      const line = toHalfWidth(r.cells.join(" "));
       const m = /(\d{1,2})\s*月(?:の)?(?:行事|予定|$|\s)/.exec(line);
       if (m && +m[1] >= 1 && +m[1] <= 12) return +m[1];
     }
@@ -3938,7 +3988,7 @@
     const fallbackMonth = detectBaseMonth(rows);
     rows.forEach(row => {
       // シートごとに「◯月」が分かればその月を使う(年間行事予定の月別シート対策)
-      const sm = /(\d{1,2})\s*月/.exec(row.sheet || "");
+      const sm = /(\d{1,2})\s*月/.exec(toHalfWidth(row.sheet || ""));
       if (sm && +sm[1] >= 1 && +sm[1] <= 12) sheetMonth = +sm[1];
       const baseMonth = forcedMonth || sheetMonth || fallbackMonth;
 
@@ -3957,9 +4007,15 @@
       }
       if (!found) return;
 
-      // 日付部分を除いた残りを行事名にする
+      // 「12月27日から1月7日　冬休み」のように期間で書かれていたら、終わりの日も読む
+      const range = parseDateRange(row.cells[foundIdx], found, baseMonth);
+
+      // 日付部分(期間ならその全体)を除いた残りを行事名にする
+      const cutTo = found.index + found.length + (range ? range.consumed : 0);
       let rest = row.cells
-        .map((c, i) => (i === foundIdx ? String(c).replace(found.matched, "") : c))
+        .map((c, i) => (i === foundIdx
+          ? String(c).slice(0, found.index) + String(c).slice(cutTo)
+          : c))
         .filter((c, i) => {
           const v = cleanEventText(c);
           if (!v) return false;
@@ -3975,6 +4031,25 @@
       const year = found.year || yearForMonth(found.month);
       const date = year + "-" + pad(found.month) + "-" + pad(found.day);
       if (isNaN(parseDateStr(date).getTime())) return;
+
+      if (range) {
+        // 年をまたぐ期間(12月27日〜1月7日)も、年度から西暦を決めれば自然につながる
+        let endYear = range.end.year || yearForMonth(range.end.month);
+        let endDate = endYear + "-" + pad(range.end.month) + "-" + pad(range.end.day);
+        // 3月30日〜4月2日のように年度をまたぐと終わりが前になるので、1年ずらす
+        if (parseDateStr(endDate) < parseDateStr(date)) {
+          endDate = (endYear + 1) + "-" + pad(range.end.month) + "-" + pad(range.end.day);
+        }
+        const days = datesBetween(date, endDate);
+        if (days) {
+          // 今の年度(4月〜翌3月)の中に入る日だけ登録する
+          const inYear = days.filter(d => schoolYearOf(d) === activeYear);
+          if (inYear.length) {
+            inYear.forEach(d => out.push({ date: d, text: rest }));
+            return;
+          }
+        }
+      }
       out.push({ date, text: rest });
     });
 
