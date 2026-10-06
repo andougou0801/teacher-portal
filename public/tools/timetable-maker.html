@@ -1053,8 +1053,14 @@
       table-layout: fixed;
       page-break-inside: avoid;
       break-inside: avoid;
+      /* 用紙の高さいっぱいに広げる。表に高さを与えると、各行が余った分を分け合って伸びる。
+         書き込みが多い週はこの高さを超えて伸びるので、文字が切れることはない。
+         (A4横・余白8mmの中身は194mm。見出しと余白のぶんを引いた値) */
+      height: 178mm;
     }
     table.timetable th, table.timetable td { padding: 4px; border: 1.5px solid #888; }
+    /* 行が高くなるので、中身は上寄せではなく中央に置く */
+    table.timetable tbody td { vertical-align: middle; }
     /* 紙では固定表示を解除する(ずれる原因になるため) */
     table.timetable thead th,
     table.timetable td.row-label { position: static; }
@@ -1137,31 +1143,24 @@
     /* メモ欄は先生用。既定では児童に配るプリントに出さない */
     body:not(.print-memo) table.timetable .col-memo { display: none; }
 
-    /* 土日を足して行が増えても1枚に収まるよう自動で縮める */
+    /* 土日を足して行が増えても1枚に収まるよう自動で縮める。
+       紙では textarea は非表示で .print-text に置き換わるので、縮めるのはそちら。 */
     body[data-print-rows="6"] table.timetable th { font-size: 14px; }
     body[data-print-rows="6"] table.timetable .day-head { font-size: 16px; }
-    body[data-print-rows="6"] table.timetable input,
-    body[data-print-rows="6"] table.timetable select,
-    body[data-print-rows="6"] table.timetable textarea { font-size: 14px; }
-    body[data-print-rows="6"] table.timetable textarea.content { min-height: 34px; }
-    body[data-print-rows="6"] table.timetable textarea.asa { min-height: 32px; }
-    body[data-print-rows="6"] table.timetable textarea.homework,
-    body[data-print-rows="6"] table.timetable textarea.mochimono,
-    body[data-print-rows="6"] table.timetable textarea.memo { min-height: 46px; font-size: 13px; }
+    body[data-print-rows="6"] table.timetable select { font-size: 14px; }
+    body[data-print-rows="6"] table.timetable .print-text { font-size: 13px; }
 
     body[data-print-rows="7"] table.timetable th { font-size: 13px; }
     body[data-print-rows="7"] table.timetable .day-head { font-size: 15px; }
     body[data-print-rows="7"] table.timetable .day-date { font-size: 11px; }
     body[data-print-rows="7"] table.timetable th,
     body[data-print-rows="7"] table.timetable td { padding: 3px; }
-    body[data-print-rows="7"] table.timetable input,
-    body[data-print-rows="7"] table.timetable select,
-    body[data-print-rows="7"] table.timetable textarea { font-size: 13px; }
-    body[data-print-rows="7"] table.timetable textarea.content { min-height: 28px; }
-    body[data-print-rows="7"] table.timetable textarea.asa { min-height: 26px; }
-    body[data-print-rows="7"] table.timetable textarea.homework,
-    body[data-print-rows="7"] table.timetable textarea.mochimono,
-    body[data-print-rows="7"] table.timetable textarea.memo { min-height: 36px; font-size: 12px; }
+    body[data-print-rows="7"] table.timetable select { font-size: 13px; }
+    body[data-print-rows="7"] table.timetable .print-text {
+      font-size: 12px;
+      line-height: 1.25;
+      padding: 1px;
+    }
   }
 </style>
 </head>
