@@ -84,27 +84,50 @@ type ToolSettingRow = {
   slug: string;
   hidden: boolean;
   sort_order: number | null;
+  description?: string | null;
 };
 
-/** 管理画面で非表示にされたツールを除き、指定された並び順で返す。 */
-export async function getVisibleTools(): Promise<Tool[]> {
+/**
+ * ツールの表示設定を読む。
+ *
+ * description 列は 003_tool_descriptions.sql で追加したものなので、まだ実行していない
+ * プロジェクトでは列が無い。その場合だけ、列を指定し直してもう一度読みにいく
+ * （SQLを流す前にデプロイしても、ツール一覧が消えてしまわないようにするため）。
+ */
+async function loadToolSettings(): Promise<ToolSettingRow[] | null> {
   const supabase = getSupabaseClient();
-  if (!supabase) return staticTools;
+  if (!supabase) return null;
 
-  const { data, error } = await supabase
+  const withDescription = await supabase
     .from("tool_settings")
-    .select("slug,hidden,sort_order");
-  if (error || !data) return staticTools;
+    .select("slug,hidden,sort_order,description");
+  if (!withDescription.error && withDescription.data) {
+    return withDescription.data as ToolSettingRow[];
+  }
 
-  const settings = new Map(
-    (data as ToolSettingRow[]).map((row) => [row.slug, row]),
-  );
-  const visible = staticTools.filter((tool) => !settings.get(tool.slug)?.hidden);
+  const legacy = await supabase.from("tool_settings").select("slug,hidden,sort_order");
+  if (legacy.error || !legacy.data) return null;
+  return legacy.data as ToolSettingRow[];
+}
+
+/** 管理画面で非表示にされたツールを除き、指定された並び順・説明文で返す。 */
+export async function getVisibleTools(): Promise<Tool[]> {
+  const rows = await loadToolSettings();
+  if (!rows) return staticTools;
+
+  const settings = new Map(rows.map((row) => [row.slug, row]));
   const orderOf = (tool: Tool) =>
     settings.get(tool.slug)?.sort_order ?? Number.MAX_SAFE_INTEGER;
 
-  // 並び順が未設定のものは、tools.ts の並び順のまま後ろに続く。
-  return visible.sort((a, b) => orderOf(a) - orderOf(b));
+  return staticTools
+    .filter((tool) => !settings.get(tool.slug)?.hidden)
+    .map((tool) => {
+      // 管理画面で書き換えた説明文があればそれを使う。空欄に戻したら tools.ts の説明に戻る。
+      const override = settings.get(tool.slug)?.description?.trim();
+      return override ? { ...tool, description: override } : tool;
+    })
+    // 並び順が未設定のものは、tools.ts の並び順のまま後ろに続く。
+    .sort((a, b) => orderOf(a) - orderOf(b));
 }
 
 export async function getVisibleToolBySlug(

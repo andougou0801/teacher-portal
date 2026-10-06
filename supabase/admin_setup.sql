@@ -51,14 +51,21 @@ create table if not exists articles (
 );
 
 -- ============================================================================
--- ツールの表示設定（本体のHTMLはリポジトリ側。ここでは公開/非公開と並び順のみ）
+-- ツールの表示設定（本体のHTMLはリポジトリ側。ここでは公開/非公開・並び順・説明文）
 -- ============================================================================
 create table if not exists tool_settings (
   slug text primary key,
   hidden boolean not null default false,
   sort_order integer,
+  description text,
   updated_at timestamptz not null default now()
 );
+
+-- 既にこのテーブルがあるプロジェクト向け（003_tool_descriptions.sql と同じ内容）
+alter table tool_settings add column if not exists description text;
+alter table tool_settings drop constraint if exists tool_settings_description_length;
+alter table tool_settings add constraint tool_settings_description_length
+  check (description is null or char_length(description) <= 1000);
 
 -- ============================================================================
 -- Q&Aの通報（002_reports.sql 未実行のプロジェクトでも動くよう、ここで作る）
