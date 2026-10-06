@@ -20,8 +20,10 @@
     margin: 0 0 16px 0;
     text-align: center;
   }
+  /* 時間割は横に長い表なので、画面の幅をできるだけ使う。
+     大きなモニターで間延びしないよう、上限だけ決めておく。 */
   .container {
-    max-width: 1200px;
+    max-width: 2000px;
     margin: 0 auto;
   }
   .card {
@@ -52,7 +54,7 @@
 
   /* 年度バー */
   .year-bar {
-    max-width: 1200px;
+    max-width: 2000px;
     margin: 0 auto 16px;
     display: flex;
     flex-wrap: wrap;
@@ -402,7 +404,7 @@
 
   /* タブ(時間割 / 年間指導計画) */
   .tab-bar {
-    max-width: 1200px;
+    max-width: 2000px;
     margin: 0 auto 16px;
     display: flex;
     gap: 8px;
@@ -659,7 +661,9 @@
   .table-wrap { overflow-x: auto; }
   table.timetable {
     width: 100%;
-    min-width: 1750px;
+    /* ノートパソコンの画面でも横スクロールなしで1週間ぶんが収まる幅。
+       画面が広いときは width:100% でここから広がる。 */
+    min-width: 1240px;
     border-collapse: collapse;
     table-layout: fixed;
   }
