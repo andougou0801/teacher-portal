@@ -235,6 +235,14 @@
     width:180mm;height:267mm;box-sizing:border-box;overflow:hidden;
     background:#fff;color:#111;display:flex;flex-direction:column;
   }
+  /* よこ向き（A4横）。余白15mmなので中身は 267mm × 180mm */
+  #a4sheet.land{width:267mm;}
+  .a4page.land{width:267mm;height:180mm;}
+  /* よこ向き×よこ書きは1行が長くなりすぎるので、新聞のように2段に分けられる */
+  .a4content.cols2 .paper{
+    column-count:2;column-gap:9mm;column-rule:1px solid #ccc;
+    max-width:none !important;height:100%;
+  }
   .a4head{
     display:flex;justify-content:space-between;align-items:baseline;gap:10px;
     border-bottom:1.5px solid #333;padding-bottom:5px;margin-bottom:10px;flex:none;
@@ -277,13 +285,15 @@
     .genko-wrap{border:none;padding:0;overflow:visible;}
     .teacher{background:#fff;}
     .layout{display:block;}
-    @page{size:A4;margin:15mm;}
+    /* 用紙の向きは #pageRule で切りかえる（下の <style id="pageRule"> を参照） */
     body.print-a4 > .wrap{display:none !important;}
     body.print-a4 #a4sheet{position:static !important;left:auto !important;z-index:auto;}
     #a4sheet .a4page{page-break-after:always;}
     #a4sheet .a4page:last-child{page-break-after:auto;}
   }
 </style>
+<!-- 用紙の向き。JSで portrait / landscape を書きかえる -->
+<style id="pageRule">@page{size:A4 portrait;margin:15mm;}</style>
 </head>
 <body>
 <div class="wrap">
@@ -365,6 +375,20 @@
       </div>
       <p class="hint">「文字の大きさを優先」にすると、文字を小さくせずに、収まらない分を2枚目へ送ります。読むのが苦手な子に配るときに使ってください。</p>
 
+      <label>用紙の向き</label>
+      <div class="opt-group" id="oriOpts">
+        <button class="opt on" data-v="portrait">たて（A4）</button>
+        <button class="opt" data-v="landscape">よこ（A4横）</button>
+      </div>
+      <p class="hint">向きは<b>ここで選んでください</b>。印刷ダイアログの「用紙の向き」を横にしても、ツール側の指定が優先されるため変わりません。「たて書き」「原稿用紙（たて）」は、よこ向きの紙にすると1行（1列）が短くなって読みやすくなります。</p>
+
+      <label>段組み（よこ書きのとき）</label>
+      <div class="opt-group" id="colsOpts">
+        <button class="opt on" data-v="1">1段</button>
+        <button class="opt" data-v="2">2段</button>
+      </div>
+      <p class="hint">よこ向きの紙に「よこ書き」で印刷すると1行が長くなりすぎます。「2段」にすると新聞のように2列に分かれ、1行が短くなります（よこ書きのときだけ効きます）。</p>
+
       <label>書体</label>
       <div class="opt-group" id="fontOpts">
         <button class="opt" data-v="mincho">明朝</button>
@@ -400,7 +424,7 @@
         <button class="opt" data-v="25">25字</button>
         <button class="opt" data-v="30">30字</button>
       </div>
-      <p class="hint">行を見失いやすい子には「行間：広い」と「1行：20字」が読みやすいことがあります。画面にも印刷にも反映されます。</p>
+      <p class="hint">行を見失いやすい子には「行間：広い」と「1行：20字」が読みやすいことがあります。画面にも印刷にも反映されます。<br>原稿用紙は「おまかせ」のとき、紙に合わせて1行（1列）の字数を自動で決めます。20字づめで固定したいときは「20字」を選んでください。</p>
     </div>
 
     <!-- 出力 -->
@@ -505,8 +529,10 @@
         <li><b>文字の大きさ</b>…スライダーの大きさが<b>印刷にも反映</b>されます。学年ごとに下限があり、小1・2はこれ以上小さくなりません。1枚に収まらないときは、文字を潰さずに2枚に分けて印刷します。</li>
         <li><b>フリガナ</b>…「学年に合わせて」はその学年でまだ習わない漢字に、「多めにつける」は習った漢字にもつけます。どれくらいの漢字にフリガナがつくかは、教員用メモの「文章のデータ」に％で出ます。</li>
         <li><b>行間</b>…せまい／ふつう／広いの3段階。行を目で追うのが苦手な子には「広い」が有効です。画面にも印刷にも反映されます。</li>
-        <li><b>1行の字数</b>…おまかせ／20字／25字／30字。1行が長いと行を見失いやすいので、20字にすると読みやすくなることがあります。たて書きのときは「1列に入る字数」、原稿用紙のときは「マスの数」が変わります。</li>
+        <li><b>1行の字数</b>…おまかせ／20字／25字／30字。1行が長いと行を見失いやすいので、20字にすると読みやすくなることがあります。たて書きのときは「1列に入る字数」、原稿用紙のときは「マスの数」が変わります。原稿用紙で「おまかせ」にすると、紙の形（たて向き・よこ向き）に合わせてマスが大きくなるように1行の字数を自動で決めます。20字づめで固定したいときは「20字」を選んでください。</li>
         <li>「行間：広い」と「1行：20字」にすると1枚に収まらなくなることがありますが、そのときは自動で2枚目・3枚目に送ります（文字は小さくなりません）。</li>
+        <li><b>用紙の向き</b>…たて（A4）／よこ（A4横）。<b>ブラウザの印刷ダイアログで「横」にしても変わりません</b>（ツール側で用紙を指定しているため）。向きはこの画面で選んでください。「たて書き」「原稿用紙（たて）」をよこ向きの紙に印刷すると、1列が短くなって最後まで目で追いやすくなります。</li>
+        <li><b>段組み</b>…1段／2段。よこ向きの紙に「よこ書き」で印刷すると1行が長くなりすぎるので、「2段」にすると新聞のように2列に分かれます（よこ書きのときだけ効きます）。</li>
       </ul>
       <h3>表示のしかた</h3>
       <ul>
@@ -8051,8 +8077,8 @@ function renderNormal(str, rb, mode, grade){
 }
 
 /* 原稿用紙表示（20字づめ） */
-function renderGenko(str, rb, mode, grade, vertical){
-  const COLS=20;
+function renderGenko(str, rb, mode, grade, vertical, cols){
+  const COLS=cols||20;
   const KINSOKU="、。，．」』）〕】〉》！？ー";
   const box=document.createElement("div");
   box.className="genko"+(vertical?" v":"");
@@ -8107,7 +8133,7 @@ function renderGenko(str, rb, mode, grade, vertical){
    画面の操作
    ========================================================= */
 const $ = s=>document.querySelector(s);
-const state = { type:"any", origin:"any", ruby:"grade", view:"yoko", listFilter:"all", len:"any", font:"ud", fit:"page", lh:"normal", cpl:"auto" };
+const state = { type:"any", origin:"any", ruby:"grade", view:"yoko", listFilter:"all", len:"any", font:"ud", fit:"page", lh:"normal", cpl:"auto", ori:"portrait", cols:"1" };
 const LEN_BAND = n => n<450 ? "short" : (n<800 ? "mid" : "long");
 const LEN_LABEL = {short:"みじかい", mid:"ふつう", long:"長め"};
 let current=null, lastId=null, loosenNote="", kidWords=false;
@@ -8126,6 +8152,7 @@ function savePref(){
   try{
     localStorage.setItem(PREF_KEY, JSON.stringify({
       grade:($("#grade")||{}).value, font:state.font, view:state.view, fit:state.fit, lh:state.lh, cpl:state.cpl,
+      ori:state.ori, cols:state.cols,
       ruby:state.ruby, len:state.len, type:state.type, origin:state.origin,
       fsize:($("#fsize")||{}).value
     }));
@@ -8135,10 +8162,11 @@ function loadPref(){
   let p={};
   try{ p=JSON.parse(localStorage.getItem(PREF_KEY)||"{}"); }catch(e){ return; }
   if(!p || !p.view) return;
-  ["font","view","ruby","len","type","origin","fit","lh","cpl"].forEach(k=>{ if(p[k]) state[k]=p[k]; });
+  ["font","view","ruby","len","type","origin","fit","lh","cpl","ori","cols"].forEach(k=>{ if(p[k]) state[k]=p[k]; });
   const sync=(sel,v)=>document.querySelectorAll(sel+" .opt").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
   sync("#fontOpts",state.font); sync("#viewOpts",state.view); sync("#rubyOpts",state.ruby);
   sync("#lenOpts",state.len);   sync("#typeOpts",state.type); sync("#originOpts",state.origin); sync("#fitOpts",state.fit); sync("#lhOpts",state.lh); sync("#cplOpts",state.cpl);
+  sync("#oriOpts",state.ori); sync("#colsOpts",state.cols);
   if(p.grade) $("#grade").value=p.grade;
   if(p.fsize) $("#fsize").value=p.fsize;
 }
@@ -8275,9 +8303,8 @@ initOptGroup("#fontOpts","font",()=>{ savePref(); if(current) showText(current);
 initOptGroup("#fitOpts","fit",()=>savePref());
 initOptGroup("#lhOpts","lh",()=>{ savePref(); if(current) showText(current); });
 initOptGroup("#cplOpts","cpl",()=>{ savePref(); if(current) showText(current); });
-initOptGroup("#fitOpts","fit",()=>savePref());
-initOptGroup("#lhOpts","lh",()=>{ savePref(); if(current) showText(current); });
-initOptGroup("#cplOpts","cpl",()=>{ savePref(); if(current) showText(current); });
+initOptGroup("#oriOpts","ori",()=>{ savePref(); applyOrient(); });
+initOptGroup("#colsOpts","cols",()=>savePref());
 initOptGroup("#listFilter","listFilter",renderList);
 
 /* テーマ選択肢 */
@@ -8515,10 +8542,10 @@ function showText(t){
     const vertical=(state.view==="genkoV");
     const w=document.createElement("div");
     w.className="genko-wrap";
-    w.appendChild(renderGenko(t.body,t.rb,mode,grade,vertical));
+    w.appendChild(renderGenko(t.body,t.rb,mode,grade,vertical,cplNum()||20));
     const n=document.createElement("p");
     n.className="genko-note";
-    n.textContent=(vertical?"たて書き ":"よこ書き ")+"20字づめ／"+t.len+"字（原稿用紙 約"+
+    n.textContent=(vertical?"たて書き ":"よこ書き ")+(cplNum()||20)+"字づめ／"+t.len+"字（原稿用紙 約"+
       (Math.ceil(t.len/400))+"枚分）　※行頭に来る句読点は、前のマスにぶら下げています。";
     w.appendChild(n);
     area.appendChild(w);
@@ -8579,7 +8606,7 @@ function bodyHtmlFor(t, mode){
   if(state.view==="genko" || state.view==="genkoV"){
     const w=document.createElement("div");
     w.className="genko-wrap";
-    w.appendChild(renderGenko(t.body,t.rb,mode,t.grade,state.view==="genkoV"));
+    w.appendChild(renderGenko(t.body,t.rb,mode,t.grade,state.view==="genkoV",cplNum()||20));
     return w.outerHTML;
   }
   return '<div class="paper'+(state.view==="tate"?" tate":"")+'">'+
@@ -8587,8 +8614,8 @@ function bodyHtmlFor(t, mode){
 }
 function makeA4Page(t, mode, kid){
   const p=document.createElement("div");
-  p.className="a4page font-"+state.font;
-  p.dataset.grade=t.grade;
+  p.className=pageCls();
+  p.dataset.grade=t.grade; p.dataset.tid=t.id; p.dataset.mode=mode;
   // つづきもの・同じテーマの案内（読み広げのひとこと）
   const next = t.series
     ? TEXTS.find(x=>x.series&&x.series.name===t.series.name&&x.series.no===t.series.no+1) : null;
@@ -8604,7 +8631,7 @@ function makeA4Page(t, mode, kid){
         (t.series?'連続よみ　第'+t.series.no+'話／全'+t.series.total+'話<br>':'')+
         '名前（　　　　　　　　　　）</div>'+
     '</div>'+
-    '<div class="a4body"><div class="a4content">'+bodyHtmlFor(t,mode)+'</div></div>'+
+    '<div class="a4body"><div class="'+contentCls()+'">'+bodyHtmlFor(t,mode)+'</div></div>'+
     (kid && kidWords && t.words && t.words.length
       ? '<div class="a4words"><b>ことばの てびき</b>　'+
         t.words.map(w=>renderNormal(w,t.rb,mode,t.grade).replace(/<\/?p>/g,"")).join("／")+'</div>' : '')+
@@ -8621,7 +8648,7 @@ function makeMemoPage(t){
   const rel=TEXTS.filter(x=>x.theme===t.theme && x.id!==t.id)
                  .sort((a,b)=>Math.abs(a.grade-t.grade)-Math.abs(b.grade-t.grade)).slice(0,3);
   const p=document.createElement("div");
-  p.className="a4page font-"+state.font;
+  p.className=pageCls();
   p.dataset.grade=t.grade; p.dataset.memo="1";
   p.innerHTML=
     '<div class="a4head">'+
@@ -8648,6 +8675,21 @@ function makeMemoPage(t){
   return p;
 }
 /* 印刷する紙にも「1行の字数」と「行間」を効かせる */
+/* 用紙の向き（たて／よこ）。印刷ダイアログではなく、ここで @page を書きかえる */
+function applyOrient(){
+  const land = state.ori==="landscape";
+  const st=$("#pageRule");
+  if(st) st.textContent="@page{size:A4 "+(land?"landscape":"portrait")+";margin:15mm;}";
+  const sheet=$("#a4sheet");
+  if(sheet){
+    sheet.classList.toggle("land", land);
+    sheet.querySelectorAll(".a4page").forEach(p=>p.classList.toggle("land", land));
+  }
+}
+/* 紙1枚ぶんのclass。向きと段組みを反映する */
+const pageCls    = ()=> "a4page font-"+state.font+(state.ori==="landscape"?" land":"");
+/* 2段はよこ書きのときだけ。たて書き・原稿用紙はもともと列で流れる */
+const contentCls = ()=> "a4content"+(state.cols==="2" && state.view==="yoko" ? " cols2" : "");
 function lineH(fs){
   const base = fs<12 ? 1.7 : (fs<15 ? 1.9 : 2.1);
   return +(base * LH_MUL[state.lh]).toFixed(2);
@@ -8720,24 +8762,45 @@ function fitA4(page, keepSize){
   }
   const genko=content.querySelector(".genko");
   if(genko){
-    // マスが小さくなりすぎないよう下限を決め、収まらないときは1行の字数を増やす
+    // マスが小さくなりすぎないよう下限を決める
     const minCw = g<=2 ? 22 : (g<=4 ? 18 : 15);
-    const vertical=genko.classList.contains("v");
+    let gk=genko;
+    const vertical=gk.classList.contains("v");
     const fixedCols=cplNum();                 // 1行の字数を指定していれば、それを守る
+    const t = TEXTS.find(x=>x.id===page.dataset.tid);
     let cols=fixedCols||20, cw=Math.round(printBaseSize(g)*1.9);
-    const set=()=>{ genko.style.setProperty("--cw",cw+"px");
-                    genko.style.setProperty("--ch",Math.round(cw*1.45)+"px");
-                    regrid(genko,cols); };
-    set();
-    // よこ書きの原稿用紙は、1行を長くすると面積をかせげる
-    // （たて書きは行を長くすると紙が縦に伸びてしまうので、字の大きさで合わせる）
-    if(!vertical && !fixedCols){
-      while(over() && cols<30){
-        const back=cols; cols+=5; set();
-        if(!over()) break;
-        if(cols>=30){ cols=back; set(); break; }
+    const set=()=>{ gk.style.setProperty("--cw",cw+"px");
+                    gk.style.setProperty("--ch",Math.round(cw*1.45)+"px");
+                    regrid(gk,cols); };
+    // 紙の形に合う「1行（1列）の字数」をえらぶ。
+    // よこ向きの紙にたて書きの原稿用紙を刷るときは、1列を短くして列を増やすほうがマスが大きい。
+    // 1行の字数を変えると段落の折り返し位置も変わるので、マス目は作りなおす。
+    if(!fixedCols && t){
+      const bw=box.clientWidth, bh=box.clientHeight;
+      const lines=t.plain.split("\n");
+      const estCw = n=>{
+        let cells=0;
+        lines.forEach(l=>{ cells += Math.ceil((l.length+1)/n)*n; });
+        const tracks=Math.ceil(cells/n);                     // 行数（よこ）／列数（たて）
+        return vertical ? Math.min(bh/(n*1.45), bw/tracks)
+                        : Math.min(bw/n, bh/(tracks*1.45));
+      };
+      const base=estCw(20);
+      let pick=20, bestEst=base;
+      (vertical ? [10,12,14,16,24,28,32] : [25,30,35,40,45]).forEach(n=>{
+        const e=estCw(n);
+        // 20字づめが原稿用紙の基本なので、はっきり大きくなるときだけ変える
+        if(e > base*1.15 && e > bestEst){ pick=n; bestEst=e; }
+      });
+      if(pick!==20){
+        cols=pick;
+        gk=renderGenko(t.body, t.rb, page.dataset.mode||"grade", t.grade, vertical, cols);
+        const wrap=content.querySelector(".genko-wrap");
+        if(wrap){ wrap.replaceChild(gk, wrap.querySelector(".genko")); }
+        else { gk=genko; cols=fixedCols||20; }
       }
     }
+    set();
     for(let i=0;i<60 && over();i++){ cw-=0.6; if(cw<minCw) break; set(); }
     // 下限まで小さくしても収まらないときは、切れるよりは小さくする
     for(let i=0;i<40 && over();i++){ cw-=0.6; if(cw<10) break; set(); }
@@ -8772,7 +8835,7 @@ function splitIfNeeded(page){
   p2.innerHTML='<div class="a4head"><h2 class="a4title">'+
       page.querySelector(".a4title").innerHTML+'（つづき）</h2>'+
       '<div class="a4meta">'+page.querySelector(".a4meta").innerHTML+'</div></div>'+
-      '<div class="a4body"><div class="a4content"><div class="paper'+(tate?" tate":"")+'"></div></div></div>'+
+      '<div class="a4body"><div class="'+content.className+'"><div class="paper'+(tate?" tate":"")+'"></div></div></div>'+
       (page.querySelector(".a4kid")?page.querySelector(".a4kid").outerHTML:"")+
       '<div class="a4foot">'+page.querySelector(".a4foot").innerHTML+'</div>';
   const box2=p2.querySelector(".paper");
@@ -8783,6 +8846,7 @@ function splitIfNeeded(page){
   return p2;
 }
 function printA4(pages){
+  applyOrient();                       // 用紙の向きを紙と @page にそろえる
   const sheet=$("#a4sheet");
   sheet.innerHTML="";
   pages.forEach(p=>sheet.appendChild(p));
@@ -8966,6 +9030,7 @@ $("#clearUseBtn").addEventListener("click",()=>{
 });
 
 loadPref();        // 前回えらんだ学年・書体・表示を思い出す
+applyOrient();     // 用紙の向きを @page に反映する
 renderList();
 updateStock();
 </script>
