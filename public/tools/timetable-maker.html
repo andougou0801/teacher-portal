@@ -250,9 +250,11 @@
   .annual-add {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 8px;
     margin-bottom: 14px;
   }
+  .annual-range-sep { color: #888; font-size: 15px; }
   .annual-add input[type="date"] {
     padding: 8px 10px;
     border: 1px solid #ccc;
@@ -1265,8 +1267,13 @@
     <h2>年間予定</h2>
     <div class="annual-add">
       <input type="date" id="annualDateInput">
+      <span class="annual-range-sep">〜</span>
+      <input type="date" id="annualEndDateInput" title="何日かにまたがる予定のときだけ、終わりの日を入れてください">
       <input type="text" id="annualTextInput" placeholder="行事名など(例: 運動会)">
       <button id="addAnnualBtn" type="button">追加</button>
+    </div>
+    <div class="empty-note" style="margin:-4px 0 12px;">
+      「〜」の右は、何日かにまたがる予定(宿泊学習・冬休みなど)のときだけ入れてください。空のままなら1日だけの予定になります。
     </div>
     <div class="day-toggle" style="margin-top:0; margin-bottom:12px;">
       <label><input type="checkbox" id="showPastEventsCheckbox"> 終わった予定も表示する</label>
@@ -1504,6 +1511,7 @@
   const statsBody = document.getElementById("statsBody");
   const annualBody = document.getElementById("annualBody");
   const annualDateInput = document.getElementById("annualDateInput");
+  const annualEndDateInput = document.getElementById("annualEndDateInput");
   const annualTextInput = document.getElementById("annualTextInput");
   const includeSatCheckbox = document.getElementById("includeSatCheckbox");
   const includeSunCheckbox = document.getElementById("includeSunCheckbox");
@@ -1799,14 +1807,22 @@
     localStorage.setItem(annualKeyFor(activeYear), JSON.stringify(ANNUAL_EVENTS));
   }
 
-  function addAnnualEvent(dateStr, text) {
+  // 何日かにまたがる予定は endDate を持つ。1日だけの予定は endDate なし。
+  function eventEndDate(ev) {
+    return ev.endDate || ev.date;
+  }
+
+  function addAnnualEvent(dateStr, text, endDateStr) {
     text = (text || "").trim();
     if (!dateStr || !text) return;
-    ANNUAL_EVENTS.push({
+    const ev = {
       id: Date.now() + "_" + Math.random().toString(36).slice(2),
       date: dateStr,
       text
-    });
+    };
+    // 終わりの日が始まりより後のときだけ期間として扱う
+    if (endDateStr && isValidDateStr(endDateStr) && endDateStr > dateStr) ev.endDate = endDateStr;
+    ANNUAL_EVENTS.push(ev);
     ANNUAL_EVENTS.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
     saveAnnualEvents();
     renderAnnualList();
@@ -1878,8 +1894,10 @@
     return holidayMapOf(parseDateStr(dateStr).getFullYear())[dateStr] || "";
   }
 
+  // 期間の予定は、始まりから終わりまでのどの日にも出す
   function getAnnualEventsForDate(dateStr) {
-    return ANNUAL_EVENTS.filter(ev => ev.date === dateStr);
+    return ANNUAL_EVENTS.filter(ev =>
+      ev.endDate ? (dateStr >= ev.date && dateStr <= ev.endDate) : ev.date === dateStr);
   }
 
   function refreshTableIfNeeded() {
@@ -1905,12 +1923,19 @@
     return Math.round(ms / 86400000);
   }
 
+  // 「10/6(火)」の形
+  function formatDateWithDow(dateStr) {
+    const dow = DAY_NAMES[(parseDateStr(dateStr).getDay() + 6) % 7];
+    return formatShort(dateStr) + "(" + dow + ")";
+  }
+
   // 直近の予定を上部に表示(クリックでその週へ移動)
   function renderUpcoming() {
     upcomingList.innerHTML = "";
     const today = todayStr();
+    // 期間の予定は、終わる日までは「これからの予定」に出し続ける
     const upcoming = ANNUAL_EVENTS
-      .filter(ev => ev.date >= today)
+      .filter(ev => eventEndDate(ev) >= today)
       .sort((a, b) => (a.date < b.date ? -1 : 1))
       .slice(0, 6);
 
@@ -1930,15 +1955,16 @@
 
       const dateSpan = document.createElement("span");
       dateSpan.className = "upcoming-date";
-      const dow = DAY_NAMES[(parseDateStr(ev.date).getDay() + 6) % 7];
-      dateSpan.textContent = formatShort(ev.date) + "(" + dow + ")";
+      dateSpan.textContent = formatDateWithDow(ev.date) +
+        (ev.endDate ? "〜" + formatDateWithDow(ev.endDate) : "");
 
       const textSpan = document.createElement("span");
       textSpan.textContent = ev.text;
 
       const leftSpan = document.createElement("span");
       leftSpan.className = "upcoming-left";
-      leftSpan.textContent = left === 0 ? "今日" : "あと" + left + "日";
+      // すでに始まっている期間の予定は「開催中」と出す
+      leftSpan.textContent = left > 0 ? "あと" + left + "日" : (left === 0 ? "今日" : "開催中");
 
       item.appendChild(dateSpan);
       item.appendChild(textSpan);
@@ -1956,7 +1982,7 @@
     annualBody.innerHTML = "";
     const today = todayStr();
     const showPast = showPastEventsCheckbox.checked;
-    const list = showPast ? ANNUAL_EVENTS : ANNUAL_EVENTS.filter(ev => ev.date >= today);
+    const list = showPast ? ANNUAL_EVENTS : ANNUAL_EVENTS.filter(ev => eventEndDate(ev) >= today);
 
     if (list.length === 0) {
       const tr = document.createElement("tr");
@@ -1972,11 +1998,11 @@
     }
     list.forEach(ev => {
       const tr = document.createElement("tr");
-      if (ev.date < today) tr.style.opacity = "0.5";
+      if (eventEndDate(ev) < today) tr.style.opacity = "0.5";
 
       const tdDate = document.createElement("td");
-      const dow = DAY_NAMES[(parseDateStr(ev.date).getDay() + 6) % 7];
-      tdDate.textContent = formatShort(ev.date) + "(" + dow + ")";
+      tdDate.textContent = formatDateWithDow(ev.date) +
+        (ev.endDate ? " 〜 " + formatDateWithDow(ev.endDate) : "");
 
       const tdText = document.createElement("td");
       tdText.textContent = ev.text;
@@ -2858,8 +2884,15 @@
   });
 
   document.getElementById("addAnnualBtn").addEventListener("click", () => {
-    addAnnualEvent(annualDateInput.value, annualTextInput.value);
+    const end = annualEndDateInput.value;
+    // 終わりの日が始まりより前のときは、気づかず登録されないように知らせる
+    if (end && annualDateInput.value && end < annualDateInput.value) {
+      showToast("終わりの日が始まりの日より前になっています");
+      return;
+    }
+    addAnnualEvent(annualDateInput.value, annualTextInput.value, end);
     annualTextInput.value = "";
+    annualEndDateInput.value = "";
     annualTextInput.focus();
   });
   annualTextInput.addEventListener("keydown", e => {
@@ -3949,19 +3982,6 @@
     return { end, consumed: sep[0].length + end.length };
   }
 
-  // 始まりの日から終わりの日までを1日ずつに展開する
-  function datesBetween(startISO, endISO) {
-    const out = [];
-    const cur = parseDateStr(startISO), last = parseDateStr(endISO);
-    if (isNaN(cur.getTime()) || isNaN(last.getTime()) || last < cur) return null;
-    while (cur <= last) {
-      out.push(toDateStr(cur));
-      if (out.length > 62) return null;   // 長すぎる期間は展開しない
-      cur.setDate(cur.getDate() + 1);
-    }
-    return out;
-  }
-
   // 年度(4月始まり)から西暦を決める
   function yearForMonth(month) {
     return month >= 4 ? activeYear : activeYear + 1;
@@ -4034,20 +4054,15 @@
 
       if (range) {
         // 年をまたぐ期間(12月27日〜1月7日)も、年度から西暦を決めれば自然につながる
-        let endYear = range.end.year || yearForMonth(range.end.month);
+        const endYear = range.end.year || yearForMonth(range.end.month);
         let endDate = endYear + "-" + pad(range.end.month) + "-" + pad(range.end.day);
         // 3月30日〜4月2日のように年度をまたぐと終わりが前になるので、1年ずらす
         if (parseDateStr(endDate) < parseDateStr(date)) {
           endDate = (endYear + 1) + "-" + pad(range.end.month) + "-" + pad(range.end.day);
         }
-        const days = datesBetween(date, endDate);
-        if (days) {
-          // 今の年度(4月〜翌3月)の中に入る日だけ登録する
-          const inYear = days.filter(d => schoolYearOf(d) === activeYear);
-          if (inYear.length) {
-            inYear.forEach(d => out.push({ date: d, text: rest }));
-            return;
-          }
+        if (isValidDateStr(endDate) && endDate > date) {
+          out.push({ date, endDate, text: rest });
+          return;
         }
       }
       out.push({ date, text: rest });
@@ -4056,7 +4071,7 @@
     // 同じ日・同じ内容の重複を除く
     const seen = new Set();
     return out.filter(e => {
-      const k = e.date + "|" + e.text;
+      const k = e.date + "|" + (e.endDate || "") + "|" + e.text;
       if (seen.has(k)) return false;
       seen.add(k);
       return true;
@@ -4117,12 +4132,15 @@
     wrap.className = "table-wrap";
     const table = document.createElement("table");
     table.className = "import-table";
-    table.innerHTML = "<thead><tr><th style='width:44px'>追加</th><th style='width:150px'>日付</th><th>行事名</th><th style='width:90px'>状態</th></tr></thead>";
+    table.innerHTML = "<thead><tr><th style='width:44px'>追加</th><th style='width:150px'>日付</th>" +
+      "<th style='width:150px'>終わりの日<br><span style='font-weight:normal;font-size:12px'>(期間のときだけ)</span></th>" +
+      "<th>行事名</th><th style='width:90px'>状態</th></tr></thead>";
     const tbody = document.createElement("tbody");
 
     events.forEach(ev => {
       const tr = document.createElement("tr");
-      const dup = ANNUAL_EVENTS.some(x => x.date === ev.date && x.text === ev.text);
+      const dup = ANNUAL_EVENTS.some(x =>
+        x.date === ev.date && x.text === ev.text && (x.endDate || "") === (ev.endDate || ""));
       if (dup) tr.className = "dup";
 
       const tdChk = document.createElement("td");
@@ -4139,6 +4157,13 @@
       dateInput.className = "import-date";
       tdDate.appendChild(dateInput);
 
+      const tdEnd = document.createElement("td");
+      const endInput = document.createElement("input");
+      endInput.type = "date";
+      endInput.value = ev.endDate || "";
+      endInput.className = "import-end";
+      tdEnd.appendChild(endInput);
+
       const tdText = document.createElement("td");
       const textInput = document.createElement("input");
       textInput.type = "text";
@@ -4151,6 +4176,7 @@
 
       tr.appendChild(tdChk);
       tr.appendChild(tdDate);
+      tr.appendChild(tdEnd);
       tr.appendChild(tdText);
       tr.appendChild(tdState);
       tbody.appendChild(tr);
@@ -4168,13 +4194,17 @@
       tbody.querySelectorAll("tr").forEach(tr => {
         if (!tr.querySelector(".import-chk").checked) return;
         const date = tr.querySelector(".import-date").value;
+        const endDate = tr.querySelector(".import-end").value;
         const text = cleanEventText(tr.querySelector(".import-text").value);
         if (!date || !text) return;
-        if (ANNUAL_EVENTS.some(x => x.date === date && x.text === text)) return;
-        ANNUAL_EVENTS.push({
+        const end = (endDate && endDate > date) ? endDate : "";
+        if (ANNUAL_EVENTS.some(x => x.date === date && x.text === text && (x.endDate || "") === end)) return;
+        const ev = {
           id: Date.now() + "_" + Math.random().toString(36).slice(2),
           date, text
-        });
+        };
+        if (end) ev.endDate = end;
+        ANNUAL_EVENTS.push(ev);
         added++;
       });
       ANNUAL_EVENTS.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
