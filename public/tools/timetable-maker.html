@@ -297,6 +297,305 @@
   }
   .annual-del-btn:hover { background: #fbd6d6; }
 
+  /* 予定表の取り込み */
+  .import-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .import-main-btn {
+    background: #2d6cdf;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .import-main-btn:hover { background: #1f54b8; }
+  .import-filename { font-size: 13px; color: #777; }
+  .import-paste { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+  .import-paste textarea {
+    flex: 1;
+    min-width: 260px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .import-paste button {
+    background: #eef1f5;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 16px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .import-paste button:hover { background: #dde3ea; }
+  .import-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0 10px;
+    font-size: 13px;
+    color: #444;
+  }
+  .import-options select {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .import-options button {
+    background: #eef1f5;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  table.import-table { width: 100%; border-collapse: collapse; }
+  table.import-table th, table.import-table td {
+    border: 1px solid #ddd;
+    padding: 6px 8px;
+    font-size: 13px;
+    text-align: left;
+  }
+  table.import-table th { background-color: #eaf2ff; color: #2d6cdf; }
+  table.import-table input[type="date"] {
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  table.import-table input[type="text"] {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  table.import-table tr.dup td { background: #faf7ef; color: #999; }
+  .import-commit {
+    background: #1f9d55;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 22px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+  .import-commit:hover { background: #188044; }
+  .import-error {
+    background: #fdeaea;
+    color: #d94040;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  /* タブ(時間割 / 年間指導計画) */
+  .tab-bar {
+    max-width: 1200px;
+    margin: 0 auto 16px;
+    display: flex;
+    gap: 8px;
+    padding: 0 4px;
+  }
+  .tab-btn {
+    background: #e8ecf2;
+    border: none;
+    border-radius: 10px 10px 0 0;
+    padding: 12px 28px;
+    font-size: 15px;
+    cursor: pointer;
+    color: #5b6b80;
+  }
+  .tab-btn:hover { background: #dde3ea; }
+  .tab-btn.active {
+    background: #2d6cdf;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  /* 教科書の設定 */
+  .textbook-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .textbook-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f7f9fc;
+    border: 1px solid #e3e9f2;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+  .textbook-row .tb-name {
+    min-width: 76px;
+    font-weight: bold;
+    color: #444;
+  }
+  .textbook-row select,
+  .textbook-row input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .textbook-row input[type="checkbox"] { width: auto; cursor: pointer; }
+  .textbook-row.off { opacity: 0.45; }
+  .tb-badge {
+    flex: 0 0 auto;
+    background: #e3f0e8;
+    color: #1f7a4d;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  /* 年間指導計画(単元の見通し) */
+  .unit-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #444;
+  }
+  .unit-meta select, .unit-meta input[type="text"] {
+    margin-left: 6px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .unit-meta input[type="text"] { width: 280px; }
+  .unit-meta button {
+    background: #eef1f5;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .unit-meta button:hover { background: #dde3ea; }
+  .unit-print-title { display: none; }
+  /* 横に長い表。教科の列と月の見出しは固定してスクロールしても見失わない */
+  .unit-table-wrap {
+    overflow: auto;
+    max-height: 72vh;
+    border: 1px solid #e3e9f2;
+    border-radius: 8px;
+  }
+  table.unit-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: max-content;
+    min-width: 100%;
+  }
+  table.unit-table th, table.unit-table td {
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 6px;
+    font-size: 13px;
+    vertical-align: top;
+    text-align: left;
+    width: 160px;
+  }
+  table.unit-table th {
+    background-color: #eaf2ff;
+    color: #2d6cdf;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  table.unit-table th.unit-subject-head {
+    width: 110px;
+    background-color: #e8ecf2;
+    color: #555;
+    left: 0;
+    z-index: 3;
+  }
+  table.unit-table td.unit-subject {
+    width: 110px;
+    background-color: #f4f6f8;
+    font-weight: bold;
+    color: #444;
+    text-align: center;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+  table.unit-table th.this-month,
+  table.unit-table td.this-month { background-color: #fff8e6; }
+  .unit-publisher {
+    font-size: 10px;
+    font-weight: normal;
+    color: #8a97a8;
+    margin-top: 2px;
+  }
+  table.unit-table th.this-month { color: #b3610a; }
+  .unit-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #eef3fb;
+    border-radius: 6px;
+    padding: 2px 6px;
+    margin: 0 3px 3px 0;
+    font-size: 12px;
+    color: #33415c;
+  }
+  .unit-chip .unit-hours { color: #8a97a8; }
+  .unit-chip button {
+    border: none;
+    background: transparent;
+    color: #8a97a8;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    padding: 0 2px;
+  }
+  .unit-chip button:hover { color: #d94040; }
+  .unit-edit { margin-top: 14px; }
+  .unit-edit summary {
+    cursor: pointer;
+    font-size: 14px;
+    color: #2d6cdf;
+  }
+  .unit-edit textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .unit-edit-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
   /* 教科の選択肢編集 */
   .subject-chips {
     display: flex;
@@ -360,7 +659,7 @@
   .table-wrap { overflow-x: auto; }
   table.timetable {
     width: 100%;
-    min-width: 1600px;
+    min-width: 1750px;
     border-collapse: collapse;
     table-layout: fixed;
   }
@@ -376,6 +675,18 @@
     font-size: 15px;
   }
   table.timetable th.col-label, table.timetable td.row-label { width: 130px; }
+  /* 横に長い表なので、曜日の列と時限の見出しはスクロールしても残す */
+  table.timetable thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  table.timetable th.col-label { left: 0; z-index: 3; }
+  table.timetable td.row-label {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
   table.timetable th.col-label { background-color: #f4f6f8; color: #666; }
   table.timetable td.row-label {
     background-color: #f9fafb;
@@ -399,6 +710,43 @@
     border-radius: 6px;
     padding: 3px 6px;
   }
+  /* 祝日 */
+  table.timetable .day-holiday {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #b02a37;
+    background: #fdeaea;
+    border-radius: 6px;
+    padding: 3px 6px;
+  }
+  .day-off-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: #5a6472;
+    cursor: pointer;
+    user-select: none;
+  }
+  .day-off-toggle input[type="checkbox"] { width: auto; margin: 0; cursor: pointer; }
+  /* 授業なしの日は、行まるごと斜線を引いて中身を隠す */
+  table.timetable tr.day-off td:not(.row-label) {
+    background-image: linear-gradient(
+      to top right,
+      transparent calc(50% - 1px),
+      #c4c4c4 calc(50% - 1px),
+      #c4c4c4 calc(50% + 1px),
+      transparent calc(50% + 1px)
+    );
+  }
+  table.timetable tr.day-off td:not(.row-label) select,
+  table.timetable tr.day-off td:not(.row-label) textarea,
+  table.timetable tr.day-off td:not(.row-label) .print-text,
+  table.timetable tr.day-off td:not(.row-label) .cross-toggle { visibility: hidden; }
+  table.timetable tr.day-off td.row-label { background-color: #f6f2f2; }
   table.timetable input, table.timetable select, table.timetable textarea {
     width: 100%;
     border: 1px solid transparent;
@@ -437,6 +785,18 @@
   table.timetable td.col-homework, table.timetable th.col-homework { background-color: #f2f9f0; }
   table.timetable td.col-mochimono, table.timetable th.col-mochimono { background-color: #f2f6fb; }
   table.timetable td.col-memo, table.timetable th.col-memo { background-color: #f6f0fb; }
+  /* 休み時間の列は授業と区別が付くよう細め・淡い色にする */
+  table.timetable td.col-break2, table.timetable th.col-break2,
+  table.timetable td.col-break4, table.timetable th.col-break4 {
+    background-color: #f2f2f4;
+    width: 95px;
+  }
+  table.timetable textarea.break2,
+  table.timetable textarea.break4 {
+    min-height: 44px;
+    font-size: 14px;
+    color: #555;
+  }
 
   /* 定型パターン編集テーブルは少し高さを抑える */
   #patternTable textarea.homework,
@@ -474,6 +834,30 @@
   table.timetable td.crossed select.subject,
   table.timetable td.crossed textarea.content {
     visibility: hidden;
+  }
+
+  /* 学年を選んで標準授業時数を入れる行 */
+  .std-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .std-bar label {
+    font-size: 14px;
+    color: #555;
+  }
+  .std-bar select {
+    margin-left: 4px;
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .std-note {
+    font-size: 13px;
+    color: #5b6b80;
   }
 
   /* 授業回数の集計 */
@@ -591,6 +975,27 @@
     height: 16px;
     margin-top: 8px;
   }
+  /* 表の下の方で入力していても気づけるよう、保存の知らせは画面の右下に出す */
+  .toast {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 100;
+    background: #1f7a4d;
+    color: #fff;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+  /* 日付とクラス名の見出しは紙にだけ出す(Ctrl+Pからの印刷でも出るようにCSSで制御) */
+  #printHeader { display: none; }
+  /* 印刷用に書き出す文字。画面では使わない */
+  .print-text { display: none; }
   .pattern-note {
     text-align: center;
     font-size: 12px;
@@ -625,6 +1030,22 @@
     }
     .no-print { display: none !important; }
     .container { max-width: none; }
+    #printHeader { display: block; }
+    /* 入力欄に見えるものは紙では不要 */
+    table.timetable select { appearance: none; -webkit-appearance: none; }
+    /* 入力欄は隠し、書いた文字は折り返して全部出す(切れないようにする) */
+    table.timetable textarea { display: none !important; }
+    table.timetable .print-text {
+      display: block;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.3;
+      color: #333;
+      padding: 2px;
+      min-height: 1.3em;
+    }
     .card { box-shadow: none; padding: 0; margin-bottom: 8px; border-radius: 0; }
     table.timetable {
       min-width: 0;
@@ -634,6 +1055,9 @@
       break-inside: avoid;
     }
     table.timetable th, table.timetable td { padding: 4px; border: 1.5px solid #888; }
+    /* 紙では固定表示を解除する(ずれる原因になるため) */
+    table.timetable thead th,
+    table.timetable td.row-label { position: static; }
     table.timetable th { font-size: 15px; }
     table.timetable th.col-label, table.timetable td.row-label { width: 78px; }
     table.timetable .day-head { font-size: 17px; }
@@ -648,6 +1072,9 @@
     }
     table.timetable textarea.content { min-height: 42px; }
     table.timetable textarea.asa { min-height: 40px; }
+    table.timetable textarea.break2,
+    table.timetable textarea.break4 { min-height: 34px; font-size: 13px; }
+    table.timetable th.col-break2, table.timetable th.col-break4 { width: 62px; }
     table.timetable textarea.homework,
     table.timetable textarea.mochimono,
     table.timetable textarea.memo {
@@ -655,6 +1082,52 @@
       font-size: 14px;
     }
     .cross-toggle { display: none !important; }
+
+    /* 「この表を印刷」を押したときは年間指導計画だけを出す */
+    body.printing-units .card { display: none !important; }
+    body.printing-units #tabTimetable { display: none !important; }
+    body.printing-units #tabUnits { display: block !important; }
+    body.printing-units #unitPlanCard { display: block !important; }
+    body.printing-units #unitPlanCard .unit-edit { display: none !important; }
+    body.printing-units .unit-print-title {
+      display: block;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    body.printing-units .unit-table-wrap {
+      overflow: visible;
+      max-height: none;
+      border: none;
+    }
+    body.printing-units table.unit-table {
+      min-width: 0;
+      width: 100%;
+      table-layout: fixed;
+    }
+    /* 印刷では固定表示を解除する(ずれる原因になるため) */
+    body.printing-units table.unit-table th,
+    body.printing-units table.unit-table td.unit-subject {
+      position: static;
+    }
+    body.printing-units table.unit-table th,
+    body.printing-units table.unit-table td { width: auto; }
+    body.printing-units table.unit-table th.unit-subject-head,
+    body.printing-units table.unit-table td.unit-subject { width: 52px; }
+    body.printing-units table.unit-table th,
+    body.printing-units table.unit-table td { font-size: 10px; padding: 3px; border: 1px solid #999; }
+    body.printing-units .unit-chip { font-size: 10px; background: transparent; padding: 0; display: block; }
+    /* 年間指導計画タブを開いたままCtrl+Pを押しても、その表が印刷されるようにする */
+    body:not(.tab-units-active):not(.printing-units) #unitPlanCard { display: none !important; }
+    body.tab-units-active #tabTimetable { display: none !important; }
+    body.tab-units-active #unitPlanCard { display: block !important; }
+    body.tab-units-active .unit-print-title { display: block; font-size: 16px; font-weight: bold; text-align: center; margin-bottom: 10px; }
+    body.tab-units-active #unitPlanCard .unit-edit { display: none !important; }
+    body.tab-units-active .unit-table-wrap { overflow: visible; max-height: none; border: none; }
+    body.tab-units-active table.unit-table th,
+    body.tab-units-active table.unit-table td.unit-subject { position: static; }
+
     table.timetable input:hover, table.timetable select:hover, table.timetable textarea:hover,
     table.timetable input:focus, table.timetable select:focus, table.timetable textarea:focus {
       border-color: transparent;
@@ -706,7 +1179,13 @@
   <label class="hiragana-toggle"><input type="checkbox" id="hiraganaCheckbox"> ひらがな表示(低学年向け)</label>
 </div>
 
+<div class="tab-bar no-print">
+  <button id="tabTimetableBtn" type="button" class="tab-btn active">時間割</button>
+  <button id="tabUnitsBtn" type="button" class="tab-btn">年間指導計画</button>
+</div>
+
 <div class="container">
+ <div id="tabTimetable">
   <div class="card no-print">
     <h2>週を選ぶ</h2>
     <div class="week-bar">
@@ -736,6 +1215,7 @@
       <label><input type="checkbox" id="includeSatCheckbox"> 土曜日を追加(この週だけ)</label>
       <label><input type="checkbox" id="includeSunCheckbox"> 日曜日を追加(この週だけ)</label>
       <label><input type="checkbox" id="printMemoCheckbox"> メモ欄も印刷する(通常は先生用なので印刷しません)</label>
+      <label><input type="checkbox" id="showBreaksCheckbox"> 休み時間の欄(中休み・昼休み)を表示する</label>
     </div>
     <div class="pattern-note no-print" id="patternNote" style="display:none;"></div>
     <div class="save-status" id="saveStatus"></div>
@@ -757,6 +1237,25 @@
         <tbody id="patternTableBody"></tbody>
       </table>
     </div>
+  </details>
+
+  <details class="card no-print" id="importCard">
+    <summary>予定表ファイルから行事を取り込む</summary>
+    <div class="empty-note" style="margin:10px 0;">
+      学校の月予定表・年間行事予定から、日付と行事名を読み取って下の「年間予定」に追加します。<br>
+      Excel(.xlsx) / Word(.docx) / PDF / CSV / テキストに対応しています。取り込む前に必ず一覧で確認できます。<br>
+      ※PDFは文字情報を持つもの(ExcelやWordから書き出したPDF)が対象です。紙をスキャンした画像のPDFは読み取れません。
+    </div>
+    <div class="import-bar">
+      <button id="pickFileBtn" type="button" class="import-main-btn">ファイルを選ぶ</button>
+      <input type="file" id="scheduleFileInput" accept=".xlsx,.xlsm,.docx,.pdf,.csv,.txt" style="display:none">
+      <span class="import-filename" id="importFileName">ファイル未選択</span>
+    </div>
+    <div class="import-paste">
+      <textarea id="importPaste" rows="4" placeholder="または、予定表の文字をここに貼り付け（例: 10月5日(月) 全校朝会）"></textarea>
+      <button id="importPasteBtn" type="button">貼り付けた文字を読み取る</button>
+    </div>
+    <div id="importResult"></div>
   </details>
 
   <div class="card no-print">
@@ -787,9 +1286,9 @@
     </div>
   </details>
 
-  <div class="card">
+  <div class="card" id="timetableCard">
     <h2 class="no-print">時間割</h2>
-    <div id="printHeader" style="display:none; text-align:center; margin-bottom: 8px;">
+    <div id="printHeader" style="text-align:center; margin-bottom: 8px;">
       <div style="font-size:20px; font-weight:bold;" id="printWeekRange"></div>
       <div style="font-size:14px; color:#666;" id="printClassName"></div>
     </div>
@@ -809,12 +1308,29 @@
     <h2>教科ごとの授業回数</h2>
     <div class="empty-note" style="margin-bottom:10px;">
       「実施済み」は今日までに終わった授業の回数、「予定込み」は先の予定も足した見込みです。<br>
+      「前期まで」に、このツールを使い始める前に実施した時数を入れると、実施済みに足して数えます(年度ごとに保存されます)。<br>
       「目標(年間)」に年間標準時数を入れると、実施済み(濃い色)と予定込み(薄い色)の進捗バーが表示されます。
+    </div>
+    <div class="std-bar">
+      <label>学年
+        <select id="stdGradeSelect">
+          <option value="">未設定</option>
+          <option value="1">1年</option>
+          <option value="2">2年</option>
+          <option value="3">3年</option>
+          <option value="4">4年</option>
+          <option value="5">5年</option>
+          <option value="6">6年</option>
+        </select>
+      </label>
+      <button id="applyStdHoursBtn" type="button" class="import-main-btn">標準時数を入れる</button>
+      <button id="replaceStdHoursBtn" type="button">上書きして入れ直す</button>
+      <span id="stdHoursNote" class="std-note"></span>
     </div>
     <div class="table-wrap">
       <table class="stats-table">
         <thead>
-          <tr><th>教科</th><th>今週</th><th>実施済み</th><th>予定込み</th><th>目標(年間)</th><th>進捗</th></tr>
+          <tr><th>教科</th><th>今週</th><th>前期まで</th><th>実施済み</th><th>予定込み</th><th>目標(年間)</th><th>進捗</th></tr>
         </thead>
         <tbody id="statsBody"></tbody>
       </table>
@@ -839,6 +1355,60 @@
     <div id="lastBackupNote" class="last-backup-note"></div>
     <div class="save-status" id="backupStatus"></div>
   </div>
+ </div>
+
+ <div id="tabUnits" hidden>
+  <div class="card no-print" id="textbookCard">
+    <h2>教科書の設定</h2>
+    <div class="empty-note" style="margin-bottom:12px; text-align:left;">
+      使う教科にチェックを入れ、教科書会社を選んで「決定」を押すと、下の表にすべての教科が並びます。
+      一覧にない会社は「その他」を選ぶと自由に入力できます。
+    </div>
+    <div class="unit-meta">
+      <label>学年
+        <select id="unitGradeSelect">
+          <option value="">未設定</option>
+          <option value="1">1年</option>
+          <option value="2">2年</option>
+          <option value="3">3年</option>
+          <option value="4">4年</option>
+          <option value="5">5年</option>
+          <option value="6">6年</option>
+        </select>
+      </label>
+    </div>
+    <div id="textbookList" class="textbook-list"></div>
+    <div class="unit-edit-bar">
+      <button id="applyTextbookBtn" type="button" class="import-main-btn">決定</button>
+      <button id="reloadUnitsBtn" type="button">教科書の単元を入れ直す</button>
+      <span class="empty-note" id="textbookStatus"></span>
+    </div>
+  </div>
+
+  <div class="card" id="unitPlanCard">
+    <h2 class="no-print">年間指導計画(単元の見通し)</h2>
+    <div class="unit-meta no-print">
+      <button id="printUnitPlanBtn" type="button">この表を印刷</button>
+      <span class="empty-note">単元は「×」で削除できます。追加・修正は下の入力欄から行えます。</span>
+    </div>
+    <div id="unitPlanTitle" class="unit-print-title"></div>
+    <div class="unit-table-wrap">
+      <table class="unit-table" id="unitTable"></table>
+    </div>
+    <details class="unit-edit no-print">
+      <summary>単元を入力・編集する</summary>
+      <div class="empty-note" style="margin:10px 0; text-align:left;">
+        1行に「月 教科 単元名 時数」の順で書きます(時数は省略可)。例: <code>4 国語 きつつきの商売 8</code><br>
+        教科書会社のホームページで公開されている年間指導計画を見ながら入力してください。
+      </div>
+      <textarea id="unitBulkInput" rows="10" placeholder="4 国語 きつつきの商売 8&#10;4 算数 かけ算 12&#10;5 理科 植物をそだてよう 9"></textarea>
+      <div class="unit-edit-bar">
+        <button id="applyUnitBulkBtn" type="button" class="import-main-btn">この内容を表に反映する</button>
+        <span class="empty-note" id="unitBulkStatus"></span>
+      </div>
+    </details>
+  </div>
+ </div>
 </div>
 
 <script>
@@ -847,9 +1417,12 @@
   const ANNUAL_KEY = "timetable_annual_events";
   const PATTERN_KEY = "timetable_pattern";
   const TARGET_KEY = "timetable_targets";
+  const CARRY_KEY = "timetable_carry";
   const HIRAGANA_KEY = "timetable_hiragana_mode";
   const PRINT_MEMO_KEY = "timetable_print_memo";
   const LAST_BACKUP_KEY = "timetable_last_backup";
+  const SHOW_BREAKS_KEY = "timetable_show_breaks";
+  const UNIT_KEY = "timetable_unit_plan";
 
   const DAY_NAMES = ["月", "火", "水", "木", "金", "土", "日"];
   const DAY_NAMES_HIRA = ["げつ", "か", "すい", "もく", "きん", "ど", "にち"];
@@ -866,6 +1439,27 @@
     "家庭科": "かていか", "書写": "しょしゃ", "学活": "がっかつ", "道徳": "どうとく",
     "総合": "そうごう", "行事": "ぎょうじ", "児童会": "じどうかい"
   };
+  // 小学校学習指導要領の標準授業時数(年間)。1年〜6年の順。「-」はその学年に無い教科。
+  // 書写は国語の中、行事・児童会・クラブは特別活動(学活)の中に含まれるので、ここには出さない。
+  const STANDARD_HOURS = {
+    "国語":   [306, 315, 245, 245, 175, 175],
+    "社会":   [  0,   0,  70,  90, 100, 105],
+    "算数":   [136, 175, 175, 175, 175, 175],
+    "理科":   [  0,   0,  90, 105, 105, 105],
+    "生活":   [102, 105,   0,   0,   0,   0],
+    "音楽":   [ 68,  70,  60,  60,  50,  50],
+    "図工":   [ 68,  70,  60,  60,  50,  50],
+    "家庭科": [  0,   0,   0,   0,  60,  55],
+    "体育":   [102, 105, 105, 105,  90,  90],
+    // 3・4年は「外国語活動」の35時間、5・6年は「外国語」の70時間
+    "英語":   [  0,   0,  35,  35,  70,  70],
+    "道徳":   [ 34,  35,  35,  35,  35,  35],
+    "総合":   [  0,   0,  70,  70,  70,  70],
+    "学活":   [ 34,  35,  35,  35,  35,  35]
+  };
+  // 総授業時数(すべての教科・領域の合計)
+  const STANDARD_TOTAL = [850, 910, 980, 1015, 1015, 1015];
+
   const COLUMN_LABEL_HIRA = {
     asa: "あさのじかん",
     homework: "しゅくだい",
@@ -874,16 +1468,24 @@
   };
 
   const COLUMNS = [
-    { key: "asa", label: "朝の時間", type: "line" },
-    ...Array.from({ length: NUM_PERIODS }, (_, i) => ({
-      key: "period" + (i + 1),
-      label: (i + 1) + "時間目",
-      type: "period"
-    })),
+    { key: "asa", label: "朝の時間", type: "line", placeholder: "例: 8:15 朝の会" },
+    { key: "period1", label: "1時間目", type: "period" },
+    { key: "period2", label: "2時間目", type: "period" },
+    { key: "break2", label: "中休み", type: "line", group: "break", placeholder: "例: 外遊び" },
+    { key: "period3", label: "3時間目", type: "period" },
+    { key: "period4", label: "4時間目", type: "period" },
+    { key: "break4", label: "昼休み", type: "line", group: "break", placeholder: "例: 掃除・図書" },
+    { key: "period5", label: "5時間目", type: "period" },
+    { key: "period6", label: "6時間目", type: "period" },
     { key: "homework", label: "宿題", type: "area" },
     { key: "mochimono", label: "持ち物", type: "area" },
     { key: "memo", label: "メモ", type: "area" }
   ];
+
+  // 休み時間の欄は、使わない学校・学年もあるので表示を切り替えられるようにする
+  function visibleColumns() {
+    return COLUMNS.filter(col => col.group !== "break" || SHOW_BREAKS);
+  }
 
   const weekStartInput = document.getElementById("weekStart");
   const headRow = document.getElementById("headRow");
@@ -903,6 +1505,7 @@
   const includeSatCheckbox = document.getElementById("includeSatCheckbox");
   const includeSunCheckbox = document.getElementById("includeSunCheckbox");
   const printMemoCheckbox = document.getElementById("printMemoCheckbox");
+  const showBreaksCheckbox = document.getElementById("showBreaksCheckbox");
   const showPastEventsCheckbox = document.getElementById("showPastEventsCheckbox");
   const upcomingList = document.getElementById("upcomingList");
   const hiraganaCheckbox = document.getElementById("hiraganaCheckbox");
@@ -912,9 +1515,13 @@
   let SUBJECTS = [];
   let ANNUAL_EVENTS = [];
   let TARGETS = {};
+  let CARRY = {};   // ツールを使い始める前(前期など)に実施した時数
   let PATTERN_DATA = null;
+  let UNIT_PLAN = { grade: "", book: "", units: [] };
   let HIRAGANA_MODE = localStorage.getItem(HIRAGANA_KEY) === "1";
   let PRINT_MEMO = localStorage.getItem(PRINT_MEMO_KEY) === "1";
+  // 休み時間の欄は既定で表示(一度オフにすると記憶する)
+  let SHOW_BREAKS = localStorage.getItem(SHOW_BREAKS_KEY) !== "0";
 
   /* ---------- 日付・年度ユーティリティ ---------- */
 
@@ -1040,7 +1647,7 @@
   }
 
   function emptyDayData() {
-    const obj = {};
+    const obj = { dayOff: false };   // その日まるごと授業なし(祝日・振替休業日など)
     COLUMNS.forEach(c => {
       if (c.type === "period") {
         obj[c.key] = { subject: "", content: "", crossed: false };
@@ -1212,6 +1819,62 @@
     refreshTableIfNeeded();
   }
 
+  /* ---------- 祝日 ---------- */
+
+  // その年の祝日を計算で求める(日付が決まっているもの、第◯月曜のもの、春分・秋分)
+  function nthMonday(year, month, nth) {
+    const d = new Date(year, month - 1, 1);
+    const shift = (8 - d.getDay()) % 7;          // 最初の月曜まで
+    return new Date(year, month - 1, 1 + shift + (nth - 1) * 7).getDate();
+  }
+
+  function holidayMapOf(year) {
+    if (holidayMapOf._cache && holidayMapOf._cache[year]) return holidayMapOf._cache[year];
+    const map = {};
+    const put = (m, d, name) => { map[year + "-" + pad(m) + "-" + pad(d)] = name; };
+
+    put(1, 1, "元日");
+    put(1, nthMonday(year, 1, 2), "成人の日");
+    put(2, 11, "建国記念の日");
+    put(2, 23, "天皇誕生日");
+    // 春分・秋分は天文の計算によるため近似式で求める(1980〜2099年に有効)
+    put(3, Math.floor(20.8431 + 0.242194 * (year - 1980) - Math.floor((year - 1980) / 4)), "春分の日");
+    put(4, 29, "昭和の日");
+    put(5, 3, "憲法記念日");
+    put(5, 4, "みどりの日");
+    put(5, 5, "こどもの日");
+    put(7, nthMonday(year, 7, 3), "海の日");
+    put(8, 11, "山の日");
+    put(9, nthMonday(year, 9, 3), "敬老の日");
+    put(9, Math.floor(23.2488 + 0.242194 * (year - 1980) - Math.floor((year - 1980) / 4)), "秋分の日");
+    put(10, nthMonday(year, 10, 2), "スポーツの日");
+    put(11, 3, "文化の日");
+    put(11, 23, "勤労感謝の日");
+
+    // 日曜と重なった祝日は、次の平日が振替休日になる
+    Object.keys(map).slice().sort().forEach(key => {
+      if (parseDateStr(key).getDay() !== 0) return;
+      let next = addDays(key, 1);
+      while (map[next]) next = addDays(next, 1);
+      map[next] = "振替休日";
+    });
+
+    // 祝日と祝日に挟まれた平日は「国民の休日」(敬老の日と秋分の日の間など)
+    Object.keys(map).slice().sort().forEach(key => {
+      const next2 = addDays(key, 2), mid = addDays(key, 1);
+      if (map[next2] && !map[mid] && parseDateStr(mid).getDay() !== 0) map[mid] = "国民の休日";
+    });
+
+    holidayMapOf._cache = holidayMapOf._cache || {};
+    holidayMapOf._cache[year] = map;
+    return map;
+  }
+
+  function holidayNameOf(dateStr) {
+    if (!isValidDateStr(dateStr)) return "";
+    return holidayMapOf(parseDateStr(dateStr).getFullYear())[dateStr] || "";
+  }
+
   function getAnnualEventsForDate(dateStr) {
     return ANNUAL_EVENTS.filter(ev => ev.date === dateStr);
   }
@@ -1224,6 +1887,13 @@
 
   function todayStr() {
     return toDateStr(new Date());
+  }
+
+  // 「2026-10-06」の形で、実在する日付かどうか
+  function isValidDateStr(s) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(s || ""))) return false;
+    const d = parseDateStr(s);
+    return d instanceof Date && !isNaN(d.getTime());
   }
 
   // 2つの日付の差(日数)。未来ならプラス
@@ -1349,7 +2019,7 @@
     const corner = document.createElement("th");
     corner.className = "col-label";
     patternHeadRow.appendChild(corner);
-    COLUMNS.forEach(col => {
+    visibleColumns().forEach(col => {
       const th = document.createElement("th");
       th.className = "col-" + col.key;
       th.textContent = getColumnLabel(col);
@@ -1369,7 +2039,7 @@
       labelTd.appendChild(headDiv);
       tr.appendChild(labelTd);
 
-      COLUMNS.forEach(col => {
+      visibleColumns().forEach(col => {
         const td = document.createElement("td");
         td.className = "col-" + col.key;
         buildCellInto(td, col, d);
@@ -1409,6 +2079,7 @@
     const day = Number(el.dataset.day);
     const key = el.dataset.key;
     const field = el.dataset.field;
+    if (!key || isNaN(day) || !PATTERN_DATA[day]) return;
     const value = el.type === "checkbox" ? el.checked : el.value;
     if (field) {
       PATTERN_DATA[day][key][field] = value;
@@ -1420,6 +2091,7 @@
       if (td) td.classList.toggle("crossed", value);
     }
     savePattern(PATTERN_DATA);
+    showToast("定型パターンを保存しました");
   }
 
   /* ---------- 週データの読み書き ---------- */
@@ -1436,10 +2108,19 @@
         data.includeSat = !!data.includeSat;
         data.includeSun = !!data.includeSun;
         data.fromPattern = !!data.fromPattern;
+        data.monday = monday;   // 保存キーと中身がずれていても画面が壊れないようにする
         return data;
       } catch (e) { /* fallthrough */ }
     }
     const pattern = loadPattern();
+    const days = pattern ? clonePatternDays(pattern) : emptyPatternDays();
+    // 祝日には定型パターンの授業を入れない(入れたままだと時数が多く数えられてしまう)
+    days.forEach((day, i) => {
+      if (!holidayNameOf(addDays(monday, i))) return;
+      const blank = emptyDayData();
+      blank.dayOff = true;
+      days[i] = blank;
+    });
     return {
       monday,
       className: classNameInput.value || "",
@@ -1448,7 +2129,7 @@
       includeSun: false,
       // 定型パターンから自動で埋めた週は、編集して確定するまで授業回数の集計に含めない
       fromPattern: !!pattern,
-      days: pattern ? clonePatternDays(pattern) : emptyPatternDays()
+      days
     };
   }
 
@@ -1464,10 +2145,18 @@
     currentData.className = classNameInput.value;
     currentData.teacherName = teacherNameInput.value;
     localStorage.setItem(storageKey(currentData.monday), JSON.stringify(currentData));
-    saveStatus.textContent = "保存しました";
-    clearTimeout(saveCurrentWeek._t);
-    saveCurrentWeek._t = setTimeout(() => { saveStatus.textContent = ""; }, 1200);
+    showToast("保存しました");
     renderSavedList();
+  }
+
+  // 画面右下に短く知らせる
+  function showToast(message) {
+    const el = document.getElementById("toast");
+    if (!el) return;
+    el.textContent = message;
+    el.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => { el.classList.remove("show"); }, 2500);
   }
 
   /* ---------- テーブル描画(曜日=行, 時限=列) ---------- */
@@ -1477,7 +2166,7 @@
     const corner = document.createElement("th");
     corner.className = "col-label";
     headRow.appendChild(corner);
-    COLUMNS.forEach(col => {
+    visibleColumns().forEach(col => {
       const th = document.createElement("th");
       th.className = "col-" + col.key;
       th.textContent = getColumnLabel(col);
@@ -1519,8 +2208,8 @@
     } else if (col.type === "line") {
       const area = document.createElement("textarea");
       area.rows = 2;
-      area.className = "asa";
-      area.placeholder = "例: 8:15 朝の会";
+      area.className = col.key;
+      area.placeholder = col.placeholder || "";
       area.dataset.day = d;
       area.dataset.key = col.key;
       td.appendChild(area);
@@ -1553,15 +2242,43 @@
       dateDiv.textContent = formatShort(dateStr);
       labelTd.appendChild(headDiv);
       labelTd.appendChild(dateDiv);
+      // 祝日はその名前を出す
+      const holiday = holidayNameOf(dateStr);
+      if (holiday) {
+        const hDiv = document.createElement("div");
+        hDiv.className = "day-holiday";
+        hDiv.textContent = holiday;
+        labelTd.appendChild(hDiv);
+      }
       getAnnualEventsForDate(dateStr).forEach(ev => {
         const evDiv = document.createElement("div");
         evDiv.className = "day-event";
         evDiv.textContent = ev.text;
         labelTd.appendChild(evDiv);
       });
+
+      // 1クリックでその日をまるごと「授業なし」にできるようにする
+      const offLabel = document.createElement("label");
+      offLabel.className = "day-off-toggle no-print";
+      offLabel.title = "この日は授業なし(授業回数に数えません)";
+      const offBox = document.createElement("input");
+      offBox.type = "checkbox";
+      offBox.checked = !!(currentData.days[d] && currentData.days[d].dayOff);
+      offBox.addEventListener("change", () => {
+        currentData.days[d].dayOff = offBox.checked;
+        if (currentData.fromPattern) { currentData.fromPattern = false; updatePatternNote(); }
+        tr.classList.toggle("day-off", offBox.checked);
+        saveCurrentWeek();
+        updateStats();
+      });
+      offLabel.appendChild(offBox);
+      offLabel.appendChild(document.createTextNode("授業なし"));
+      labelTd.appendChild(offLabel);
+
+      if (currentData.days[d] && currentData.days[d].dayOff) tr.classList.add("day-off");
       tr.appendChild(labelTd);
 
-      COLUMNS.forEach(col => {
+      visibleColumns().forEach(col => {
         const td = document.createElement("td");
         td.className = "col-" + col.key;
         buildCellInto(td, col, d);
@@ -1582,6 +2299,8 @@
     const day = Number(el.dataset.day);
     const key = el.dataset.key;
     const field = el.dataset.field;
+    // 「授業なし」チェックなど、表の中にある別用途の部品は対象外
+    if (!key || isNaN(day) || !currentData.days[day]) return;
     const value = el.type === "checkbox" ? el.checked : el.value;
     if (field) {
       currentData.days[day][key][field] = value;
@@ -1625,9 +2344,10 @@
     const last = addDays(currentData.monday, visible[visible.length - 1]);
     document.getElementById("printWeekRange").textContent =
       formatLongWithDow(currentData.monday) + " 〜 " + formatLongWithDow(last);
+    // 紙に出すのはクラス名だけ(担任名は画面で持つだけ)
     const nameEl = document.getElementById("printClassName");
-    if (classNameInput.value) {
-      nameEl.textContent = classNameInput.value;
+    if (classNameInput.value.trim()) {
+      nameEl.textContent = classNameInput.value.trim();
       nameEl.style.display = "";
     } else {
       nameEl.textContent = "";
@@ -1637,9 +2357,17 @@
 
   /* ---------- 授業回数の集計(年度内) ---------- */
 
+  // 画面に出していない曜日(土日)のコマは数えない。
+  // 数えてしまうと、表に出ていない時数が静かに積み上がって原因を追えなくなる。
+  function visibleDaysOf(week) {
+    const idx = getVisibleDayIndices(week || {});
+    return (week && week.days ? week.days : []).filter((_, i) => idx.includes(i));
+  }
+
   function countPeriodsInDays(days) {
     const counts = {};
     (days || []).forEach(day => {
+      if (!day || day.dayOff) return;
       for (let i = 1; i <= NUM_PERIODS; i++) {
         const p = day["period" + i];
         if (!p || p.crossed) continue;
@@ -1652,7 +2380,7 @@
 
   function getAllWeeksData() {
     const prefix = weekPrefixFor(activeYear);
-    return Object.keys(localStorage)
+    const weeks = Object.keys(localStorage)
       .filter(k => k.startsWith(prefix))
       .map(k => {
         const monday = k.slice(prefix.length);
@@ -1660,6 +2388,12 @@
         try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; }
       })
       .filter(Boolean);
+    // 開いているだけでまだ保存されていない週も、「今週」の数と揃うように含める
+    if (currentData && schoolYearOf(currentData.monday) === activeYear &&
+        !weeks.some(w => w.monday === currentData.monday)) {
+      weeks.push(currentData);
+    }
+    return weeks;
   }
 
   // 1週間分を「今日までに実施した分」と「これからの予定分」に分けて数える
@@ -1668,7 +2402,9 @@
     const today = todayStr();
     // 定型パターンのまま未編集の週は、実施したか確定していないので実施済みに入れない
     const confirmed = !week.fromPattern;
+    const visible = getVisibleDayIndices(week);
     (week.days || []).forEach((day, d) => {
+      if (!day || day.dayOff || !visible.includes(d)) return;   // 表に出ていない曜日と、授業なしの日は数えない
       const dateStr = addDays(week.monday, d);
       const isDone = confirmed && dateStr <= today;
       for (let i = 1; i <= NUM_PERIODS; i++) {
@@ -1683,7 +2419,7 @@
 
   function updateStats() {
     if (!currentData) return;
-    const weekly = countPeriodsInDays(currentData.days);
+    const weekly = countPeriodsInDays(visibleDaysOf(currentData));
     const doneTotals = {}, plannedTotals = {};
     getAllWeeksData().forEach(w => {
       const split = countWeekSplit(w);
@@ -1692,17 +2428,20 @@
     });
 
     const allSubjects = SUBJECTS.slice();
-    [doneTotals, plannedTotals, weekly].forEach(obj => {
+    [doneTotals, plannedTotals, weekly, CARRY].forEach(obj => {
       Object.keys(obj).forEach(s => { if (!allSubjects.includes(s)) allSubjects.push(s); });
     });
 
     statsBody.innerHTML = "";
-    let weeklyTotal = 0, doneTotal = 0, withPlanTotal = 0;
+    let weeklyTotal = 0, carryTotal = 0, doneTotal = 0, withPlanTotal = 0;
     allSubjects.forEach(s => {
       const w = weekly[s] || 0;
-      const done = doneTotals[s] || 0;
+      // ツールを使い始める前に実施した分を足して数える
+      const carry = Number(CARRY[s]) || 0;
+      const done = carry + (doneTotals[s] || 0);
       const withPlan = done + (plannedTotals[s] || 0);
       weeklyTotal += w;
+      carryTotal += carry;
       doneTotal += done;
       withPlanTotal += withPlan;
       const tr = document.createElement("tr");
@@ -1713,6 +2452,23 @@
 
       const tdWeek = document.createElement("td");
       tdWeek.textContent = w;
+
+      // 前期まで(このツールを使う前)に実施した時数を手で入れる欄
+      const tdCarry = document.createElement("td");
+      const carryInput = document.createElement("input");
+      carryInput.type = "number";
+      carryInput.min = "0";
+      carryInput.className = "target-input";
+      carryInput.placeholder = "0";
+      carryInput.value = CARRY[s] != null ? CARRY[s] : "";
+      carryInput.addEventListener("change", () => {
+        const v = parseInt(carryInput.value, 10);
+        if (!isNaN(v) && v > 0) CARRY[s] = v; else delete CARRY[s];
+        saveCarry();
+        showToast("前期までの時数を保存しました");
+        updateStats();
+      });
+      tdCarry.appendChild(carryInput);
 
       const tdDone = document.createElement("td");
       tdDone.textContent = done;
@@ -1736,6 +2492,7 @@
           delete TARGETS[s];
         }
         saveTargets();
+        showToast("目標時数を保存しました");
         updateStats();
       });
       tdTarget.appendChild(targetInput);
@@ -1773,6 +2530,7 @@
 
       tr.appendChild(tdName);
       tr.appendChild(tdWeek);
+      tr.appendChild(tdCarry);
       tr.appendChild(tdDone);
       tr.appendChild(tdPlan);
       tr.appendChild(tdTarget);
@@ -1782,7 +2540,7 @@
 
     const totalTr = document.createElement("tr");
     totalTr.className = "stat-total";
-    ["合計", weeklyTotal, doneTotal, withPlanTotal, "", ""].forEach(v => {
+    ["合計", weeklyTotal, carryTotal, doneTotal, withPlanTotal, "", ""].forEach(v => {
       const td = document.createElement("td");
       td.textContent = v;
       totalTr.appendChild(td);
@@ -1803,6 +2561,25 @@
 
   function saveTargets() {
     localStorage.setItem(targetKeyFor(activeYear), JSON.stringify(TARGETS));
+  }
+
+  /* ---------- このツールを使う前にやった分の時数(繰越) ---------- */
+
+  function carryKeyFor(year) { return CARRY_KEY + "_" + year; }
+
+  function loadCarry() {
+    const raw = localStorage.getItem(carryKeyFor(activeYear));
+    if (raw) {
+      try {
+        const obj = JSON.parse(raw);
+        if (obj && typeof obj === "object") return obj;
+      } catch (e) { /* fallthrough */ }
+    }
+    return {};
+  }
+
+  function saveCarry() {
+    localStorage.setItem(carryKeyFor(activeYear), JSON.stringify(CARRY));
   }
 
   /* ---------- 保存済み週の一覧(年度内) ---------- */
@@ -1855,9 +2632,13 @@
     SUBJECTS = loadSubjects();
     ANNUAL_EVENTS = loadAnnualEvents();
     TARGETS = loadTargets();
+    CARRY = loadCarry();
     const p = loadPattern();
     PATTERN_DATA = p ? clonePatternDays(p) : emptyPatternDays();
+    UNIT_PLAN = loadUnitPlan();
 
+    renderUnitPlan();        // 先に学年を画面へ反映してから
+    renderTextbookList();    // 「単元データあり」の判定を行う
     renderSubjectEditor();
     renderAnnualList();
     renderUpcoming();
@@ -1926,6 +2707,11 @@
   /* ---------- イベント ---------- */
 
   weekStartInput.addEventListener("change", () => {
+    // 日付欄を空にされたり、おかしな値が入ったときは元の週に戻す
+    if (!isValidDateStr(weekStartInput.value)) {
+      weekStartInput.value = currentData ? currentData.monday : getMonday(todayStr());
+      return;
+    }
     const monday = getMonday(weekStartInput.value);
     weekStartInput.value = monday;
     loadAndRender(monday);
@@ -1956,9 +2742,29 @@
       alert("前週のデータが見つかりませんでした。");
       return;
     }
-    const prevData = JSON.parse(raw);
-    currentData.days = prevData.days;
+    const last = addDays(prevMonday, 4);
+    if (!confirm("この週の内容を、前の週(" + formatShort(prevMonday) + "〜" + formatShort(last) +
+                 ")の教科・内容で置きかえます。\n宿題・持ち物・メモは週ごとに違うので、コピーしません。\nよろしいですか？")) return;
+
+    let prevData;
+    try {
+      prevData = JSON.parse(raw);
+    } catch (e) {
+      alert("前週のデータが壊れていて読めませんでした。");
+      return;
+    }
+    // 宿題・持ち物・メモは先週のものが残ると配布プリントに出てしまうのでコピーしない
+    const KEEP_OWN = ["homework", "mochimono", "memo"];
+    currentData.days = (prevData.days || []).map((day, i) => {
+      const copy = JSON.parse(JSON.stringify(day));
+      const mine = currentData.days[i] || emptyDayData();
+      KEEP_OWN.forEach(k => { copy[k] = mine[k] || ""; });
+      return copy;
+    });
+    // 中身を入れたので「定型のまま(未編集)」の扱いを解除する
+    currentData.fromPattern = false;
     fillValues();
+    updatePatternNote();
     saveCurrentWeek();
   });
 
@@ -1977,8 +2783,30 @@
     loadAndRender(currentData.monday);
   });
 
+  // 入力欄は高さが固定なので、そのまま印刷すると書いた文字が下に隠れて切れてしまう。
+  // 印刷の直前だけ、中身を同じ場所の文字(div)に写して紙の幅で折り返させる。
+  function expandCellsForPrint() {
+    restoreCellsAfterPrint();
+    document.querySelectorAll("#timetable textarea").forEach(el => {
+      const div = document.createElement("div");
+      div.className = "print-text";
+      div.textContent = el.value;
+      el.insertAdjacentElement("afterend", div);
+    });
+  }
+
+  function restoreCellsAfterPrint() {
+    document.querySelectorAll("#timetable .print-text").forEach(el => el.remove());
+  }
+
+  // 「印刷する」ボタンだけでなく、Ctrl+Pから印刷したときも効くようにする
+  window.addEventListener("beforeprint", () => {
+    if (currentData) updatePrintHeader();
+    expandCellsForPrint();
+  });
+  window.addEventListener("afterprint", restoreCellsAfterPrint);
+
   document.getElementById("printBtn").addEventListener("click", () => {
-    document.getElementById("printHeader").style.display = "block";
     updatePrintHeader();
     // ブラウザが印刷時に表示するページタイトル(ヘッダー/タブ名)を
     // 「週の時間割メーカー」ではなく日付範囲に一時的に差し替える
@@ -1989,7 +2817,6 @@
     const restore = () => {
       if (restored) return;
       restored = true;
-      document.getElementById("printHeader").style.display = "none";
       document.title = originalTitle;
     };
     window.addEventListener("afterprint", restore, { once: true });
@@ -2055,6 +2882,17 @@
     loadAndRender(monday);
   });
 
+  showBreaksCheckbox.addEventListener("change", () => {
+    SHOW_BREAKS = showBreaksCheckbox.checked;
+    localStorage.setItem(SHOW_BREAKS_KEY, SHOW_BREAKS ? "1" : "0");
+    // 表と定型パターンの両方を作り直す(入力済みの内容はデータ側に残る)
+    buildHeader();
+    if (currentData) { buildBody(); fillValues(); }
+    buildPatternHeader();
+    buildPatternBody();
+    fillPatternValues();
+  });
+
   printMemoCheckbox.addEventListener("change", () => {
     PRINT_MEMO = printMemoCheckbox.checked;
     localStorage.setItem(PRINT_MEMO_KEY, PRINT_MEMO ? "1" : "0");
@@ -2077,9 +2915,1258 @@
     if (currentData) updatePrintHeader();
   });
 
+  /* ---------- 年間指導計画(単元の見通し) ---------- */
+
+  const SCHOOL_MONTHS = [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3];
+
+  // 教科書会社が公開している年間指導計画から取り込んだ単元データ
+  // 形式: UNIT_PRESETS[教科][教科書会社][学年] = [{m:月, n:単元名, h:時数}]
+  const UNIT_PRESETS =
+{"国語":{"光村図書":{"1":[{"m":4,"n":"はるが　きた","h":2},{"m":4,"n":"おはなし　ききたいな","h":2},{"m":4,"n":"なんて　いおうかな","h":2},{"m":4,"n":"かく　こと　たのしいな","h":1},{"m":4,"n":"どうぞ　よろしく","h":3},{"m":4,"n":"こんな　もの　みつけたよ","h":2},{"m":4,"n":"うたに　あわせて　あいうえお","h":2},{"m":5,"n":"こえに　だして　よもう","h":1},{"m":5,"n":"よく　きいて、はなそう","h":2},{"m":5,"n":"ことばを　さがそう","h":2},{"m":5,"n":"はなの　みち","h":6},{"m":5,"n":"としょかんへ　いこう","h":2},{"m":5,"n":"かきと　かぎ","h":2},{"m":5,"n":"ぶんを　つくろう","h":4},{"m":5,"n":"ねこと　ねっこ","h":2},{"m":6,"n":"わけを　はなそう","h":2},{"m":6,"n":"おばさんと　おばあさん","h":2},{"m":6,"n":"あいうえおで　あそぼう","h":3},{"m":6,"n":"つぼみ","h":8},{"m":6,"n":"おもちやと　おもちゃ","h":2},{"m":6,"n":"おおきく　なった","h":4},{"m":6,"n":"おおきな　かぶ","h":6},{"m":7,"n":"はをへを　つかおう","h":3},{"m":7,"n":"すきな　こと、なあに","h":7},{"m":7,"n":"おむすび　ころりん","h":5},{"m":7,"n":"こんな　ことが　あったよ","h":6},{"m":7,"n":"としょかんと　なかよし","h":2},{"m":9,"n":"こえを　あわせて　よもう","h":2},{"m":9,"n":"みんなに　しらせよう","h":2},{"m":9,"n":"ことばを　みつけよう","h":2},{"m":9,"n":"やくそく","h":8},{"m":9,"n":"かたかなを　みつけよう","h":2},{"m":9,"n":"うみの　かくれんぼ","h":8},{"m":9,"n":"かずと　かんじ","h":4},{"m":10,"n":"くじらぐも","h":8},{"m":10,"n":"まちがいを　なおそう","h":2},{"m":10,"n":"しらせたいな、見せたいな","h":10},{"m":10,"n":"かん字の　はなし","h":6},{"m":10,"n":"ことばを　たのしもう","h":2},{"m":11,"n":"じどう車くらべ","h":7},{"m":11,"n":"じどう車ずかんを　つくろう","h":5},{"m":11,"n":"かたかなを　かこう","h":2},{"m":11,"n":"どんな　おはなしが　できるかな","h":6},{"m":11,"n":"たぬきの　糸車","h":8},{"m":12,"n":"日づけと　よう日","h":3},{"m":12,"n":"てがみで　しらせよう","h":6},{"m":12,"n":"むかしばなしを　よもう","h":8},{"m":12,"n":"おかゆの　おなべ"},{"m":1,"n":"なりきって　よもう","h":2},{"m":1,"n":"くわしく　きこう","h":2},{"m":1,"n":"ことばで　あそぼう","h":2},{"m":1,"n":"どうぶつの　赤ちゃん","h":10},{"m":1,"n":"ものの　名まえ","h":6},{"m":2,"n":"わらしべちょうじゃ","h":1},{"m":2,"n":"かたかなの　かたち","h":3},{"m":2,"n":"ことばあそびを　つくろう","h":6},{"m":2,"n":"これは、なんでしょう","h":4},{"m":2,"n":"ずうっと、ずっと、大すきだよ","h":8},{"m":3,"n":"にて　いる　かん字","h":3},{"m":3,"n":"いい　こと　いっぱい、一年生","h":10}],"2":[{"m":4,"n":"じゅんばんに　ならぼう","h":1},{"m":4,"n":"絵を　見て　かこう","h":1},{"m":4,"n":"ふきのとう","h":9},{"m":4,"n":"図書館たんけん","h":1},{"m":4,"n":"春が　いっぱい","h":2},{"m":4,"n":"日記を　書こう","h":4},{"m":4,"n":"ともだちは　どこかな","h":5},{"m":4,"n":"［コラム］声の　出し方に　気を　つけよう"},{"m":5,"n":"たんぽぽの　ちえ","h":10},{"m":5,"n":"［じょうほう］じゅんじょ"},{"m":5,"n":"かんさつ名人に　なろう","h":10},{"m":6,"n":"いなばの　白うさぎ","h":2},{"m":6,"n":"同じ　ぶぶんを　もつ　かん字","h":2},{"m":6,"n":"スイミー","h":9},{"m":6,"n":"かん字の　ひろば①","h":2},{"m":6,"n":"［じょうほう］メモを　とる　とき","h":3},{"m":6,"n":"こんな　もの、見つけたよ","h":10},{"m":6,"n":"［コラム］丸、点、かぎ"},{"m":7,"n":"あったらいいな、こんなもの","h":7},{"m":7,"n":"夏がいっぱい","h":2},{"m":7,"n":"お気に入りの本をしょうかいしよう","h":6},{"m":7,"n":"ミリーのすてきなぼうし"},{"m":9,"n":"雨のうた","h":2},{"m":9,"n":"ことばでみちあんない","h":3},{"m":9,"n":"みの回りのものを読もう","h":2},{"m":9,"n":"書いたら、見直そう","h":2},{"m":9,"n":"かん字のひろば②","h":2},{"m":9,"n":"どうぶつ園のじゅうい","h":10},{"m":9,"n":"かたかなのひろば","h":2},{"m":9,"n":"ことばあそびをしよう","h":2},{"m":10,"n":"なかまのことばとかん字","h":2},{"m":10,"n":"かん字のひろば③","h":2},{"m":10,"n":"お手紙","h":12},{"m":10,"n":"主語と述語に　気をつけよう","h":2},{"m":10,"n":"かん字の読み方","h":2},{"m":10,"n":"秋がいっぱい","h":2},{"m":10,"n":"そうだんにのってください","h":8},{"m":11,"n":"紙コップ花火の作り方","h":14},{"m":11,"n":"おもちゃの作り方をせつめいしよう"},{"m":11,"n":"にたいみのことば、はんたいの","h":2},{"m":11,"n":"いみのことば"},{"m":11,"n":"せかい一の話","h":1},{"m":11,"n":"かん字のひろば④","h":2},{"m":11,"n":"みきのたからもの","h":10},{"m":12,"n":"お話のさくしゃになろう","h":10},{"m":12,"n":"冬がいっぱい","h":2},{"m":1,"n":"ねこのこ／おとのはなびら／","h":2},{"m":1,"n":"はんたいことば"},{"m":1,"n":"かたかなで書くことば","h":2},{"m":1,"n":"ことばを楽しもう","h":1},{"m":1,"n":"ロボット","h":12},{"m":1,"n":"ようすをあらわすことば","h":4},{"m":1,"n":"見たこと、かんじたこと","h":6},{"m":2,"n":"カンジーはかせの大はつめい","h":2},{"m":2,"n":"すてきなところをつたえよう","h":10},{"m":2,"n":"スーホの白い馬","h":14},{"m":3,"n":"かん字の広場⑤","h":2},{"m":3,"n":"楽しかったよ、二年生","h":8},{"m":3,"n":"二年生をふりかえって","h":1}],"3":[{"m":4,"n":"よく聞いて、じこしょうかい","h":1},{"m":4,"n":"どきん","h":1},{"m":4,"n":"わたしのさいこうの一日","h":1},{"m":4,"n":"春風をたどって","h":8},{"m":4,"n":"図書館たんていだん","h":1},{"m":4,"n":"国語辞典を使おう","h":2},{"m":4,"n":"漢字の広場①","h":2},{"m":4,"n":"春のくらし","h":2},{"m":5,"n":"もっと知りたい、友だちのこと","h":6},{"m":5,"n":"［コラム］きちんとつたえるために"},{"m":5,"n":"漢字の音と訓","h":2},{"m":5,"n":"漢字の広場②","h":2},{"m":5,"n":"文様","h":8},{"m":5,"n":"こまを楽しむ"},{"m":5,"n":"［じょうほう］全体と中心"},{"m":6,"n":"気もちをこめて、「来てください」","h":4},{"m":6,"n":"漢字の広場③","h":2},{"m":6,"n":"まいごのかぎ","h":6},{"m":6,"n":"俳句を楽しもう","h":1},{"m":6,"n":"こそあど言葉を使いこなそう","h":2},{"m":6,"n":"［じょうほう］引用するとき","h":3},{"m":7,"n":"仕事のくふう、見つけたよ","h":10},{"m":7,"n":"［コラム］符号など"},{"m":7,"n":"夏のくらし","h":2},{"m":7,"n":"本で知ったことをクイズにしよう","h":5},{"m":7,"n":"鳥になったきょうりゅうの話"},{"m":9,"n":"わたしと小鳥とすずと","h":2},{"m":9,"n":"夕日がせなかをおしてくる"},{"m":9,"n":"こんな係がクラスにほしい","h":3},{"m":9,"n":"ポスターを読もう","h":2},{"m":9,"n":"書くことを考えるときは","h":2},{"m":9,"n":"漢字の組み立て","h":3},{"m":9,"n":"ローマ字","h":4},{"m":9,"n":"ちいちゃんのかげおくり","h":10},{"m":10,"n":"修飾語を使って書こう","h":2},{"m":10,"n":"秋のくらし","h":2},{"m":10,"n":"おすすめの一さつを決めよう","h":8},{"m":11,"n":"すがたをかえる大豆","h":12},{"m":11,"n":"食べ物のひみつを教えます"},{"m":11,"n":"ことわざ・故事成語","h":4},{"m":11,"n":"漢字の意味","h":2},{"m":11,"n":"短歌を楽しもう","h":1},{"m":11,"n":"漢字の広場④","h":2},{"m":12,"n":"三年とうげ","h":6},{"m":12,"n":"わたしの町のよいところ","h":10},{"m":12,"n":"冬のくらし","h":2},{"m":1,"n":"詩のくふうを楽しもう","h":4},{"m":1,"n":"四まいの絵を使って","h":2},{"m":1,"n":"カンジーはかせの音訓かるた","h":2},{"m":1,"n":"漢字の広場⑤","h":2},{"m":1,"n":"ありの行列","h":7},{"m":1,"n":"つたわる言葉で表そう","h":5},{"m":2,"n":"たから島のぼうけん","h":8},{"m":2,"n":"お気に入りの場所、教えます","h":8},{"m":3,"n":"モチモチの木","h":12},{"m":3,"n":"漢字の広場⑥","h":2},{"m":3,"n":"三年生をふり返って","h":1}],"4":[{"m":4,"n":"力を合わせてばらばらに","h":1},{"m":4,"n":"春のうた","h":1},{"m":4,"n":"なりきって書こう","h":1},{"m":4,"n":"白いぼうし","h":7},{"m":4,"n":"図書館の達人になろう","h":1},{"m":4,"n":"漢字辞典を使おう","h":2},{"m":4,"n":"春の楽しみ","h":2},{"m":5,"n":"聞き取りメモのくふう","h":6},{"m":5,"n":"［コラム］話し方や聞き方からつたわること"},{"m":5,"n":"カンジーはかせの都道府県の旅１","h":2},{"m":5,"n":"漢字の広場①","h":2},{"m":5,"n":"思いやりのデザイン","h":8},{"m":5,"n":"アップとルーズで伝える"},{"m":5,"n":"［じょうほう］考えと例"},{"m":6,"n":"お礼の気持ちを伝えよう","h":4},{"m":6,"n":"漢字の広場②","h":2},{"m":6,"n":"一つの花","h":7},{"m":6,"n":"つなぎ言葉のはたらきを知ろう","h":2},{"m":6,"n":"短歌・俳句に親しもう(一)","h":1},{"m":6,"n":"［じょうほう］要約するとき","h":2},{"m":6,"n":"新聞を作ろう","h":10},{"m":6,"n":"［コラム］アンケート調査のしかた"},{"m":7,"n":"カンジーはかせの都道府県の旅２","h":2},{"m":7,"n":"夏の楽しみ","h":2},{"m":7,"n":"本のポップや帯を作ろう","h":5},{"m":7,"n":"神様の階段"},{"m":9,"n":"忘れもの","h":2},{"m":9,"n":"ぼくは川"},{"m":9,"n":"あなたなら、どう言う","h":3},{"m":9,"n":"パンフレットを読もう","h":2},{"m":9,"n":"どう直したらいいかな","h":2},{"m":9,"n":"いろいろな意味をもつ言葉","h":2},{"m":9,"n":"ローマ字を使いこなそう","h":2},{"m":9,"n":"漢字の広場③","h":2},{"m":9,"n":"ごんぎつね","h":12},{"m":9,"n":"［コラム］言葉を分類しよう"},{"m":10,"n":"漢字を正しく使おう","h":2},{"m":10,"n":"秋の楽しみ","h":2},{"m":10,"n":"クラスみんなで決めるには","h":8},{"m":11,"n":"未来につなぐ工芸品","h":12},{"m":11,"n":"工芸品のみりょくを伝えよう"},{"m":11,"n":"慣用句","h":2},{"m":11,"n":"短歌・俳句に親しもう(二)","h":1},{"m":11,"n":"漢字の広場④","h":2},{"m":12,"n":"友情のかべ新聞","h":8},{"m":12,"n":"もしものときにそなえよう","h":10},{"m":12,"n":"冬の楽しみ","h":2},{"m":1,"n":"自分だけの詩集を作ろう","h":4},{"m":1,"n":"言葉から連想を広げて","h":2},{"m":1,"n":"熟語の意味","h":2},{"m":1,"n":"漢字の広場⑤","h":2},{"m":1,"n":"風船でうちゅうへ","h":8},{"m":2,"n":"つながりに気をつけよう","h":4},{"m":2,"n":"心が動いたことを言葉に","h":7},{"m":2,"n":"調べて話そう、生活調査隊","h":8},{"m":3,"n":"スワンレイクのほとりで","h":7},{"m":3,"n":"漢字の広場⑥","h":2},{"m":3,"n":"四年生をふり返って","h":1}],"5":[{"m":4,"n":"ひみつの言葉を引き出そう","h":1},{"m":4,"n":"かんがえるのって おもしろい","h":1},{"m":4,"n":"名前を使って、自己しょうかい","h":1},{"m":4,"n":"銀色の裏地","h":5},{"m":4,"n":"図書館を使いこなそう","h":1},{"m":4,"n":"漢字の成り立ち","h":2},{"m":4,"n":"春の空","h":1},{"m":5,"n":"きいて、きいて、きいてみよう","h":6},{"m":5,"n":"見立てる","h":7},{"m":5,"n":"言葉の意味が分かること"},{"m":5,"n":"［情報］原因と結果"},{"m":6,"n":"敬語","h":2},{"m":6,"n":"日常を十七音で","h":3},{"m":6,"n":"漢字の広場①","h":1},{"m":6,"n":"古典の世界(一)","h":2},{"m":6,"n":"［情報］目的に応じて引用するとき","h":2},{"m":6,"n":"みんなが使いやすいデザイン","h":8},{"m":7,"n":"同じ読み方の漢字","h":2},{"m":7,"n":"夏の夜","h":1},{"m":7,"n":"作家で広げるわたしたちの読書","h":5},{"m":7,"n":"モモ"},{"m":9,"n":"かぼちゃのつるが","h":2},{"m":9,"n":"われは草なり"},{"m":9,"n":"どちらを選びますか","h":2},{"m":9,"n":"新聞を読もう","h":2},{"m":9,"n":"文章に説得力をもたせるには","h":2},{"m":9,"n":"漢字の広場②","h":1},{"m":9,"n":"たずねびと","h":6},{"m":10,"n":"漢字の広場③","h":1},{"m":10,"n":"方言と共通語","h":2},{"m":10,"n":"秋の夕","h":1},{"m":10,"n":"よりよい学校生活のために","h":6},{"m":10,"n":"［コラム］意見が対立したときには"},{"m":11,"n":"浦島太郎 ―「御伽草子」より","h":1},{"m":11,"n":"和語・漢語・外来語","h":2},{"m":11,"n":"固有種が教えてくれること","h":10},{"m":11,"n":"自然環境を守るために"},{"m":11,"n":"［コラム］統計資料の読み方"},{"m":11,"n":"カンジー博士の暗号解読","h":2},{"m":12,"n":"古典の世界(二)","h":1},{"m":12,"n":"漢字の広場④","h":1},{"m":12,"n":"やなせたかし ―アンパンマンの勇気","h":5},{"m":12,"n":"あなたは、どう考える","h":6},{"m":12,"n":"冬の朝","h":1},{"m":1,"n":"好きな詩のよさを伝えよう","h":2},{"m":1,"n":"言葉でスケッチ","h":2},{"m":1,"n":"熟語の読み方","h":2},{"m":1,"n":"漢字の広場⑤","h":1},{"m":1,"n":"想像力のスイッチを入れよう","h":6},{"m":1,"n":"複合語","h":2},{"m":2,"n":"言葉を使い分けよう","h":3},{"m":2,"n":"もう一つの物語","h":6},{"m":2,"n":"「子ども未来科」で何をする","h":6},{"m":3,"n":"大造じいさんとガン","h":6},{"m":3,"n":"漢字の広場⑥","h":1},{"m":3,"n":"五年生をふり返って","h":1}],"6":[{"m":4,"n":"つないで、つないで、一つのお話","h":1},{"m":4,"n":"準備","h":1},{"m":4,"n":"伝わるかな、好きな食べ物","h":1},{"m":4,"n":"帰り道","h":5},{"m":4,"n":"公共図書館を活用しよう","h":1},{"m":4,"n":"漢字の形と音・意味","h":2},{"m":4,"n":"春のいぶき","h":1},{"m":5,"n":"聞いて、考えを深めよう","h":6},{"m":5,"n":"漢字の広場①","h":1},{"m":5,"n":"笑うから楽しい","h":7},{"m":5,"n":"時計の時間と心の時間"},{"m":5,"n":"［情報］主張と事例"},{"m":6,"n":"文の組み立て","h":2},{"m":6,"n":"たのしみは","h":3},{"m":6,"n":"天地の文","h":1},{"m":6,"n":"［情報］情報と情報をつなげて伝えるとき","h":2},{"m":6,"n":"デジタル機器と私たち","h":8},{"m":7,"n":"夏のさかり","h":1},{"m":7,"n":"私と本","h":5},{"m":7,"n":"星空を届けたい"},{"m":9,"n":"せんねん まんねん","h":2},{"m":9,"n":"名づけられた葉"},{"m":9,"n":"いちばん大事なものは","h":2},{"m":9,"n":"インターネットでニュースを読もう","h":3},{"m":9,"n":"文章を推敲しよう","h":2},{"m":9,"n":"漢字の広場②","h":1},{"m":9,"n":"やまなし","h":8},{"m":9,"n":"［資料］イーハトーヴの夢"},{"m":10,"n":"漢字の広場③","h":1},{"m":10,"n":"熟語の成り立ち","h":2},{"m":10,"n":"秋の深まり","h":1},{"m":10,"n":"みんなで楽しく過ごすために","h":6},{"m":10,"n":"［コラム］伝えにくいことを伝える"},{"m":10,"n":"話し言葉と書き言葉","h":1},{"m":11,"n":"古典芸能の世界","h":2},{"m":11,"n":"狂言「柿山伏」を楽しもう"},{"m":11,"n":"『鳥獣戯画』を読む","h":10},{"m":11,"n":"発見、日本文化のみりょく"},{"m":11,"n":"カンジー博士の漢字学習の秘伝","h":2},{"m":12,"n":"漢字の広場④","h":1},{"m":12,"n":"ぼくのブック・ウーマン","h":4},{"m":12,"n":"おすすめパンフレットを作ろう","h":6},{"m":12,"n":"冬のおとずれ","h":1},{"m":1,"n":"詩を朗読してしょうかいしよう","h":2},{"m":1,"n":"知ってほしい、この名言","h":2},{"m":1,"n":"日本の文字文化","h":2},{"m":1,"n":"［コラム］仮名づかい"},{"m":1,"n":"漢字の広場⑤","h":1},{"m":1,"n":"考えることとなやむこと","h":6},{"m":1,"n":"考えることを考え続ける"},{"m":1,"n":"考える人の行動が世界を変える"},{"m":1,"n":"使える言葉にするために","h":1},{"m":1,"n":"日本語の特徴","h":3},{"m":2,"n":"大切にしたい言葉","h":6},{"m":2,"n":"今、私は、ぼくは","h":6},{"m":3,"n":"海の命","h":6},{"m":3,"n":"漢字の広場⑥","h":1},{"m":3,"n":"中学校へつなげよう","h":4},{"m":3,"n":"生きる"},{"m":3,"n":"人間は他の生物と何がちがうのか"}]}},"書写":{"光村図書":{"1":[{"m":4,"n":"やくそく"},{"m":4,"n":"たんけんたい"},{"m":4,"n":"たいそう"},{"m":4,"n":"しせい"},{"m":4,"n":"もちかた"},{"m":4,"n":"かこう"},{"m":5,"n":"はらい"},{"m":5,"n":"はね"},{"m":6,"n":"かきじゅん"},{"m":6,"n":"おれ"},{"m":6,"n":"むすび"},{"m":7,"n":"かたち"},{"m":7,"n":"ことば"},{"m":7,"n":"こくご"},{"m":7,"n":"せいかつ"},{"m":7,"n":"ないかな"},{"m":9,"n":"ひらがな"},{"m":9,"n":"みよう"},{"m":9,"n":"あつまれ"},{"m":10,"n":"かきかた"},{"m":10,"n":"あつまれ"},{"m":11,"n":"はらい"},{"m":11,"n":"そり"},{"m":11,"n":"かきじゅん"},{"m":12,"n":"かたかな"},{"m":12,"n":"かたち"},{"m":12,"n":"しらべたい"},{"m":3,"n":"かきぞめ"},{"m":3,"n":"まとめ"},{"m":3,"n":"かこう"},{"m":3,"n":"かん字"}],"2":[{"m":4,"n":"やくそく"},{"m":4,"n":"しせい"},{"m":4,"n":"もち方"},{"m":4,"n":"学しゅうばめん"},{"m":5,"n":"書きじゅん"},{"m":5,"n":"名前"},{"m":6,"n":"長さ"},{"m":6,"n":"交わり方"},{"m":7,"n":"ことば"},{"m":7,"n":"国語"},{"m":7,"n":"生活"},{"m":7,"n":"ないかな"},{"m":9,"n":"ほうこう"},{"m":10,"n":"ほうこう"},{"m":11,"n":"みよう"},{"m":12,"n":"中心"},{"m":3,"n":"書きぞめ"},{"m":3,"n":"まとめ"},{"m":3,"n":"ふりかえろう"},{"m":3,"n":"数字"},{"m":3,"n":"かん字"},{"m":3,"n":"ひみつ"},{"m":3,"n":"はってん"}],"3":[{"m":4,"n":"書写のやくそく"},{"m":4,"n":"毛筆のひみつ"},{"m":4,"n":"用具のじゅんび"},{"m":4,"n":"筆の持ち方"},{"m":4,"n":"用具のかたづけ"},{"m":4,"n":"学習の進め方"},{"m":4,"n":"空書き"},{"m":5,"n":"点画のしゅるい"},{"m":5,"n":"横画"},{"m":6,"n":"たて画"},{"m":6,"n":"おれ"},{"m":7,"n":"小筆で書いてみよう"},{"m":7,"n":"国語"},{"m":9,"n":"国語"},{"m":9,"n":"力の入れ方"},{"m":9,"n":"右はらい"},{"m":10,"n":"はね"},{"m":10,"n":"曲がり"},{"m":11,"n":"ことば"},{"m":11,"n":"丸み"},{"m":12,"n":"部分の組み立て方"},{"m":12,"n":"行の中心"},{"m":12,"n":"できているかな"},{"m":3,"n":"書きぞめ"},{"m":3,"n":"三年生のまとめ"},{"m":3,"n":"全国筆・紙・すみ・すずりマップ"},{"m":3,"n":"かたかな"},{"m":3,"n":"一・二年生で学習した漢字"},{"m":3,"n":"三年生で学習する漢字"},{"m":3,"n":"筆をあらおう"}],"4":[{"m":4,"n":"学習の進め方"},{"m":4,"n":"用具のかたづけ"},{"m":4,"n":"書くときのしせい"},{"m":4,"n":"タブレットを活用しよう"},{"m":4,"n":"点画の種類"},{"m":4,"n":"左右"},{"m":5,"n":"上下"},{"m":6,"n":"筆順と字形"},{"m":7,"n":"画の方向"},{"m":9,"n":"折れ"},{"m":10,"n":"ノートの達人になろう"},{"m":10,"n":"理科"},{"m":10,"n":"ブック"},{"m":10,"n":"ことば"},{"m":11,"n":"漢字どうしの大きさ"},{"m":12,"n":"国語"},{"m":12,"n":"町の安全を伝えよう"},{"m":3,"n":"書きぞめ"},{"m":3,"n":"四年生のまとめ"},{"m":3,"n":"げんこう用紙の使い方"},{"m":3,"n":"ローマ字"},{"m":3,"n":"三年生で学習した漢字"},{"m":3,"n":"四年生で学習する漢字"},{"m":3,"n":"身近な文字をさがそう"}],"5":[{"m":4,"n":"学習の進め方"},{"m":4,"n":"用具のかたづけ"},{"m":4,"n":"書くときのしせい"},{"m":4,"n":"タブレットを活用しよう"},{"m":4,"n":"にょう"},{"m":5,"n":"部分の組み立て方"},{"m":5,"n":"漢字のいろいろな書き方"},{"m":6,"n":"書くときの速さ"},{"m":6,"n":"国語"},{"m":6,"n":"手書きの力"},{"m":6,"n":"手書き文字と活字"},{"m":7,"n":"点画のつながりと字形"},{"m":9,"n":"筆順と字形"},{"m":10,"n":"ことば"},{"m":11,"n":"漢字と仮名"},{"m":11,"n":"用紙に合った文字の大きさ"},{"m":12,"n":"新聞記者"},{"m":3,"n":"書きぞめ"},{"m":3,"n":"五年生のまとめ"},{"m":3,"n":"六年生を送る会に向けて"},{"m":3,"n":"英語"},{"m":3,"n":"都道府県漢字"},{"m":3,"n":"こんなことはないかな"},{"m":3,"n":"ローマ字"},{"m":3,"n":"四年生で学習した漢字"},{"m":3,"n":"五年生で学習する漢字"},{"m":3,"n":"身近な文字をさがそう"}],"6":[{"m":5,"n":"学習の進め方"},{"m":5,"n":"用具の片づけ"},{"m":5,"n":"書くときの姿勢"},{"m":5,"n":"タブレットを活用しよう"},{"m":5,"n":"三つの部分"},{"m":7,"n":"部分の組み立て方"},{"m":7,"n":"点画のつながりと読みやすさ"},{"m":9,"n":"筆順と点画のつながり"},{"m":10,"n":"用紙に合った文字の大きさと配列"},{"m":11,"n":"伝えるって、どういうこと"},{"m":11,"n":"ことば"},{"m":12,"n":"みんなが使いやすい筆記具図かん"},{"m":12,"n":"文字の歴史"},{"m":12,"n":"国語"},{"m":12,"n":"横書きの書き方"},{"m":12,"n":"げんこう用紙の使い方"},{"m":12,"n":"手紙の書き方"},{"m":12,"n":"はがきの表書き"},{"m":12,"n":"新聞の書き方の工夫"},{"m":12,"n":"ポスターを作るときの工夫"},{"m":12,"n":"書写の言葉"},{"m":3,"n":"書きぞめ"},{"m":3,"n":"通信文を見てみよう"},{"m":3,"n":"六年生のまとめ"},{"m":3,"n":"今の思いを書き残そう"},{"m":3,"n":"私の文字をふり返る"},{"m":3,"n":"ローマ字"},{"m":3,"n":"五年生で学習した漢字"},{"m":3,"n":"六年生で学習する漢字"},{"m":3,"n":"発展"}]}},"算数":{"東京書籍":{"1":[{"m":4,"n":"くらべたことがあるかな★おおいのはどちらかな","h":1},{"m":4,"n":"１．なかまづくりとかず","h":15},{"m":5,"n":"２．なんばんめ","h":2},{"m":5,"n":"どのようにかわるかな","h":1},{"m":5,"n":"しあげよう"},{"m":6,"n":"３．あわせていくつふえるといくつ","h":8},{"m":6,"n":"おぼえているかな？"},{"m":7,"n":"４．のこりはいくつちがいはいくつ","h":9},{"m":7,"n":"５．どちらがながい","h":5},{"m":9,"n":"６．わかりやすくせいりしよう","h":3},{"m":9,"n":"７．10よりおおきいかず","h":9},{"m":10,"n":"８．なんじなんじはん","h":1},{"m":10,"n":"おぼえているかな？"},{"m":10,"n":"９．3つのかずのけいさん","h":3},{"m":10,"n":"10．どちらがおおい","h":4},{"m":10,"n":"おぼえているかな？"},{"m":11,"n":"11．たしざん","h":10},{"m":11,"n":"おぼえているかな？"},{"m":11,"n":"12．かたちあそび","h":4},{"m":12,"n":"13．ひきざん","h":10},{"m":12,"n":"どんなけいさんに なるのかな？","h":2},{"m":12,"n":"けいさんぴらみっど","h":2},{"m":12,"n":"おぼえているかな？"},{"m":1,"n":"14．おおきいかず","h":14},{"m":2,"n":"15．どちらがひろい","h":1},{"m":2,"n":"16．なんじなんぷん","h":2},{"m":2,"n":"ビルをつくろう","h":1},{"m":2,"n":"17．たしざんとひきざん","h":5},{"m":3,"n":"18．かたちづくり","h":6},{"m":3,"n":"1ねんのふくしゅう","h":2}],"2":[{"m":4,"n":"学びのとびら","h":1},{"m":4,"n":"１．グラフとひょう","h":3},{"m":4,"n":"２．たし算のひっ算","h":8},{"m":5,"n":"３．ひき算のひっ算","h":8},{"m":5,"n":"どんな計算になるのかな？","h":2},{"m":6,"n":"４．長さのたんい","h":9},{"m":6,"n":"５．３けたの数","h":12},{"m":7,"n":"６．水のかさのたんい","h":8},{"m":7,"n":"７．時こくと時間","h":2},{"m":7,"n":"おぼえているかな？"},{"m":9,"n":"８．計算のくふう","h":5},{"m":9,"n":"９．たし算とひき算のひっ算","h":10},{"m":10,"n":"10．長方形と正方形","h":10},{"m":11,"n":"11．かけ算(1)","h":17},{"m":12,"n":"12．かけ算(2)","h":15},{"m":12,"n":"おぼえているかな？"},{"m":1,"n":"13．４けたの数","h":11},{"m":2,"n":"14．長いものの長さのたんい","h":6},{"m":2,"n":"15．たし算とひき算","h":5},{"m":2,"n":"16．分数","h":5},{"m":3,"n":"おぼえているかな？"},{"m":3,"n":"17．はこの形","h":5},{"m":3,"n":"計算ピラミッド","h":2},{"m":3,"n":"2年のふくしゅう","h":4}],"3":[{"m":4,"n":"学びのとびら","h":1},{"m":4,"n":"１．かけ算","h":8},{"m":4,"n":"２．時こくと時間のもとめ方","h":4},{"m":5,"n":"３．わり算","h":9},{"m":5,"n":"おぼえているかな？"},{"m":6,"n":"４．たし算とひき算の筆算","h":7},{"m":6,"n":"考える力をのばそう","h":1},{"m":6,"n":"５．長いものの長さのはかり方と表し方","h":7},{"m":7,"n":"６．ぼうグラフと表","h":9},{"m":7,"n":"７．暗算","h":2},{"m":9,"n":"８．あまりのあるわり算","h":7},{"m":9,"n":"９．大きい数のしくみ","h":10},{"m":10,"n":"10．かけ算の筆算(1)","h":11},{"m":10,"n":"おぼえているかな？"},{"m":10,"n":"11．大きい数のわり算、分数とわり算","h":4},{"m":11,"n":"どんな計算になるのかな？","h":1},{"m":11,"n":"12．円と球","h":8},{"m":12,"n":"13．小数","h":11},{"m":12,"n":"14．重さのたんいとはかり方","h":9},{"m":12,"n":"おぼえているかな？"},{"m":1,"n":"15．分数","h":10},{"m":1,"n":"おぼえているかな？"},{"m":1,"n":"16．□を使った式","h":3},{"m":2,"n":"17．かけ算の筆算(2)","h":10},{"m":2,"n":"おぼえているかな？"},{"m":2,"n":"●倍の計算","h":3},{"m":3,"n":"18．三角形と角","h":8},{"m":3,"n":"おぼえているかな？"},{"m":3,"n":"●そろばん","h":2},{"m":3,"n":"考える力をのばそう","h":1},{"m":3,"n":"３年のふくしゅう","h":3}],"4":[{"m":4,"n":"学びのとびら","h":1},{"m":4,"n":"１．大きい数のしくみ","h":7},{"m":4,"n":"２．折れ線グラフと表","h":9},{"m":5,"n":"３．わり算の筆算(1)","h":11},{"m":6,"n":"４．角の大きさ","h":9},{"m":7,"n":"５．小数のしくみ","h":13},{"m":7,"n":"考える力をのばそう","h":1},{"m":7,"n":"●そろばん","h":2},{"m":9,"n":"６．わり算の筆算(2)","h":14},{"m":10,"n":"●倍の見方","h":4},{"m":10,"n":"７．がい数の表し方と使い方","h":8},{"m":10,"n":"おぼえているかな？"},{"m":10,"n":"算数で読みとこう","h":1},{"m":11,"n":"８．計算のきまり","h":8},{"m":11,"n":"９．垂直、平行と四角形","h":13},{"m":12,"n":"10．分数","h":9},{"m":12,"n":"おぼえているかな？"},{"m":12,"n":"11．変わり方調べ","h":4},{"m":12,"n":"おぼえているかな？"},{"m":1,"n":"12．面積のくらべ方と表し方","h":10},{"m":2,"n":"13．小数のかけ算とわり算","h":15},{"m":2,"n":"どんな計算になるのかな？","h":1},{"m":3,"n":"14．直方体と立方体","h":9},{"m":3,"n":"考える力をのばそう","h":1},{"m":3,"n":"算数で読みとこう","h":1},{"m":3,"n":"４年のふくしゅう","h":3}],"5":[{"m":4,"n":"学びのとびら","h":1},{"m":4,"n":"1．整数と小数","h":5},{"m":4,"n":"２．直方体や立方体の体積","h":8},{"m":5,"n":"３．比例","h":4},{"m":5,"n":"おぼえているかな？"},{"m":5,"n":"４．小数のかけ算","h":9},{"m":6,"n":"５．小数のわり算","h":9},{"m":7,"n":"●小数の倍","h":5},{"m":7,"n":"どんな計算になるのかな？","h":2},{"m":7,"n":"おぼえているかな？"},{"m":7,"n":"６．合同な図形","h":8},{"m":9,"n":"７．図形の角","h":6},{"m":9,"n":"８．偶数と奇数、倍数と約数","h":12},{"m":10,"n":"９．分数と小数、整数の関係","h":6},{"m":10,"n":"考える力をのばそう","h":2},{"m":10,"n":"算数で読みとこう","h":2},{"m":10,"n":"おぼえているかな？"},{"m":11,"n":"10．分数のたし算とひき算","h":10},{"m":11,"n":"11．平均","h":6},{"m":12,"n":"12．単位量あたりの大きさ","h":10},{"m":12,"n":"13．四角形と三角形の面積","h":11},{"m":12,"n":"おぼえているかな？"},{"m":1,"n":"14．割合","h":10},{"m":1,"n":"おぼえているかな？"},{"m":1,"n":"15．帯グラフと円グラフ","h":8},{"m":2,"n":"16．変わり方調べ","h":1},{"m":2,"n":"17．正多角形と円周の長さ","h":9},{"m":3,"n":"18．角柱と円柱","h":7},{"m":3,"n":"考える力をのばそう","h":2},{"m":3,"n":"算数で読みとこう","h":2},{"m":3,"n":"５年のふくしゅう","h":5}],"6":[{"m":4,"n":"学びのとびら","h":1},{"m":4,"n":"１．対称な図形","h":13},{"m":5,"n":"２．文字と式","h":5},{"m":5,"n":"３．分数×整数、分数÷整数、分数×分数","h":13},{"m":6,"n":"４．分数÷分数","h":7},{"m":7,"n":"●分数の倍","h":3},{"m":7,"n":"どんな計算になるのかな？","h":2},{"m":7,"n":"おぼえているかな？"},{"m":7,"n":"５．比","h":8},{"m":7,"n":"おぼえているかな？"},{"m":7,"n":"算数で読みとこう","h":2},{"m":9,"n":"６．拡大図と縮図","h":8},{"m":9,"n":"７．データの調べ方","h":10},{"m":10,"n":"８．円の面積","h":6},{"m":10,"n":"おぼえているかな？"},{"m":10,"n":"９．角柱と円柱の体積","h":5},{"m":11,"n":"10．およその面積と体積","h":5},{"m":11,"n":"おぼえているかな？"},{"m":11,"n":"考える力をのばそう","h":2},{"m":11,"n":"11．比例と反比例","h":16},{"m":12,"n":"12．並べ方と組み合わせ方","h":6},{"m":12,"n":"考える力をのばそう","h":2},{"m":12,"n":"算数で読みとこう","h":2},{"m":1,"n":"●データを使って  生活を見なおそう","h":5},{"m":2,"n":"13．算数のしあげ","h":19},{"m":3,"n":"算数卒業旅行","h":11}]},"大日本図書":{"1":[{"m":4,"n":"0．なかよし なかまあつめ","h":1},{"m":4,"n":"0．なかよし くらべよう","h":2},{"m":4,"n":"1．10 までの かず ５までの かず","h":3},{"m":4,"n":"1．10 までの かず 10までの かず","h":3},{"m":5,"n":"1．10 までの かず かずを さがそう","h":1},{"m":5,"n":"1．10 までの かず ０と いう かず","h":1},{"m":5,"n":"1．10 までの かず かずの おおきさくらべ","h":1},{"m":5,"n":"1．10 までの かず かずの ならびかた","h":1},{"m":5,"n":"2．なんばんめ なんばんめ","h":3},{"m":5,"n":"3．いくつと いくつ いくつと いくつ","h":7},{"m":6,"n":"4．あわせて いくつ ふえると いくつ あわせて いくつ","h":3},{"m":6,"n":"4．あわせて いくつ ふえると いくつ ふえると いくつ","h":3},{"m":6,"n":"4．あわせて いくつ ふえると いくつ たしざんカード","h":1},{"m":6,"n":"4．あわせて いくつ ふえると いくつ ０の たしざん","h":1},{"m":6,"n":"5．のこりは いくつ ちがいは いくつ のこりは いくつ","h":3},{"m":6,"n":"5．のこりは いくつ ちがいは いくつ ひきざんカード","h":2},{"m":7,"n":"5．のこりは いくつ ちがいは いくつ ０の ひきざん","h":1},{"m":7,"n":"5．のこりは いくつ ちがいは いくつ ちがいは いくつ","h":3},{"m":7,"n":"5．のこりは いくつ ちがいは いくつ たしざんかな ひきざんかな","h":1},{"m":7,"n":"5．のこりは いくつ ちがいは いくつ たしかめもんだい"},{"m":6,"n":"5．のこりは いくつ ちがいは いくつ ＊おはなしづくり","h":11},{"m":7,"n":"6．かずしらべ かずしらべ","h":2},{"m":7,"n":"6．かずしらべ ふくしゅう"},{"m":9,"n":"7．10 より おおきい かず 20までの かず"},{"m":9,"n":"7．10 より おおきい かず かずのせん","h":1},{"m":9,"n":"7．10 より おおきい かず 20より おおきい かず","h":1},{"m":9,"n":"7．10 より おおきい かず たしざんと ひきざん","h":2},{"m":9,"n":"7．10 より おおきい かず たしかめもんだい","h":1},{"m":9,"n":"8．なんじ なんじはん じこくの よみかた、 あらわしかた①","h":1},{"m":9,"n":"9．たしざんカード ひきざんカード たしざんカード ひきざんカード","h":2},{"m":9,"n":"9．たしざんカード ひきざんカード ふくしゅう"},{"m":9,"n":"10．3つの かずの けいさん ３つの かずの けいさん","h":3},{"m":10,"n":"10．3つの かずの けいさん もんだいづくり","h":1},{"m":10,"n":"10．3つの かずの けいさん たしかめもんだい","h":1},{"m":10,"n":"11．ながさくらべ ながさくらべ"},{"m":10,"n":"11．ながさくらべ ＊ どんな けいさん するのかな","h":4},{"m":10,"n":"12．たしざん たしざん","h":7},{"m":10,"n":"12．たしざん たしざんカード"},{"m":11,"n":"12．たしざん たしかめもんだい"},{"m":10,"n":"12．たしざん よみとるちからを のばそう","h":7},{"m":11,"n":"13．ひろさくらべ ひろさくらべ","h":2},{"m":11,"n":"14．ひきざん ひきざん","h":7},{"m":11,"n":"14．ひきざん ひきざんカード"},{"m":11,"n":"14．ひきざん たしかめもんだい","h":1},{"m":11,"n":"15．かさくらべ かさくらべ","h":2},{"m":12,"n":"16．いろいろな かたち かたちづくり"},{"m":12,"n":"16．いろいろな かたち はこの かたち","h":3},{"m":12,"n":"16．いろいろな かたち めんの かたち"},{"m":12,"n":"16．いろいろな かたち ふくしゅう"},{"m":1,"n":"17．大きな かず 100までの かず"},{"m":1,"n":"17．大きな かず 100までの かずの ならびかた","h":1},{"m":2,"n":"17．大きな かず 100より 大きい かず","h":1},{"m":2,"n":"17．大きな かず かずのせん","h":5},{"m":1,"n":"17．大きな かず おうちでさんすう"},{"m":2,"n":"17．大きな かず たしざんと ひきざん","h":2},{"m":2,"n":"17．大きな かず かずの みかた","h":1},{"m":2,"n":"17．大きな かず たしかめもんだい","h":1},{"m":2,"n":"18．なんじなんぷん じこくの よみかた、 あらわしかた②"},{"m":2,"n":"18．なんじなんぷん おうちでさんすう"},{"m":2,"n":"19．ずを つかって かんがえよう ずを つかって かんがえよう","h":5},{"m":2,"n":"19．ずを つかって かんがえよう たしかめもんだい"},{"m":2,"n":"19．ずを つかって かんがえよう ＊ おなじ かずずつ わけよう","h":6},{"m":3,"n":"20．かたちづくり いろいたならべ","h":2},{"m":3,"n":"20．かたちづくり かぞえぼう ならべ"},{"m":3,"n":"20．かたちづくり よみとるちからを のばそう","h":4},{"m":3,"n":"20．かたちづくり プログラミングに ちょうせん！"},{"m":3,"n":"20．かたちづくり 年の ふくしゅう"}],"2":[{"m":4,"n":"1．せいりの しかた せいりの しかた","h":2},{"m":4,"n":"1．せいりの しかた たしかめもんだい","h":1},{"m":4,"n":"2．2けたの たし算 ２けたの たし算","h":6},{"m":4,"n":"2．2けたの たし算 たし算の きまり","h":1},{"m":4,"n":"2．2けたの たし算 たしかめもんだい","h":1},{"m":4,"n":"3．2けたの ひき算 ２けたの ひき算","h":7},{"m":5,"n":"3．2けたの ひき算 計算の たしかめ","h":1},{"m":5,"n":"3．2けたの ひき算 たしかめもんだい","h":1},{"m":5,"n":"4．長さの たんい 長さの あらわし方","h":7},{"m":5,"n":"4．長さの たんい 長さの 計算","h":1},{"m":5,"n":"4．長さの たんい たしかめもんだい","h":1},{"m":5,"n":"5．100 より 大きい 数 数の あらわし方"},{"m":6,"n":"5．100 より 大きい 数 千","h":1},{"m":6,"n":"5．100 より 大きい 数 たし算と ひき算","h":1},{"m":6,"n":"5．100 より 大きい 数 たしかめもんだい"},{"m":5,"n":"5．100 より 大きい 数 読みとる力を のばそう","h":11},{"m":5,"n":"5．100 より 大きい 数 プログラミングに ちょうせん！①"},{"m":5,"n":"5．100 より 大きい 数 ふくしゅう"},{"m":6,"n":"6．かさの たんい かさの あらわし方","h":5},{"m":6,"n":"6．かさの たんい たしかめもんだい","h":1},{"m":7,"n":"7．時こくと 時間 時こくと 時間","h":5},{"m":7,"n":"7．時こくと 時間 たしかめもんだい","h":1},{"m":7,"n":"7．時こくと 時間 おうちで算数"},{"m":7,"n":"7．時こくと 時間 ＊ 時こくの あらわし方","h":6},{"m":7,"n":"7．時こくと 時間 ふくしゅう"},{"m":9,"n":"8．たし算と ひき算の ひっ算 たし算の ひっ算","h":3},{"m":9,"n":"8．たし算と ひき算の ひっ算 たし算の きまり","h":1},{"m":9,"n":"8．たし算と ひき算の ひっ算 れんしゅう","h":1},{"m":9,"n":"8．たし算と ひき算の ひっ算 ひき算の ひっ算","h":4},{"m":9,"n":"8．たし算と ひき算の ひっ算 大きな 数の たし算と ひき算","h":1},{"m":9,"n":"8．たし算と ひき算の ひっ算 たしかめもんだい"},{"m":9,"n":"8．たし算と ひき算の ひっ算 ＊ひっ算を つくろう","h":11},{"m":9,"n":"8．たし算と ひき算の ひっ算 ふくしゅう"},{"m":9,"n":"9．三角形と 四角形 三角形と 四角形"},{"m":9,"n":"9．三角形と 四角形 長方形と 正方形","h":3},{"m":10,"n":"9．三角形と 四角形 直角三角形","h":2},{"m":10,"n":"9．三角形と 四角形 もようづくり","h":3},{"m":9,"n":"9．三角形と 四角形 たしかめもんだい"},{"m":10,"n":"10．かけ算 かけ算","h":4},{"m":10,"n":"10．かけ算 九九","h":8},{"m":11,"n":"10．かけ算 ばいと かけ算","h":2},{"m":11,"n":"10．かけ算 たしかめもんだい"},{"m":10,"n":"10．かけ算 ＊かけ算ビンゴ"},{"m":10,"n":"10．かけ算 ＊ 九九の カードゲーム","h":15},{"m":11,"n":"11．かけ算九九づくり かけ算九九づくり","h":9},{"m":12,"n":"11．かけ算九九づくり たしかめもんだい","h":1},{"m":11,"n":"11．かけ算九九づくり プログラミングに ちょうせん！②"},{"m":11,"n":"11．かけ算九九づくり 読みとる力を のばそう","h":10},{"m":12,"n":"12．長い ものの 長さの たんい 長い ものの 長さの あらわし方","h":4},{"m":12,"n":"12．長い ものの 長さの たんい たしかめもんだい","h":1},{"m":12,"n":"12．長い ものの 長さの たんい ふくしゅう"},{"m":12,"n":"12．長い ものの 長さの たんい 読みとる力を のばそう","h":5},{"m":1,"n":"13．1000 より 大きい 数 大きな 数の あらわし方","h":6},{"m":1,"n":"13．1000 より 大きい 数 一万","h":1},{"m":1,"n":"13．1000 より 大きい 数 何百の たし算と ひき算","h":1},{"m":1,"n":"13．1000 より 大きい 数 たしかめもんだい","h":1},{"m":1,"n":"14．たし算と ひき算の かんけい たし算と ひき算のかんけい","h":5},{"m":2,"n":"14．たし算と ひき算の かんけい たしかめもんだい"},{"m":1,"n":"14．たし算と ひき算の かんけい ＊ どんな 計算 するのかな","h":6},{"m":2,"n":"15．かけ算の きまり かけ算の きまり","h":6},{"m":2,"n":"15．かけ算の きまり たしかめもんだい","h":1},{"m":2,"n":"16．分数 分数"},{"m":3,"n":"16．分数 たしかめもんだい","h":1},{"m":3,"n":"17．はこの 形 はこの 形"},{"m":3,"n":"17．はこの 形 たしかめもんだい"},{"m":3,"n":"17．はこの 形 読みとる力を のばそう","h":5},{"m":3,"n":"17．はこの 形 年の ふくしゅう"}],"3":[{"m":4,"n":"1．かけ算 かけ算のきまり","h":5},{"m":4,"n":"1．かけ算 ０のかけ算","h":1},{"m":4,"n":"1．かけ算 たしかめ問題","h":1},{"m":4,"n":"1．かけ算 ふくろう先生の なるほど算数教室１"},{"m":4,"n":"2．たし算とひき算の筆算 たし算の筆算","h":3},{"m":4,"n":"2．たし算とひき算の筆算 ひき算の筆算","h":4},{"m":5,"n":"2．たし算とひき算の筆算 たしかめ問題"},{"m":4,"n":"2．たし算とひき算の筆算 暗算","h":8},{"m":4,"n":"2．たし算とひき算の筆算 ふくろう先生の なるほど算数教室２"},{"m":5,"n":"3．ぼうグラフと表 整理のしかた","h":1},{"m":5,"n":"3．ぼうグラフと表 ぼうグラフ","h":6},{"m":5,"n":"3．ぼうグラフと表 表やグラフの くふう","h":2},{"m":5,"n":"3．ぼうグラフと表 たしかめ問題"},{"m":5,"n":"3．ぼうグラフと表 読み取る力を のばそう","h":10},{"m":5,"n":"3．ぼうグラフと表 ふくしゅう"},{"m":5,"n":"4．時こくと時間 時こくや時間の もとめ方","h":3},{"m":5,"n":"4．時こくと時間 短い時間","h":1},{"m":5,"n":"4．時こくと時間 たしかめ問題","h":1},{"m":6,"n":"5．わり算 １人分は何こ","h":2},{"m":6,"n":"5．わり算 何人に 分けられる","h":3},{"m":6,"n":"5．わり算 ０や１のわり算","h":1},{"m":6,"n":"5．わり算 たしかめ問題","h":1},{"m":6,"n":"5．わり算 おうちで算数"},{"m":6,"n":"5．わり算 読み取る力を のばそう","h":7},{"m":6,"n":"6．あまりのあるわり算 あまりのある わり算","h":7},{"m":6,"n":"6．あまりのあるわり算 あまりの考え方"},{"m":6,"n":"6．あまりのあるわり算 たしかめ問題","h":1},{"m":6,"n":"6．あまりのあるわり算 プログラミングに ちょうせん！①"},{"m":6,"n":"7．円と球 円"},{"m":7,"n":"7．円と球 球","h":1},{"m":7,"n":"7．円と球 たしかめ問題","h":1},{"m":6,"n":"7．円と球 ふくしゅう"},{"m":9,"n":"8．かけ算の筆算 何十、何百の かけ算"},{"m":9,"n":"8．かけ算の筆算 （２けた）×（１けた）の筆算"},{"m":9,"n":"8．かけ算の筆算 （３けた）×（１けた）の筆算","h":3},{"m":9,"n":"8．かけ算の筆算 かけ算のきまり","h":1},{"m":9,"n":"8．かけ算の筆算 かけ算と言葉の式や図","h":2},{"m":9,"n":"8．かけ算の筆算 たしかめ問題","h":1},{"m":9,"n":"9．答えが2けたになるわり算 答えが２けたになるわり算","h":2},{"m":9,"n":"10．10000 より大きい数 大きな数の表し方","h":6},{"m":10,"n":"10．10000 より大きい数 10倍した数や10でわった数","h":2},{"m":10,"n":"10．10000 より大きい数 数の見方","h":1},{"m":10,"n":"10．10000 より大きい数 たしかめ問題","h":1},{"m":9,"n":"10．10000 より大きい数 ふくろう先生の なるほど算数教室３"},{"m":10,"n":"11．小数 小数","h":2},{"m":10,"n":"11．小数 小数のしくみ","h":10},{"m":10,"n":"11．小数 小数の計算"},{"m":11,"n":"11．小数 数の見方","h":1},{"m":11,"n":"11．小数 たしかめ問題"},{"m":10,"n":"11．小数 読み取る力をのばそう","h":12},{"m":10,"n":"11．小数 ふくしゅう"},{"m":11,"n":"12．長さ 長さのはかり方","h":2},{"m":11,"n":"12．長さ キロメートル","h":3},{"m":11,"n":"12．長さ たしかめ問題"},{"m":11,"n":"13．分数 分数","h":3},{"m":11,"n":"13．分数 分数の大きさ","h":2},{"m":12,"n":"13．分数 分数と小数","h":1},{"m":12,"n":"13．分数 分数の計算","h":2},{"m":12,"n":"13．分数 たしかめ問題","h":1},{"m":12,"n":"14．三角形と角 いろいろな 三角形"},{"m":12,"n":"14．三角形と角 三角形のかき方","h":3},{"m":12,"n":"14．三角形と角 三角形の角","h":2},{"m":12,"n":"14．三角形と角 三角形のしきつめ","h":1},{"m":12,"n":"14．三角形と角 たしかめ問題","h":1},{"m":12,"n":"14．三角形と角 ふくしゅう"},{"m":12,"n":"14．三角形と角 ＊どんな計算するのかな","h":9},{"m":1,"n":"15．重さの単位 グラム"},{"m":1,"n":"15．重さの単位 はかり","h":7},{"m":1,"n":"15．重さの単位 おうちで算数"},{"m":1,"n":"15．重さの単位 トン","h":1},{"m":1,"n":"15．重さの単位 単位のしくみ","h":1},{"m":1,"n":"15．重さの単位 たしかめ問題","h":1},{"m":1,"n":"15．重さの単位 ふくろう先生の なるほど算数教室４"},{"m":1,"n":"15．重さの単位 プログラミングに ちょうせん！②"},{"m":1,"n":"15．重さの単位 ふくろう先生の なるほど算数教室５"},{"m":1,"n":"16．□を使った式 たし算とひき算","h":2},{"m":2,"n":"16．□を使った式 かけ算とわり算","h":2},{"m":2,"n":"16．□を使った式 たしかめ問題"},{"m":1,"n":"16．□を使った式 暗算","h":5},{"m":2,"n":"17．2けたの数をかける計算 何十をかける計算","h":9},{"m":2,"n":"17．2けたの数をかける計算 ２けたの数を かける計算"},{"m":2,"n":"17．2けたの数をかける計算 計算のきまり","h":1},{"m":2,"n":"17．2けたの数をかける計算 計算のくふう","h":2},{"m":2,"n":"17．2けたの数をかける計算 たしかめ問題","h":1},{"m":2,"n":"18．倍とかけ算、わり算 倍とかけ算、わり算","h":3},{"m":3,"n":"18．倍とかけ算、わり算 たしかめ問題","h":1},{"m":3,"n":"そろばん そろばんのしくみ","h":1},{"m":3,"n":"そろばん たし算とひき算","h":2},{"m":3,"n":"そろばん 年のふくしゅう"}],"4":[{"m":4,"n":"1．折れ線グラフと表 折れ線グラフの読み方","h":11},{"m":4,"n":"1．折れ線グラフと表 折れ線グラフのかき方"},{"m":4,"n":"1．折れ線グラフと表 折れ線グラフとぼうグラフ","h":1},{"m":4,"n":"1．折れ線グラフと表 表","h":3},{"m":4,"n":"1．折れ線グラフと表 たしかめ問題"},{"m":4,"n":"1．折れ線グラフと表 読み取る力をのばそう","h":11},{"m":4,"n":"2．わり算の筆算 （２けた）÷（１けた）の計算"},{"m":5,"n":"2．わり算の筆算 （３けた）÷（１けた）の計算","h":4},{"m":5,"n":"2．わり算の筆算 たしかめ問題","h":1},{"m":4,"n":"2．わり算の筆算 プログラミングに ちょうせん！①"},{"m":4,"n":"2．わり算の筆算 ふくしゅう"},{"m":4,"n":"2．わり算の筆算 暗算","h":10},{"m":5,"n":"3．角度 角の大きさ","h":4},{"m":5,"n":"3．角度 角のかき方","h":2},{"m":5,"n":"3．角度 たしかめ問題","h":1},{"m":5,"n":"4．1億より大きい数 億や兆の位","h":3},{"m":5,"n":"4．1億より大きい数 整数のしくみ","h":2},{"m":6,"n":"4．1億より大きい数 大きな数のかけ算","h":2},{"m":6,"n":"4．1億より大きい数 たしかめ問題"},{"m":5,"n":"4．1億より大きい数 読み取る力をのばそう","h":8},{"m":5,"n":"4．1億より大きい数 ふくろう先生の なるほど算数教室１"},{"m":6,"n":"5．式と計算 （ ）のある式","h":2},{"m":6,"n":"5．式と計算 ＋、－と×、÷のまじった式","h":2},{"m":6,"n":"5．式と計算 計算のきまり","h":1},{"m":6,"n":"5．式と計算 たしかめ問題","h":1},{"m":6,"n":"6．垂直、平行と四角形 直線の交わり方","h":2},{"m":6,"n":"6．垂直、平行と四角形 直線のならび方","h":13},{"m":6,"n":"6．垂直、平行と四角形 いろいろな四角形"},{"m":7,"n":"6．垂直、平行と四角形 ひし形","h":1},{"m":7,"n":"6．垂直、平行と四角形 対角線","h":3},{"m":7,"n":"6．垂直、平行と四角形 四角形のしきつめ","h":1},{"m":7,"n":"6．垂直、平行と四角形 たしかめ問題","h":1},{"m":6,"n":"6．垂直、平行と四角形 ふくろう先生の なるほど算数教室２"},{"m":6,"n":"6．垂直、平行と四角形 ふくしゅう"},{"m":9,"n":"7．がい数 がい数","h":6},{"m":9,"n":"7．がい数 がい数の計算","h":4},{"m":9,"n":"7．がい数 たしかめ問題","h":1},{"m":9,"n":"8．2けたの数でわる計算 何十でわる計算","h":15},{"m":9,"n":"8．2けたの数でわる計算 （２けた）÷（２けた）の筆算"},{"m":9,"n":"8．2けたの数でわる計算 商の見当のつけ方、練習","h":1},{"m":10,"n":"8．2けたの数でわる計算 （３けた）÷（２けた）の筆算","h":3},{"m":10,"n":"8．2けたの数でわる計算 大きな数のわり算の筆算","h":1},{"m":10,"n":"8．2けたの数でわる計算 わり算のきまり","h":2},{"m":10,"n":"8．2けたの数でわる計算 かけ算かな、わり算かな","h":1},{"m":10,"n":"8．2けたの数でわる計算 たしかめ問題"},{"m":9,"n":"8．2けたの数でわる計算 読み取る力をのばそう","h":15},{"m":10,"n":"9．変わり方 変わり方","h":4},{"m":10,"n":"9．変わり方 たしかめ問題","h":1},{"m":10,"n":"9．変わり方 プログラミングに ちょうせん！②"},{"m":10,"n":"10．倍とかけ算、わり算 倍とかけ算、わり算","h":4},{"m":11,"n":"10．倍とかけ算、わり算 たしかめ問題"},{"m":10,"n":"10．倍とかけ算、わり算 ＊どんな計算するのかな","h":5},{"m":10,"n":"10．倍とかけ算、わり算 ふくしゅう"},{"m":10,"n":"10．倍とかけ算、わり算 ふくろう先生の なるほど算数教室３"},{"m":11,"n":"11．小数 小数の表し方","h":3},{"m":11,"n":"11．小数 小数と整数のしくみ","h":4},{"m":11,"n":"11．小数 数の見方","h":1},{"m":11,"n":"11．小数 小数の計算","h":4},{"m":11,"n":"11．小数 たしかめ問題","h":1},{"m":11,"n":"12．面積 広さの表し方"},{"m":11,"n":"12．面積 長方形と正方形の面積","h":3},{"m":12,"n":"12．面積 いろいろな面積の単位","h":4},{"m":12,"n":"12．面積 たしかめ問題","h":1},{"m":12,"n":"そろばん そろばんのしくみと数の読み方、表し方","h":2},{"m":12,"n":"そろばん たし算とひき算"},{"m":12,"n":"そろばん ふくろう先生の なるほど算数教室４"},{"m":12,"n":"そろばん ふくろう先生の なるほど算数教室５"},{"m":12,"n":"そろばん ふくしゅう"},{"m":1,"n":"13．小数と整数のかけ算・わり算 小数×整数","h":4},{"m":1,"n":"13．小数と整数のかけ算・わり算 練習","h":1},{"m":1,"n":"13．小数と整数のかけ算・わり算 小数÷整数","h":4},{"m":2,"n":"13．小数と整数のかけ算・わり算 あまりのあるわり算","h":1},{"m":2,"n":"13．小数と整数のかけ算・わり算 わり進みの計算","h":2},{"m":2,"n":"13．小数と整数のかけ算・わり算 小数と倍","h":1},{"m":2,"n":"13．小数と整数のかけ算・わり算 たしかめ問題","h":1},{"m":2,"n":"14．分数 分数の表し方","h":424},{"m":2,"n":"14．分数 練習"},{"m":2,"n":"14．分数 分数の計算","h":4},{"m":2,"n":"14．分数 分数の大きさ","h":1},{"m":2,"n":"14．分数 たしかめ問題","h":1},{"m":2,"n":"14．分数 ふくろう先生の なるほど算数教室６"},{"m":2,"n":"14．分数 読み取る力をのばそう","h":10},{"m":2,"n":"15．直方体と立方体 直方体と立方体","h":2},{"m":2,"n":"15．直方体と立方体 展開図","h":2},{"m":3,"n":"15．直方体と立方体 面や辺の垂直と平行","h":2},{"m":3,"n":"15．直方体と立方体 見取図","h":1},{"m":3,"n":"15．直方体と立方体 位置の表し方","h":1},{"m":3,"n":"15．直方体と立方体 たしかめ問題","h":1},{"m":2,"n":"15．直方体と立方体 年のふくしゅう"},{"m":2,"n":"15．直方体と立方体 ふくろう先生の なるほど算数教室７"}],"5":[{"m":4,"n":"1．整数と小数 整数と小数","h":2},{"m":4,"n":"1．整数と小数 たしかめ問題","h":1},{"m":4,"n":"1．整数と小数 復習"},{"m":4,"n":"2．図形の角の大きさ 三角形、四角形の角"},{"m":4,"n":"2．図形の角の大きさ 多角形の角","h":3},{"m":4,"n":"2．図形の角の大きさ ＊ 角の大きさの和をまとめよう"},{"m":4,"n":"2．図形の角の大きさ しきつめ","h":1},{"m":4,"n":"2．図形の角の大きさ たしかめ問題","h":1},{"m":4,"n":"2．図形の角の大きさ ふくろう先生の なるほど算数教室１"},{"m":4,"n":"3．2つの量の変わり方 ２つの量の変わり方","h":2},{"m":4,"n":"4．小数のかけ算 整数×小数","h":5},{"m":4,"n":"4．小数のかけ算 小数×小数","h":2},{"m":5,"n":"4．小数のかけ算 練習","h":1},{"m":5,"n":"4．小数のかけ算 積の大きさ","h":1},{"m":5,"n":"4．小数のかけ算 面積の公式と小数","h":1},{"m":5,"n":"4．小数のかけ算 計算のきまり","h":1},{"m":5,"n":"4．小数のかけ算 たしかめ問題","h":1},{"m":4,"n":"4．小数のかけ算 復習"},{"m":5,"n":"5．体積 直方体と立方体の体積"},{"m":6,"n":"5．体積 いろいろな体積","h":4},{"m":6,"n":"5．体積 たしかめ問題","h":1},{"m":6,"n":"6．小数のわり算 整数÷小数","h":5},{"m":6,"n":"6．小数のわり算 小数÷小数","h":3},{"m":6,"n":"6．小数のわり算 練習","h":1},{"m":7,"n":"6．小数のわり算 商の大きさ","h":1},{"m":7,"n":"6．小数のわり算 わり進みの計算とあまりのあるわり算","h":3},{"m":7,"n":"6．小数のわり算 わり算の式","h":1},{"m":7,"n":"6．小数のわり算 小数倍とかけ算、わり算","h":3},{"m":7,"n":"6．小数のわり算 たしかめ問題","h":1},{"m":6,"n":"6．小数のわり算 プログラミングに ちょうせん！①"},{"m":7,"n":"7．合同な図形 合同な図形","h":7},{"m":7,"n":"7．合同な図形 合同な図形のかき方"},{"m":7,"n":"7．合同な図形 たしかめ問題"},{"m":7,"n":"7．合同な図形 ＊どんな計算するのかな","h":7},{"m":7,"n":"7．合同な図形 復習"},{"m":9,"n":"8．整数の性質 偶数と奇数","h":1},{"m":9,"n":"8．整数の性質 倍数と公倍数","h":3},{"m":9,"n":"8．整数の性質 約数と公約数","h":3},{"m":9,"n":"8．整数の性質 たしかめ問題"},{"m":9,"n":"8．整数の性質 読み取る力をのばそう","h":8},{"m":9,"n":"9．分数のたし算とひき算 分数の大きさ","h":5},{"m":9,"n":"9．分数のたし算とひき算 分数のたし算とひき算","h":3},{"m":9,"n":"9．分数のたし算とひき算 たしかめ問題","h":1},{"m":9,"n":"10．平均 平均","h":5},{"m":10,"n":"10．平均 たしかめ問題","h":1},{"m":10,"n":"11．単位量あたりの大きさ 単位量あたりの大きさ"},{"m":10,"n":"11．単位量あたりの大きさ たしかめ問題","h":1},{"m":10,"n":"11．単位量あたりの大きさ ふくろう先生の なるほど算数教室２"},{"m":10,"n":"11．単位量あたりの大きさ 復習"},{"m":10,"n":"12．分数と小数、整数 わり算と分数"},{"m":10,"n":"12．分数と小数、整数 分数倍","h":1},{"m":10,"n":"12．分数と小数、整数 分数と小数、整数","h":3},{"m":10,"n":"12．分数と小数、整数 たしかめ問題","h":1},{"m":10,"n":"13．割合 割合と百分率"},{"m":10,"n":"13．割合 割合の使い方","h":4},{"m":11,"n":"13．割合 歩合","h":1},{"m":11,"n":"13．割合 たしかめ問題"},{"m":10,"n":"13．割合 読み取る力をのばそう","h":10},{"m":11,"n":"14．帯グラフと円グラフ 帯グラフと円グラフ","h":6},{"m":11,"n":"14．帯グラフと円グラフ グラフの選び方"},{"m":11,"n":"14．帯グラフと円グラフ 表やグラフを生かそう"},{"m":11,"n":"14．帯グラフと円グラフ たしかめ問題"},{"m":11,"n":"14．帯グラフと円グラフ 読み取る力をのばそう","h":6},{"m":11,"n":"15．正多角形と円 正多角形","h":3},{"m":11,"n":"15．正多角形と円 円周と直径","h":5},{"m":12,"n":"15．正多角形と円 たしかめ問題","h":1},{"m":11,"n":"15．正多角形と円 プログラミングに ちょうせん！②"},{"m":11,"n":"15．正多角形と円 復習"},{"m":11,"n":"15．正多角形と円 ふくろう先生の なるほど算数教室３"},{"m":11,"n":"15．正多角形と円 ふくろう先生の なるほど算数教室４"},{"m":1,"n":"16．四角形と三角形の面積 平行四辺形の面積","h":4},{"m":1,"n":"16．四角形と三角形の面積 三角形の面積","h":3},{"m":2,"n":"16．四角形と三角形の面積 いろいろな四角形の面積","h":3},{"m":2,"n":"16．四角形と三角形の面積 面積の求め方のくふう","h":1},{"m":2,"n":"16．四角形と三角形の面積 たしかめ問題"},{"m":1,"n":"16．四角形と三角形の面積 読み取る力をのばそう","h":12},{"m":2,"n":"17．速さ 速さ","h":5},{"m":2,"n":"17．速さ たしかめ問題","h":1},{"m":2,"n":"18．角柱と円柱 立体","h":3},{"m":3,"n":"18．角柱と円柱 見取図と展開図","h":3},{"m":3,"n":"18．角柱と円柱 たしかめ問題","h":1},{"m":2,"n":"18．角柱と円柱 ふくろう先生の なるほど算数教室５"},{"m":2,"n":"18．角柱と円柱 ＊変わり方を調べよう","h":7},{"m":2,"n":"18．角柱と円柱 ふくろう先生の なるほど算数教室６"},{"m":2,"n":"18．角柱と円柱 年の復習"}],"6":[{"m":4,"n":"1．対称な図形 対称な図形","h":1},{"m":4,"n":"1．対称な図形 線対称な図形","h":3},{"m":4,"n":"1．対称な図形 点対称な図形","h":3},{"m":4,"n":"1．対称な図形 多角形と対称","h":2},{"m":4,"n":"1．対称な図形 たしかめ問題","h":1},{"m":4,"n":"1．対称な図形 ふくろう先生の なるほど算数教室１"},{"m":4,"n":"2．分数と整数のかけ算・わり算 分数×整数","h":2},{"m":4,"n":"2．分数と整数のかけ算・わり算 分数÷整数","h":4},{"m":5,"n":"2．分数と整数のかけ算・わり算 たしかめ問題","h":1},{"m":5,"n":"3．円の面積 円の面積"},{"m":5,"n":"3．円の面積 たしかめ問題"},{"m":5,"n":"3．円の面積 ＊ 円の面積の公式づくり","h":6},{"m":5,"n":"3．円の面積 復習"},{"m":5,"n":"4．文字を使った式 文字xを使った式","h":1},{"m":5,"n":"4．文字を使った式 ２つの文字x、yを使った式","h":2},{"m":6,"n":"4．文字を使った式 たしかめ問題"},{"m":5,"n":"4．文字を使った式 ＊何枚いるかな","h":4},{"m":6,"n":"5．データの活用 データの特ちょうを表す値とグラフ","h":4},{"m":6,"n":"5．データの活用 練習","h":2},{"m":6,"n":"5．データの活用 度数分布表と柱状グラフ","h":2},{"m":6,"n":"5．データの活用 データの活用","h":1},{"m":6,"n":"5．データの活用 いろいろなグラフ","h":2},{"m":6,"n":"5．データの活用 表やグラフを生かそう"},{"m":6,"n":"5．データの活用 たしかめ問題"},{"m":6,"n":"5．データの活用 読み取る力をのばそう","h":11},{"m":7,"n":"6．角柱と円柱の体積 角柱と円柱の体積","h":5},{"m":7,"n":"6．角柱と円柱の体積 たしかめ問題","h":1},{"m":7,"n":"6．角柱と円柱の体積 復習"},{"m":9,"n":"7．分数のかけ算 分数をかける計算","h":5},{"m":9,"n":"7．分数のかけ算 練習","h":1},{"m":9,"n":"7．分数のかけ算 逆数","h":1},{"m":9,"n":"7．分数のかけ算 積の大きさ","h":1},{"m":9,"n":"7．分数のかけ算 面積や体積の公式と分数","h":1},{"m":9,"n":"7．分数のかけ算 計算のきまり","h":1},{"m":9,"n":"7．分数のかけ算 たしかめ問題"},{"m":9,"n":"7．分数のかけ算 ＊時間と分数","h":11},{"m":9,"n":"7．分数のかけ算 ふくろう先生の なるほど算数教室２"},{"m":9,"n":"8．分数のわり算 分数でわる計算","h":6},{"m":9,"n":"8．分数のわり算 練習","h":1},{"m":10,"n":"8．分数のわり算 商の大きさ","h":1},{"m":10,"n":"8．分数のわり算 計算のくふう","h":2},{"m":10,"n":"8．分数のわり算 分数倍とかけ算、わり算","h":3},{"m":10,"n":"8．分数のわり算 たしかめ問題"},{"m":9,"n":"8．分数のわり算 ＊どんな計算するのかな","h":14},{"m":10,"n":"9．場合の数 並べ方"},{"m":11,"n":"9．場合の数 組み合わせ方","h":2},{"m":11,"n":"9．場合の数 たしかめ問題"},{"m":10,"n":"9．場合の数 ＊ リーグ戦とトーナメント戦"},{"m":10,"n":"9．場合の数 読み取る力をのばそう","h":7},{"m":10,"n":"9．場合の数 復習"},{"m":11,"n":"10．比 比の表し方","h":2},{"m":11,"n":"10．比 等しい比","h":4},{"m":11,"n":"10．比 比の利用","h":2},{"m":11,"n":"10．比 たしかめ問題","h":1},{"m":11,"n":"10．比 ふくろう先生の なるほど算数教室３"},{"m":11,"n":"11．拡大図と縮図 拡大図と縮図","h":2},{"m":11,"n":"11．拡大図と縮図 拡大図と縮図のかき方","h":3},{"m":12,"n":"11．拡大図と縮図 縮図の利用","h":2},{"m":12,"n":"11．拡大図と縮図 たしかめ問題","h":1},{"m":11,"n":"11．拡大図と縮図 プログラミングに ちょうせん！①"},{"m":11,"n":"11．拡大図と縮図 ＊ どうして拡大図になるのかな"},{"m":11,"n":"11．拡大図と縮図 読み取る力をのばそう","h":8},{"m":11,"n":"11．拡大図と縮図 復習"},{"m":1,"n":"12．比例と反比例 比例"},{"m":1,"n":"12．比例と反比例 比例の式","h":2},{"m":1,"n":"12．比例と反比例 比例のグラフ","h":2},{"m":2,"n":"12．比例と反比例 練習","h":6},{"m":1,"n":"12．比例と反比例 反比例"},{"m":2,"n":"12．比例と反比例 反比例の式","h":1},{"m":2,"n":"12．比例と反比例 反比例のグラフ","h":1},{"m":2,"n":"12．比例と反比例 たしかめ問題","h":1},{"m":1,"n":"12．比例と反比例 プログラミングに ちょうせん！②"},{"m":1,"n":"12．比例と反比例 ＊ 反比例のグラフ"},{"m":2,"n":"13．およその面積や体積 およその面積や体積"},{"m":2,"n":"13．およその面積や体積 読み取る力をのばそう","h":3},{"m":2,"n":"13．およその面積や体積 年間のまとめ"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室４"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室５"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室６"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室７"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室８"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室９"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室10"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室11"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室12"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室13"},{"m":2,"n":"13．およその面積や体積 ふくろう先生の なるほど算数教室14"},{"m":2,"n":"13．およその面積や体積 数学の世界へ１"},{"m":2,"n":"13．およその面積や体積 数学の世界へ２"},{"m":2,"n":"13．およその面積や体積 数学の世界へ３"},{"m":2,"n":"13．およその面積や体積 数学の世界へ４"},{"m":2,"n":"13．およその面積や体積 数学の世界へ５"},{"m":2,"n":"13．およその面積や体積 数学の世界へ６"},{"m":2,"n":"13．およその面積や体積 数学の世界へ７"},{"m":2,"n":"13．およその面積や体積 数学の世界へ８"}]}},"理科":{"東京書籍":{"3":[{"m":4,"n":"生き物のすがた","h":5},{"m":4,"n":"たねをまこう","h":3},{"m":5,"n":"チョウの育ち方","h":5},{"m":5,"n":"成虫のからだのつくり","h":1},{"m":6,"n":"植物の育ち方","h":1},{"m":6,"n":"植物のからだのつくり","h":1},{"m":6,"n":"風のはたらき","h":3},{"m":6,"n":"ゴムのはたらき","h":4},{"m":9,"n":"こん虫などのすみか","h":2},{"m":9,"n":"こん虫のからだ","h":1},{"m":9,"n":"こん虫の育ち方","h":2},{"m":10,"n":"太陽とかげのようす","h":6},{"m":10,"n":"日なたと日かげの地面","h":3},{"m":11,"n":"はね返した日光","h":4},{"m":11,"n":"集めた日光","h":1},{"m":11,"n":"音が出るとき","h":3},{"m":11,"n":"音のつたわり","h":2},{"m":12,"n":"物の形と重さ","h":3},{"m":12,"n":"物による重さのちがい","h":3},{"m":1,"n":"明かりがつくつなぎ方","h":3},{"m":1,"n":"電気を通す物と通さない物","h":3},{"m":2,"n":"じしゃくにつく物","h":4},{"m":2,"n":"極のせいしつ","h":2},{"m":2,"n":"じしゃくにつけた鉄","h":2}],"4":[{"m":4,"n":"１年間の観察の計画","h":1},{"m":4,"n":"植物や動物のようす","h":2},{"m":4,"n":"記録の整理","h":1},{"m":4,"n":"うでのつくりと動き","h":3},{"m":5,"n":"からだ全体のつくりと動き","h":2},{"m":5,"n":"１日の気温と天気","h":5},{"m":5,"n":"かん電池のはたらき","h":2},{"m":6,"n":"かん電池のつなぎ方","h":4},{"m":6,"n":"雨水の流れ方","h":3},{"m":6,"n":"水のしみこみ方","h":2},{"m":6,"n":"植物のようす","h":2},{"m":7,"n":"動物のようす","h":1},{"m":7,"n":"記録の整理","h":1},{"m":9,"n":"月の見え方","h":3},{"m":9,"n":"星の見え方","h":2},{"m":9,"n":"水のゆくえ","h":3},{"m":10,"n":"空気中にある水","h":3},{"m":10,"n":"植物のようす","h":2},{"m":10,"n":"動物のようす","h":1},{"m":10,"n":"記録の整理","h":1},{"m":10,"n":"とじこめた空気","h":4},{"m":11,"n":"とじこめた水","h":2},{"m":11,"n":"空気の体積と温度","h":3},{"m":11,"n":"水の体積と温度","h":1},{"m":11,"n":"金ぞくの体積と温度","h":3},{"m":12,"n":"金ぞくのあたたまり方","h":3},{"m":12,"n":"空気のあたたまり方","h":2},{"m":12,"n":"水のあたたまり方","h":3},{"m":1,"n":"記録の整理","h":1},{"m":1,"n":"水を熱したとき","h":3},{"m":2,"n":"水を冷やしたとき","h":6}],"5":[{"m":4,"n":"雲と天気","h":3},{"m":5,"n":"天気の予想","h":6},{"m":5,"n":"種子が発芽する条件","h":6},{"m":5,"n":"種子の発芽と養分","h":3},{"m":6,"n":"植物が成長する条件","h":6},{"m":6,"n":"たまごの変化","h":7},{"m":9,"n":"花のつくり","h":4},{"m":9,"n":"花粉のはたらき","h":3},{"m":10,"n":"台風の動きと天気の変化","h":2},{"m":10,"n":"わたしたちのくらしと災害","h":2},{"m":10,"n":"川原の石","h":2},{"m":10,"n":"流れる水のはたらき","h":2},{"m":11,"n":"流れる水のはたらきの大きさ","h":3},{"m":11,"n":"わたしたちのくらしと災害","h":4},{"m":11,"n":"物が水にとけるとき","h":4},{"m":11,"n":"物が水にとける量","h":6},{"m":12,"n":"水にとけた物をとり出す","h":4},{"m":1,"n":"人の生命のたんじょう","h":4},{"m":1,"n":"電磁石の性質","h":4},{"m":2,"n":"電磁石の強さ","h":7},{"m":2,"n":"ふりこの１往復する時間","h":7}],"6":[{"m":4,"n":"物が燃え続けるには","h":3},{"m":4,"n":"空気の変化","h":4},{"m":5,"n":"食べ物のゆくえ","h":4},{"m":5,"n":"吸う空気とはく空気","h":2},{"m":6,"n":"血液のはたらき","h":2},{"m":6,"n":"人のからだのつくり","h":1},{"m":6,"n":"植物の水の通り道","h":3},{"m":6,"n":"植物と日光のかかわり","h":4},{"m":6,"n":"食べ物をとおした生き物のかかわり","h":3},{"m":7,"n":"空気をとおした生き物どうしのかかわり","h":2},{"m":7,"n":"生き物と水とのかかわり","h":1},{"m":9,"n":"月の形の見え方","h":5},{"m":9,"n":"大地をつくっている物","h":4},{"m":10,"n":"地層のでき方","h":5},{"m":10,"n":"地震や火山の噴火と大地の変化","h":2},{"m":10,"n":"私たちのくらしと災害","h":2},{"m":10,"n":"てこのはたらき","h":3},{"m":11,"n":"てこが水平につり合うとき","h":4},{"m":11,"n":"てこを利用した道具","h":1},{"m":11,"n":"電気をつくる","h":2},{"m":11,"n":"電気の利用","h":2},{"m":12,"n":"電気の有効利用","h":2},{"m":12,"n":"電気を利用した物をつくろう","h":3},{"m":1,"n":"水溶液にとけている物","h":5},{"m":1,"n":"水溶液のなかま分け","h":2},{"m":1,"n":"水溶液のはたらき","h":8},{"m":2,"n":"人と環境とのかかわり","h":4},{"m":3,"n":"地球に生きる","h":4}]}},"社会":{"東京書籍":{"3":[{"m":4,"n":"・導入（オリエンテーション）","h":1},{"m":4,"n":"○学校のまわり","h":5},{"m":5,"n":"1 市の様子","h":10},{"m":6,"n":"・導入（オリエンテーション）","h":1},{"m":6,"n":"1 農家の仕事／工場の仕事（選択）","h":10},{"m":9,"n":"2 店ではたらく人","h":14},{"m":11,"n":"いかす（第2単元全体）","h":1},{"m":11,"n":"・導入（オリエンテーション）","h":1},{"m":12,"n":"1 火事からくらしを守る","h":8},{"m":1,"n":"2 事故や事件からくらしを守る","h":6},{"m":2,"n":"いかす（第3単元全体）","h":1},{"m":2,"n":"・導入（オリエンテーション）","h":1},{"m":2,"n":"1 市の様子と人々のくらしのうつりかわり","h":11}],"4":[{"m":4,"n":"導入（オリエンテーション）","h":1},{"m":4,"n":"〇日本地図を広げて","h":2},{"m":4,"n":"1 県の広がり","h":8},{"m":5,"n":"導入（オリエンテーション）","h":1},{"m":5,"n":"1 水はどこから","h":11},{"m":6,"n":"2 ごみのしょりと利用","h":12},{"m":9,"n":"導入（オリエンテーション）","h":1},{"m":9,"n":"1 風水害からくらしを守る","h":9},{"m":10,"n":"導入（オリエンテーション）","h":1},{"m":10,"n":"1 残したいもの 伝えたいもの","h":9},{"m":11,"n":"2 谷に囲まれた台地に水を引く","h":12},{"m":1,"n":"導入（オリエンテーション）","h":1},{"m":1,"n":"1 こけしをつくるまち・蔵王町","h":7},{"m":2,"n":"2 国際交流に取り組むまち・仙台市","h":7},{"m":3,"n":"いかす（第5単元全体）","h":1}],"5":[{"m":4,"n":"導入（オリエンテーション）","h":1},{"m":4,"n":"1 世界の中の国土","h":4},{"m":4,"n":"2 国土の地形の特色","h":3},{"m":5,"n":"3 低い土地のくらし／高い土地のくらし（選択）","h":5},{"m":5,"n":"4 国土の気候の特色","h":3},{"m":6,"n":"5 あたたかい土地のくらし／寒い土地のくらし（選択）","h":4},{"m":6,"n":"導入（オリエンテーション）","h":1},{"m":6,"n":"1 くらしを支える食料生産","h":4},{"m":7,"n":"2 米づくりのさかんな地域","h":8},{"m":9,"n":"3 水産業のさかんな地域","h":7},{"m":9,"n":"4 これからの食料生産とわたしたち","h":4},{"m":10,"n":"いかす（第2単元全体）","h":1},{"m":10,"n":"導入（オリエンテーション）","h":1},{"m":10,"n":"1 くらしを支える工業生産","h":3},{"m":10,"n":"2 自動車をつくる工業","h":7},{"m":11,"n":"3 工業生産を支える運輸と貿易","h":5},{"m":11,"n":"4 これからの工業生産とわたしたち","h":4},{"m":12,"n":"いかす（第3単元全体）","h":1},{"m":12,"n":"導入（オリエンテーション）","h":1},{"m":12,"n":"1 情報産業とわたしたちのくらし","h":6},{"m":1,"n":"2 情報を生かす産業","h":5},{"m":1,"n":"3 情報を生かすわたしたち","h":2},{"m":1,"n":"いかす（第4単元全体）","h":1},{"m":2,"n":"導入（オリエンテーション）","h":1},{"m":2,"n":"1 自然災害を防ぐ","h":6},{"m":2,"n":"2 わたしたちの生活と森林","h":6},{"m":3,"n":"3 環境を守るわたしたち","h":5},{"m":3,"n":"いかす（第5単元全体）","h":1}],"6":[{"m":4,"n":"導入（オリエンテーション）","h":1},{"m":4,"n":"1 わたしたちのくらしと日本国憲法","h":7},{"m":4,"n":"2 国の政治のしくみと選挙","h":5},{"m":5,"n":"3 子育て支援の願いを実現する政治／震災復興の願いを実現する政治（選択）","h":5},{"m":6,"n":"いかす（第1単元全体）","h":1},{"m":6,"n":"導入（オリエンテーション）","h":2},{"m":6,"n":"1 縄文のむらから古墳のくにへ","h":7},{"m":7,"n":"2 天皇中心の国づくり","h":6},{"m":9,"n":"3 貴族のくらし","h":3},{"m":9,"n":"4 武士の世の中へ","h":6},{"m":9,"n":"5 今に伝わる室町文化","h":3},{"m":10,"n":"6 戦国の世から天下統一へ","h":6},{"m":10,"n":"7 江戸幕府と政治の安定","h":6},{"m":11,"n":"8 町人の文化と新しい学問","h":5},{"m":11,"n":"9 明治の国づくりを進めた人々","h":7},{"m":12,"n":"10 世界に歩み出した日本","h":6},{"m":1,"n":"11 長く続いた戦争と人々のくらし","h":7},{"m":1,"n":"12 新しい日本、平和な日本へ","h":7},{"m":2,"n":"いかす（第2単元全体）","h":1},{"m":2,"n":"導入（オリエンテーション）","h":1},{"m":2,"n":"1 日本とつながりの深い国々","h":7},{"m":3,"n":"2 世界の未来と日本の役割","h":5},{"m":3,"n":"いかす（第3単元全体）","h":1}]}},"道徳":{"光村図書":{"1":[{"m":4,"n":"がっこう　だいすき","h":1},{"m":4,"n":"きもちの　よいせいかつ","h":1},{"m":5,"n":"あかるい　あいさつ","h":1},{"m":5,"n":"なかよくね","h":1},{"m":5,"n":"よい　こととわるい　こと","h":1},{"m":6,"n":"みんな　じょうず","h":1},{"m":6,"n":"みんな　いきてる","h":1},{"m":6,"n":"かぼちゃの　つる","h":1},{"m":6,"n":"どうして　こうなるのかな","h":1},{"m":7,"n":"きんの　おの","h":1},{"m":7,"n":"かぞくと　おはなし","h":1},{"m":9,"n":"あさがお","h":1},{"m":9,"n":"いきて　いるって","h":1},{"m":9,"n":"ありがとうがいっぱい","h":1},{"m":9,"n":"やさしい　ひと、みつけた","h":1},{"m":10,"n":"あしたは　えんそく","h":1},{"m":10,"n":"ぽんたと　かんた","h":1},{"m":10,"n":"とりかえっこ","h":1},{"m":10,"n":"きゅうしょくとうばん","h":1},{"m":11,"n":"わすれている　こと、なあい","h":1},{"m":11,"n":"おふろそうじ","h":1},{"m":11,"n":"二わの　ことり","h":1},{"m":11,"n":"ひしゃくぼし","h":1},{"m":12,"n":"せかいのこどもたち","h":1},{"m":12,"n":"これなら　できる","h":1},{"m":12,"n":"にほんの　あそび","h":1},{"m":1,"n":"はしの　うえのおおかみ","h":1},{"m":1,"n":"ジャングルジム","h":1},{"m":1,"n":"みんなで　つかう　　　ものや　ばしょ","h":1},{"m":2,"n":"なわとびカード","h":1},{"m":2,"n":"「すき」から　うまれた　　 「そらまめくん」","h":1},{"m":2,"n":"やれば　できるんだ","h":1},{"m":3,"n":"ちいさな　ふとん","h":1},{"m":3,"n":"みんな　みんな、ありがとう","h":1}],"2":[{"m":4,"n":"どうとくがはじまるよ","h":1},{"m":4,"n":"二年生になって","h":1},{"m":4,"n":"あいさつ月間","h":1},{"m":5,"n":"どうしてきまりがあるのかな","h":1},{"m":5,"n":"しょうかいします","h":1},{"m":5,"n":"角がついたかいじゅう","h":1},{"m":6,"n":"けんかをしたけど","h":1},{"m":6,"n":"おり紙の名人――よしざわ　あきら","h":1},{"m":6,"n":"どきどきしたけど","h":1},{"m":6,"n":"ダンゴムシのまるちゃん","h":1},{"m":7,"n":"もうすぐ八さい","h":1},{"m":7,"n":"ありがとうの手紙","h":1},{"m":9,"n":"クラスの大へんしん","h":1},{"m":9,"n":"やめなさいよ","h":1},{"m":9,"n":"およげないりすさん","h":1},{"m":9,"n":"お月さまとコロ","h":1},{"m":10,"n":"黄色いベンチ","h":1},{"m":10,"n":"ぼくは　まけない","h":1},{"m":10,"n":"どうして　うまくいかないのかな","h":1},{"m":10,"n":"おでこのあせ","h":1},{"m":11,"n":"雨ふり","h":1},{"m":11,"n":"なかよしだけど","h":1},{"m":11,"n":"くりの み","h":1},{"m":11,"n":"ぼくの　かさぶた","h":1},{"m":12,"n":"もうすぐお正月","h":1},{"m":12,"n":"黒ばんがにっこりするかな","h":1},{"m":12,"n":"きらきら","h":1},{"m":1,"n":"お年玉をもらったけれど","h":1},{"m":1,"n":"おせちのひみつ","h":1},{"m":1,"n":"日本のお米、せかいのお米","h":1},{"m":2,"n":"空色の自転車","h":1},{"m":2,"n":"すてきなえがお","h":1},{"m":2,"n":"ありがとうの絵","h":1},{"m":3,"n":"ぶらんこ","h":1},{"m":3,"n":"こうさとびができた","h":1}],"3":[{"m":4,"n":"どうとくが始まるよ","h":1},{"m":4,"n":"あいさつ名人","h":1},{"m":4,"n":"きらきらカード","h":1},{"m":5,"n":"日曜日の公園で","h":1},{"m":5,"n":"道夫とぼく","h":1},{"m":5,"n":"よごれた絵","h":1},{"m":6,"n":"友だち屋","h":1},{"m":6,"n":"教えてあげる？持ってあげる？","h":1},{"m":6,"n":"やめられない","h":1},{"m":6,"n":"マリーゴールド","h":1},{"m":7,"n":"生きている仲間","h":1},{"m":7,"n":"ヤゴきゅう出大作戦","h":1},{"m":9,"n":"目の前は青空","h":1},{"m":9,"n":"たてわりはんそうじ","h":1},{"m":9,"n":"大切なものは何ですか","h":1},{"m":9,"n":"黄金の魚","h":1},{"m":10,"n":"三人の仕事","h":1},{"m":10,"n":"きまりのない国","h":1},{"m":10,"n":"三年元気組","h":1},{"m":10,"n":"言わなきゃ","h":1},{"m":11,"n":"なおとからのしつもん","h":1},{"m":11,"n":"モンたんとケロきち","h":1},{"m":11,"n":"とくジーのおまじない","h":1},{"m":11,"n":"ふろしき","h":1},{"m":12,"n":"まわりを見つめて","h":1},{"m":12,"n":"マサラップ","h":1},{"m":12,"n":"親切がいっぱい","h":1},{"m":1,"n":"「わたしらしさ」をのばすために","h":1},{"m":1,"n":"学校のぶどう","h":1},{"m":1,"n":"ボールのきまり","h":1},{"m":2,"n":"よわむし太郎","h":1},{"m":2,"n":"漢字に思いをこめて","h":1},{"m":2,"n":"ありがとうの気持ちをこめて","h":1},{"m":3,"n":"ヌチヌグスージ――命の祭り","h":1},{"m":3,"n":"スーパーパティシエ物語","h":1}],"4":[{"m":4,"n":"道徳が始まるよ","h":1},{"m":4,"n":"目覚まし時計","h":1},{"m":4,"n":"土曜日の学校","h":1},{"m":5,"n":"「思いやり」って","h":1},{"m":5,"n":"「正直」五十円分","h":1},{"m":5,"n":"絵はがきと切手","h":1},{"m":6,"n":"みんな、待っているよ","h":1},{"m":6,"n":"心のシーソー","h":1},{"m":6,"n":"学級会での出来事","h":1},{"m":6,"n":"生きているしるし","h":1},{"m":7,"n":"いのちをつなぐ岬","h":1},{"m":7,"n":"このままにしていたら","h":1},{"m":9,"n":"みんな同じだったら","h":1},{"m":9,"n":"「まあ、いいか。」","h":1},{"m":9,"n":"なみえさんへ","h":1},{"m":9,"n":"つまらなかった","h":1},{"m":10,"n":"わたしたちの校歌","h":1},{"m":10,"n":"決めつけてないかな","h":1},{"m":10,"n":"祭りだいこ","h":1},{"m":10,"n":"琵琶湖のごみ拾い","h":1},{"m":11,"n":"スーパーモンスターカード","h":1},{"m":11,"n":"雨のバスていりゅう所で","h":1},{"m":11,"n":"泣いた赤おに","h":1},{"m":11,"n":"生き物と機械","h":1},{"m":12,"n":"年賀状に書いたゆめ―― 奥原希望","h":1},{"m":12,"n":"ちょっと待ってよ","h":1},{"m":12,"n":"思いやりのかたち","h":1},{"m":1,"n":"花さき山","h":1},{"m":1,"n":"梨の実――アンリ=ファーブル","h":1},{"m":1,"n":"空からの目線","h":1},{"m":2,"n":"わたしの大切なもの","h":1},{"m":2,"n":"おじいちゃんのごくらく　ごくらく","h":1},{"m":2,"n":"ブラッドレーのせい求書","h":1},{"m":3,"n":"神戸のふっこうは、ぼくらの手で","h":1},{"m":3,"n":"朝がくると","h":1}],"5":[{"m":4,"n":"道徳が始まるよ","h":1},{"m":4,"n":"わたしは飼育委員","h":1},{"m":4,"n":"夢を実現するためには","h":1},{"m":5,"n":"流行おくれ","h":1},{"m":5,"n":"道案内","h":1},{"m":5,"n":"いこいの広場","h":1},{"m":6,"n":"公園のきまりを作ろう","h":1},{"m":6,"n":"みんな、おかしいよ！","h":1},{"m":6,"n":"ドッジボール対決","h":1},{"m":6,"n":"命の詩――電池が切れるまで","h":1},{"m":7,"n":"一ふみ十年","h":1},{"m":7,"n":"宇宙から見えたもの","h":1},{"m":9,"n":"自分の身は自分で守る","h":1},{"m":9,"n":"このままでいいのかな","h":1},{"m":9,"n":"あいさつって","h":1},{"m":9,"n":"友のしょうぞう画","h":1},{"m":10,"n":"健太の役割","h":1},{"m":10,"n":"三十八億年の命","h":1},{"m":10,"n":"おばあちゃんからもらった命","h":1},{"m":10,"n":"祖母のりんご","h":1},{"m":11,"n":"ようこそ、菅島へ！","h":1},{"m":11,"n":"真の看護を求めて――ナイチンゲール","h":1},{"m":11,"n":"小さな国際親善大使","h":1},{"m":11,"n":"クール・ボランティア","h":1},{"m":12,"n":"「自分らしさ」を見つめよう","h":1},{"m":12,"n":"ブランコ乗りとピエロ","h":1},{"m":12,"n":"だれもが幸せになれる社会を","h":1},{"m":1,"n":"うばわれた自由","h":1},{"m":1,"n":"千羽づる","h":1},{"m":1,"n":"お客さま","h":1},{"m":2,"n":"「思いやり」って、何だろう","h":1},{"m":2,"n":"水がわたる橋―― 通潤橋","h":1},{"m":2,"n":"最後のコンサート――チェロ奏者・徳永兼一郎","h":1},{"m":3,"n":"今、自分がいいと思うものを―― 切子作家・小川郁子","h":1},{"m":3,"n":"アンパンマンがくれたもの","h":1}],"6":[{"m":4,"n":"道徳が始まるよ","h":1},{"m":4,"n":"ぬくもり","h":1},{"m":4,"n":"まどさんからの手紙――こどもたちへ","h":1},{"m":5,"n":"大きな目標をもって―― 西山 麗","h":1},{"m":5,"n":"なれなかったリレーの選手","h":1},{"m":5,"n":"子ども会のキャンプ","h":1},{"m":6,"n":"泣き虫","h":1},{"m":6,"n":"この胸の痛みを","h":1},{"m":6,"n":"ロレンゾの友達","h":1},{"m":6,"n":"今度は、ぼくの番","h":1},{"m":7,"n":"クジラとプラスチック","h":1},{"m":7,"n":"命の旅","h":1},{"m":9,"n":"世界人権宣言から学ぼう","h":1},{"m":9,"n":"気に入らなかった写真","h":1},{"m":9,"n":"手品師","h":1},{"m":9,"n":"昼休みのコートで","h":1},{"m":10,"n":"コスモスの花","h":1},{"m":10,"n":"六年生の責任って？","h":1},{"m":10,"n":"ここを走れば","h":1},{"m":10,"n":"礼儀正しいふるまい","h":1},{"m":11,"n":"五十五年目の恩返し","h":1},{"m":11,"n":"最後のおくり物","h":1},{"m":11,"n":"マザー = テレサ","h":1},{"m":11,"n":"命のかがやき","h":1},{"m":12,"n":"小川笙船","h":1},{"m":12,"n":"エルトゥールル号――友好の始まり","h":1},{"m":12,"n":"私には夢がある","h":1},{"m":1,"n":"サバクトビバッタを追いかけて〈昆虫学者・前野浩太郎〉","h":1},{"m":1,"n":"「自由」って、何だろう","h":1},{"m":1,"n":"曲げわっぱから伝わるもの","h":1},{"m":2,"n":"ぼくの名前呼んで","h":1},{"m":2,"n":"恋ちゃん――はじめての「みとり」","h":1},{"m":2,"n":"「働く」って、どういうこと？","h":1},{"m":3,"n":"「ありがとう」の気持ちを伝える","h":1},{"m":3,"n":"一さいから百さいの夢","h":1}]}},"図工":{"日本文教出版":{"1":[{"m":4,"n":"すきな かたちや いろ なあに","h":1},{"m":4,"n":"どんどん かくのは たのしいな"},{"m":4,"n":"ねんどで ごちそう なに つくろう","h":2},{"m":4,"n":"ちょきちょき かざり","h":2},{"m":4,"n":"すなや つちと なかよし","h":1},{"m":5,"n":"やぶいた かたちから うまれたよ","h":2},{"m":5,"n":"カラフル いろみず","h":2},{"m":5,"n":"おって たてたら","h":2},{"m":5,"n":"せんせい あのね","h":2},{"m":5,"n":"いっしょに あそぼう ぱくぱっくん"},{"m":6,"n":"ぺったん コロコロ","h":1},{"m":6,"n":"いろいろな かたちの かみに"},{"m":6,"n":"いっしょに おさんぽ","h":2},{"m":6,"n":"たいせつ ボックス","h":2},{"m":6,"n":"わくわく おはなし すごろく","h":2},{"m":7,"n":"さわりごこち はっけん","h":1},{"m":7,"n":"おはなし だいすき","h":4},{"m":7,"n":"ならべて ならべて"},{"m":7,"n":"スルスル ビューン","h":2},{"m":9,"n":"いっぱい つかって なに しよう"},{"m":9,"n":"せんの ぼうけん"},{"m":9,"n":"はこで つくったよ","h":2},{"m":9,"n":"うつした かたちから"},{"m":9,"n":"すきまちゃんの すきな すきま","h":2},{"m":10,"n":"きせつを かんじて","h":1},{"m":10,"n":"にぎにぎ ねん土","h":1},{"m":10,"n":"ひかりの プレゼント","h":1},{"m":10,"n":"とろとろえのぐで","h":2},{"m":10,"n":"でこぼこ はっけん！","h":1},{"m":10,"n":"ふしぎな たまご","h":4},{"m":11,"n":"わっかで へんしん","h":4},{"m":11,"n":"しんぶんしと なかよし","h":1},{"m":11,"n":"くしゃくしゃ ぎゅっ","h":2},{"m":12,"n":"こんな こと あったよ","h":2},{"m":12,"n":"どんな うごきに 見えるかな？","h":4},{"m":1,"n":"ともだちハウス","h":4},{"m":1,"n":"はさみの あーと","h":2},{"m":1,"n":"音づくりフレンズ","h":2},{"m":1,"n":"おもいでを かたちに","h":2},{"m":2,"n":"おはなしから 生まれたよ","h":4},{"m":2,"n":"まどを あけたら","h":4},{"m":3,"n":"だんボールに 入って みると!?","h":2},{"m":3,"n":"であって 生まれる いろの せかい","h":1},{"m":3,"n":"つないで つるして","h":1},{"m":3,"n":"とびだせ ぴょーん","h":2},{"m":3,"n":"たのしく うつして"},{"m":3,"n":"草花の おしゃべり","h":1}],"2":[{"m":4,"n":"すきな かたちや いろ なあに","h":1},{"m":4,"n":"どんどん かくのは たのしいな"},{"m":4,"n":"ねんどで ごちそう なに つくろう","h":2},{"m":4,"n":"ちょきちょき かざり","h":2},{"m":4,"n":"すなや つちと なかよし","h":1},{"m":5,"n":"やぶいた かたちから うまれたよ","h":2},{"m":5,"n":"カラフル いろみず","h":2},{"m":5,"n":"おって たてたら","h":2},{"m":5,"n":"せんせい あのね","h":2},{"m":5,"n":"いっしょに あそぼう ぱくぱっくん"},{"m":6,"n":"ぺったん コロコロ","h":1},{"m":6,"n":"いろいろな かたちの かみに"},{"m":6,"n":"いっしょに おさんぽ","h":2},{"m":6,"n":"たいせつ ボックス","h":2},{"m":6,"n":"わくわく おはなし すごろく","h":2},{"m":7,"n":"さわりごこち はっけん","h":1},{"m":7,"n":"おはなし だいすき","h":4},{"m":7,"n":"ならべて ならべて"},{"m":7,"n":"スルスル ビューン","h":2},{"m":9,"n":"いっぱい つかって なに しよう"},{"m":9,"n":"せんの ぼうけん"},{"m":9,"n":"はこで つくったよ","h":2},{"m":9,"n":"うつした かたちから"},{"m":9,"n":"すきまちゃんの すきな すきま","h":2},{"m":10,"n":"きせつを かんじて","h":1},{"m":10,"n":"にぎにぎ ねん土","h":1},{"m":10,"n":"ひかりの プレゼント","h":1},{"m":10,"n":"とろとろえのぐで","h":2},{"m":10,"n":"でこぼこ はっけん！","h":1},{"m":10,"n":"ふしぎな たまご","h":4},{"m":11,"n":"わっかで へんしん","h":4},{"m":11,"n":"しんぶんしと なかよし","h":1},{"m":11,"n":"くしゃくしゃ ぎゅっ","h":2},{"m":12,"n":"こんな こと あったよ","h":2},{"m":12,"n":"どんな うごきに 見えるかな？","h":4},{"m":1,"n":"ともだちハウス","h":4},{"m":1,"n":"はさみの あーと","h":2},{"m":1,"n":"音づくりフレンズ","h":2},{"m":1,"n":"おもいでを かたちに","h":2},{"m":2,"n":"おはなしから 生まれたよ","h":4},{"m":2,"n":"まどを あけたら","h":4},{"m":3,"n":"だんボールに 入って みると!?","h":2},{"m":3,"n":"であって 生まれる いろの せかい","h":1},{"m":3,"n":"つないで つるして","h":1},{"m":3,"n":"とびだせ ぴょーん","h":2},{"m":3,"n":"たのしく うつして"},{"m":3,"n":"草花の おしゃべり","h":1}],"3":[{"m":4,"n":"かいて見つけるわたしのすきなもの","h":2},{"m":4,"n":"切ってかき出しくっつけて","h":2},{"m":4,"n":"絵のぐ＋水＋ふで＝いいかんじ！","h":2},{"m":4,"n":"うごいて楽しいわりピンワールド","h":4},{"m":4,"n":"ひもでつないで","h":2},{"m":5,"n":"立ち上がった絵のせかい","h":4},{"m":5,"n":"空きようきのへんしん","h":4},{"m":5,"n":"あの日あの時の気もち","h":4},{"m":6,"n":"トントン どんどん くぎうって","h":2},{"m":6,"n":"土をかんじて","h":2},{"m":6,"n":"お気に入りの葉","h":2},{"m":6,"n":"ぬのでえがくと","h":2},{"m":6,"n":"ここがすみか","h":2},{"m":7,"n":"これでかきたい","h":2},{"m":7,"n":"ことばから思いうかべて","h":4},{"m":7,"n":"クミクミックス","h":2},{"m":7,"n":"だんボールの形をかえて","h":2},{"m":7,"n":"顔を出したらなんだかワクワク","h":2},{"m":9,"n":"いろいろうつして","h":4},{"m":9,"n":"マグネットマジック","h":4},{"m":9,"n":"絵を見て話そう","h":1},{"m":9,"n":"ねん土マイタウン","h":2},{"m":10,"n":"見つけよう 感じよう 形と色のいい感じ","h":1},{"m":10,"n":"まどをのぞいて","h":2},{"m":10,"n":"ねん土の板を立ち上げて","h":2},{"m":10,"n":"絵の具でゆめもよう","h":2},{"m":10,"n":"コロコロガーレ"},{"m":11,"n":"わすれられない気持ち","h":4},{"m":11,"n":"組んで立ててつなぐんぐん"},{"m":11,"n":"体でかんしょう","h":1},{"m":11,"n":"ゴムでゴー！ ゴー！ ゆめの乗り物","h":4},{"m":12,"n":"まぼろしの花","h":4},{"m":12,"n":"のこぎりギコギコ","h":4},{"m":1,"n":"おもしろだんボールボックス","h":4},{"m":1,"n":"言葉から感じて","h":4},{"m":2,"n":"きって楽しい きっと使える","h":4},{"m":2,"n":"光とかげから生まれる形"},{"m":2,"n":"光のさしこむ絵","h":4},{"m":3,"n":"幸せを運ぶカード","h":4},{"m":3,"n":"ほってすって見つけて","h":4},{"m":3,"n":"ようこそ！ ゆめのまちへ"},{"m":3,"n":"写真をとったら見えてきた","h":1}],"4":[{"m":4,"n":"かいて見つけるわたしのすきなもの","h":2},{"m":4,"n":"切ってかき出しくっつけて","h":2},{"m":4,"n":"絵のぐ＋水＋ふで＝いいかんじ！","h":2},{"m":4,"n":"うごいて楽しいわりピンワールド","h":4},{"m":4,"n":"ひもでつないで","h":2},{"m":5,"n":"立ち上がった絵のせかい","h":4},{"m":5,"n":"空きようきのへんしん","h":4},{"m":5,"n":"あの日あの時の気もち","h":4},{"m":6,"n":"トントン どんどん くぎうって","h":2},{"m":6,"n":"土をかんじて","h":2},{"m":6,"n":"お気に入りの葉","h":2},{"m":6,"n":"ぬのでえがくと","h":2},{"m":6,"n":"ここがすみか","h":2},{"m":7,"n":"これでかきたい","h":2},{"m":7,"n":"ことばから思いうかべて","h":4},{"m":7,"n":"クミクミックス","h":2},{"m":7,"n":"だんボールの形をかえて","h":2},{"m":7,"n":"顔を出したらなんだかワクワク","h":2},{"m":9,"n":"いろいろうつして","h":4},{"m":9,"n":"マグネットマジック","h":4},{"m":9,"n":"絵を見て話そう","h":1},{"m":9,"n":"ねん土マイタウン","h":2},{"m":10,"n":"見つけよう 感じよう 形と色のいい感じ","h":1},{"m":10,"n":"まどをのぞいて","h":2},{"m":10,"n":"ねん土の板を立ち上げて","h":2},{"m":10,"n":"絵の具でゆめもよう","h":2},{"m":10,"n":"コロコロガーレ"},{"m":11,"n":"わすれられない気持ち","h":4},{"m":11,"n":"組んで立ててつなぐんぐん"},{"m":11,"n":"体でかんしょう","h":1},{"m":11,"n":"ゴムでゴー！ ゴー！ ゆめの乗り物","h":4},{"m":12,"n":"まぼろしの花","h":4},{"m":12,"n":"のこぎりギコギコ","h":4},{"m":1,"n":"おもしろだんボールボックス","h":4},{"m":1,"n":"言葉から感じて","h":4},{"m":2,"n":"きって楽しい きっと使える","h":4},{"m":2,"n":"光とかげから生まれる形"},{"m":2,"n":"光のさしこむ絵","h":4},{"m":3,"n":"幸せを運ぶカード","h":4},{"m":3,"n":"ほってすって見つけて","h":4},{"m":3,"n":"ようこそ！ ゆめのまちへ"},{"m":3,"n":"写真をとったら見えてきた","h":1}],"5":[{"m":4,"n":"感じたことを伝え合う","h":1},{"m":4,"n":"心のもよう","h":2},{"m":4,"n":"形に命をふきこんで","h":4},{"m":4,"n":"あんなところがこんなところに","h":2},{"m":4,"n":"消してかく","h":4},{"m":5,"n":"糸のこスイスイ","h":4},{"m":5,"n":"切り分けた形から何つくる？"},{"m":5,"n":"あの時あの場所 わたしの思い","h":4},{"m":5,"n":"美しく立つはり金","h":4},{"m":6,"n":"ふれて伝えるストーリー","h":4},{"m":6,"n":"水から発見 ここきれい！","h":2},{"m":6,"n":"言葉から思いを広げて","h":4},{"m":7,"n":"のぞいてみると","h":4},{"m":7,"n":"笑顔が生まれるしかけ","h":4},{"m":7,"n":"まだ見ぬ世界","h":2},{"m":7,"n":"光と場所のハーモニー"},{"m":7,"n":"ミラクル！ ミラーワールド","h":4},{"m":9,"n":"ほり進めて刷り重ねて","h":6},{"m":9,"n":"けずって見つけたいい形"},{"m":9,"n":"紙から生まれるすてきな明かり","h":4},{"m":9,"n":"ICTでチャレンジ"},{"m":10,"n":"絵の具スケッチ","h":2},{"m":10,"n":"ここから見ると","h":3},{"m":10,"n":"音の絵","h":2},{"m":10,"n":"糸から生まれるわたしの空間","h":2},{"m":11,"n":"固まった形から","h":4},{"m":11,"n":"墨と水から広がる世界","h":2},{"m":11,"n":"くるくるクランク","h":6},{"m":12,"n":"この筆あと、どんな空？","h":1},{"m":12,"n":"わたしの大切な風景","h":4},{"m":12,"n":"使って楽しい焼き物","h":4},{"m":1,"n":"１まいの板から","h":5},{"m":1,"n":"言葉から想像を広げて","h":4},{"m":1,"n":"水の流れ 水の形","h":4},{"m":2,"n":"もようから見つけて"},{"m":2,"n":"自然を感じるすてきな場所で","h":2},{"m":2,"n":"版で広がるわたしの思い","h":4},{"m":3,"n":"あったらいいなプロジェクト","h":4},{"m":3,"n":"感じて 考えて","h":4},{"m":3,"n":"未来のわたし","h":4}],"6":[{"m":4,"n":"感じたことを伝え合う","h":1},{"m":4,"n":"心のもよう","h":2},{"m":4,"n":"形に命をふきこんで","h":4},{"m":4,"n":"あんなところがこんなところに","h":2},{"m":4,"n":"消してかく","h":4},{"m":5,"n":"糸のこスイスイ","h":4},{"m":5,"n":"切り分けた形から何つくる？"},{"m":5,"n":"あの時あの場所 わたしの思い","h":4},{"m":5,"n":"美しく立つはり金","h":4},{"m":6,"n":"ふれて伝えるストーリー","h":4},{"m":6,"n":"水から発見 ここきれい！","h":2},{"m":6,"n":"言葉から思いを広げて","h":4},{"m":7,"n":"のぞいてみると","h":4},{"m":7,"n":"笑顔が生まれるしかけ","h":4},{"m":7,"n":"まだ見ぬ世界","h":2},{"m":7,"n":"光と場所のハーモニー"},{"m":7,"n":"ミラクル！ ミラーワールド","h":4},{"m":9,"n":"ほり進めて刷り重ねて","h":6},{"m":9,"n":"けずって見つけたいい形"},{"m":9,"n":"紙から生まれるすてきな明かり","h":4},{"m":9,"n":"ICTでチャレンジ"},{"m":10,"n":"絵の具スケッチ","h":2},{"m":10,"n":"ここから見ると","h":3},{"m":10,"n":"音の絵","h":2},{"m":10,"n":"糸から生まれるわたしの空間","h":2},{"m":11,"n":"固まった形から","h":4},{"m":11,"n":"墨と水から広がる世界","h":2},{"m":11,"n":"くるくるクランク","h":6},{"m":12,"n":"この筆あと、どんな空？","h":1},{"m":12,"n":"わたしの大切な風景","h":4},{"m":12,"n":"使って楽しい焼き物","h":4},{"m":1,"n":"１まいの板から","h":5},{"m":1,"n":"言葉から想像を広げて","h":4},{"m":1,"n":"水の流れ 水の形","h":4},{"m":2,"n":"もようから見つけて"},{"m":2,"n":"自然を感じるすてきな場所で","h":2},{"m":2,"n":"版で広がるわたしの思い","h":4},{"m":3,"n":"あったらいいなプロジェクト","h":4},{"m":3,"n":"感じて 考えて","h":4},{"m":3,"n":"未来のわたし","h":4}]}},"家庭科":{"開隆堂出版":{"5":[{"m":4,"n":"学んで変わるよ わたしたち (ガイダンス）教：表紙～ｐ.７"},{"m":4,"n":"毎日の生活を見つめよう"},{"m":4,"n":"なぜ調理をするのだろう","h":1},{"m":5,"n":"なぜ針と糸でぬうのだろう"},{"m":6,"n":"なぜ整理・整とんをするのだろう","h":1},{"m":7,"n":"自分にできる仕事を見つけよう"},{"m":9,"n":"６ ミシンで楽しくソーイング"},{"m":10,"n":"なぜ毎日食事をするのだろう"},{"m":1,"n":"物やお金の使い方を考えよう","h":1},{"m":2,"n":"９ 着方の工夫で 快適に"},{"m":3,"n":"住まいはなぜ必要なのだろう"},{"m":3,"n":"ほっとするのは、どのようなときだろう"}],"6":[{"m":4,"n":"１ 生活時間を マネジメント"},{"m":4,"n":"「ゆでる調理」と「いためる調理」は何がちがうのだろう"},{"m":5,"n":"なぜそうじをするのだろう","h":1},{"m":6,"n":"４ 衣服の手入れで快適に"},{"m":7,"n":"健康で快適な住まいとは","h":1},{"m":9,"n":"どのようなふくろが使いやすいだろう"},{"m":10,"n":"７ こんだてを工夫して","h":1},{"m":1,"n":"地域の人たちとのかかわりを見つめよう","h":1},{"m":3,"n":"生活と環境の関係を考えよう","h":1},{"m":3,"n":"教：p.１３６～１３７","h":1},{"m":3,"n":"課題・計画","h":1}]}},"英語":{"開隆堂出版":{"5":[{"m":4,"n":"Hello, everyone.","h":8},{"m":5,"n":"When is your special day?","h":8},{"m":6,"n":"What do you have on Mondays?","h":8},{"m":7,"n":"Questions：5年2組の仲間たち","h":2},{"m":7,"n":"世界のあいさつと文字"},{"m":9,"n":"I can draw pictures well.","h":8},{"m":10,"n":"Where is the station?","h":8},{"m":11,"n":"What would you like?","h":8},{"m":12,"n":"Questions：太陽小学校の先生たち","h":2},{"m":12,"n":"いろいろな標識"},{"m":1,"n":"I love my town.","h":8},{"m":2,"n":"My Hero","h":8},{"m":3,"n":"Questions：ミーナ先生，ありがとう","h":2},{"m":3,"n":"いろいろなスポーツ"}],"6":[{"m":4,"n":"This is me.","h":8},{"m":5,"n":"Welcome to Japan.","h":8},{"m":6,"n":"What time do you get up?","h":8},{"m":7,"n":"Questions: 新しい先生や交換留学生との出会い","h":2},{"m":3,"n":"世界の朝ご飯"},{"m":9,"n":"My Summer Vacation","h":8},{"m":10,"n":"Where do you want to go?","h":8},{"m":11,"n":"My Best Memory","h":8},{"m":12,"n":"Questions:世界の国々について伝え合おう"},{"m":3,"n":"世界遺産"},{"m":1,"n":"My Dream","h":8},{"m":2,"n":"My Junior High School Life","h":8},{"m":3,"n":"Questions: 卒業を前に","h":2},{"m":3,"n":"世界で活やくしている人","h":11}]}},"体育":{"東京書籍":{"3":[{"m":5,"n":"1．けんこうな生活 (1)けんこうというたからもの","h":1},{"m":9,"n":"1．けんこうな生活 (2)けんこうによい1日の生活","h":1},{"m":11,"n":"1．けんこうな生活 (3)体のせいけつとけんこう","h":1},{"m":2,"n":"1．けんこうな生活 (4)けんこうによいかんきょう","h":1}],"4":[{"m":5,"n":"2．体の成長とわたし (1)育ちゆくわたしたちの体","h":1},{"m":10,"n":"2．体の成長とわたし (2)思春期にあらわれる変化","h":2},{"m":2,"n":"2．体の成長とわたし (3)よりよく成長するための生活","h":1}],"5":[{"m":4,"n":"1．心の健康 (1)心の発達","h":1},{"m":5,"n":"1．心の健康 (2)心と体のつながり","h":1},{"m":7,"n":"1．心の健康 (3)不安やなやみがあるとき","h":1},{"m":9,"n":"2．けがの防止 (1)事故やけがの原因と防止","h":2},{"m":11,"n":"2．けがの防止 (2)交通事故の防止","h":1},{"m":12,"n":"2．けがの防止 (3)犯罪被害の防止","h":1},{"m":2,"n":"2．けがの防止 ・自然災害によるけがの防止（発展）"},{"m":3,"n":"2．けがの防止 (4)けがの手当","h":1}],"6":[{"m":4,"n":"3．病気の予防 (1)病気の起こり方","h":1},{"m":6,"n":"3．病気の予防 (2)感染症の予防","h":1},{"m":9,"n":"3．病気の予防 (3)生活習慣病の予防","h":2},{"m":11,"n":"3．病気の予防 (4)喫煙の害と健康","h":1},{"m":12,"n":"3．病気の予防 (5)飲酒の害と健康","h":1},{"m":1,"n":"3．病気の予防 (6)薬物乱用の害と健康","h":1},{"m":3,"n":"3．病気の予防 (7)地域の保健活動","h":1}]}},"音楽":{"教育芸術社":{"1":[{"m":4,"n":"1．うたっておどってなかよくなろう","h":4},{"m":5,"n":"2．はくをかんじとろう","h":7},{"m":6,"n":"3．はくにのってリズムをうとう","h":9},{"m":7,"n":"4．みのまわりのおとにみみをすまそう","h":2},{"m":9,"n":"5．どれみとなかよくなろう","h":8},{"m":10,"n":"6．せんりつでよびかけあおう","h":6},{"m":11,"n":"7．がっきとなかよくなろう","h":8},{"m":12,"n":"8．ようすをおもいうかべよう","h":6},{"m":1,"n":"9．にほんのうたをたのしもう","h":4},{"m":2,"n":"10．みんなであわせてたのしもう","h":10}],"2":[{"m":4,"n":"1．音楽でみんなとつながろう","h":4},{"m":5,"n":"2．はくのまとまりをかんじとろう","h":6},{"m":6,"n":"3．ドレミであそぼう","h":10},{"m":7,"n":"4．せいかつの中にある音を楽しもう","h":6},{"m":9,"n":"5．リズムをかさねて楽しもう","h":8},{"m":10,"n":"6．くりかえしを見つけよう","h":6},{"m":11,"n":"7．いろいろながっきの音をさがそう","h":6},{"m":12,"n":"8．ようすをおもいうかべよう","h":7},{"m":1,"n":"9．日本のうたでつながろう","h":4},{"m":2,"n":"10．みんなであわせて楽しもう","h":10}],"3":[{"m":4,"n":"1．音楽で心をつなげよう","h":6},{"m":5,"n":"2．歌って音の高さをかんじとろう","h":4},{"m":6,"n":"3．リコーダーのひびきに親しもう","h":8},{"m":7,"n":"4．拍にのってリズムをかんじとろう","h":9},{"m":9,"n":"5．せんりつのとくちょうをかんじとろう","h":7},{"m":11,"n":"6．せんりつの重なりをかんじとろう","h":6},{"m":12,"n":"7．いろいろな音のひびきに親しもう","h":9},{"m":1,"n":"8．ちいきにつたわる音楽でつながろう","h":5},{"m":2,"n":"9．思いを音楽で表そう","h":6}],"4":[{"m":4,"n":"1．音楽で心の輪を広げよう","h":4},{"m":5,"n":"2．歌声のひびきを感じ取ろう","h":7},{"m":6,"n":"3．いろいろなリズムを感じ取ろう","h":8},{"m":7,"n":"4．ちいきにつたわる音楽に親しもう","h":3},{"m":9,"n":"5．せんりつのとくちょうを感じ取ろう","h":8},{"m":10,"n":"6．せんりつの重なりを感じ取ろう","h":9},{"m":11,"n":"7．いろいろな音のひびきを楽しもう","h":8},{"m":12,"n":"8．日本の音楽でつながろう","h":5},{"m":2,"n":"9．思いを音楽で表そう","h":8}],"5":[{"m":4,"n":"1．歌声をひびかせて心をつなげよう","h":4},{"m":5,"n":"2．音の重なりを感じ取ろう","h":5},{"m":7,"n":"3．いろいろな音のひびきを味わおう","h":8},{"m":9,"n":"4．和音のひびきの移り変わりを感じ取ろう","h":6},{"m":10,"n":"5．曲想の変化を感じ取ろう","h":5},{"m":11,"n":"6．詩と音楽との関わりを味わおう","h":6},{"m":1,"n":"7．日本の音楽に親しもう","h":5},{"m":2,"n":"8．思いを表現に生かそう","h":5}],"6":[{"m":4,"n":"1．歌声をひびかせて心をつなげよう","h":5},{"m":5,"n":"2．いろいろな音のひびきを味わおう","h":7},{"m":7,"n":"3．和音のひびきや音の重なりを感じ取ろう","h":9},{"m":10,"n":"4．曲想の変化を楽しもう","h":4},{"m":11,"n":"5．詩と音楽との関わりを味わおう","h":7},{"m":12,"n":"6．日本や世界の音楽に親しもう","h":4},{"m":1,"n":"7．音楽で思いを伝えよう","h":9}]}}};
+
+  function presetUnitsFor(subject, publisher, grade) {
+    const bySubject = UNIT_PRESETS[subject];
+    if (!bySubject) return null;
+    const byPublisher = bySubject[publisher];
+    if (!byPublisher) return null;
+    const list = byPublisher[String(grade)];
+    return Array.isArray(list) ? list : null;
+  }
+
+  function hasPresetFor(subject, publisher, grade) {
+    return !!presetUnitsFor(subject, publisher, grade);
+  }
+
+  // 小学校の教科と、主な教科書会社(一覧にない場合は「その他」で自由入力)
+  const TEXTBOOK_SUBJECTS = [
+    { name: "国語", publishers: ["光村図書", "東京書籍", "教育出版", "学校図書"] },
+    { name: "書写", publishers: ["光村図書", "東京書籍", "教育出版", "学校図書", "日本文教出版"] },
+    { name: "社会", publishers: ["東京書籍", "教育出版", "日本文教出版"] },
+    { name: "算数", publishers: ["東京書籍", "啓林館", "大日本図書", "学校図書", "教育出版", "日本文教出版"] },
+    { name: "理科", publishers: ["東京書籍", "大日本図書", "学校図書", "教育出版", "啓林館", "信州教育出版社"] },
+    { name: "生活", publishers: ["東京書籍", "大日本図書", "学校図書", "教育出版", "啓林館", "光村図書", "日本文教出版", "信州教育出版社"] },
+    { name: "音楽", publishers: ["教育出版", "教育芸術社"] },
+    { name: "図工", publishers: ["開隆堂出版", "日本文教出版"] },
+    { name: "家庭科", publishers: ["東京書籍", "開隆堂出版"] },
+    { name: "体育", publishers: ["東京書籍", "大日本図書", "光文書院", "学研教育みらい", "文教社"] },
+    { name: "道徳", publishers: ["東京書籍", "光村図書", "教育出版", "日本文教出版", "学校図書", "光文書院", "学研教育みらい", "廣済堂あかつき"] },
+    { name: "英語", publishers: ["東京書籍", "開隆堂出版", "学校図書", "三省堂", "教育出版", "光村図書"] },
+    { name: "総合", publishers: [] }
+  ];
+
+  function renderTextbookList() {
+    const box = document.getElementById("textbookList");
+    box.innerHTML = "";
+    const saved = {};
+    (UNIT_PLAN.subjects || []).forEach(s => { saved[s.name] = s; });
+
+    TEXTBOOK_SUBJECTS.forEach(def => {
+      const cur = saved[def.name];
+      const row = document.createElement("div");
+      row.className = "textbook-row" + (cur && cur.enabled ? "" : " off");
+      row.dataset.subject = def.name;
+
+      const chk = document.createElement("input");
+      chk.type = "checkbox";
+      chk.className = "tb-enabled";
+      chk.checked = !!(cur && cur.enabled);
+
+      const name = document.createElement("span");
+      name.className = "tb-name";
+      name.textContent = def.name;
+
+      const sel = document.createElement("select");
+      sel.className = "tb-publisher";
+      const blank = document.createElement("option");
+      blank.value = ""; blank.textContent = def.publishers.length ? "(教科書を選ぶ)" : "(なし)";
+      sel.appendChild(blank);
+      def.publishers.forEach(p => {
+        const o = document.createElement("option");
+        o.value = p; o.textContent = p;
+        sel.appendChild(o);
+      });
+      const other = document.createElement("option");
+      other.value = "__other__"; other.textContent = "その他(自由入力)";
+      sel.appendChild(other);
+
+      const free = document.createElement("input");
+      free.type = "text";
+      free.className = "tb-free";
+      free.placeholder = "教科書会社名";
+      free.hidden = true;
+
+      const curPub = cur ? cur.publisher || "" : "";
+      if (curPub && !def.publishers.includes(curPub)) {
+        sel.value = "__other__";
+        free.value = curPub;
+        free.hidden = false;
+      } else {
+        sel.value = curPub;
+      }
+
+      const badge = document.createElement("span");
+      badge.className = "tb-badge";
+      const refreshBadge = () => {
+        const pub = sel.value === "__other__" ? free.value.trim() : sel.value;
+        const grade = document.getElementById("unitGradeSelect").value;
+        const ok = pub && grade && hasPresetFor(def.name, pub, grade);
+        badge.textContent = ok ? "単元データあり" : "";
+        badge.hidden = !ok;
+      };
+
+      sel.addEventListener("change", () => {
+        free.hidden = sel.value !== "__other__";
+        if (!chk.checked && sel.value) { chk.checked = true; row.classList.remove("off"); }
+        refreshBadge();
+      });
+      free.addEventListener("input", refreshBadge);
+      row._refreshBadge = refreshBadge;   // 学年を変えたときは下でまとめて呼び直す
+      refreshBadge();
+      chk.addEventListener("change", () => {
+        row.classList.toggle("off", !chk.checked);
+      });
+
+      row.appendChild(chk);
+      row.appendChild(name);
+      row.appendChild(sel);
+      row.appendChild(free);
+      row.appendChild(badge);
+      box.appendChild(row);
+    });
+  }
+
+  // 画面の選択内容をUNIT_PLANに取り込む
+  function readTextbookSelection() {
+    const subjects = [];
+    document.querySelectorAll("#textbookList .textbook-row").forEach(row => {
+      const sel = row.querySelector(".tb-publisher");
+      const free = row.querySelector(".tb-free");
+      const publisher = sel.value === "__other__" ? free.value.trim() : sel.value;
+      subjects.push({
+        name: row.dataset.subject,
+        publisher,
+        enabled: row.querySelector(".tb-enabled").checked
+      });
+    });
+    UNIT_PLAN.subjects = subjects;
+    UNIT_PLAN.grade = document.getElementById("unitGradeSelect").value;
+    return subjects;
+  }
+
+  function showTextbookStatus(msg) {
+    const status = document.getElementById("textbookStatus");
+    status.textContent = msg;
+    clearTimeout(status._t);
+    status._t = setTimeout(() => { status.textContent = ""; }, 8000);
+  }
+
+  // replace=true なら、その教科の単元をいったん消して教科書の内容で入れ直す
+  function applyTextbookUnits(replace) {
+    const subjects = readTextbookSelection();
+    const filled = [];
+    const skipped = [];
+
+    const noData = [];
+    subjects.filter(s => s.enabled && s.publisher).forEach(s => {
+      const preset = presetUnitsFor(s.name, s.publisher, UNIT_PLAN.grade);
+      if (!preset) {
+        // 単元データがない教科は、入れ直しても前の学年の単元が残ってしまうので知らせる
+        if (replace && UNIT_PLAN.units.some(u => u.subject === s.name)) noData.push(s.name);
+        return;
+      }
+      const already = UNIT_PLAN.units.some(u => u.subject === s.name);
+      if (already && !replace) { skipped.push(s.name); return; }
+      if (replace) UNIT_PLAN.units = UNIT_PLAN.units.filter(u => u.subject !== s.name);
+      preset.forEach(p => {
+        UNIT_PLAN.units.push({ month: p.m, subject: s.name, name: p.n, hours: p.h || "" });
+      });
+      filled.push(s.name + "(" + preset.length + "件)");
+    });
+
+    saveUnitPlan();
+    renderUnitPlan();
+
+    const n = subjects.filter(s => s.enabled).length;
+    let msg = n + "教科を表に表示しました";
+    if (filled.length) msg += " / 単元を" + (replace ? "入れ直しました" : "自動入力") + ": " + filled.join("、");
+    if (skipped.length) msg += " / " + skipped.join("、") + "は入力済みのため変更していません(入れ直すボタンで更新できます)";
+    if (noData.length) msg += " / " + noData.join("、") + "はこの学年の単元データがないため、前の内容が残っています(手で直してください)";
+    showTextbookStatus(msg);
+  }
+
+  document.getElementById("applyTextbookBtn").addEventListener("click", () => applyTextbookUnits(false));
+
+  document.getElementById("reloadUnitsBtn").addEventListener("click", () => {
+    if (!confirm("教科書に単元データがある教科について、今の内容を消して入れ直します。手で追加した単元も消えます。よろしいですか？")) return;
+    applyTextbookUnits(true);
+  });
+
+  // タブの切り替え
+  function showTab(which) {
+    const isUnits = which === "units";
+    document.getElementById("tabTimetable").hidden = isUnits;
+    document.getElementById("tabUnits").hidden = !isUnits;
+    document.getElementById("tabTimetableBtn").classList.toggle("active", !isUnits);
+    document.getElementById("tabUnitsBtn").classList.toggle("active", isUnits);
+    document.body.classList.toggle("tab-units-active", isUnits);
+  }
+  document.getElementById("tabTimetableBtn").addEventListener("click", () => showTab("timetable"));
+  document.getElementById("tabUnitsBtn").addEventListener("click", () => showTab("units"));
+
+  function unitKeyFor(year) { return UNIT_KEY + "_" + year; }
+
+  function loadUnitPlan() {
+    const raw = localStorage.getItem(unitKeyFor(activeYear));
+    if (raw) {
+      try {
+        const obj = JSON.parse(raw);
+        if (obj && typeof obj === "object") {
+          return {
+            grade: obj.grade || "",
+            book: obj.book || "",
+            subjects: Array.isArray(obj.subjects) ? obj.subjects : [],
+            units: Array.isArray(obj.units) ? obj.units : []
+          };
+        }
+      } catch (e) { /* fallthrough */ }
+    }
+    return { grade: "", book: "", subjects: [], units: [] };
+  }
+
+  function saveUnitPlan() {
+    localStorage.setItem(unitKeyFor(activeYear), JSON.stringify(UNIT_PLAN));
+  }
+
+  // 「4 国語 きつつきの商売 8」のような行をまとめて読み取る
+  function toHalfWidth(s) {
+    return String(s).replace(/[０-９]/g, c => "0123456789"["０１２３４５６７８９".indexOf(c)]);
+  }
+
+  function parseUnitLines(text) {
+    const units = [];
+    String(text || "").split(/\r?\n/).forEach(line => {
+      const s = line.trim();
+      if (!s) return;
+      // 「月 教科 単元名 時数」。単元名には「、」や空白が入るので、
+      // 先頭2つと末尾の時数だけを切り出し、単元名は原文のまま残す。
+      const m = /^([0-9０-９]{1,2})\s*月?[\s,\t]+(\S+)[\s,\t]+(.+)$/.exec(s);
+      if (!m) return;
+      const month = parseInt(toHalfWidth(m[1]), 10);
+      if (isNaN(month) || month < 1 || month > 12) return;
+      const subject = m[2];
+      let rest = m[3].trim();
+      let hours = "";
+      const tail = /^(.*?)[\s,\t]+([0-9０-９]{1,3})$/.exec(rest);
+      if (tail && tail[1].trim()) {
+        hours = Number(toHalfWidth(tail[2]));
+        rest = tail[1].trim();
+      }
+      const name = rest;
+      if (!name) return;
+      units.push({ month, subject, name, hours });
+    });
+    return units;
+  }
+
+  function unitsToText(units) {
+    return units
+      .slice()
+      .sort((a, b) => (SCHOOL_MONTHS.indexOf(a.month) - SCHOOL_MONTHS.indexOf(b.month)) ||
+                      a.subject.localeCompare(b.subject))
+      .map(u => [u.month, u.subject, u.name, u.hours || ""].filter(v => v !== "").join(" "))
+      .join("\n");
+  }
+
+  function renderUnitPlan() {
+    const table = document.getElementById("unitTable");
+    const thisMonth = new Date().getMonth() + 1;
+    table.innerHTML = "";
+
+    // 行に出す教科: 「教科書の設定」で決定した教科。未設定のときは全教科を並べる
+    const chosen = (UNIT_PLAN.subjects || []).filter(s => s.enabled).map(s => s.name);
+    const used = chosen.length ? chosen.slice() : TEXTBOOK_SUBJECTS.map(s => s.name);
+    UNIT_PLAN.units.forEach(u => { if (!used.includes(u.subject)) used.push(u.subject); });
+    const publisherOf = {};
+    (UNIT_PLAN.subjects || []).forEach(s => { if (s.publisher) publisherOf[s.name] = s.publisher; });
+
+    const thead = document.createElement("thead");
+    const htr = document.createElement("tr");
+    const corner = document.createElement("th");
+    corner.className = "unit-subject-head";
+    corner.textContent = "教科";
+    htr.appendChild(corner);
+    SCHOOL_MONTHS.forEach(m => {
+      const th = document.createElement("th");
+      th.textContent = m + "月";
+      if (m === thisMonth) th.className = "this-month";
+      htr.appendChild(th);
+    });
+    thead.appendChild(htr);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+
+    used.forEach(subject => {
+      const tr = document.createElement("tr");
+      const tdName = document.createElement("td");
+      tdName.className = "unit-subject";
+      tdName.textContent = subjectDisplayName(subject);
+      if (publisherOf[subject]) {
+        const pub = document.createElement("div");
+        pub.className = "unit-publisher";
+        pub.textContent = publisherOf[subject];
+        tdName.appendChild(pub);
+      }
+      tr.appendChild(tdName);
+
+      SCHOOL_MONTHS.forEach(m => {
+        const td = document.createElement("td");
+        if (m === thisMonth) td.className = "this-month";
+        UNIT_PLAN.units
+          .filter(u => u.subject === subject && u.month === m)
+          .forEach(u => {
+            const chip = document.createElement("span");
+            chip.className = "unit-chip";
+            const label = document.createElement("span");
+            label.textContent = u.name;
+            chip.appendChild(label);
+            if (u.hours) {
+              const h = document.createElement("span");
+              h.className = "unit-hours";
+              h.textContent = "(" + u.hours + ")";
+              chip.appendChild(h);
+            }
+            const del = document.createElement("button");
+            del.type = "button";
+            del.className = "no-print";
+            del.textContent = "×";
+            del.title = "この単元を削除";
+            del.addEventListener("click", () => {
+              UNIT_PLAN.units = UNIT_PLAN.units.filter(x => x !== u);
+              saveUnitPlan();
+              renderUnitPlan();
+            });
+            chip.appendChild(del);
+            td.appendChild(chip);
+          });
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    // 画面と印刷用の見出し
+    const parts = [activeYear + "年度 年間指導計画"];
+    if (UNIT_PLAN.grade) parts.push(UNIT_PLAN.grade + "年");
+    document.getElementById("unitPlanTitle").textContent = parts.join("  ");
+    document.getElementById("unitGradeSelect").value = UNIT_PLAN.grade || "";
+    document.getElementById("stdGradeSelect").value = UNIT_PLAN.grade || "";
+    updateStdNote();
+
+    // 入力途中の文章を消さないよう、まだ反映していない編集があるときは上書きしない
+    const bulk = document.getElementById("unitBulkInput");
+    const unchanged = (bulk.value || "").trim() === (bulk.dataset.lastRendered || "").trim();
+    if (unchanged || !bulk.value.trim()) {
+      bulk.value = unitsToText(UNIT_PLAN.units);
+      bulk.dataset.lastRendered = bulk.value;
+    }
+  }
+
+  document.getElementById("applyUnitBulkBtn").addEventListener("click", () => {
+    const text = document.getElementById("unitBulkInput").value;
+    const units = parseUnitLines(text);
+    const lines = text.split(/\r?\n/).filter(l => l.trim()).length;
+    UNIT_PLAN.units = units;
+    saveUnitPlan();
+    renderUnitPlan();
+    const status = document.getElementById("unitBulkStatus");
+    status.textContent = units.length + "件を登録しました" +
+      (lines > units.length ? "(" + (lines - units.length) + "行は読み取れませんでした)" : "");
+    clearTimeout(status._t);
+    status._t = setTimeout(() => { status.textContent = ""; }, 4000);
+  });
+
+  // 学年は年間指導計画と標準時数で共通。どちらで変えても両方の選択が揃うようにする。
+  function setGrade(value) {
+    UNIT_PLAN.grade = value;
+    saveUnitPlan();
+    document.getElementById("unitGradeSelect").value = value || "";
+    document.getElementById("stdGradeSelect").value = value || "";
+    renderUnitPlan();
+    refreshAllTextbookBadges();
+    updateStdNote();
+  }
+
+  document.getElementById("unitGradeSelect").addEventListener("change", e => setGrade(e.target.value));
+  document.getElementById("stdGradeSelect").addEventListener("change", e => setGrade(e.target.value));
+
+  /* ---------- 学年別の標準授業時数 ---------- */
+
+  // その学年で時数が決まっている教科だけを返す
+  function standardHoursFor(grade) {
+    const g = parseInt(grade, 10);
+    const out = {};
+    if (!(g >= 1 && g <= 6)) return out;
+    Object.keys(STANDARD_HOURS).forEach(s => {
+      const h = STANDARD_HOURS[s][g - 1];
+      if (h > 0) out[s] = h;
+    });
+    return out;
+  }
+
+  function updateStdNote() {
+    const note = document.getElementById("stdHoursNote");
+    const g = parseInt(UNIT_PLAN.grade, 10);
+    if (!(g >= 1 && g <= 6)) {
+      note.textContent = "学年を選ぶと、その学年の標準授業時数を目標欄に入れられます。";
+      return;
+    }
+    note.textContent = g + "年の標準授業時数(総授業時数 " + STANDARD_TOTAL[g - 1] + "時間)";
+  }
+
+  function applyStandardHours(replace) {
+    const note = document.getElementById("stdHoursNote");
+    const g = parseInt(UNIT_PLAN.grade, 10);
+    if (!(g >= 1 && g <= 6)) {
+      note.textContent = "先に学年を選んでください。";
+      return;
+    }
+    const std = standardHoursFor(g);
+    const set = [], kept = [], missing = [], cleared = [];
+    Object.keys(std).forEach(s => {
+      // 教科リストに無い教科(その学年で使っていない教科)には入れない
+      if (!SUBJECTS.includes(s)) { missing.push(s); return; }
+      if (!replace && TARGETS[s] != null) { kept.push(s); return; }
+      TARGETS[s] = std[s];
+      set.push(s);
+    });
+    // 入れ直すときは、その学年に無い教科(1年の理科など)の目標を消して学年に揃える
+    if (replace) {
+      Object.keys(STANDARD_HOURS).forEach(s => {
+        if (std[s] == null && TARGETS[s] != null) {
+          delete TARGETS[s];
+          cleared.push(s);
+        }
+      });
+    }
+    saveTargets();
+    updateStats();
+
+    const msg = [g + "年の標準時数を" + set.length + "教科に入れました"];
+    if (kept.length) msg.push("入力済みの" + kept.length + "教科はそのまま(" + kept.join("・") + ")");
+    if (cleared.length) msg.push(g + "年に無い" + cleared.join("・") + "の目標は消しました");
+    if (missing.length) msg.push("教科リストに無い" + missing.join("・") + "は入れていません");
+    note.textContent = msg.join(" / ");
+    showToast("標準時数を入れました");
+  }
+
+  document.getElementById("applyStdHoursBtn").addEventListener("click", () => applyStandardHours(false));
+  document.getElementById("replaceStdHoursBtn").addEventListener("click", () => applyStandardHours(true));
+
+  // 「単元データあり」の表示を全教科ぶん更新する
+  function refreshAllTextbookBadges() {
+    document.querySelectorAll("#textbookList .textbook-row").forEach(row => {
+      if (typeof row._refreshBadge === "function") row._refreshBadge();
+    });
+  }
+
+  // 年間指導計画だけを印刷する
+  document.getElementById("printUnitPlanBtn").addEventListener("click", () => {
+    document.body.classList.add("printing-units");
+    const originalTitle = document.title;
+    document.title = document.getElementById("unitPlanTitle").textContent || originalTitle;
+    let restored = false;
+    const restore = () => {
+      if (restored) return;
+      restored = true;
+      document.body.classList.remove("printing-units");
+      document.title = originalTitle;
+    };
+    window.addEventListener("afterprint", restore, { once: true });
+    window.print();
+    setTimeout(restore, 5000);
+  });
+
+  /* ==========================================================
+     予定表ファイルの取り込み
+     Excel(.xlsx)とWord(.docx)は中身がZIPなので、ブラウザ標準の
+     DecompressionStreamで展開して読む(外部ライブラリは使わない)
+     ========================================================== */
+
+  // --- ZIP展開 ---
+  async function unzip(buffer) {
+    const view = new DataView(buffer);
+    const bytes = new Uint8Array(buffer);
+    // 末尾からEOCD(セントラルディレクトリ終端)を探す
+    let eocd = -1;
+    for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 66000); i--) {
+      if (view.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+    }
+    if (eocd < 0) throw new Error("ZIP形式として読めませんでした");
+
+    const count = view.getUint16(eocd + 10, true);
+    let p = view.getUint32(eocd + 16, true);
+    const files = {};
+
+    for (let n = 0; n < count; n++) {
+      if (view.getUint32(p, true) !== 0x02014b50) break;
+      const method = view.getUint16(p + 10, true);
+      const compSize = view.getUint32(p + 20, true);
+      const nameLen = view.getUint16(p + 28, true);
+      const extraLen = view.getUint16(p + 30, true);
+      const commentLen = view.getUint16(p + 32, true);
+      const localOffset = view.getUint32(p + 42, true);
+      const name = new TextDecoder("utf-8").decode(bytes.subarray(p + 46, p + 46 + nameLen));
+      p += 46 + nameLen + extraLen + commentLen;
+
+      // ローカルヘッダーを読んで実データの位置を求める
+      const lNameLen = view.getUint16(localOffset + 26, true);
+      const lExtraLen = view.getUint16(localOffset + 28, true);
+      const dataStart = localOffset + 30 + lNameLen + lExtraLen;
+      const raw = bytes.subarray(dataStart, dataStart + compSize);
+
+      if (method === 0) {
+        files[name] = raw.slice();
+      } else if (method === 8) {
+        const ds = new DecompressionStream("deflate-raw");
+        const stream = new Blob([raw]).stream().pipeThrough(ds);
+        files[name] = new Uint8Array(await new Response(stream).arrayBuffer());
+      }
+      // それ以外の圧縮方式は対象外(通常のOfficeファイルでは使われない)
+    }
+    return files;
+  }
+
+  function xmlOf(files, name) {
+    if (!files[name]) return null;
+    const text = new TextDecoder("utf-8").decode(files[name]);
+    return new DOMParser().parseFromString(text, "application/xml");
+  }
+
+  // --- Excel(.xlsx) ---
+  function colIndexOf(ref) {
+    const m = /^([A-Z]+)/.exec(ref || "");
+    if (!m) return 0;
+    let n = 0;
+    for (const ch of m[1]) n = n * 26 + (ch.charCodeAt(0) - 64);
+    return n - 1;
+  }
+
+  function excelSerialToDate(serial) {
+    // Excelの日付は1899-12-30からの日数(1900年うるう年バグを含む数え方)
+    const ms = Math.round(serial * 86400000) + Date.UTC(1899, 11, 30);
+    const d = new Date(ms);
+    return d.getUTCFullYear() + "-" + pad(d.getUTCMonth() + 1) + "-" + pad(d.getUTCDate());
+  }
+
+  // 日付書式が設定されているセルを見分けるため、スタイル情報を読む
+  function dateStyleSet(files) {
+    const doc = xmlOf(files, "xl/styles.xml");
+    const set = new Set();
+    if (!doc) return set;
+    const builtin = new Set([14, 15, 16, 17, 22, 30, 45, 46, 47, 57, 58]);
+    const custom = new Set();
+    doc.querySelectorAll("numFmts > numFmt").forEach(f => {
+      const code = f.getAttribute("formatCode") || "";
+      if (/[ymd]/i.test(code.replace(/\[[^\]]*\]/g, "").replace(/"[^"]*"/g, ""))) {
+        custom.add(Number(f.getAttribute("numFmtId")));
+      }
+    });
+    const xfs = doc.querySelector("cellXfs");
+    if (!xfs) return set;
+    Array.from(xfs.children).forEach((xf, i) => {
+      const id = Number(xf.getAttribute("numFmtId") || 0);
+      if (builtin.has(id) || custom.has(id)) set.add(i);
+    });
+    return set;
+  }
+
+  async function readXlsx(buffer) {
+    const files = await unzip(buffer);
+    // 共有文字列
+    const ssDoc = xmlOf(files, "xl/sharedStrings.xml");
+    const shared = [];
+    if (ssDoc) {
+      ssDoc.querySelectorAll("si").forEach(si => {
+        let s = "";
+        si.querySelectorAll("t").forEach(t => {
+          // Excelが自動で付けるふりがな(rPh)は本文ではないので除く。
+          // 入れると「運動会ウンドウカイ」のようになってしまう。
+          if (t.closest && t.closest("rPh")) return;
+          s += t.textContent;
+        });
+        shared.push(s);
+      });
+    }
+    const dateStyles = dateStyleSet(files);
+
+    // シート名と実ファイルの対応(rels経由)
+    const wb = xmlOf(files, "xl/workbook.xml");
+    const rels = xmlOf(files, "xl/_rels/workbook.xml.rels");
+    const relMap = {};
+    if (rels) {
+      rels.querySelectorAll("Relationship").forEach(r => {
+        relMap[r.getAttribute("Id")] = r.getAttribute("Target").replace(/^\/?xl\//, "").replace(/^\//, "");
+      });
+    }
+    const sheets = [];
+    if (wb) {
+      wb.querySelectorAll("sheets > sheet").forEach(sh => {
+        const rid = sh.getAttribute("r:id") || sh.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships", "id");
+        const target = relMap[rid];
+        sheets.push({ name: sh.getAttribute("name") || "", path: target ? "xl/" + target : null });
+      });
+    }
+    if (sheets.length === 0) {
+      Object.keys(files).filter(n => /^xl\/worksheets\/sheet\d+\.xml$/.test(n))
+        .forEach(n => sheets.push({ name: "", path: n }));
+    }
+
+    const result = [];
+    for (const sheet of sheets) {
+      const doc = sheet.path ? xmlOf(files, sheet.path) : null;
+      if (!doc) continue;
+      doc.querySelectorAll("sheetData > row").forEach(row => {
+        const cells = [];
+        row.querySelectorAll("c").forEach(c => {
+          const idx = colIndexOf(c.getAttribute("r"));
+          const t = c.getAttribute("t");
+          let value = "";
+          if (t === "s") {
+            const v = c.querySelector("v");
+            value = v ? (shared[Number(v.textContent)] || "") : "";
+          } else if (t === "inlineStr") {
+            const is = c.querySelector("is");
+            value = is ? is.textContent : "";
+          } else {
+            const v = c.querySelector("v");
+            if (v) {
+              const num = Number(v.textContent);
+              const styleIdx = Number(c.getAttribute("s") || -1);
+              if (!isNaN(num) && dateStyles.has(styleIdx) && num > 20000 && num < 80000) {
+                value = excelSerialToDate(num);
+              } else {
+                value = v.textContent;
+              }
+            }
+          }
+          cells[idx] = (value || "").trim();
+        });
+        const filled = Array.from(cells, v => v || "");
+        if (filled.some(v => v !== "")) result.push({ sheet: sheet.name, cells: filled });
+      });
+    }
+    return result;
+  }
+
+  // --- Word(.docx) ---
+  async function readDocx(buffer) {
+    const files = await unzip(buffer);
+    const doc = xmlOf(files, "word/document.xml");
+    if (!doc) throw new Error("Wordの本文が見つかりませんでした");
+    const rows = [];
+    const body = doc.getElementsByTagName("w:body")[0];
+    if (!body) return rows;
+
+    const paraText = p => {
+      let s = "";
+      const ts = p.getElementsByTagName("w:t");
+      for (let i = 0; i < ts.length; i++) s += ts[i].textContent;
+      return s.trim();
+    };
+
+    for (const node of Array.from(body.children)) {
+      const tag = node.tagName;
+      if (tag === "w:p") {
+        const t = paraText(node);
+        if (t) rows.push({ sheet: "", cells: [t] });
+      } else if (tag === "w:tbl") {
+        for (const tr of Array.from(node.getElementsByTagName("w:tr"))) {
+          const cells = [];
+          for (const tc of Array.from(tr.getElementsByTagName("w:tc"))) {
+            let s = "";
+            for (const p of Array.from(tc.getElementsByTagName("w:p"))) {
+              const t = paraText(p);
+              if (t) s += (s ? " " : "") + t;
+            }
+            cells.push(s.trim());
+          }
+          if (cells.some(c => c !== "")) rows.push({ sheet: "", cells });
+        }
+      }
+    }
+    return rows;
+  }
+
+  // --- PDF ---
+  // 文字情報を持つPDF(ExcelやWordから書き出したもの)から文章を取り出す。
+  // 画像だけのPDF(紙をスキャンしたもの)は文字を持たないため読み取れない。
+  async function inflateBytes(bytes) {
+    for (const fmt of ["deflate", "deflate-raw"]) {
+      try {
+        const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream(fmt));
+        return new Uint8Array(await new Response(stream).arrayBuffer());
+      } catch (e) { /* 次の形式を試す */ }
+    }
+    return null;
+  }
+
+  const latin1 = bytes => {
+    let s = "";
+    for (let i = 0; i < bytes.length; i += 8192) {
+      s += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
+    }
+    return s;
+  };
+
+  // PDF内のオブジェクトを集める(オブジェクトストリームの中身も展開する)
+  async function collectPdfObjects(bytes) {
+    const text = latin1(bytes);
+    const objects = {};
+    const re = /(\d+)\s+(\d+)\s+obj\b/g;
+    let m;
+    while ((m = re.exec(text))) {
+      const num = Number(m[1]);
+      const start = m.index + m[0].length;
+      const endIdx = text.indexOf("endobj", start);
+      if (endIdx < 0) continue;
+      const body = text.slice(start, endIdx);
+      const sIdx = body.indexOf("stream");
+      let dict = body, raw = null;
+      if (sIdx >= 0) {
+        dict = body.slice(0, sIdx);
+        let dataStart = sIdx + 6;
+        if (body[dataStart] === "\r") dataStart++;
+        if (body[dataStart] === "\n") dataStart++;
+        let eIdx = body.lastIndexOf("endstream");
+        // /Length があればその長さを優先する(末尾の改行を含めると解凍に失敗するため)
+        const lenMatch = /\/Length\s+(\d+)(?!\s+\d+\s+R)/.exec(dict);
+        if (lenMatch) {
+          const len = Number(lenMatch[1]);
+          if (len > 0 && dataStart + len <= body.length) eIdx = dataStart + len;
+        }
+        while (eIdx > dataStart && /[\r\n]/.test(body[eIdx - 1])) eIdx--;
+        if (eIdx > dataStart) {
+          raw = bytes.subarray(start + dataStart, start + eIdx);
+        }
+      }
+      objects[num] = { dict, raw };
+    }
+
+    // 中身を取り出す(必要なら解凍)
+    for (const num of Object.keys(objects)) {
+      const o = objects[num];
+      if (!o.raw) continue;
+      o.data = /\/FlateDecode/.test(o.dict) ? await inflateBytes(o.raw) : o.raw;
+    }
+
+    // オブジェクトストリーム(PDF1.5以降)の中に入っているオブジェクトを展開
+    for (const num of Object.keys(objects)) {
+      const o = objects[num];
+      if (!o.data || !/\/Type\s*\/ObjStm/.test(o.dict)) continue;
+      const n = Number((/\/N\s+(\d+)/.exec(o.dict) || [])[1] || 0);
+      const first = Number((/\/First\s+(\d+)/.exec(o.dict) || [])[1] || 0);
+      const inner = latin1(o.data);
+      const header = inner.slice(0, first).trim().split(/\s+/).map(Number);
+      for (let i = 0; i < n; i++) {
+        const objNum = header[i * 2];
+        const off = header[i * 2 + 1];
+        if (objNum == null || off == null) continue;
+        const next = (i + 1 < n) ? first + header[i * 2 + 3] : inner.length;
+        if (!objects[objNum] || !objects[objNum].dict) {
+          objects[objNum] = { dict: inner.slice(first + off, next), raw: null, data: null };
+        }
+      }
+    }
+    return objects;
+  }
+
+  // /ToUnicode のCMapを読んで、文字コード→文字 の対応表を作る
+  function parseToUnicode(cmapText) {
+    const map = {};
+    const hexToStr = h => {
+      let s = "";
+      for (let i = 0; i + 3 < h.length + 1; i += 4) {
+        const code = parseInt(h.substr(i, 4), 16);
+        if (!isNaN(code)) s += String.fromCharCode(code);
+      }
+      return s;
+    };
+    let m;
+    const charRe = /beginbfchar([\s\S]*?)endbfchar/g;
+    while ((m = charRe.exec(cmapText))) {
+      const pairRe = /<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>/g;
+      let p;
+      while ((p = pairRe.exec(m[1]))) map[parseInt(p[1], 16)] = hexToStr(p[2]);
+    }
+    const rangeRe = /beginbfrange([\s\S]*?)endbfrange/g;
+    while ((m = rangeRe.exec(rangeRe.lastIndex !== undefined ? cmapText : cmapText))) {
+      const body = m[1];
+      const simple = /<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>/g;
+      let r;
+      while ((r = simple.exec(body))) {
+        const lo = parseInt(r[1], 16), hi = parseInt(r[2], 16), base = parseInt(r[3], 16);
+        for (let c = lo; c <= hi && c - lo < 65536; c++) map[c] = String.fromCharCode(base + (c - lo));
+      }
+      const arrRe = /<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*\[([\s\S]*?)\]/g;
+      while ((r = arrRe.exec(body))) {
+        const lo = parseInt(r[1], 16);
+        const items = r[3].match(/<([0-9A-Fa-f]+)>/g) || [];
+        items.forEach((it, i) => { map[lo + i] = hexToStr(it.replace(/[<>]/g, "")); });
+      }
+    }
+    return map;
+  }
+
+  // PDFの文字列リテラル( ... ) のエスケープを戻す
+  function pdfLiteralToCodes(str) {
+    const out = [];
+    for (let i = 0; i < str.length; i++) {
+      let ch = str[i];
+      if (ch === "\\") {
+        const next = str[++i];
+        if (next === "n") ch = "\n";
+        else if (next === "r") ch = "\r";
+        else if (next === "t") ch = "\t";
+        else if (next === "b") ch = "\b";
+        else if (next === "f") ch = "\f";
+        else if (next >= "0" && next <= "7") {
+          let oct = next;
+          while (oct.length < 3 && str[i + 1] >= "0" && str[i + 1] <= "7") oct += str[++i];
+          ch = String.fromCharCode(parseInt(oct, 8));
+        } else ch = next;
+      }
+      out.push(ch.charCodeAt(0));
+    }
+    return out;
+  }
+
+  // 「/Font << ... >>」のように入れ子になった辞書を、対応する >> まで正しく取り出す
+  function extractDictSection(text, keyword) {
+    const at = (text || "").indexOf(keyword);
+    if (at < 0) return null;
+    const open = text.indexOf("<<", at);
+    if (open < 0) return null;
+    let depth = 0;
+    for (let i = open; i < text.length - 1; i++) {
+      if (text[i] === "<" && text[i + 1] === "<") { depth++; i++; }
+      else if (text[i] === ">" && text[i + 1] === ">") {
+        depth--; i++;
+        if (depth === 0) return text.slice(open + 2, i - 1);
+      }
+    }
+    return null;
+  }
+
+  async function readPdf(buffer) {
+    const bytes = new Uint8Array(buffer);
+    const objects = await collectPdfObjects(bytes);
+
+    // フォントごとの対応表を用意する
+    const fontMaps = {};   // オブジェクト番号 → {map, twoByte}
+    for (const num of Object.keys(objects)) {
+      const o = objects[num];
+      if (!/\/Type\s*\/Font/.test(o.dict || "")) continue;
+      const twoByte = /\/Subtype\s*\/Type0/.test(o.dict);
+      const tuRef = /\/ToUnicode\s+(\d+)\s+\d+\s+R/.exec(o.dict || "");
+      let map = {};
+      if (tuRef && objects[tuRef[1]] && objects[tuRef[1]].data) {
+        map = parseToUnicode(latin1(objects[tuRef[1]].data));
+      }
+      fontMaps[num] = { map, twoByte };
+    }
+
+    const lines = [];
+    // ページごとに、使うフォントの名前と実体の対応を調べてから本文を読む
+    for (const num of Object.keys(objects)) {
+      const o = objects[num];
+      if (!/\/Type\s*\/Page\b/.test(o.dict || "")) continue;
+
+      // リソース(フォント一覧)。/Resources は参照のこともページ内に直接書かれることもある
+      let resDict = o.dict || "";
+      const resRef = /\/Resources\s+(\d+)\s+\d+\s+R/.exec(o.dict);
+      if (resRef && objects[resRef[1]]) resDict = objects[resRef[1]].dict || "";
+
+      const nameToFont = {};
+      let fontSection = extractDictSection(resDict, "/Font");
+      if (!fontSection) {
+        const fontRef = /\/Font\s+(\d+)\s+\d+\s+R/.exec(resDict);
+        if (fontRef && objects[fontRef[1]]) fontSection = objects[fontRef[1]].dict || "";
+      }
+      if (fontSection) {
+        const fre = /\/([^\s/<>]+)\s+(\d+)\s+\d+\s+R/g;
+        let f;
+        while ((f = fre.exec(fontSection))) nameToFont[f[1]] = f[2];
+      }
+
+      // 本文(複数に分かれていることがある)
+      const contentNums = [];
+      const cRef = /\/Contents\s+(\d+)\s+\d+\s+R/.exec(o.dict);
+      if (cRef) contentNums.push(cRef[1]);
+      const cArr = /\/Contents\s*\[([^\]]*)\]/.exec(o.dict);
+      if (cArr) {
+        const re2 = /(\d+)\s+\d+\s+R/g;
+        let c;
+        while ((c = re2.exec(cArr[1]))) contentNums.push(c[1]);
+      }
+      let content = "";
+      for (const cn of contentNums) {
+        if (objects[cn] && objects[cn].data) content += latin1(objects[cn].data) + "\n";
+      }
+      if (!content) continue;
+
+      // 文字を取り出す。Td/TD/T*/TJでの改行を手がかりに行を組み立てる
+      let current = null;
+      let line = "";
+      const pushLine = () => {
+        const t = line.replace(/\s+/g, " ").trim();
+        if (t) lines.push({ sheet: "", cells: [t] });
+        line = "";
+      };
+      const tokenRe = /\/([^\s/<>\[\]]+)\s+[\d.]+\s+Tf|\(((?:[^()\\]|\\.)*)\)\s*(Tj|TJ|'|")|<([0-9A-Fa-f\s]+)>\s*(Tj|TJ)|(T\*|TD|Td|Tm)|(ET)/g;
+      let t;
+      while ((t = tokenRe.exec(content))) {
+        if (t[1] !== undefined) {
+          current = fontMaps[nameToFont[t[1]]] || null;
+        } else if (t[2] !== undefined || t[4] !== undefined) {
+          const codes = t[2] !== undefined
+            ? pdfLiteralToCodes(t[2])
+            : (t[4].replace(/\s+/g, "").match(/../g) || []).map(h => parseInt(h, 16));
+          line += decodePdfCodes(codes, current, t[4] !== undefined);
+        } else if (t[6] !== undefined || t[7] !== undefined) {
+          pushLine();
+        }
+      }
+      pushLine();
+    }
+    return lines;
+  }
+
+  function decodePdfCodes(codes, font, isHex) {
+    const map = font ? font.map : null;
+    const twoByte = font ? font.twoByte : isHex;
+    let out = "";
+    if (twoByte) {
+      for (let i = 0; i + 1 < codes.length; i += 2) {
+        const code = (codes[i] << 8) | codes[i + 1];
+        out += (map && map[code] !== undefined) ? map[code] : "";
+      }
+    } else {
+      for (const c of codes) {
+        out += (map && map[c] !== undefined) ? map[c] : String.fromCharCode(c);
+      }
+    }
+    return out;
+  }
+
+  // --- CSV / テキスト ---
+  function readDelimitedText(text) {
+    return text.split(/\r?\n/).map(line => ({
+      sheet: "",
+      cells: line.includes(",") ? line.split(",").map(s => s.trim().replace(/^"|"$/g, "")) : [line.trim()]
+    })).filter(r => r.cells.some(c => c !== ""));
+  }
+
+  // --- 日付と行事名の抜き出し ---
+
+  // 行事名として採用しない語(見出し行など)
+  const IMPORT_SKIP = /^(日|曜|曜日|行事|予定|月|週|備考|行事予定|主な行事|学年|時間|№|No\.?)$/;
+
+  function cleanEventText(text) {
+    return String(text || "")
+      .replace(/[　\s]+/g, " ")
+      .replace(/^[\s,、.:：\-−―・]+/, "")
+      // 日付を取り除いた後に残る曜日表記「(月)」「月曜日」を落とす
+      .replace(/^[(（]\s*[月火水木金土日]\s*[)）]\s*/, "")
+      .replace(/^[月火水木金土日]曜日?(?=\s|$)\s*/, "")
+      .replace(/^[\s,、.:：\-−―・]+/, "")
+      .replace(/[\s,、.:：\-−―・]+$/, "")
+      .trim();
+  }
+
+  // 1つのセル/行から日付を読み取る。baseMonthは「5(月)」のように日だけの表記で使う
+  function parseDateFrom(text, baseMonth) {
+    const s = String(text || "").trim();
+    let m;
+    if ((m = /(20\d{2})[-\/年](\d{1,2})[-\/月](\d{1,2})/.exec(s))) {
+      return { year: +m[1], month: +m[2], day: +m[3], matched: m[0] };
+    }
+    if ((m = /(\d{1,2})\s*月\s*(\d{1,2})\s*日/.exec(s))) {
+      return { month: +m[1], day: +m[2], matched: m[0] };
+    }
+    if ((m = /(?:^|[^\d])(\d{1,2})\s*[\/／]\s*(\d{1,2})(?![\d\/])/.exec(s))) {
+      return { month: +m[1], day: +m[2], matched: m[1] + "/" + m[2] };
+    }
+    if ((m = /^\s*(\d{1,2})\s*[(（]\s*([月火水木金土日])\s*[)）]/.exec(s))) {
+      return { month: baseMonth, day: +m[1], matched: m[0] };
+    }
+    if ((m = /^\s*(\d{1,2})\s*日/.exec(s))) {
+      return { month: baseMonth, day: +m[1], matched: m[0] };
+    }
+    if (/^\s*\d{1,2}\s*$/.test(s)) {
+      return { month: baseMonth, day: +s, matched: s, weak: true };
+    }
+    return null;
+  }
+
+  // 年度(4月始まり)から西暦を決める
+  function yearForMonth(month) {
+    return month >= 4 ? activeYear : activeYear + 1;
+  }
+
+  // 資料全体から「◯月」の手がかりを探す(シート名・見出し行)
+  function detectBaseMonth(rows) {
+    for (const r of rows) {
+      const m = /(\d{1,2})\s*月/.exec(r.sheet || "");
+      if (m && +m[1] >= 1 && +m[1] <= 12) return +m[1];
+    }
+    for (const r of rows.slice(0, 12)) {
+      const line = r.cells.join(" ");
+      const m = /(\d{1,2})\s*月(?:の)?(?:行事|予定|$|\s)/.exec(line);
+      if (m && +m[1] >= 1 && +m[1] <= 12) return +m[1];
+    }
+    return new Date().getMonth() + 1;
+  }
+
+  function extractEvents(rows, forcedMonth) {
+    const out = [];
+    let sheetMonth = null;
+    // 全体から推定する基準月は1回だけ求める(行ごとに計算すると行数の二乗で遅くなる)
+    const fallbackMonth = detectBaseMonth(rows);
+    rows.forEach(row => {
+      // シートごとに「◯月」が分かればその月を使う(年間行事予定の月別シート対策)
+      const sm = /(\d{1,2})\s*月/.exec(row.sheet || "");
+      if (sm && +sm[1] >= 1 && +sm[1] <= 12) sheetMonth = +sm[1];
+      const baseMonth = forcedMonth || sheetMonth || fallbackMonth;
+
+      const cells = row.cells.filter(c => c !== "");
+      if (cells.length === 0) return;
+
+      // 日付になりそうなセルを探す
+      let found = null, foundIdx = -1;
+      for (let i = 0; i < row.cells.length; i++) {
+        const d = parseDateFrom(row.cells[i], baseMonth);
+        if (d && d.day >= 1 && d.day <= 31 && d.month >= 1 && d.month <= 12) {
+          // 単独の数字(weak)は、同じ行に他の文字がある場合のみ日付とみなす
+          if (d.weak && row.cells.filter(c => c && !/^\d+$/.test(c)).length === 0) continue;
+          found = d; foundIdx = i; break;
+        }
+      }
+      if (!found) return;
+
+      // 日付部分を除いた残りを行事名にする
+      let rest = row.cells
+        .map((c, i) => (i === foundIdx ? String(c).replace(found.matched, "") : c))
+        .filter((c, i) => {
+          const v = cleanEventText(c);
+          if (!v) return false;
+          if (/^[月火水木金土日]$/.test(v)) return false;   // 曜日だけのセル
+          if (/^\d+$/.test(v) && i < foundIdx + 2) return false; // 日付のとなりの数字
+          return true;
+        })
+        .map(cleanEventText)
+        .join(" ");
+      rest = cleanEventText(rest);
+      if (!rest || IMPORT_SKIP.test(rest) || rest.length > 60) return;
+
+      const year = found.year || yearForMonth(found.month);
+      const date = year + "-" + pad(found.month) + "-" + pad(found.day);
+      if (isNaN(parseDateStr(date).getTime())) return;
+      out.push({ date, text: rest });
+    });
+
+    // 同じ日・同じ内容の重複を除く
+    const seen = new Set();
+    return out.filter(e => {
+      const k = e.date + "|" + e.text;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }
+
+  // --- 確認画面 ---
+  let importRows = [];   // 読み込んだ元データ
+  let importMonth = "";  // 基準の月(手動指定)
+
+  function showImportError(message) {
+    const box = document.getElementById("importResult");
+    box.innerHTML = "";
+    const div = document.createElement("div");
+    div.className = "import-error";
+    div.textContent = message;
+    box.appendChild(div);
+  }
+
+  function renderImportPreview() {
+    const box = document.getElementById("importResult");
+    box.innerHTML = "";
+    const events = extractEvents(importRows, importMonth ? Number(importMonth) : null);
+
+    // 基準の月の選択(「5(月)」のように日だけの予定表向け)
+    const opts = document.createElement("div");
+    opts.className = "import-options";
+    const label = document.createElement("span");
+    label.textContent = "日付に月が書かれていない場合の基準月:";
+    const sel = document.createElement("select");
+    const auto = document.createElement("option");
+    auto.value = ""; auto.textContent = "自動(" + detectBaseMonth(importRows) + "月)";
+    sel.appendChild(auto);
+    for (let m = 1; m <= 12; m++) {
+      const o = document.createElement("option");
+      o.value = String(m); o.textContent = m + "月";
+      sel.appendChild(o);
+    }
+    sel.value = importMonth;
+    sel.addEventListener("change", () => { importMonth = sel.value; renderImportPreview(); });
+    opts.appendChild(label);
+    opts.appendChild(sel);
+
+    const countSpan = document.createElement("span");
+    countSpan.textContent = events.length + "件の行事が見つかりました";
+    opts.appendChild(countSpan);
+    box.appendChild(opts);
+
+    if (events.length === 0) {
+      const note = document.createElement("div");
+      note.className = "import-error";
+      note.textContent = "日付と行事名の組み合わせが見つかりませんでした。基準月を変えるか、予定表の文字を貼り付けて試してください。";
+      box.appendChild(note);
+      return;
+    }
+
+    const wrap = document.createElement("div");
+    wrap.className = "table-wrap";
+    const table = document.createElement("table");
+    table.className = "import-table";
+    table.innerHTML = "<thead><tr><th style='width:44px'>追加</th><th style='width:150px'>日付</th><th>行事名</th><th style='width:90px'>状態</th></tr></thead>";
+    const tbody = document.createElement("tbody");
+
+    events.forEach(ev => {
+      const tr = document.createElement("tr");
+      const dup = ANNUAL_EVENTS.some(x => x.date === ev.date && x.text === ev.text);
+      if (dup) tr.className = "dup";
+
+      const tdChk = document.createElement("td");
+      const chk = document.createElement("input");
+      chk.type = "checkbox";
+      chk.checked = !dup;
+      chk.className = "import-chk";
+      tdChk.appendChild(chk);
+
+      const tdDate = document.createElement("td");
+      const dateInput = document.createElement("input");
+      dateInput.type = "date";
+      dateInput.value = ev.date;
+      dateInput.className = "import-date";
+      tdDate.appendChild(dateInput);
+
+      const tdText = document.createElement("td");
+      const textInput = document.createElement("input");
+      textInput.type = "text";
+      textInput.value = ev.text;
+      textInput.className = "import-text";
+      tdText.appendChild(textInput);
+
+      const tdState = document.createElement("td");
+      tdState.textContent = dup ? "登録済み" : "新規";
+
+      tr.appendChild(tdChk);
+      tr.appendChild(tdDate);
+      tr.appendChild(tdText);
+      tr.appendChild(tdState);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    box.appendChild(wrap);
+
+    const commit = document.createElement("button");
+    commit.type = "button";
+    commit.className = "import-commit";
+    commit.textContent = "チェックした行事を年間予定に追加する";
+    commit.addEventListener("click", () => {
+      let added = 0;
+      tbody.querySelectorAll("tr").forEach(tr => {
+        if (!tr.querySelector(".import-chk").checked) return;
+        const date = tr.querySelector(".import-date").value;
+        const text = cleanEventText(tr.querySelector(".import-text").value);
+        if (!date || !text) return;
+        if (ANNUAL_EVENTS.some(x => x.date === date && x.text === text)) return;
+        ANNUAL_EVENTS.push({
+          id: Date.now() + "_" + Math.random().toString(36).slice(2),
+          date, text
+        });
+        added++;
+      });
+      ANNUAL_EVENTS.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+      saveAnnualEvents();
+      renderAnnualList();
+      renderUpcoming();
+      refreshTableIfNeeded();
+      renderImportPreview();
+      alert(added + "件を年間予定に追加しました。");
+    });
+    box.appendChild(commit);
+  }
+
+  async function loadScheduleFile(file) {
+    const name = (file.name || "").toLowerCase();
+    document.getElementById("importFileName").textContent = file.name;
+    try {
+      let rows;
+      if (name.endsWith(".xlsx") || name.endsWith(".xlsm")) {
+        rows = await readXlsx(await file.arrayBuffer());
+      } else if (name.endsWith(".docx")) {
+        rows = await readDocx(await file.arrayBuffer());
+      } else if (name.endsWith(".csv") || name.endsWith(".txt")) {
+        rows = readDelimitedText(await file.text());
+      } else if (name.endsWith(".pdf")) {
+        rows = await readPdf(await file.arrayBuffer());
+        if (rows.length === 0) {
+          showImportError("このPDFからは文字を読み取れませんでした。紙をスキャンした画像のPDFの可能性があります。元のExcel・Wordファイル、または文字の貼り付けをお使いください。");
+          return;
+        }
+      } else if (name.endsWith(".xls") || name.endsWith(".doc")) {
+        showImportError("古い形式(.xls/.doc)は読めません。Excel・Wordで開いて「.xlsx」「.docx」として保存し直してください。");
+        return;
+      } else {
+        showImportError("この形式のファイルには対応していません。Excel(.xlsx)・Word(.docx)・CSVをお使いください。");
+        return;
+      }
+      importRows = rows;
+      importMonth = "";
+      if (rows.length === 0) {
+        showImportError("ファイルから文字を読み取れませんでした。中身が画像の場合は読み取れません。");
+        return;
+      }
+      renderImportPreview();
+    } catch (e) {
+      showImportError("ファイルを読み込めませんでした(" + e.message + ")。別の形式で保存し直すか、文字の貼り付けをお試しください。");
+    }
+  }
+
+  document.getElementById("pickFileBtn").addEventListener("click", () => {
+    document.getElementById("scheduleFileInput").click();
+  });
+  document.getElementById("scheduleFileInput").addEventListener("change", e => {
+    const file = e.target.files[0];
+    e.target.value = "";
+    if (file) loadScheduleFile(file);
+  });
+  document.getElementById("importPasteBtn").addEventListener("click", () => {
+    const text = document.getElementById("importPaste").value;
+    if (!text.trim()) { showImportError("先に予定表の文字を貼り付けてください。"); return; }
+    importRows = readDelimitedText(text);
+    importMonth = "";
+    document.getElementById("importFileName").textContent = "貼り付けた文字";
+    renderImportPreview();
+  });
+
   /* ---------- データのバックアップ(書き出し/読み込み) ---------- */
 
-  const OWN_KEY_PREFIXES = [STORAGE_PREFIX, SUBJECT_KEY, ANNUAL_KEY, PATTERN_KEY, TARGET_KEY, HIRAGANA_KEY, PRINT_MEMO_KEY];
+  const OWN_KEY_PREFIXES = [STORAGE_PREFIX, SUBJECT_KEY, ANNUAL_KEY, PATTERN_KEY, TARGET_KEY, CARRY_KEY,
+    HIRAGANA_KEY, PRINT_MEMO_KEY, SHOW_BREAKS_KEY, UNIT_KEY, LAST_BACKUP_KEY];
 
   function isOwnKey(key) {
     return OWN_KEY_PREFIXES.some(p => key.startsWith(p));
@@ -2166,8 +4253,23 @@
         return;
       }
       if (!confirm(keys.length + "件のデータを読み込みます。現在保存されている同じ週・設定は上書きされます。よろしいですか？")) return;
-      keys.forEach(k => localStorage.setItem(k, data[k]));
+      try {
+        keys.forEach(k => localStorage.setItem(k, String(data[k])));
+      } catch (err) {
+        alert("データの読み込みが途中で止まりました(" + err.name + ")。\nブラウザの保存容量が足りない可能性があります。古い年度のデータを消してからもう一度お試しください。");
+        return;
+      }
+      // 画面全体の設定(ひらがな・メモ印刷・休み時間)も読み込んだ内容に合わせる
+      HIRAGANA_MODE = localStorage.getItem(HIRAGANA_KEY) === "1";
+      PRINT_MEMO = localStorage.getItem(PRINT_MEMO_KEY) === "1";
+      SHOW_BREAKS = localStorage.getItem(SHOW_BREAKS_KEY) !== "0";
+      hiraganaCheckbox.checked = HIRAGANA_MODE;
+      printMemoCheckbox.checked = PRINT_MEMO;
+      showBreaksCheckbox.checked = SHOW_BREAKS;
+      applyPrintMemoSetting();
+
       switchToYear(activeYear);
+      buildHeader();
       loadAndRender(currentData.monday);
       renderLastBackupNote();
       showBackupStatus("読み込みました");
@@ -2185,18 +4287,21 @@
     if (file) importAllData(file);
   });
 
-  // 初期表示: 今年度4/1週の月曜日
+  // 初期表示: 今週(毎週使うので、開いたらすぐ今週が出るようにする)
   (function init() {
     try { migrateLegacyDataOnce(); } catch (e) { /* localStorageが使えない環境などでは移行をスキップ */ }
     hiraganaCheckbox.checked = HIRAGANA_MODE;
     printMemoCheckbox.checked = PRINT_MEMO;
+    showBreaksCheckbox.checked = SHOW_BREAKS;
     applyPrintMemoSetting();
-    const monday = firstMondayOfSchoolYear(currentSchoolYear());
+    const monday = getMonday(todayStr());
     weekStartInput.value = monday;
     loadAndRender(monday);
     renderLastBackupNote();
   })();
 </script>
+
+<div id="toast" class="toast no-print" role="status" aria-live="polite"></div>
 
 </body>
 </html>
