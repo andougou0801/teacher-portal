@@ -1175,6 +1175,29 @@
       min-height: 1.3em;
     }
     .card { box-shadow: none; padding: 0; margin-bottom: 8px; border-radius: 0; }
+
+    /* --- 用紙1枚に収める ---
+       パソコンや印刷設定によって文字の幅や行の折り返しが変わるため、
+       決め打ちの高さでは機種によって2枚目にこぼれてしまう。
+       そこで印刷のたびに実際の高さを測り、はみ出すぶんだけ全体を縮める。
+       縮めるときは printFit を用紙1枚ぶんの高さに固定する。こうしないと
+       ブラウザが「縮める前の高さ」でページを数えて、空の2枚目が出てしまう。 */
+    body.print-shrink #printFit {
+      height: 194mm;          /* A4横(210mm) - 上下の余白8mm×2 */
+      overflow: hidden;
+    }
+    body.print-shrink #timetableCard {
+      transform: scale(var(--print-scale, 1));
+      transform-origin: top left;
+      width: calc(100% / var(--print-scale, 1));
+      margin-bottom: 0;
+    }
+    /* 縮めるときも紙いっぱいに広げる。縮小するぶん、先に大きめに伸ばしておく
+       (178mm ÷ 倍率 の高さに伸ばし、それを倍率で縮めると178mmになる) */
+    body.print-shrink table.timetable {
+      height: calc(178mm / var(--print-scale, 1));
+    }
+
     table.timetable {
       min-width: 0;
       width: 100%;
@@ -1529,6 +1552,8 @@
     </div>
   </details>
 
+  <!-- printFit は印刷のときだけ「用紙1枚ぶんの入れ物」になる(中身がはみ出したら縮める) -->
+  <div id="printFit">
   <div class="card" id="timetableCard">
     <h2 class="no-print">時間割</h2>
     <div id="printHeader" style="text-align:center; margin-bottom: 8px;">
@@ -1545,6 +1570,7 @@
         </tbody>
       </table>
     </div>
+  </div>
   </div>
 
   <div class="card no-print">
@@ -3114,9 +3140,90 @@
     loadAndRender(currentData.monday);
   });
 
+  /* ---------- 印刷を用紙1枚に収める ---------- */
+
+  // A4横・余白8mmのときに中身が入る大きさ(mm)
+  const PRINT_BOX_W_MM = 281;
+  const PRINT_BOX_H_MM = 194;
+  const MM_TO_PX = 96 / 25.4;
+
+  // いま効いている @media print の中身を、ふつうのCSSとして取り出す。
+  // 画面のまま「紙と同じ見た目」を作って高さを測るために使う。
+  function printRulesText() {
+    const out = [];
+    for (const sheet of document.styleSheets) {
+      let rules;
+      try { rules = sheet.cssRules; } catch (e) { continue; } // 読めないCSSは飛ばす
+      for (const rule of rules) {
+        if (rule.media && /print/.test(rule.media.mediaText)) {
+          for (const inner of rule.cssRules) out.push(inner.cssText);
+        }
+      }
+    }
+    return out.join("\n");
+  }
+
+  // 指定した幅(mm)に置いたときの、縮める前の高さを測る
+  function measurePrintHeight(widthMm) {
+    const style = document.createElement("style");
+    style.id = "printMeasureCss";
+    style.textContent = printRulesText() + "\n" + [
+      // 測るときは、縦に伸ばす指定と縮小をいったん外す
+      "table.timetable{height:auto !important}",
+      "#printFit{height:auto !important;overflow:visible !important}",
+      "#timetableCard{transform:none !important;width:" + widthMm + "mm !important;" +
+        "max-width:none !important;margin:0 !important}"
+    ].join("\n");
+    document.head.appendChild(style);
+    const h = document.getElementById("timetableCard").getBoundingClientRect().height;
+    style.remove();
+    return h;
+  }
+
+  // 倍率sで印刷したときに、紙の上で何ミリぶんの高さになるか。
+  // 縮小は横にもかかるので、中身は「281mm ÷ s」の幅に置いてから縮める。
+  // 幅が変わると文字の折り返しも変わるため、1回の計算では決まらない。
+  function printedHeightAt(scale) {
+    return measurePrintHeight(PRINT_BOX_W_MM / scale) * scale;
+  }
+
+  // これより小さくすると児童には読めないので、無理に1枚へ詰め込まない
+  const MIN_PRINT_SCALE = 0.6;
+
+  // 印刷の直前に呼ぶ。はみ出すときだけ、収まる中でいちばん大きい倍率を探す。
+  function fitPrintToOnePage() {
+    // 印刷設定の違いで1行ぶんはみ出さないよう、少しだけ余裕を見る
+    const avail = PRINT_BOX_H_MM * MM_TO_PX * 0.98;
+    let scale = 1;
+    try {
+      if (printedHeightAt(1) > avail) {
+        if (printedHeightAt(MIN_PRINT_SCALE) <= avail) {
+          // 収まる倍率が MIN〜1 のどこかにあるので、二分探索で上限を詰める
+          let lo = MIN_PRINT_SCALE, hi = 1;
+          for (let i = 0; i < 6; i++) {
+            const mid = (lo + hi) / 2;
+            if (printedHeightAt(mid) <= avail) lo = mid; else hi = mid;
+          }
+          scale = lo;
+        }
+        // 読めないほど小さくしないと収まらない週は、縮めずに2枚で印刷する
+        // (無理に1枚へ収めると、入りきらない文字が切れて消えてしまう)
+      }
+    } catch (e) {
+      scale = 1;   // 測れなかったときは今までどおり
+    }
+    document.documentElement.style.setProperty("--print-scale", String(scale));
+    document.body.classList.toggle("print-shrink", scale < 1);
+    return scale;
+  }
+
+  function clearPrintFit() {
+    document.body.classList.remove("print-shrink");
+    document.documentElement.style.removeProperty("--print-scale");
+  }
+
   // 入力欄は高さが固定なので、そのまま印刷すると書いた文字が下に隠れて切れてしまう。
   // 印刷の直前だけ、中身を同じ場所の文字(div)に写して紙の幅で折り返させる。
-  // 紙では入力欄を隠し、書いた文字をそのまま出す(入力欄だと長い文が切れてしまうため)
   function expandCellsForPrint() {
     restoreCellsAfterPrint();
     // 教科名の長さを印刷用CSSに伝える(長い名前は帯の中で小さくするため)
@@ -3142,8 +3249,17 @@
   window.addEventListener("beforeprint", () => {
     if (currentData) updatePrintHeader();
     expandCellsForPrint();
+    // 年間指導計画・行事の計画表は複数ページに続けてよいので、縮めるのは時間割だけ
+    const other = document.body.classList.contains("printing-units") ||
+      document.body.classList.contains("tab-units-active") ||
+      document.body.classList.contains("printing-plan") ||
+      document.body.classList.contains("tab-plans-active");
+    if (other) clearPrintFit(); else fitPrintToOnePage();
   });
-  window.addEventListener("afterprint", restoreCellsAfterPrint);
+  window.addEventListener("afterprint", () => {
+    restoreCellsAfterPrint();
+    clearPrintFit();
+  });
 
   document.getElementById("printBtn").addEventListener("click", () => {
     updatePrintHeader();
@@ -3157,6 +3273,7 @@
       if (restored) return;
       restored = true;
       document.title = originalTitle;
+      clearPrintFit();
     };
     window.addEventListener("afterprint", restore, { once: true });
     window.print();
