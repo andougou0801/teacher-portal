@@ -33,7 +33,7 @@
 ## 現在できること
 
 - トップページ（新ヒーロー・カテゴリーカードグリッド・ツール/記事プレビュー）
-- 自作ツールカタログ（`/tools`）：先生向け実働ツール15本（週の時間割メーカー／算数プリントメーカー／漢字テスト作成／座席表作成／班分けツール／リーグ戦・トーナメント表メーカー／名簿関連ツール／点数・平均計算／授業用タイマー／抽選・あみだくじツール／文章問題メーカー／100マス計算プリントメーカー／通知表所見文例集／議事録メーカー／国語の文章作成メーカー）。「作成予定」ツールは現在なし
+- 自作ツールカタログ（`/tools`）：先生向け実働ツール15本（週の時間割メーカー／算数プリントメーカー／漢字テスト作成／座席表作成／班分けツール／リーグ戦・トーナメント表メーカー／名簿関連ツール／成績管理／授業用タイマー／抽選・あみだくじツール／文章問題メーカー／100マス計算プリントメーカー／通知表所見文例集／議事録メーカー／国語の文章作成メーカー）。「作成予定」ツールは現在なし
 - 子ども向けツール一覧（`/kids`）：実働ツール6本（筆算マスター・都道府県マスターゲーム・漢字れんしゅう・歴史人物タイムトラベルクイズ・タイピングれんしゅう・角度マスター）
 - 授業・教材アイデア（`/lessons`）・学級経営（`/classroom`）・学校行事（`/events`）：それぞれ実記事2本ずつ
 - 教員コミュニティQ&A（`/community`）：先生が質問を投稿し、他の先生が回答できる掲示板。
@@ -114,7 +114,7 @@ npm run dev
 | `名簿作成ツール.html` | `teacher-portal/public/tools/roster-tools.html` | 先生 |
 | `タイピングれんしゅう.html` | `teacher-portal/public/tools/typing-practice.html` | 子ども |
 | `漢字れんしゅう.html` | `teacher-portal/public/tools/kanji-practice.html` | 子ども |
-| `点数・平均計算ツール.html` | `teacher-portal/public/tools/score-average-calculator.html` | 先生 |
+| `成績管理ツール.html` | `teacher-portal/public/tools/seiseki-kanri.html` | 先生 |
 | `文章問題メーカー.html` | `teacher-portal/public/tools/word-problem-maker.html` | 先生 |
 | `通知表所見文例集.html` | `teacher-portal/public/tools/report-comment-maker.html` | 先生 |
 | `角度マスター.html` | `teacher-portal/public/tools/angle-master.html` | 子ども |

@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none';">
+<title>成績管理ツール</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+    --line:#d8dfea;
+    --ok:#2e7d32;
+    --warn:#c62828;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    font-size:15px;
+  }
+  h1{font-size:19px;color:var(--accent-dark);margin:0;}
+  .privacy-note{font-size:11px;color:#8a93a3;margin:2px 0 0;}
+
+  /* ===== ヘッダー ===== */
+  .topbar{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:10px 16px;
+    position:sticky;
+    top:0;
+    z-index:30;
+    box-shadow:0 2px 8px rgba(30,50,90,0.06);
+  }
+  .topbar-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 14px;
+    align-items:center;
+  }
+  .topbar-row + .topbar-row{margin-top:10px;}
+  .spacer{flex:1;}
+  .field{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#555;}
+  select,input[type="text"],input[type="number"],input[type="password"],input[type="date"]{
+    padding:7px 10px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    font-size:14px;
+    font-family:inherit;
+    background:#fff;
+    color:#2a2a2a;
+  }
+  button{
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+    border:none;
+    border-radius:12px;
+    padding:9px 16px;
+    background:var(--accent);
+    color:#fff;
+    cursor:pointer;
+    min-height:40px;
+  }
+  button:hover{background:var(--accent-dark);}
+  button.sub{
+    background:#eef2fb;
+    color:var(--accent-dark);
+  }
+  button.sub:hover{background:#dde6fa;}
+  button.danger{background:#c62828;}
+  button.danger:hover{background:#a01f1f;}
+  button.mini{padding:5px 10px;min-height:32px;font-size:13px;border-radius:9px;}
+
+  .toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    font-weight:700;
+    color:#555;
+    cursor:pointer;
+    user-select:none;
+  }
+  .toggle input{width:18px;height:18px;}
+
+  /* 教科タブ */
+  .tabs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .tab{
+    padding:8px 16px;
+    border-radius:12px 12px 0 0;
+    background:#e8eefb;
+    color:var(--accent-dark);
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    border:1px solid var(--line);
+    border-bottom:none;
+    min-height:38px;
+  }
+  .tab.on{background:#fff;color:#1a1a1a;border-color:var(--accent);box-shadow:0 -2px 0 var(--accent) inset;}
+
+  .savedtime{font-size:12px;color:#7d879b;}
+
+  /* ===== 本体 ===== */
+  .main{padding:14px 16px 80px;}
+  .card{
+    background:#fff;
+    border-radius:16px;
+    padding:14px;
+    box-shadow:0 4px 16px rgba(30,50,90,0.08);
+    margin-bottom:14px;
+  }
+  .empty{
+    text-align:center;
+    color:#7d879b;
+    padding:40px 10px;
+    font-size:14px;
+    line-height:1.9;
+  }
+
+  .tablewrap{
+    overflow:auto;
+    max-height:calc(100vh - 230px);
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+  }
+  table.seiseki{
+    border-collapse:separate;
+    border-spacing:0;
+    font-size:14px;
+    white-space:nowrap;
+  }
+  table.seiseki th,table.seiseki td{
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:5px 7px;
+    text-align:center;
+    background:#fff;
+  }
+  table.seiseki thead th{
+    background:#eef3fb;
+    color:#36404f;
+    font-size:13px;
+    position:sticky;
+    z-index:12;
+  }
+  table.seiseki thead tr:nth-child(1) th{top:0;}
+  table.seiseki thead tr:nth-child(2) th{top:34px;}
+  table.seiseki th.sticky-no,table.seiseki td.sticky-no{
+    position:sticky;left:0;z-index:14;background:#fff;
+  }
+  table.seiseki th.sticky-name,table.seiseki td.sticky-name{
+    position:sticky;left:58px;z-index:14;background:#fff;text-align:left;
+    border-right:2px solid var(--accent);
+  }
+  table.seiseki thead th.sticky-no,table.seiseki thead th.sticky-name{background:#eef3fb;z-index:20;}
+  table.seiseki td.sticky-no,table.seiseki td.sticky-name{font-weight:700;}
+  table.seiseki tbody tr:nth-child(even) td{background:#fafcff;}
+  table.seiseki tbody tr:nth-child(even) td.sticky-no,
+  table.seiseki tbody tr:nth-child(even) td.sticky-name{background:#fafcff;}
+  .grp-k{background:#f3f8ff !important;}
+  .grp-s{background:#f5fff3 !important;}
+  .grp-t{background:#fff7f0 !important;}
+  .grp-z{background:#f6f2ff !important;}
+  td.sum{font-weight:700;}
+  td.rate{color:#36404f;}
+  .ev{
+    display:inline-block;
+    min-width:26px;
+    padding:2px 6px;
+    border-radius:8px;
+    font-weight:700;
+  }
+  .ev-A{background:#e3f2e5;color:#1b5e20;}
+  .ev-B{background:#e8eefb;color:#1f54b8;}
+  .ev-C{background:#fdeaea;color:#b71c1c;}
+  .ev-none{color:#b4bcc9;}
+
+  input.cell{
+    width:56px;
+    padding:5px 4px;
+    text-align:center;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-size:15px;
+    font-family:inherit;
+    background:#fff;
+  }
+  input.cell:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent);}
+  input.cell.err{border-color:var(--warn);background:#fff0f0;outline-color:var(--warn);}
+  input.cell.dankai{width:46px;}
+
+  tfoot td,tfoot th{
+    background:#f1f5fd !important;
+    font-weight:700;
+    font-size:13px;
+    border-top:2px solid var(--accent);
+  }
+
+  .itemhead{display:flex;flex-direction:column;gap:2px;align-items:center;}
+  .itemhead .nm{font-weight:700;}
+  .itemhead .dt{font-size:11px;color:#7d879b;font-weight:400;}
+  .itemhead .edit{font-size:11px;color:var(--accent);cursor:pointer;text-decoration:underline;}
+  .mantenlabel{font-size:11px;color:#7d879b;font-weight:400;}
+
+  /* ===== ダイアログ ===== */
+  dialog{
+    border:none;
+    border-radius:18px;
+    padding:0;
+    width:min(760px,94vw);
+    box-shadow:0 10px 40px rgba(20,35,70,0.3);
+  }
+  dialog::backdrop{background:rgba(20,30,50,0.45);}
+  .dlg-head{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 18px;border-bottom:1px solid var(--line);
+    position:sticky;top:0;background:#fff;border-radius:18px 18px 0 0;
+  }
+  .dlg-head h2{margin:0;font-size:17px;color:var(--accent-dark);flex:1;}
+  .dlg-body{padding:16px 18px 22px;max-height:72vh;overflow:auto;}
+  .dlg-body h3{font-size:14px;color:var(--accent-dark);margin:20px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px;}
+  .dlg-body h3:first-child{margin-top:0;}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px;}
+  .row label{font-size:13px;font-weight:700;color:#555;}
+  .note{font-size:12px;color:#7d879b;line-height:1.8;margin:6px 0 10px;}
+  .listbox{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+  .listrow{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 10px;border-bottom:1px solid var(--line);
+    font-size:14px;
+  }
+  .listrow:last-child{border-bottom:none;}
+  .listrow .grow{flex:1;}
+  .kijun-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .kijun-table th,.kijun-table td{border:1px solid var(--line);padding:6px 8px;text-align:center;}
+  .kijun-table th{background:#eef3fb;}
+  .kijun-table input{width:70px;}
+  .helpbox{font-size:14px;line-height:2;}
+  .helpbox ul{padding-left:1.3em;margin:6px 0 14px;}
+  .helpbox code{background:#eef3fb;padding:1px 5px;border-radius:5px;font-size:13px;}
+
+  /* ロック画面 */
+  #lockscreen{
+    position:fixed;inset:0;background:linear-gradient(180deg,#eef3fb,#dfe8f7);
+    display:flex;align-items:center;justify-content:center;z-index:999;
+  }
+  #lockscreen .box{background:#fff;border-radius:20px;padding:28px 26px;width:min(380px,92vw);text-align:center;box-shadow:0 8px 30px rgba(20,35,70,0.18);}
+  #lockscreen input{width:100%;margin:14px 0 10px;text-align:center;font-size:17px;}
+  .err-msg{color:var(--warn);font-size:13px;min-height:19px;}
+
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+    background:#2a3550;color:#fff;padding:11px 20px;border-radius:12px;
+    font-size:14px;z-index:900;box-shadow:0 6px 20px rgba(0,0,0,0.25);
+  }
+
+  /* ===== 印刷（A4横） ===== */
+  @page{size:A4 landscape;margin:10mm;}
+  @media print{
+    body{background:#fff;}
+    .topbar,.no-print,dialog,#lockscreen,.toast{display:none !important;}
+    .main{padding:0;}
+    .card{box-shadow:none;border-radius:0;padding:0;margin:0;}
+    .tablewrap{max-height:none;overflow:visible;border:none;}
+    table.seiseki{font-size:10px;white-space:normal;}
+    table.seiseki th,table.seiseki td{padding:2px 3px;}
+    table.seiseki thead th{position:static;}
+    table.seiseki th.sticky-no,table.seiseki td.sticky-no,
+    table.seiseki th.sticky-name,table.seiseki td.sticky-name{position:static;}
+    input.cell{border:none;width:auto;min-width:34px;font-size:10px;background:transparent;}
+    .print-title{display:block !important;font-size:14px;font-weight:700;margin-bottom:6px;}
+  }
+  .print-title{display:none;}
+</style>
+</head>
+<body>
+
+<div id="lockscreen" style="display:none;">
+  <div class="box">
+    <h1>成績管理ツール</h1>
+    <p class="privacy-note">パスワードを入力してください</p>
+    <input type="password" id="lock-input" autocomplete="off">
+    <div class="err-msg" id="lock-err"></div>
+    <button id="lock-btn">ひらく</button>
+  </div>
+</div>
+
+<div class="topbar no-print">
+  <div class="topbar-row">
+    <h1>成績管理ツール</h1>
+    <span class="privacy-note">データはこのパソコンの中だけに保存され、外部には送信されません</span>
+    <span class="spacer"></span>
+    <span class="savedtime" id="savedtime"></span>
+    <button class="sub mini" id="btn-help">ヘルプ</button>
+    <button class="sub mini" id="btn-backup">バックアップ</button>
+    <button class="sub mini" id="btn-settings">設定</button>
+    <button class="mini" id="btn-excel">Excel出力</button>
+    <button class="sub mini" id="btn-print">印刷</button>
+  </div>
+  <div class="topbar-row">
+    <span class="field">年度
+      <input type="text" id="nendo" style="width:84px;">
+    </span>
+    <span class="field">クラス
+      <select id="class-select"></select>
+    </span>
+    <label class="toggle"><input type="checkbox" id="chk-maru"> ◎〇△で表示</label>
+    <label class="toggle"><input type="checkbox" id="chk-mask"> 氏名マスク（出席番号のみ）</label>
+  </div>
+  <div class="topbar-row">
+    <div class="tabs" id="subject-tabs"></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="card">
+    <div class="print-title" id="print-title"></div>
+    <div id="table-area"></div>
+  </div>
+</div>
+
+<!-- ===== 設定ダイアログ ===== -->
+<dialog id="dlg-settings">
+  <div class="dlg-head">
+    <h2>設定</h2>
+    <button class="sub mini" data-close>閉じる</button>
+  </div>
+  <div class="dlg-body">
+    <h3>ABCの判定基準（得点率%）</h3>
+    <p class="note">いま開いている教科の基準です。変更するとすぐに表へ反映されます。<br>
+      A＝「Aの基準」%以上　B＝「Bの基準」%以上　C＝それ未満</p>
+    <table class="kijun-table" id="kijun-table"></table>
+
+    <h3>段階評価（実技・態度など）を観点別ABCに反映する</h3>
+    <div class="row">
+      <label class="toggle"><input type="checkbox" id="chk-dankai-hanei"> 反映する</label>
+      <label>重み <input type="number" id="dankai-weight" min="1" max="100" step="1" style="width:80px;"></label>
+      <span class="note" style="margin:0;">A=3×重み点／B=2×重み点／C=1×重み点、満点=3×重み点として計算します</span>
+    </div>
+
+    <h3>クラス</h3>
+    <div class="listbox" id="class-list"></div>
+    <div class="row">
+      <input type="text" id="new-class-name" placeholder="例：5年1組" style="width:200px;">
+      <button class="sub mini" id="btn-add-class">クラスを追加</button>
+    </div>
+
+    <h3>児童（いま選んでいるクラス）</h3>
+    <div class="listbox" id="student-list" style="max-height:240px;overflow:auto;"></div>
+    <div class="row">
+      <input type="number" id="new-student-no" placeholder="番号" style="width:90px;">
+      <input type="text" id="new-student-name" placeholder="氏名（空欄でも可）" style="width:200px;">
+      <button class="sub mini" id="btn-add-student">児童を追加</button>
+      <button class="sub mini" id="btn-add-students-bulk">番号だけまとめて追加</button>
+    </div>
+
+    <h3>教科（いま選んでいるクラス）</h3>
+    <div class="listbox" id="subject-list"></div>
+    <div class="row">
+      <input type="text" id="new-subject-name" placeholder="例：国語" style="width:200px;">
+      <button class="sub mini" id="btn-add-subject">教科を追加</button>
+    </div>
+
+    <h3>評価項目（いま開いている教科）</h3>
+    <div class="listbox" id="item-list"></div>
+    <div class="row">
+      <button class="sub mini" id="btn-add-test">テストを追加</button>
+      <button class="sub mini" id="btn-add-dankai">段階評価の項目を追加</button>
+    </div>
+
+    <h3>サンプルデータ</h3>
+    <div class="row">
+      <button class="sub mini" id="btn-sample">サンプルデータを入れる（2クラス×20人）</button>
+      <span class="note" style="margin:0;">いまのデータに追加されます</span>
+    </div>
+
+    <h3>データの全削除</h3>
+    <div class="row">
+      <button class="danger mini" id="btn-delete-all">すべてのデータを削除する</button>
+      <span class="note" style="margin:0;">確認を2回行います。元に戻せません</span>
+    </div>
+
+    <h3>起動時のパスワードロック</h3>
+    <div class="row" id="lock-setting-row"></div>
+  </div>
+</dialog>
+
+<!-- ===== 評価項目の編集ダイアログ ===== -->
+<dialog id="dlg-item">
+  <div class="dlg-head">
+    <h2 id="dlg-item-title">評価項目</h2>
+    <button class="sub mini" data-close>閉じる</button>
+  </div>
+  <div class="dlg-body">
+    <div class="row">
+      <label style="width:90px;">項目名</label>
+      <input type="text" id="item-name" style="width:260px;">
+    </div>
+    <div id="item-test-part">
+      <div class="row">
+        <label style="width:90px;">実施日</label>
+        <input type="date" id="item-date">
+        <span class="note" style="margin:0;">空欄でも構いません</span>
+      </div>
+      <h3>観点ごとの満点</h3>
+      <p class="note">0点にすると、その観点は使いません（列が出ません）。</p>
+      <div class="row">
+        <label style="width:170px;">知識・技能</label>
+        <input type="number" id="item-manten-k" min="0" max="1000" style="width:100px;">
+      </div>
+      <div class="row">
+        <label style="width:170px;">思考・判断・表現</label>
+        <input type="number" id="item-manten-s" min="0" max="1000" style="width:100px;">
+      </div>
+      <div class="row">
+        <label style="width:170px;">主体的に学習に取り組む態度</label>
+        <input type="number" id="item-manten-t" min="0" max="1000" style="width:100px;">
+      </div>
+    </div>
+    <div id="item-dankai-part">
+      <div class="row">
+        <label style="width:90px;">対象の観点</label>
+        <select id="item-kanten">
+          <option value="k">知識・技能</option>
+          <option value="s">思考・判断・表現</option>
+          <option value="t">主体的に学習に取り組む態度</option>
+        </select>
+      </div>
+    </div>
+    <div class="row" style="margin-top:18px;">
+      <button id="btn-item-save">保存する</button>
+      <button class="sub" data-close>やめる</button>
+      <span class="spacer"></span>
+      <button class="danger mini" id="btn-item-delete">この項目を削除</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== Excel出力ダイアログ ===== -->
+<dialog id="dlg-excel">
+  <div class="dlg-head">
+    <h2>Excelで書き出す</h2>
+    <button class="sub mini" data-close>閉じる</button>
+  </div>
+  <div class="dlg-body">
+    <h3>出力する範囲</h3>
+    <div class="row">
+      <label class="toggle"><input type="radio" name="exrange" value="one" checked> いま開いている教科だけ</label>
+    </div>
+    <div class="row">
+      <label class="toggle"><input type="radio" name="exrange" value="all"> このクラスの全教科（教科ごとにシートを分ける）</label>
+    </div>
+    <h3>氏名</h3>
+    <div class="row">
+      <label class="toggle"><input type="checkbox" id="ex-name"> 氏名を出力する</label>
+      <span class="note" style="margin:0;">チェックを外すと出席番号だけになります</span>
+    </div>
+    <p class="note" id="ex-note"></p>
+    <div class="row" style="margin-top:14px;">
+      <button id="btn-excel-run">書き出す</button>
+      <button class="sub" data-close>やめる</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== バックアップダイアログ ===== -->
+<dialog id="dlg-backup">
+  <div class="dlg-head">
+    <h2>バックアップ</h2>
+    <button class="sub mini" data-close>閉じる</button>
+  </div>
+  <div class="dlg-body">
+    <h3>書き出す</h3>
+    <p class="note">すべての年度・クラスのデータを1つのファイルに保存します。<br>
+      パスワードを入れると暗号化されます（AES-GCM）。空欄のままでも書き出せます。</p>
+    <div class="row">
+      <label style="width:130px;">パスワード</label>
+      <input type="password" id="bk-pass" style="width:220px;" autocomplete="new-password">
+    </div>
+    <div class="row">
+      <button id="btn-backup-export">ファイルに書き出す</button>
+    </div>
+
+    <h3>読み込む</h3>
+    <p class="note">いまのデータは、読み込んだ内容で置きかわります。</p>
+    <div class="row">
+      <input type="file" id="bk-file" accept=".json,application/json">
+    </div>
+    <div class="row">
+      <label style="width:130px;">パスワード</label>
+      <input type="password" id="bk-pass-in" style="width:220px;" autocomplete="off">
+      <span class="note" style="margin:0;">暗号化したファイルのときだけ</span>
+    </div>
+    <div class="row">
+      <button id="btn-backup-import">読み込む</button>
+    </div>
+    <div class="err-msg" id="bk-msg"></div>
+  </div>
+</dialog>
+
+<!-- ===== ヘルプ ===== -->
+<dialog id="dlg-help">
+  <div class="dlg-head">
+    <h2>使い方</h2>
+    <button class="sub mini" data-close>閉じる</button>
+  </div>
+  <div class="dlg-body helpbox">
+    <h3>1. はじめに</h3>
+    <ul>
+      <li>「設定」からクラス・児童・教科・評価項目を登録します。まず試したいときは「サンプルデータを入れる」が便利です。</li>
+      <li>入力したデータはこのパソコンの中だけに自動保存されます。外部には一切送信しません。</li>
+    </ul>
+    <h3>2. 点数の入力</h3>
+    <ul>
+      <li>表のマスに直接入力します。<code>Enter</code>で下へ、<code>Tab</code>で右へ移動します。</li>
+      <li>満点を超える数や数字以外を入れると赤わくになり、保存されません。</li>
+      <li>欠席などで空欄にしたマスは、平均や得点率の計算から外れます。</li>
+      <li>段階評価（実技・態度など）の列は <code>A</code> <code>B</code> <code>C</code> を直接入力します（◎〇△でも入れられます）。</li>
+    </ul>
+    <h3>3. 集計のしくみ</h3>
+    <ul>
+      <li>観点別の得点率＝その観点の得点合計 ÷ 満点合計。未入力のテストは分子・分母の両方から外します。</li>
+      <li>ABCの基準は「設定」で教科ごと・観点ごとに変えられます（初期値 A=80%以上／B=50%以上）。</li>
+      <li>段階評価を観点別ABCに反映するかどうかも「設定」で選べます。</li>
+    </ul>
+    <h3>4. 書き出し</h3>
+    <ul>
+      <li>「Excel出力」で .xlsx ファイルを作ります。画面がABC表示なら A/B/C、◎〇△表示なら ◎〇△ で出力されます。</li>
+      <li>「印刷」はA4横のレイアウトで印刷します。</li>
+      <li>「バックアップ」で全データをファイルに保存できます。パスワードを付けると暗号化されます。</li>
+    </ul>
+    <h3>5. 個人情報の扱い</h3>
+    <ul>
+      <li>氏名を入れずに出席番号だけで運用することもできます。</li>
+      <li>画面を見せるときは「氏名マスク」にチェックを入れると氏名が隠れます。</li>
+      <li>「設定」の一番下で、起動時のパスワードロックをかけられます。</li>
+    </ul>
+  </div>
+</dialog>
+
+<script>
+/* =========================================================
+   成績管理ツール
+   - 外部通信なし／データはこのPC内のみ
+   ========================================================= */
+
+/* ===== 定数 ===== */
+var VPS = ["k", "s", "t"];
+var VP_NAME = { k: "知識・技能", s: "思考・判断・表現", t: "主体的に学習に取り組む態度" };
+var VP_SHORT = { k: "知識", s: "思考", t: "態度" };
+var VP_CLASS = { k: "grp-k", s: "grp-s", t: "grp-t" };
+var EV_VAL = { A: 3, B: 2, C: 1 };
+var STORE_KEY = "seiseki-kanri-v1";
+
+/* ===== 状態 ===== */
+var DATA = null;
+var cur = { classId: null, subjectId: null };
+var storageMode = "idb";
+var saveTimer = null;
+
+/* ===== 小道具 ===== */
+function uid() {
+  return "id" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+function esc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function $(id) { return document.getElementById(id); }
+function toast(msg) {
+  var el = document.createElement("div");
+  el.className = "toast";
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function () { el.remove(); }, 2600);
+}
+function round1(n) { return Math.round(n * 10) / 10; }
+
+/* ===== 保存（IndexedDB、使えない環境では localStorage） ===== */
+var Store = {
+  db: null,
+  openIDB: function () {
+    return new Promise(function (resolve, reject) {
+      var req;
+      try { req = indexedDB.open("seiseki-kanri", 1); }
+      catch (e) { reject(e); return; }
+      req.onupgradeneeded = function () {
+        var db = req.result;
+        if (!db.objectStoreNames.contains("kv")) { db.createObjectStore("kv"); }
+      };
+      req.onsuccess = function () { resolve(req.result); };
+      req.onerror = function () { reject(req.error); };
+      req.onblocked = function () { reject(new Error("blocked")); };
+    });
+  },
+  init: function () {
+    var self = this;
+    return this.openIDB().then(function (db) {
+      self.db = db; storageMode = "idb";
+    }).catch(function () {
+      storageMode = "local";
+    });
+  },
+  load: function () {
+    var self = this;
+    if (storageMode === "idb" && this.db) {
+      return new Promise(function (resolve) {
+        try {
+          var tx = self.db.transaction("kv", "readonly");
+          var rq = tx.objectStore("kv").get(STORE_KEY);
+          rq.onsuccess = function () { resolve(rq.result || null); };
+          rq.onerror = function () { resolve(null); };
+        } catch (e) { resolve(null); }
+      });
+    }
+    return Promise.resolve(readLocal());
+  },
+  save: function (obj) {
+    var self = this;
+    if (storageMode === "idb" && this.db) {
+      return new Promise(function (resolve) {
+        try {
+          var tx = self.db.transaction("kv", "readwrite");
+          tx.objectStore("kv").put(obj, STORE_KEY);
+          tx.oncomplete = function () { resolve(true); };
+          tx.onerror = function () { writeLocal(obj); resolve(true); };
+        } catch (e) { writeLocal(obj); resolve(true); }
+      });
+    }
+    writeLocal(obj);
+    return Promise.resolve(true);
+  }
+};
+function readLocal() {
+  try {
+    var s = localStorage.getItem(STORE_KEY);
+    return s ? JSON.parse(s) : null;
+  } catch (e) { return null; }
+}
+function writeLocal(obj) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(obj)); } catch (e) { }
+}
+
+/* ===== 初期データ ===== */
+function defaultKijun() {
+  return {
+    k: { a: 80, b: 50 }, s: { a: 80, b: 50 },
+    t: { a: 80, b: 50 }, z: { a: 80, b: 50 }
+  };
+}
+function newSubject(name) {
+  return { id: uid(), name: name, kijun: defaultKijun(), dankai: { hanei: false, weight: 10 }, items: [] };
+}
+function newClass(name) {
+  return { id: uid(), name: name, students: [], subjects: [newSubject("国語")] };
+}
+function emptyData() {
+  var c = newClass("5年1組");
+  return {
+    version: 1,
+    nendo: String(new Date().getFullYear()),
+    settings: { maru: false, mask: false, lock: null },
+    classes: [c]
+  };
+}
+
+/* ===== 取得ヘルパ ===== */
+function getClass() {
+  if (!DATA) return null;
+  var c = DATA.classes.filter(function (x) { return x.id === cur.classId; })[0];
+  if (c) return c;
+  // 未選択のときは、児童が登録されているクラスを優先して開く
+  var withStudents = DATA.classes.filter(function (x) { return x.students.length > 0; })[0];
+  return withStudents || DATA.classes[0] || null;
+}
+function getSubject() {
+  var c = getClass();
+  if (!c) return null;
+  var s = c.subjects.filter(function (x) { return x.id === cur.subjectId; })[0];
+  return s || c.subjects[0] || null;
+}
+function activeVps(item) {
+  return VPS.filter(function (v) { return Number(item.manten[v]) > 0; });
+}
+
+/* ===== 計算 ===== */
+function evalOf(rate, kijun) {
+  if (rate == null) return null;
+  if (rate >= Number(kijun.a)) return "A";
+  if (rate >= Number(kijun.b)) return "B";
+  return "C";
+}
+/** 1人ぶんの観点別集計 */
+function calcStudent(sub, sid) {
+  var res = {};
+  VPS.forEach(function (v) { res[v] = { sum: 0, max: 0, rate: null, ev: null }; });
+  sub.items.forEach(function (it) {
+    if (it.type === "test") {
+      VPS.forEach(function (v) {
+        var mx = Number(it.manten[v]) || 0;
+        if (mx <= 0) return;
+        var sc = it.scores[sid];
+        var val = (sc && sc[v] != null) ? Number(sc[v]) : null;
+        if (val == null || isNaN(val)) return;
+        res[v].sum += val;
+        res[v].max += mx;
+      });
+    } else if (it.type === "dankai" && sub.dankai.hanei) {
+      var g = it.grades[sid];
+      if (!g) return;
+      var w = Number(sub.dankai.weight) || 1;
+      res[it.kanten].sum += EV_VAL[g] * w;
+      res[it.kanten].max += 3 * w;
+    }
+  });
+  var tSum = 0, tMax = 0;
+  VPS.forEach(function (v) {
+    var r = res[v];
+    r.rate = r.max > 0 ? (r.sum / r.max) * 100 : null;
+    r.ev = evalOf(r.rate, sub.kijun[v]);
+    tSum += r.sum; tMax += r.max;
+  });
+  res.z = {
+    sum: tSum, max: tMax,
+    rate: tMax > 0 ? (tSum / tMax) * 100 : null,
+    ev: null
+  };
+  res.z.ev = evalOf(res.z.rate, sub.kijun.z);
+  return res;
+}
+/** クラス全体の集計（平均行用） */
+function calcClassSummary(sub, students) {
+  var itemAvg = {};   // itemAvg[itemId][vp] = 平均点
+  sub.items.forEach(function (it) {
+    itemAvg[it.id] = {};
+    if (it.type === "test") {
+      VPS.forEach(function (v) {
+        var mx = Number(it.manten[v]) || 0;
+        if (mx <= 0) return;
+        var sum = 0, n = 0;
+        students.forEach(function (st) {
+          var sc = it.scores[st.id];
+          var val = (sc && sc[v] != null) ? Number(sc[v]) : null;
+          if (val == null || isNaN(val)) return;
+          sum += val; n++;
+        });
+        itemAvg[it.id][v] = n > 0 ? round1(sum / n) : null;
+      });
+    } else {
+      var cnt = { A: 0, B: 0, C: 0 };
+      students.forEach(function (st) {
+        var g = it.grades[st.id];
+        if (g) cnt[g]++;
+      });
+      itemAvg[it.id].count = cnt;
+    }
+  });
+  var agg = {};
+  ["k", "s", "t", "z"].forEach(function (v) { agg[v] = { sum: 0, max: 0, rate: null }; });
+  students.forEach(function (st) {
+    var r = calcStudent(sub, st.id);
+    ["k", "s", "t", "z"].forEach(function (v) {
+      agg[v].sum += r[v].sum; agg[v].max += r[v].max;
+    });
+  });
+  ["k", "s", "t", "z"].forEach(function (v) {
+    agg[v].rate = agg[v].max > 0 ? (agg[v].sum / agg[v].max) * 100 : null;
+  });
+  return { itemAvg: itemAvg, agg: agg };
+}
+
+/* ===== 表示用 ===== */
+function evText(ev) {
+  if (!ev) return "―";
+  if (!DATA.settings.maru) return ev;
+  return ev === "A" ? "◎" : (ev === "B" ? "〇" : "△");
+}
+function evHTML(ev) {
+  if (!ev) return '<span class="ev ev-none">―</span>';
+  return '<span class="ev ev-' + ev + '">' + evText(ev) + "</span>";
+}
+function rateText(rate) {
+  return rate == null ? "―" : round1(rate) + "%";
+}
+function studentName(st) {
+  if (DATA.settings.mask) return "";
+  return st.name || "";
+}
+function normalizeGrade(v) {
+  var s = String(v == null ? "" : v).trim();
+  if (s === "") return { ok: true, val: null };
+  s = s.replace(/[ａ-ｚＡ-Ｚ]/g, function (c) {
+    return String.fromCharCode(c.charCodeAt(0) - 0xFEE0);
+  }).toUpperCase();
+  if (s === "A" || s === "◎") return { ok: true, val: "A" };
+  if (s === "B" || s === "〇" || s === "○" || s === "◯") return { ok: true, val: "B" };
+  if (s === "C" || s === "△" || s === "▲") return { ok: true, val: "C" };
+  return { ok: false, val: null };
+}
+
+/* ===== 表の描画 ===== */
+function renderTable() {
+  var area = $("table-area");
+  var cls = getClass();
+  var sub = getSubject();
+  if (!cls) { area.innerHTML = '<div class="empty">「設定」からクラスを追加してください。</div>'; return; }
+  if (!sub) { area.innerHTML = '<div class="empty">「設定」から教科を追加してください。</div>'; return; }
+  if (cls.students.length === 0) {
+    area.innerHTML = '<div class="empty">まだ児童が登録されていません。<br>「設定」→「児童」から追加するか、「サンプルデータを入れる」をお試しください。</div>';
+    return;
+  }
+
+  var students = cls.students.slice().sort(function (a, b) { return a.no - b.no; });
+  var summary = calcClassSummary(sub, students);
+
+  var h1 = "", h2 = "";
+  h1 += '<th class="sticky-no" rowspan="2">番号</th>';
+  h1 += '<th class="sticky-name" rowspan="2">氏名</th>';
+
+  sub.items.forEach(function (it) {
+    if (it.type === "test") {
+      var vps = activeVps(it);
+      if (vps.length === 0) return;
+      h1 += '<th colspan="' + vps.length + '"><div class="itemhead">' +
+        '<span class="nm">' + esc(it.name) + "</span>" +
+        (it.date ? '<span class="dt">' + esc(it.date) + "</span>" : "") +
+        '<span class="edit" data-edit-item="' + it.id + '">編集</span>' +
+        "</div></th>";
+      vps.forEach(function (v) {
+        h2 += '<th class="' + VP_CLASS[v] + '">' + VP_SHORT[v] +
+          '<br><span class="mantenlabel">' + it.manten[v] + "点</span></th>";
+      });
+    } else {
+      h1 += '<th rowspan="2" class="' + VP_CLASS[it.kanten] + '"><div class="itemhead">' +
+        '<span class="nm">' + esc(it.name) + "</span>" +
+        '<span class="dt">' + VP_SHORT[it.kanten] + "</span>" +
+        '<span class="edit" data-edit-item="' + it.id + '">編集</span>' +
+        "</div></th>";
+    }
+  });
+
+  ["k", "s", "t"].forEach(function (v) {
+    h1 += '<th colspan="3" class="' + VP_CLASS[v] + '">' + VP_NAME[v] + "</th>";
+    h2 += '<th class="' + VP_CLASS[v] + '">合計</th>' +
+      '<th class="' + VP_CLASS[v] + '">得点率</th>' +
+      '<th class="' + VP_CLASS[v] + '">評価</th>';
+  });
+  h1 += '<th colspan="3" class="grp-z">総合</th>';
+  h2 += '<th class="grp-z">合計</th><th class="grp-z">得点率</th><th class="grp-z">評価</th>';
+
+  var body = "";
+  students.forEach(function (st) {
+    var r = calcStudent(sub, st.id);
+    var col = 0;
+    body += '<tr data-sid="' + st.id + '">';
+    body += '<td class="sticky-no">' + esc(st.no) + "</td>";
+    body += '<td class="sticky-name">' + esc(studentName(st)) + "</td>";
+    sub.items.forEach(function (it) {
+      if (it.type === "test") {
+        activeVps(it).forEach(function (v) {
+          var sc = it.scores[st.id];
+          var val = (sc && sc[v] != null) ? sc[v] : "";
+          body += "<td>" + '<input class="cell" type="text" inputmode="numeric" ' +
+            'data-sid="' + st.id + '" data-item="' + it.id + '" data-vp="' + v + '" ' +
+            'data-type="test" data-col="' + (col++) + '" value="' + esc(val) + '"></td>';
+        });
+      } else {
+        var g = it.grades[st.id] || "";
+        body += "<td>" + '<input class="cell dankai" type="text" ' +
+          'data-sid="' + st.id + '" data-item="' + it.id + '" ' +
+          'data-type="dankai" data-col="' + (col++) + '" value="' +
+          esc(g ? evText(g) : "") + '"></td>';
+      }
+    });
+    ["k", "s", "t", "z"].forEach(function (v) {
+      var cl = v === "z" ? "grp-z" : VP_CLASS[v];
+      body += '<td class="sum ' + cl + '" data-agg="' + v + '-sum">' +
+        (r[v].max > 0 ? r[v].sum + "/" + r[v].max : "―") + "</td>";
+      body += '<td class="rate ' + cl + '" data-agg="' + v + '-rate">' + rateText(r[v].rate) + "</td>";
+      body += '<td class="' + cl + '" data-agg="' + v + '-ev">' + evHTML(r[v].ev) + "</td>";
+    });
+    body += "</tr>";
+  });
+
+  var foot = '<tr><th class="sticky-no">平均</th><th class="sticky-name"></th>';
+  sub.items.forEach(function (it) {
+    if (it.type === "test") {
+      activeVps(it).forEach(function (v) {
+        var a = summary.itemAvg[it.id][v];
+        foot += '<td data-foot="' + it.id + "-" + v + '">' + (a == null ? "―" : a) + "</td>";
+      });
+    } else {
+      var c = summary.itemAvg[it.id].count;
+      foot += '<td style="font-size:11px;" data-foot="' + it.id + '-count">A' +
+        c.A + " B" + c.B + " C" + c.C + "</td>";
+    }
+  });
+  ["k", "s", "t", "z"].forEach(function (v) {
+    var cl = v === "z" ? "grp-z" : VP_CLASS[v];
+    var a = summary.agg[v];
+    foot += '<td class="' + cl + '" data-foot="agg-' + v + '-sum">' +
+      (a.max > 0 ? a.sum + "/" + a.max : "―") + "</td>";
+    foot += '<td class="' + cl + '" data-foot="agg-' + v + '-rate">' + rateText(a.rate) + "</td>";
+    foot += '<td class="' + cl + '">―</td>';
+  });
+  foot += "</tr>";
+
+  area.innerHTML =
+    '<div class="tablewrap"><table class="seiseki">' +
+    "<thead><tr>" + h1 + "</tr><tr>" + h2 + "</tr></thead>" +
+    "<tbody>" + body + "</tbody>" +
+    "<tfoot>" + foot + "</tfoot>" +
+    "</table></div>";
+
+  $("print-title").textContent =
+    DATA.nendo + "年度　" + cls.name + "　" + sub.name + "　成績一覧";
+}
+
+/* ===== 集計の部分更新（入力中に再描画しない） ===== */
+function refreshAggregates() {
+  var cls = getClass(), sub = getSubject();
+  if (!cls || !sub) return;
+  var area = $("table-area");
+  var students = cls.students.slice().sort(function (a, b) { return a.no - b.no; });
+
+  students.forEach(function (st) {
+    var tr = area.querySelector('tr[data-sid="' + st.id + '"]');
+    if (!tr) return;
+    var r = calcStudent(sub, st.id);
+    ["k", "s", "t", "z"].forEach(function (v) {
+      var c1 = tr.querySelector('[data-agg="' + v + '-sum"]');
+      var c2 = tr.querySelector('[data-agg="' + v + '-rate"]');
+      var c3 = tr.querySelector('[data-agg="' + v + '-ev"]');
+      if (c1) c1.textContent = r[v].max > 0 ? r[v].sum + "/" + r[v].max : "―";
+      if (c2) c2.textContent = rateText(r[v].rate);
+      if (c3) c3.innerHTML = evHTML(r[v].ev);
+    });
+  });
+
+  var summary = calcClassSummary(sub, students);
+  sub.items.forEach(function (it) {
+    if (it.type === "test") {
+      activeVps(it).forEach(function (v) {
+        var c = area.querySelector('[data-foot="' + it.id + "-" + v + '"]');
+        if (c) {
+          var a = summary.itemAvg[it.id][v];
+          c.textContent = a == null ? "―" : a;
+        }
+      });
+    } else {
+      var c2 = area.querySelector('[data-foot="' + it.id + '-count"]');
+      if (c2) {
+        var cc = summary.itemAvg[it.id].count;
+        c2.textContent = "A" + cc.A + " B" + cc.B + " C" + cc.C;
+      }
+    }
+  });
+  ["k", "s", "t", "z"].forEach(function (v) {
+    var a = summary.agg[v];
+    var c1 = area.querySelector('[data-foot="agg-' + v + '-sum"]');
+    var c2 = area.querySelector('[data-foot="agg-' + v + '-rate"]');
+    if (c1) c1.textContent = a.max > 0 ? a.sum + "/" + a.max : "―";
+    if (c2) c2.textContent = rateText(a.rate);
+  });
+}
+
+/* ===== 自動保存 ===== */
+function scheduleSave() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(doSave, 400);
+}
+function doSave() {
+  saveTimer = null;
+  Store.save(DATA).then(function () {
+    var d = new Date();
+    var hh = ("0" + d.getHours()).slice(-2), mm = ("0" + d.getMinutes()).slice(-2);
+    $("savedtime").textContent = "保存しました " + hh + ":" + mm +
+      (storageMode === "local" ? "（簡易保存）" : "");
+  });
+}
+
+/* ===== 入力処理 ===== */
+function onCellInput(e) {
+  var el = e.target;
+  if (!el.classList || !el.classList.contains("cell")) return;
+  var sub = getSubject();
+  if (!sub) return;
+  var item = sub.items.filter(function (x) { return x.id === el.dataset.item; })[0];
+  if (!item) return;
+  var sid = el.dataset.sid;
+  var raw = el.value.trim();
+
+  if (el.dataset.type === "test") {
+    var vp = el.dataset.vp;
+    var manten = Number(item.manten[vp]) || 0;
+    if (raw === "") {
+      el.classList.remove("err");
+      if (item.scores[sid]) delete item.scores[sid][vp];
+      commitCell();
+      return;
+    }
+    var half = raw.replace(/[０-９．]/g, function (c) {
+      return c === "．" ? "." : String.fromCharCode(c.charCodeAt(0) - 0xFEE0);
+    });
+    if (!/^\d+(\.\d+)?$/.test(half)) { el.classList.add("err"); return; }
+    var num = Number(half);
+    if (num > manten) { el.classList.add("err"); return; }
+    el.classList.remove("err");
+    if (!item.scores[sid]) item.scores[sid] = {};
+    item.scores[sid][vp] = num;
+    commitCell();
+  } else {
+    var g = normalizeGrade(raw);
+    if (!g.ok) { el.classList.add("err"); return; }
+    el.classList.remove("err");
+    if (g.val == null) { delete item.grades[sid]; }
+    else { item.grades[sid] = g.val; }
+    commitCell();
+  }
+}
+function commitCell() {
+  refreshAggregates();
+  scheduleSave();
+}
+function onCellKeydown(e) {
+  var el = e.target;
+  if (!el.classList || !el.classList.contains("cell")) return;
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  var area = $("table-area");
+  var inputs = Array.prototype.slice.call(area.querySelectorAll("input.cell"));
+  var firstRow = area.querySelector("tbody tr");
+  var nCols = firstRow ? firstRow.querySelectorAll("input.cell").length : 0;
+  if (!nCols) return;
+  var i = inputs.indexOf(el);
+  var next = e.shiftKey ? inputs[i - nCols] : inputs[i + nCols];
+  if (next) { next.focus(); next.select(); }
+}
+
+/* ===== ヘッダーUI ===== */
+function renderHeader() {
+  $("nendo").value = DATA.nendo;
+  $("chk-maru").checked = !!DATA.settings.maru;
+  $("chk-mask").checked = !!DATA.settings.mask;
+
+  var sel = $("class-select");
+  sel.innerHTML = DATA.classes.map(function (c) {
+    return '<option value="' + c.id + '">' + esc(c.name) + "</option>";
+  }).join("");
+  var cls = getClass();
+  if (cls) { cur.classId = cls.id; sel.value = cls.id; }
+
+  var tabs = $("subject-tabs");
+  if (!cls) { tabs.innerHTML = ""; return; }
+  var sub = getSubject();
+  if (sub) cur.subjectId = sub.id;
+  tabs.innerHTML = cls.subjects.map(function (s) {
+    return '<div class="tab' + (sub && s.id === sub.id ? " on" : "") +
+      '" data-sub="' + s.id + '">' + esc(s.name) + "</div>";
+  }).join("");
+}
+function renderAll() {
+  renderHeader();
+  renderTable();
+}
+
+/* ===== 設定画面 ===== */
+function renderSettings() {
+  var cls = getClass(), sub = getSubject();
+
+  // ABC基準
+  var kt = $("kijun-table");
+  if (sub) {
+    var rows = '<tr><th>観点</th><th>Aの基準(%)</th><th>Bの基準(%)</th></tr>';
+    ["k", "s", "t", "z"].forEach(function (v) {
+      var nm = v === "z" ? "総合" : VP_NAME[v];
+      var kj = sub.kijun[v];
+      rows += "<tr><td>" + nm + "</td>" +
+        '<td><input type="number" min="0" max="100" value="' + kj.a + '" data-kijun="' + v + '-a"></td>' +
+        '<td><input type="number" min="0" max="100" value="' + kj.b + '" data-kijun="' + v + '-b"></td></tr>';
+    });
+    kt.innerHTML = rows;
+    $("chk-dankai-hanei").checked = !!sub.dankai.hanei;
+    $("dankai-weight").value = sub.dankai.weight;
+  } else {
+    kt.innerHTML = "<tr><td>教科がありません</td></tr>";
+  }
+
+  // クラス一覧
+  $("class-list").innerHTML = DATA.classes.map(function (c, i) {
+    return '<div class="listrow"><span class="grow">' + esc(c.name) + "</span>" +
+      '<button class="sub mini" data-cls-rename="' + c.id + '">名前</button>' +
+      '<button class="sub mini" data-cls-up="' + c.id + '"' + (i === 0 ? " disabled" : "") + ">↑</button>" +
+      '<button class="sub mini" data-cls-down="' + c.id + '"' + (i === DATA.classes.length - 1 ? " disabled" : "") + ">↓</button>" +
+      '<button class="danger mini" data-cls-del="' + c.id + '">削除</button></div>';
+  }).join("") || '<div class="listrow">クラスがありません</div>';
+
+  // 児童一覧
+  if (cls) {
+    var sts = cls.students.slice().sort(function (a, b) { return a.no - b.no; });
+    $("student-list").innerHTML = sts.map(function (st) {
+      return '<div class="listrow"><span style="width:50px;">' + esc(st.no) + "</span>" +
+        '<span class="grow">' + esc(st.name || "（氏名なし）") + "</span>" +
+        '<button class="sub mini" data-st-edit="' + st.id + '">編集</button>' +
+        '<button class="danger mini" data-st-del="' + st.id + '">削除</button></div>';
+    }).join("") || '<div class="listrow">児童がいません</div>';
+
+    // 教科一覧
+    $("subject-list").innerHTML = cls.subjects.map(function (s, i) {
+      return '<div class="listrow"><span class="grow">' + esc(s.name) + "</span>" +
+        '<button class="sub mini" data-sub-rename="' + s.id + '">名前</button>' +
+        '<button class="sub mini" data-sub-up="' + s.id + '"' + (i === 0 ? " disabled" : "") + ">↑</button>" +
+        '<button class="sub mini" data-sub-down="' + s.id + '"' + (i === cls.subjects.length - 1 ? " disabled" : "") + ">↓</button>" +
+        '<button class="danger mini" data-sub-del="' + s.id + '">削除</button></div>';
+    }).join("") || '<div class="listrow">教科がありません</div>';
+  } else {
+    $("student-list").innerHTML = "";
+    $("subject-list").innerHTML = "";
+  }
+
+  // 評価項目一覧
+  if (sub) {
+    $("item-list").innerHTML = sub.items.map(function (it, i) {
+      var sum = it.type === "test"
+        ? "テスト　" + VPS.map(function (v) { return VP_SHORT[v] + (it.manten[v] || 0); }).join(" / ")
+        : "段階評価　" + VP_SHORT[it.kanten];
+      return '<div class="listrow"><span class="grow">' + esc(it.name) +
+        '<span class="note" style="margin:0 0 0 8px;">' + sum + "</span></span>" +
+        '<button class="sub mini" data-it-edit="' + it.id + '">編集</button>' +
+        '<button class="sub mini" data-it-up="' + it.id + '"' + (i === 0 ? " disabled" : "") + ">↑</button>" +
+        '<button class="sub mini" data-it-down="' + it.id + '"' + (i === sub.items.length - 1 ? " disabled" : "") + ">↓</button>" +
+        '<button class="danger mini" data-it-del="' + it.id + '">削除</button></div>';
+    }).join("") || '<div class="listrow">評価項目がありません</div>';
+  } else {
+    $("item-list").innerHTML = "";
+  }
+
+  // ロック設定
+  var row = $("lock-setting-row");
+  if (DATA.settings.lock) {
+    row.innerHTML = '<span class="note" style="margin:0;">パスワードロックは<b>有効</b>です</span>' +
+      '<button class="danger mini" id="btn-lock-off">解除する</button>';
+    $("btn-lock-off").onclick = function () {
+      if (!confirm("起動時のパスワードロックを解除しますか？")) return;
+      DATA.settings.lock = null; doSave(); renderSettings(); toast("ロックを解除しました");
+    };
+  } else {
+    row.innerHTML = '<input type="password" id="lock-new" placeholder="新しいパスワード" style="width:200px;">' +
+      '<button class="sub mini" id="btn-lock-on">ロックをかける</button>' +
+      '<span class="note" style="margin:0;">忘れると開けなくなります</span>';
+    $("btn-lock-on").onclick = function () {
+      var p = $("lock-new").value;
+      if (!p) { toast("パスワードを入れてください"); return; }
+      if (!window.crypto || !crypto.subtle) { toast("この環境では設定できません"); return; }
+      makeLock(p).then(function (lock) {
+        DATA.settings.lock = lock; doSave(); renderSettings(); toast("ロックをかけました");
+      });
+    };
+  }
+}
+
+/* ===== 評価項目ダイアログ ===== */
+var editingItemId = null;
+function openItemDialog(id, type) {
+  var sub = getSubject();
+  if (!sub) { toast("先に教科を追加してください"); return; }
+  editingItemId = id;
+  var it = id ? sub.items.filter(function (x) { return x.id === id; })[0] : null;
+  var t = it ? it.type : type;
+  $("dlg-item-title").textContent = (it ? "評価項目の編集" : "評価項目の追加") +
+    "（" + (t === "test" ? "テスト" : "段階評価") + "）";
+  $("item-test-part").style.display = t === "test" ? "" : "none";
+  $("item-dankai-part").style.display = t === "dankai" ? "" : "none";
+  $("btn-item-delete").style.display = it ? "" : "none";
+  $("dlg-item").dataset.type = t;
+  $("item-name").value = it ? it.name : (t === "test" ? "テスト" : "実技");
+  $("item-date").value = it && it.date ? it.date : "";
+  $("item-manten-k").value = it ? it.manten.k : 50;
+  $("item-manten-s").value = it ? it.manten.s : 30;
+  $("item-manten-t").value = it ? it.manten.t : 20;
+  $("item-kanten").value = it && it.kanten ? it.kanten : "t";
+  $("dlg-item").showModal();
+}
+function saveItemDialog() {
+  var sub = getSubject();
+  if (!sub) return;
+  var t = $("dlg-item").dataset.type;
+  var name = $("item-name").value.trim() || (t === "test" ? "テスト" : "実技");
+  var it = editingItemId ? sub.items.filter(function (x) { return x.id === editingItemId; })[0] : null;
+  if (!it) {
+    it = { id: uid(), type: t, name: name, scores: {}, grades: {} };
+    if (t === "test") { it.manten = { k: 0, s: 0, t: 0 }; it.date = ""; }
+    else { it.kanten = "t"; }
+    sub.items.push(it);
+  }
+  it.name = name;
+  if (t === "test") {
+    it.date = $("item-date").value;
+    it.manten = {
+      k: Math.max(0, Number($("item-manten-k").value) || 0),
+      s: Math.max(0, Number($("item-manten-s").value) || 0),
+      t: Math.max(0, Number($("item-manten-t").value) || 0)
+    };
+    if (it.manten.k + it.manten.s + it.manten.t === 0) {
+      alert("どれか1つは満点を1点以上にしてください。");
+      return;
+    }
+  } else {
+    it.kanten = $("item-kanten").value;
+  }
+  doSave();
+  $("dlg-item").close();
+  renderAll();
+  renderSettings();
+}
+
+/* ===== サンプルデータ ===== */
+var SAMPLE_NAMES = ["青木 ひなた", "石川 そうた", "上原 あおい", "大野 りく", "小林 さくら",
+  "斉藤 はると", "佐藤 みお", "鈴木 ゆうと", "高橋 あかり", "田中 かえで",
+  "中村 いつき", "西村 つむぎ", "橋本 れん", "原田 めい", "平野 こうき",
+  "藤田 なぎさ", "松本 たいち", "三浦 ひなの", "森田 かいと", "山口 ゆい"];
+function makeSample() {
+  // まだ何も入力していない初期状態なら、空のクラスは置きかえる
+  var untouched = DATA.classes.length === 1 && DATA.classes[0].students.length === 0;
+  if (untouched) DATA.classes = [];
+  ["5年1組", "5年2組"].forEach(function (cname, ci) {
+    var c = { id: uid(), name: cname, students: [], subjects: [] };
+    for (var i = 0; i < 20; i++) {
+      c.students.push({ id: uid(), no: i + 1, name: SAMPLE_NAMES[(i + ci * 3) % 20] });
+    }
+    ["国語", "算数"].forEach(function (sname) {
+      var s = newSubject(sname);
+      [["第1回 単元テスト", "2026-05-12", 50, 30, 20],
+      ["第2回 単元テスト", "2026-06-16", 60, 20, 20],
+      ["まとめテスト", "2026-07-10", 40, 40, 20]].forEach(function (t) {
+        var it = {
+          id: uid(), type: "test", name: t[0], date: t[1],
+          manten: { k: t[2], s: t[3], t: t[4] }, scores: {}, grades: {}
+        };
+        c.students.forEach(function (st) {
+          it.scores[st.id] = {};
+          VPS.forEach(function (v, vi) {
+            var mx = it.manten[v];
+            if (mx <= 0) return;
+            var base = 0.55 + Math.random() * 0.45;
+            it.scores[st.id][v] = Math.min(mx, Math.round(mx * base));
+          });
+        });
+        s.items.push(it);
+      });
+      var d = { id: uid(), type: "dankai", name: sname === "国語" ? "音読" : "作図の実技", kanten: "t", scores: {}, grades: {} };
+      c.students.forEach(function (st) {
+        var r = Math.random();
+        d.grades[st.id] = r < 0.4 ? "A" : (r < 0.85 ? "B" : "C");
+      });
+      s.items.push(d);
+      c.subjects.push(s);
+    });
+    DATA.classes.push(c);
+  });
+  cur.classId = DATA.classes[DATA.classes.length - 2].id;
+  cur.subjectId = null;
+  doSave();
+  renderAll();
+  renderSettings();
+  toast("サンプルデータを追加しました");
+}
+
+/* ===== 暗号（バックアップ・ロック） ===== */
+function u8(str) { return new TextEncoder().encode(str); }
+function b64enc(buf) {
+  var bytes = new Uint8Array(buf), s = "";
+  for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+  return btoa(s);
+}
+function b64dec(s) {
+  var bin = atob(s), arr = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return arr;
+}
+function deriveKey(pass, salt, usage) {
+  return crypto.subtle.importKey("raw", u8(pass), "PBKDF2", false, ["deriveKey"])
+    .then(function (km) {
+      return crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt: salt, iterations: 200000, hash: "SHA-256" },
+        km, { name: "AES-GCM", length: 256 }, false, usage);
+    });
+}
+function deriveBitsB64(pass, salt) {
+  return crypto.subtle.importKey("raw", u8(pass), "PBKDF2", false, ["deriveBits"])
+    .then(function (km) {
+      return crypto.subtle.deriveBits(
+        { name: "PBKDF2", salt: salt, iterations: 200000, hash: "SHA-256" }, km, 256);
+    }).then(function (bits) { return b64enc(bits); });
+}
+function makeLock(pass) {
+  var salt = crypto.getRandomValues(new Uint8Array(16));
+  return deriveBitsB64(pass, salt).then(function (h) {
+    return { salt: b64enc(salt), hash: h };
+  });
+}
+function checkLock(pass, lock) {
+  return deriveBitsB64(pass, b64dec(lock.salt)).then(function (h) { return h === lock.hash; });
+}
+
+/* ===== バックアップ ===== */
+function downloadBlob(blob, filename) {
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1500);
+}
+function backupExport() {
+  var pass = $("bk-pass").value;
+  var json = JSON.stringify(DATA);
+  var stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  if (!pass) {
+    downloadBlob(new Blob([json], { type: "application/json" }), "成績データ_" + stamp + ".json");
+    toast("書き出しました");
+    return;
+  }
+  if (!window.crypto || !crypto.subtle) { toast("この環境では暗号化できません"); return; }
+  var salt = crypto.getRandomValues(new Uint8Array(16));
+  var iv = crypto.getRandomValues(new Uint8Array(12));
+  deriveKey(pass, salt, ["encrypt"]).then(function (key) {
+    return crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, u8(json));
+  }).then(function (ct) {
+    var env = {
+      app: "seiseki-kanri", version: 1, enc: "AES-GCM",
+      kdf: "PBKDF2-SHA256-200000",
+      salt: b64enc(salt), iv: b64enc(iv), data: b64enc(ct)
+    };
+    downloadBlob(new Blob([JSON.stringify(env)], { type: "application/json" }),
+      "成績データ_暗号化_" + stamp + ".json");
+    toast("暗号化して書き出しました");
+  }).catch(function () { toast("書き出しに失敗しました"); });
+}
+function backupImport() {
+  var f = $("bk-file").files[0];
+  var msg = $("bk-msg");
+  msg.textContent = "";
+  if (!f) { msg.textContent = "ファイルを選んでください"; return; }
+  var fr = new FileReader();
+  fr.onload = function () {
+    var obj;
+    try { obj = JSON.parse(fr.result); }
+    catch (e) { msg.textContent = "ファイルを読めませんでした"; return; }
+    if (obj && obj.enc === "AES-GCM") {
+      var pass = $("bk-pass-in").value;
+      if (!pass) { msg.textContent = "パスワードを入れてください"; return; }
+      deriveKey(pass, b64dec(obj.salt), ["decrypt"]).then(function (key) {
+        return crypto.subtle.decrypt({ name: "AES-GCM", iv: b64dec(obj.iv) }, key, b64dec(obj.data));
+      }).then(function (plain) {
+        applyImported(JSON.parse(new TextDecoder().decode(plain)));
+      }).catch(function () { msg.textContent = "パスワードが違うか、ファイルが壊れています"; });
+    } else {
+      applyImported(obj);
+    }
+  };
+  fr.readAsText(f);
+}
+function applyImported(obj) {
+  if (!obj || !obj.classes) { $("bk-msg").textContent = "成績データのファイルではありません"; return; }
+  if (!confirm("いまのデータを、読み込んだ内容で置きかえます。よろしいですか？")) return;
+  DATA = obj;
+  if (!DATA.settings) DATA.settings = { maru: false, mask: false, lock: null };
+  cur.classId = null; cur.subjectId = null;
+  doSave();
+  renderAll();
+  renderSettings();
+  $("dlg-backup").close();
+  toast("読み込みました");
+}
+
+/* ===== ZIP / XLSX（外部ライブラリなし） ===== */
+var CRC_TABLE = (function () {
+  var t = new Uint32Array(256);
+  for (var n = 0; n < 256; n++) {
+    var c = n;
+    for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(bytes) {
+  var c = 0xFFFFFFFF;
+  for (var i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function zipBuild(files) {
+  var enc = new TextEncoder();
+  var parts = [], central = [], offset = 0;
+  files.forEach(function (f) {
+    var nameBytes = enc.encode(f.name);
+    var dataBytes = typeof f.data === "string" ? enc.encode(f.data) : f.data;
+    var crc = crc32(dataBytes);
+    var lh = new Uint8Array(30 + nameBytes.length);
+    var dv = new DataView(lh.buffer);
+    dv.setUint32(0, 0x04034b50, true);
+    dv.setUint16(4, 20, true);
+    dv.setUint16(6, 0x0800, true);
+    dv.setUint16(8, 0, true);
+    dv.setUint16(10, 0, true);
+    dv.setUint16(12, 0, true);
+    dv.setUint32(14, crc, true);
+    dv.setUint32(18, dataBytes.length, true);
+    dv.setUint32(22, dataBytes.length, true);
+    dv.setUint16(26, nameBytes.length, true);
+    dv.setUint16(28, 0, true);
+    lh.set(nameBytes, 30);
+    parts.push(lh, dataBytes);
+
+    var ch = new Uint8Array(46 + nameBytes.length);
+    var cv = new DataView(ch.buffer);
+    cv.setUint32(0, 0x02014b50, true);
+    cv.setUint16(4, 20, true);
+    cv.setUint16(6, 20, true);
+    cv.setUint16(8, 0x0800, true);
+    cv.setUint16(10, 0, true);
+    cv.setUint16(12, 0, true);
+    cv.setUint16(14, 0, true);
+    cv.setUint32(16, crc, true);
+    cv.setUint32(20, dataBytes.length, true);
+    cv.setUint32(24, dataBytes.length, true);
+    cv.setUint16(28, nameBytes.length, true);
+    cv.setUint16(30, 0, true);
+    cv.setUint16(32, 0, true);
+    cv.setUint16(34, 0, true);
+    cv.setUint16(36, 0, true);
+    cv.setUint32(38, 0, true);
+    cv.setUint32(42, offset, true);
+    ch.set(nameBytes, 46);
+    central.push(ch);
+    offset += lh.length + dataBytes.length;
+  });
+  var centralSize = central.reduce(function (a, b) { return a + b.length; }, 0);
+  var eocd = new Uint8Array(22);
+  var ev = new DataView(eocd.buffer);
+  ev.setUint32(0, 0x06054b50, true);
+  ev.setUint16(8, files.length, true);
+  ev.setUint16(10, files.length, true);
+  ev.setUint32(12, centralSize, true);
+  ev.setUint32(16, offset, true);
+  var all = parts.concat(central, [eocd]);
+  var total = all.reduce(function (a, b) { return a + b.length; }, 0);
+  var out = new Uint8Array(total), p = 0;
+  all.forEach(function (b) { out.set(b, p); p += b.length; });
+  return out;
+}
+function xmlEsc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+}
+function colName(n) {
+  var s = "";
+  n = n + 1;
+  while (n > 0) { var m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); }
+  return s;
+}
+/** rows: [[{v,t,s}]] t:'n'|'s' s:styleIndex */
+function sheetXML(rows, colWidths) {
+  var cols = "";
+  if (colWidths && colWidths.length) {
+    cols = "<cols>" + colWidths.map(function (w, i) {
+      return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>';
+    }).join("") + "</cols>";
+  }
+  var body = rows.map(function (row, ri) {
+    var cells = row.map(function (c, ci) {
+      if (c == null || c.v == null || c.v === "") {
+        return '<c r="' + colName(ci) + (ri + 1) + '" s="' + (c && c.s ? c.s : 0) + '"/>';
+      }
+      var ref = colName(ci) + (ri + 1);
+      var st = c.s ? ' s="' + c.s + '"' : "";
+      if (c.t === "n") return '<c r="' + ref + '"' + st + '><v>' + c.v + "</v></c>";
+      return '<c r="' + ref + '"' + st + ' t="inlineStr"><is><t xml:space="preserve">' +
+        xmlEsc(c.v) + "</t></is></c>";
+    }).join("");
+    return '<row r="' + (ri + 1) + '">' + cells + "</row>";
+  }).join("");
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+    cols + "<sheetData>" + body + "</sheetData></worksheet>";
+}
+function buildXlsx(sheets) {
+  var files = [];
+  files.push({
+    name: "[Content_Types].xml",
+    data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+      '<Default Extension="xml" ContentType="application/xml"/>' +
+      '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+      sheets.map(function (s, i) {
+        return '<Override PartName="/xl/worksheets/sheet' + (i + 1) +
+          '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>';
+      }).join("") +
+      '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+      "</Types>"
+  });
+  files.push({
+    name: "_rels/.rels",
+    data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+      "</Relationships>"
+  });
+  files.push({
+    name: "xl/workbook.xml",
+    data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" ' +
+      'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' +
+      sheets.map(function (s, i) {
+        return '<sheet name="' + xmlEsc(s.name) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>';
+      }).join("") + "</sheets></workbook>"
+  });
+  files.push({
+    name: "xl/_rels/workbook.xml.rels",
+    data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      sheets.map(function (s, i) {
+        return '<Relationship Id="rId' + (i + 1) +
+          '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' +
+          (i + 1) + '.xml"/>';
+      }).join("") +
+      '<Relationship Id="rId' + (sheets.length + 1) +
+      '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+      "</Relationships>"
+  });
+  files.push({
+    name: "xl/styles.xml",
+    data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<numFmts count="1"><numFmt numFmtId="164" formatCode="0.0"/></numFmts>' +
+      '<fonts count="2"><font><sz val="11"/><name val="Yu Gothic"/></font>' +
+      '<font><b/><sz val="11"/><name val="Yu Gothic"/></font></fonts>' +
+      '<fills count="3"><fill><patternFill patternType="none"/></fill>' +
+      '<fill><patternFill patternType="gray125"/></fill>' +
+      '<fill><patternFill patternType="solid"><fgColor rgb="FFEEF3FB"/><bgColor indexed="64"/></patternFill></fill></fills>' +
+      '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>' +
+      '<border><left style="thin"><color rgb="FFBBBBBB"/></left><right style="thin"><color rgb="FFBBBBBB"/></right>' +
+      '<top style="thin"><color rgb="FFBBBBBB"/></top><bottom style="thin"><color rgb="FFBBBBBB"/></bottom><diagonal/></border></borders>' +
+      '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+      '<cellXfs count="4">' +
+      '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+      '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>' +
+      '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>' +
+      '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>' +
+      "</cellXfs>" +
+      '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
+      "</styleSheet>"
+  });
+  sheets.forEach(function (s, i) {
+    files.push({ name: "xl/worksheets/sheet" + (i + 1) + ".xml", data: sheetXML(s.rows, s.widths) });
+  });
+  return zipBuild(files);
+}
+
+/* ===== Excel 出力 ===== */
+function sheetRowsFor(sub, cls, includeName) {
+  var ST_H = 1, ST_C = 2, ST_N = 3;
+  var students = cls.students.slice().sort(function (a, b) { return a.no - b.no; });
+  var head = [{ v: "出席番号", t: "s", s: ST_H }];
+  if (includeName) head.push({ v: "氏名", t: "s", s: ST_H });
+  var widths = [10]; if (includeName) widths.push(16);
+
+  sub.items.forEach(function (it) {
+    if (it.type === "test") {
+      activeVps(it).forEach(function (v) {
+        head.push({ v: it.name + "\n" + VP_SHORT[v] + "(" + it.manten[v] + ")", t: "s", s: ST_H });
+        widths.push(11);
+      });
+    } else {
+      head.push({ v: it.name + "\n" + VP_SHORT[it.kanten], t: "s", s: ST_H });
+      widths.push(11);
+    }
+  });
+  ["k", "s", "t", "z"].forEach(function (v) {
+    var nm = v === "z" ? "総合" : VP_SHORT[v];
+    head.push({ v: nm + "\n合計", t: "s", s: ST_H });
+    head.push({ v: nm + "\n満点", t: "s", s: ST_H });
+    head.push({ v: nm + "\n得点率(%)", t: "s", s: ST_H });
+    head.push({ v: nm + "\n評価", t: "s", s: ST_H });
+    widths.push(9, 9, 11, 8);
+  });
+
+  var rows = [head];
+  students.forEach(function (st) {
+    var r = calcStudent(sub, st.id);
+    var row = [{ v: st.no, t: "n", s: ST_C }];
+    if (includeName) row.push({ v: st.name || "", t: "s", s: ST_C });
+    sub.items.forEach(function (it) {
+      if (it.type === "test") {
+        activeVps(it).forEach(function (v) {
+          var sc = it.scores[st.id];
+          var val = (sc && sc[v] != null) ? sc[v] : null;
+          row.push(val == null ? { v: "", t: "s", s: ST_C } : { v: val, t: "n", s: ST_C });
+        });
+      } else {
+        var g = it.grades[st.id];
+        row.push({ v: g ? evText(g) : "", t: "s", s: ST_C });
+      }
+    });
+    ["k", "s", "t", "z"].forEach(function (v) {
+      row.push({ v: r[v].sum, t: "n", s: ST_C });
+      row.push({ v: r[v].max, t: "n", s: ST_C });
+      row.push(r[v].rate == null ? { v: "", t: "s", s: ST_C } : { v: round1(r[v].rate), t: "n", s: ST_N });
+      row.push({ v: r[v].ev ? evText(r[v].ev) : "", t: "s", s: ST_C });
+    });
+    rows.push(row);
+  });
+
+  var summary = calcClassSummary(sub, students);
+  var frow = [{ v: "平均", t: "s", s: ST_H }];
+  if (includeName) frow.push({ v: "", t: "s", s: ST_H });
+  sub.items.forEach(function (it) {
+    if (it.type === "test") {
+      activeVps(it).forEach(function (v) {
+        var a = summary.itemAvg[it.id][v];
+        frow.push(a == null ? { v: "", t: "s", s: ST_C } : { v: a, t: "n", s: ST_N });
+      });
+    } else {
+      var c = summary.itemAvg[it.id].count;
+      frow.push({ v: "A" + c.A + " B" + c.B + " C" + c.C, t: "s", s: ST_C });
+    }
+  });
+  ["k", "s", "t", "z"].forEach(function (v) {
+    var a = summary.agg[v];
+    frow.push({ v: a.sum, t: "n", s: ST_C });
+    frow.push({ v: a.max, t: "n", s: ST_C });
+    frow.push(a.rate == null ? { v: "", t: "s", s: ST_C } : { v: round1(a.rate), t: "n", s: ST_N });
+    frow.push({ v: "", t: "s", s: ST_C });
+  });
+  rows.push(frow);
+  return { rows: rows, widths: widths };
+}
+function safeName(s) {
+  return String(s).replace(/[\\\/:\*\?"<>\|\[\]]/g, "").slice(0, 28) || "シート";
+}
+function exportExcel() {
+  var cls = getClass(), sub = getSubject();
+  if (!cls || !sub) { toast("クラスと教科を作ってください"); return; }
+  var all = document.querySelector('input[name="exrange"]:checked').value === "all";
+  var includeName = $("ex-name").checked;
+  var targets = all ? cls.subjects : [sub];
+  var sheets = targets.map(function (s) {
+    var d = sheetRowsFor(s, cls, includeName);
+    return { name: safeName(s.name), rows: d.rows, widths: d.widths };
+  });
+  var bytes = buildXlsx(sheets);
+  var fname = DATA.nendo + "_" + cls.name + "_" +
+    (all ? "" : sub.name + "_") + "成績.xlsx";
+  downloadBlob(new Blob([bytes], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  }), fname.replace(/[\\\/:\*\?"<>\|]/g, ""));
+  $("dlg-excel").close();
+  toast("Excelファイルを書き出しました");
+}
+
+/* ===== 画面のイベント ===== */
+function wire() {
+  $("table-area").addEventListener("input", onCellInput);
+  $("table-area").addEventListener("keydown", onCellKeydown);
+  $("table-area").addEventListener("click", function (e) {
+    var id = e.target.dataset && e.target.dataset.editItem;
+    if (id) openItemDialog(id);
+  });
+
+  $("nendo").addEventListener("input", function () {
+    DATA.nendo = $("nendo").value; scheduleSave();
+  });
+  $("class-select").addEventListener("change", function () {
+    cur.classId = $("class-select").value; cur.subjectId = null;
+    renderAll(); renderSettings();
+  });
+  $("subject-tabs").addEventListener("click", function (e) {
+    var id = e.target.dataset && e.target.dataset.sub;
+    if (!id) return;
+    cur.subjectId = id; renderAll(); renderSettings();
+  });
+  $("chk-maru").addEventListener("change", function () {
+    DATA.settings.maru = $("chk-maru").checked; doSave(); renderTable();
+  });
+  $("chk-mask").addEventListener("change", function () {
+    DATA.settings.mask = $("chk-mask").checked; doSave(); renderTable();
+    $("ex-name").checked = !DATA.settings.mask;
+  });
+
+  $("btn-help").onclick = function () { $("dlg-help").showModal(); };
+  $("btn-print").onclick = function () { window.print(); };
+  $("btn-settings").onclick = function () { renderSettings(); $("dlg-settings").showModal(); };
+  $("btn-backup").onclick = function () { $("bk-msg").textContent = ""; $("dlg-backup").showModal(); };
+  $("btn-excel").onclick = function () {
+    var cls = getClass();
+    $("ex-name").checked = !DATA.settings.mask;
+    $("ex-note").textContent = "いまの表示（" +
+      (DATA.settings.maru ? "◎〇△" : "A/B/C") + "）のまま書き出します。";
+    $("dlg-excel").showModal();
+  };
+  $("btn-excel-run").onclick = exportExcel;
+  $("btn-backup-export").onclick = backupExport;
+  $("btn-backup-import").onclick = backupImport;
+  $("btn-item-save").onclick = saveItemDialog;
+  $("btn-item-delete").onclick = function () {
+    var sub = getSubject();
+    if (!sub || !editingItemId) return;
+    if (!confirm("この評価項目と、入力した点数をすべて削除します。よろしいですか？")) return;
+    sub.items = sub.items.filter(function (x) { return x.id !== editingItemId; });
+    doSave(); $("dlg-item").close(); renderAll(); renderSettings();
+  };
+  document.querySelectorAll("[data-close]").forEach(function (b) {
+    b.onclick = function () { b.closest("dialog").close(); };
+  });
+
+  $("btn-add-test").onclick = function () { openItemDialog(null, "test"); };
+  $("btn-add-dankai").onclick = function () { openItemDialog(null, "dankai"); };
+  $("btn-sample").onclick = makeSample;
+
+  $("btn-add-class").onclick = function () {
+    var n = $("new-class-name").value.trim();
+    if (!n) { toast("クラス名を入れてください"); return; }
+    DATA.classes.push(newClass(n));
+    $("new-class-name").value = "";
+    doSave(); renderAll(); renderSettings();
+  };
+  $("btn-add-student").onclick = function () {
+    var cls = getClass(); if (!cls) return;
+    var no = Number($("new-student-no").value);
+    if (!no) { toast("番号を入れてください"); return; }
+    cls.students.push({ id: uid(), no: no, name: $("new-student-name").value.trim() });
+    $("new-student-no").value = no + 1; $("new-student-name").value = "";
+    doSave(); renderAll(); renderSettings();
+  };
+  $("btn-add-students-bulk").onclick = function () {
+    var cls = getClass(); if (!cls) return;
+    var n = prompt("何人ぶん追加しますか？（番号だけ登録します）", "20");
+    n = Number(n);
+    if (!n || n < 1 || n > 60) return;
+    var start = cls.students.reduce(function (m, s) { return Math.max(m, s.no); }, 0) + 1;
+    for (var i = 0; i < n; i++) cls.students.push({ id: uid(), no: start + i, name: "" });
+    doSave(); renderAll(); renderSettings();
+  };
+  $("btn-add-subject").onclick = function () {
+    var cls = getClass(); if (!cls) return;
+    var n = $("new-subject-name").value.trim();
+    if (!n) { toast("教科名を入れてください"); return; }
+    cls.subjects.push(newSubject(n));
+    $("new-subject-name").value = "";
+    doSave(); renderAll(); renderSettings();
+  };
+  $("btn-delete-all").onclick = function () {
+    if (!confirm("すべての年度・クラス・成績データを削除します。よろしいですか？")) return;
+    if (!confirm("本当に削除します。元に戻せません。実行しますか？")) return;
+    DATA = emptyData();
+    cur.classId = null; cur.subjectId = null;
+    doSave(); renderAll(); renderSettings();
+    toast("すべて削除しました");
+  };
+
+  // 設定画面内の操作（委譲）
+  $("dlg-settings").addEventListener("click", function (e) {
+    var d = e.target.dataset; if (!d) return;
+    var cls = getClass(), sub = getSubject();
+    if (d.clsRename) {
+      var c = DATA.classes.filter(function (x) { return x.id === d.clsRename; })[0];
+      var n = prompt("クラス名", c.name); if (n) { c.name = n.trim(); afterEdit(); }
+    } else if (d.clsDel) {
+      if (DATA.classes.length <= 1) { toast("最後の1クラスは削除できません"); return; }
+      if (!confirm("このクラスと成績をすべて削除します。よろしいですか？")) return;
+      DATA.classes = DATA.classes.filter(function (x) { return x.id !== d.clsDel; });
+      cur.classId = null; cur.subjectId = null; afterEdit();
+    } else if (d.clsUp || d.clsDown) {
+      moveItem(DATA.classes, d.clsUp || d.clsDown, d.clsUp ? -1 : 1); afterEdit();
+    } else if (d.stEdit) {
+      var st = cls.students.filter(function (x) { return x.id === d.stEdit; })[0];
+      var no = prompt("出席番号", st.no); if (no === null) return;
+      var nm = prompt("氏名（空欄可）", st.name || ""); if (nm === null) return;
+      st.no = Number(no) || st.no; st.name = nm.trim(); afterEdit();
+    } else if (d.stDel) {
+      if (!confirm("この児童と入力済みの点数を削除します。よろしいですか？")) return;
+      cls.students = cls.students.filter(function (x) { return x.id !== d.stDel; });
+      afterEdit();
+    } else if (d.subRename) {
+      var s = cls.subjects.filter(function (x) { return x.id === d.subRename; })[0];
+      var sn = prompt("教科名", s.name); if (sn) { s.name = sn.trim(); afterEdit(); }
+    } else if (d.subDel) {
+      if (cls.subjects.length <= 1) { toast("最後の1教科は削除できません"); return; }
+      if (!confirm("この教科と成績をすべて削除します。よろしいですか？")) return;
+      cls.subjects = cls.subjects.filter(function (x) { return x.id !== d.subDel; });
+      cur.subjectId = null; afterEdit();
+    } else if (d.subUp || d.subDown) {
+      moveItem(cls.subjects, d.subUp || d.subDown, d.subUp ? -1 : 1); afterEdit();
+    } else if (d.itEdit) {
+      openItemDialog(d.itEdit);
+    } else if (d.itDel) {
+      if (!confirm("この評価項目と点数を削除します。よろしいですか？")) return;
+      sub.items = sub.items.filter(function (x) { return x.id !== d.itDel; });
+      afterEdit();
+    } else if (d.itUp || d.itDown) {
+      moveItem(sub.items, d.itUp || d.itDown, d.itUp ? -1 : 1); afterEdit();
+    }
+  });
+  $("dlg-settings").addEventListener("input", function (e) {
+    var d = e.target.dataset; var sub = getSubject();
+    if (!sub) return;
+    if (d && d.kijun) {
+      var p = d.kijun.split("-");
+      var v = Math.max(0, Math.min(100, Number(e.target.value)));
+      sub.kijun[p[0]][p[1]] = v;
+      doSave(); renderTable();
+    } else if (e.target.id === "dankai-weight") {
+      sub.dankai.weight = Math.max(1, Number(e.target.value) || 1);
+      doSave(); renderTable();
+    }
+  });
+  $("dlg-settings").addEventListener("change", function (e) {
+    var sub = getSubject(); if (!sub) return;
+    if (e.target.id === "chk-dankai-hanei") {
+      sub.dankai.hanei = e.target.checked; doSave(); renderTable();
+    }
+  });
+}
+function afterEdit() { doSave(); renderAll(); renderSettings(); }
+function moveItem(arr, id, dir) {
+  var i = arr.findIndex(function (x) { return x.id === id; });
+  var j = i + dir;
+  if (i < 0 || j < 0 || j >= arr.length) return;
+  var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+}
+
+/* ===== 起動 ===== */
+function start() {
+  wire();
+  renderAll();
+  var d = new Date();
+  $("savedtime").textContent = storageMode === "local" ? "簡易保存モード" : "";
+}
+function boot() {
+  Store.init().then(function () { return Store.load(); }).then(function (saved) {
+    DATA = saved && saved.classes ? saved : emptyData();
+    if (!DATA.settings) DATA.settings = { maru: false, mask: false, lock: null };
+    if (DATA.settings.lock) {
+      var ls = $("lockscreen");
+      ls.style.display = "flex";
+      var tryOpen = function () {
+        var p = $("lock-input").value;
+        checkLock(p, DATA.settings.lock).then(function (ok) {
+          if (ok) { ls.style.display = "none"; start(); }
+          else { $("lock-err").textContent = "パスワードが違います"; }
+        }).catch(function () { $("lock-err").textContent = "確認できませんでした"; });
+      };
+      $("lock-btn").onclick = tryOpen;
+      $("lock-input").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") tryOpen();
+      });
+      $("lock-input").focus();
+    } else {
+      start();
+    }
+  });
+}
+boot();
+</script>
+</body>
+</html>

@@ -119,15 +119,17 @@ export const tools: Tool[] = [
       "印刷プレビューはA4サイズ基準のため、スマートフォンでは横スクロールしてご確認ください。PCでの利用を推奨します。",
   },
   {
-    slug: "score-average-calculator",
-    name: "点数・平均計算",
+    slug: "seiseki-kanri",
+    name: "成績管理",
     description:
-      "氏名と点数を入力するだけで、平均点・最高/最低点・中央値・標準偏差・順位・偏差値を自動計算。結果は印刷でき、データの保存・読み込みにも対応。テストの点数という特に機微な情報を扱うため、外部送信は一切ありません。",
-    icon: "🧮",
+      "テスト・実技・授業態度を観点別に記録し、観点ごとの得点率とABC評価を自動計算。判定基準は教科ごとに変更でき、Excel（.xlsx）に書き出せます。データはブラウザ内だけに保存し、氏名マスク・パスワードロック・暗号化バックアップに対応。外部送信は一切ありません。",
+    icon: "📊",
     tags: ["校務効率化", "無料"],
     audience: "teacher",
     status: "live",
-    file: "/tools/score-average-calculator.html",
+    file: "/tools/seiseki-kanri.html",
+    mobileNote:
+      "列数が多いため、スマートフォンでは横スクロールが必要です。PCでの利用を推奨します。",
   },
   {
     slug: "class-timer",
