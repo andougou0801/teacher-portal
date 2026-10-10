@@ -74,3 +74,29 @@
 管理画面で非表示にしただけのツールは、Supabaseの障害・休止中に全部表示されてしまう。
 確実に未公開にしておきたいツールは、`tools.ts` の `status` を `"planned"` にすること
 （`"planned"` のツールは一覧に出るが「作成予定」と表示され、本体は開けない）。
+
+## DBに列やテーブルを増やす変更をしたときは、その場でSQL実行を案内する
+
+**本番のSupabaseは、こちらがSQLファイルを書いただけでは変わらない。**
+ユーザーがダッシュボードで実行して初めて反映される（パスワードが必要なため代行できない）。
+
+実際に起きた事故：2026-10-06 に「説明文を管理画面から編集する機能」を追加したが、
+必要なSQL（`003_tool_descriptions.sql`）の実行を案内しなかったため、本番DBに
+`description` 列が無いまま4日間、管理画面で編集しても保存されない状態になっていた。
+
+そのため、**列・テーブル・ポリシーを追加する変更をしたら、同じ返信の中で必ず**：
+
+1. 実行するSQLファイルをメモ帳で開く
+   （`Start-Process notepad.exe -ArgumentList "<パス>"`）
+2. SQL Editorの直リンクを貼る
+   https://supabase.com/dashboard/project/eyakvgrrbbjbnyuzqrcj/sql/new
+3. 実行後、**匿名キーで実データを読んで反映を確認する**（推測で終わらせない）
+
+```bash
+URL=$(grep NEXT_PUBLIC_SUPABASE_URL .env.local | cut -d= -f2- | tr -d '\r')
+KEY=$(grep NEXT_PUBLIC_SUPABASE_ANON_KEY .env.local | cut -d= -f2- | tr -d '\r')
+curl -s "$URL/rest/v1/tool_settings?select=slug,description" -H "apikey: $KEY" -H "Authorization: Bearer $KEY"
+```
+
+`tool_settings`・`articles`・`questions` などは匿名キーで読めるので、
+「保存されない」という相談を受けたときも、まずこの方法で実データを見ると原因が早く分かる。
