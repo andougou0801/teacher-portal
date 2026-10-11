@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none';">
 <title>成績管理ツール</title>
 <style>
   :root{
@@ -310,8 +310,19 @@
     <span class="field">クラス
       <select id="class-select"></select>
     </span>
+    <span class="field">学期
+      <select id="gakki-filter">
+        <option value="">すべて</option>
+        <option value="1">1学期</option>
+        <option value="2">2学期</option>
+        <option value="3">3学期</option>
+        <option value="zen">前期</option>
+        <option value="kou">後期</option>
+      </select>
+    </span>
     <label class="toggle"><input type="checkbox" id="chk-maru"> ◎〇△で表示</label>
     <label class="toggle"><input type="checkbox" id="chk-mask"> 氏名マスク（出席番号のみ）</label>
+    <span class="savedtime" id="mikyuu"></span>
   </div>
   <div class="topbar-row">
     <div class="tabs" id="subject-tabs"></div>
@@ -374,10 +385,12 @@
       <button class="sub mini" id="btn-add-dankai">段階評価の項目を追加</button>
     </div>
 
-    <h3>サンプルデータ</h3>
-    <div class="row">
-      <button class="sub mini" id="btn-sample">サンプルデータを入れる（2クラス×20人）</button>
-      <span class="note" style="margin:0;">いまのデータに追加されます</span>
+    <div id="sample-section">
+      <h3>サンプルデータ</h3>
+      <div class="row">
+        <button class="sub mini" id="btn-sample">サンプルデータを入れる（2クラス×20人）</button>
+        <span class="note" style="margin:0;">試してみるための仮のデータです</span>
+      </div>
     </div>
 
     <h3>データの全削除</h3>
@@ -386,7 +399,9 @@
       <span class="note" style="margin:0;">確認を2回行います。元に戻せません</span>
     </div>
 
-    <h3>起動時のパスワードロック</h3>
+    <h3>起動時のパスワードロック（画面を隠すだけの機能です）</h3>
+    <p class="note">のぞき見防止の機能です。保存されたデータ自体に鍵はかからないので、
+      共用のパソコンでは氏名を入れずに使うことをおすすめします。</p>
     <div class="row" id="lock-setting-row"></div>
   </div>
 </dialog>
@@ -407,6 +422,18 @@
         <label style="width:90px;">実施日</label>
         <input type="date" id="item-date">
         <span class="note" style="margin:0;">空欄でも構いません</span>
+      </div>
+      <div class="row">
+        <label style="width:90px;">学期</label>
+        <select id="item-gakki">
+          <option value="">指定しない</option>
+          <option value="1">1学期</option>
+          <option value="2">2学期</option>
+          <option value="3">3学期</option>
+          <option value="zen">前期</option>
+          <option value="kou">後期</option>
+        </select>
+        <span class="note" style="margin:0;">上の「学期」で絞り込むときに使います</span>
       </div>
       <h3>観点ごとの満点</h3>
       <p class="note">0点にすると、その観点は使いません（列が出ません）。</p>
@@ -478,7 +505,8 @@
   <div class="dlg-body">
     <h3>書き出す</h3>
     <p class="note">すべての年度・クラスのデータを1つのファイルに保存します。<br>
-      パスワードを入れると暗号化されます（AES-GCM）。空欄のままでも書き出せます。</p>
+      パスワードを入れると暗号化されます（AES-GCM）。<b>空欄のまま書き出すと、
+      氏名も点数もメモ帳で読める状態のファイル</b>になります。</p>
     <div class="row">
       <label style="width:130px;">パスワード</label>
       <input type="password" id="bk-pass" style="width:220px;" autocomplete="new-password">
@@ -535,11 +563,26 @@
       <li>「印刷」はA4横のレイアウトで印刷します。</li>
       <li>「バックアップ」で全データをファイルに保存できます。パスワードを付けると暗号化されます。</li>
     </ul>
-    <h3>5. 個人情報の扱い</h3>
+    <h3>5. 学期で絞って見る</h3>
+    <ul>
+      <li>上の「学期」を選ぶと、その学期のテストだけを表示・集計します。「すべて」に戻すと全部が出ます。</li>
+      <li>テストの学期は、評価項目の「編集」で選びます。学期を選んでいないテストは、どの学期でも表示されます。</li>
+      <li>段階評価の項目は学期で絞り込まれません（年間を通した評価として扱います）。</li>
+    </ul>
+    <h3>6. 個人情報の扱い（だいじなところ）</h3>
     <ul>
       <li>氏名を入れずに出席番号だけで運用することもできます。</li>
       <li>画面を見せるときは「氏名マスク」にチェックを入れると氏名が隠れます。</li>
-      <li>「設定」の一番下で、起動時のパスワードロックをかけられます。</li>
+      <li><b>このパソコンに保存されるデータは、暗号化されていません。</b>
+        同じパソコン・同じブラウザを使える人は、開発者ツールから中身を見られます。
+        共用パソコンでは使わないか、氏名を入れずに出席番号だけで使ってください。</li>
+      <li><b>起動時のパスワードロックは「画面を隠す」だけ</b>の機能です。
+        保存されたデータそのものに鍵はかかりません。のぞき見防止と考えてください。</li>
+      <li>バックアップファイルは、<b>パスワードを付けたときだけ</b>暗号化されます（AES-GCM）。
+        パスワードなしで書き出したファイルは、メモ帳で中身が読めます。
+        USBメモリやクラウドに置くときは必ずパスワードを付けてください。</li>
+      <li>ブラウザの「閲覧データの削除」でサイトデータを消すと、このツールのデータも消えます。
+        学期末などにバックアップを取っておくと安心です。</li>
     </ul>
   </div>
 </dialog>
@@ -629,8 +672,8 @@ var Store = {
           var tx = self.db.transaction("kv", "readwrite");
           tx.objectStore("kv").put(obj, STORE_KEY);
           tx.oncomplete = function () { resolve(true); };
-          tx.onerror = function () { writeLocal(obj); resolve(true); };
-        } catch (e) { writeLocal(obj); resolve(true); }
+          tx.onerror = function () { fallbackToLocal(obj); resolve(true); };
+        } catch (e) { fallbackToLocal(obj); resolve(true); }
       });
     }
     writeLocal(obj);
@@ -644,7 +687,14 @@ function readLocal() {
   } catch (e) { return null; }
 }
 function writeLocal(obj) {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(obj)); } catch (e) { }
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(obj)); return true; }
+  catch (e) { return false; }
+}
+/** IndexedDB への書き込みが失敗したら、以降は簡易保存に切り替える */
+function fallbackToLocal(obj) {
+  storageMode = "local";
+  Store.db = null;
+  writeLocal(obj);
 }
 
 /* ===== 初期データ ===== */
@@ -665,7 +715,7 @@ function emptyData() {
   return {
     version: 1,
     nendo: String(new Date().getFullYear()),
-    settings: { maru: false, mask: false, lock: null },
+    settings: { maru: false, mask: false, lock: null, gakki: "" },
     classes: [c]
   };
 }
@@ -686,21 +736,48 @@ function getSubject() {
   return s || c.subjects[0] || null;
 }
 function activeVps(item) {
+  if (!item.manten) return [];
   return VPS.filter(function (v) { return Number(item.manten[v]) > 0; });
+}
+function gakkiLabel(g) {
+  return { "1": "1学期", "2": "2学期", "3": "3学期", zen: "前期", kou: "後期" }[g] || "";
+}
+/** いま表示・集計の対象になる評価項目（学期で絞り込む） */
+function visibleItems(sub) {
+  var g = DATA && DATA.settings ? (DATA.settings.gakki || "") : "";
+  if (!g) return sub.items;
+  return sub.items.filter(function (it) {
+    // 段階評価と、学期を指定していない項目は、どの学期でも表示する
+    if (it.type !== "test") return true;
+    return !it.gakki || it.gakki === g;
+  });
 }
 
 /* ===== 計算 ===== */
+/** 基準値を安全な数（0〜100）に直す。空欄や文字は既定値あつかい */
+function kijunNum(v, def) {
+  var s = String(v == null ? "" : v).trim();
+  if (s === "") return def;
+  var n = Number(s);
+  if (!isFinite(n)) return def;
+  if (n < 0) return 0;
+  if (n > 100) return 100;
+  return n;
+}
 function evalOf(rate, kijun) {
   if (rate == null) return null;
-  if (rate >= Number(kijun.a)) return "A";
-  if (rate >= Number(kijun.b)) return "B";
+  var a = kijunNum(kijun && kijun.a, 80);
+  var b = kijunNum(kijun && kijun.b, 50);
+  if (b > a) b = a;  // B基準がA基準より高いと C が出なくなるので揃える
+  if (rate >= a) return "A";
+  if (rate >= b) return "B";
   return "C";
 }
 /** 1人ぶんの観点別集計 */
 function calcStudent(sub, sid) {
   var res = {};
   VPS.forEach(function (v) { res[v] = { sum: 0, max: 0, rate: null, ev: null }; });
-  sub.items.forEach(function (it) {
+  visibleItems(sub).forEach(function (it) {
     if (it.type === "test") {
       VPS.forEach(function (v) {
         var mx = Number(it.manten[v]) || 0;
@@ -722,12 +799,13 @@ function calcStudent(sub, sid) {
   var tSum = 0, tMax = 0;
   VPS.forEach(function (v) {
     var r = res[v];
+    r.sum = round1(r.sum); r.max = round1(r.max);
     r.rate = r.max > 0 ? (r.sum / r.max) * 100 : null;
     r.ev = evalOf(r.rate, sub.kijun[v]);
     tSum += r.sum; tMax += r.max;
   });
   res.z = {
-    sum: tSum, max: tMax,
+    sum: round1(tSum), max: round1(tMax),
     rate: tMax > 0 ? (tSum / tMax) * 100 : null,
     ev: null
   };
@@ -737,7 +815,7 @@ function calcStudent(sub, sid) {
 /** クラス全体の集計（平均行用） */
 function calcClassSummary(sub, students) {
   var itemAvg = {};   // itemAvg[itemId][vp] = 平均点
-  sub.items.forEach(function (it) {
+  visibleItems(sub).forEach(function (it) {
     itemAvg[it.id] = {};
     if (it.type === "test") {
       VPS.forEach(function (v) {
@@ -770,6 +848,7 @@ function calcClassSummary(sub, students) {
     });
   });
   ["k", "s", "t", "z"].forEach(function (v) {
+    agg[v].sum = round1(agg[v].sum); agg[v].max = round1(agg[v].max);
     agg[v].rate = agg[v].max > 0 ? (agg[v].sum / agg[v].max) * 100 : null;
   });
   return { itemAvg: itemAvg, agg: agg };
@@ -823,7 +902,7 @@ function renderTable() {
   h1 += '<th class="sticky-no" rowspan="2">番号</th>';
   h1 += '<th class="sticky-name" rowspan="2">氏名</th>';
 
-  sub.items.forEach(function (it) {
+  visibleItems(sub).forEach(function (it) {
     if (it.type === "test") {
       var vps = activeVps(it);
       if (vps.length === 0) return;
@@ -861,7 +940,7 @@ function renderTable() {
     body += '<tr data-sid="' + st.id + '">';
     body += '<td class="sticky-no">' + esc(st.no) + "</td>";
     body += '<td class="sticky-name">' + esc(studentName(st)) + "</td>";
-    sub.items.forEach(function (it) {
+    visibleItems(sub).forEach(function (it) {
       if (it.type === "test") {
         activeVps(it).forEach(function (v) {
           var sc = it.scores[st.id];
@@ -889,7 +968,7 @@ function renderTable() {
   });
 
   var foot = '<tr><th class="sticky-no">平均</th><th class="sticky-name"></th>';
-  sub.items.forEach(function (it) {
+  visibleItems(sub).forEach(function (it) {
     if (it.type === "test") {
       activeVps(it).forEach(function (v) {
         var a = summary.itemAvg[it.id][v];
@@ -919,7 +998,29 @@ function renderTable() {
     "</table></div>";
 
   $("print-title").textContent =
-    DATA.nendo + "年度　" + cls.name + "　" + sub.name + "　成績一覧";
+    DATA.nendo + "年度　" + cls.name + "　" + sub.name +
+    (DATA.settings.gakki ? "　" + gakkiLabel(DATA.settings.gakki) : "") + "　成績一覧";
+  refreshMikyuu();
+}
+
+/** 未入力のマスがいくつ残っているかを表示する */
+function refreshMikyuu() {
+  var el = $("mikyuu");
+  if (!el) return;
+  var cls = getClass(), sub = getSubject();
+  if (!cls || !sub || cls.students.length === 0) { el.textContent = ""; return; }
+  var n = 0;
+  visibleItems(sub).forEach(function (it) {
+    cls.students.forEach(function (st) {
+      if (it.type === "test") {
+        activeVps(it).forEach(function (v) {
+          var sc = it.scores[st.id];
+          if (!sc || sc[v] == null || sc[v] === "") n++;
+        });
+      } else if (!it.grades[st.id]) { n++; }
+    });
+  });
+  el.textContent = n === 0 ? "未入力なし" : "未入力 " + n + "マス";
 }
 
 /* ===== 集計の部分更新（入力中に再描画しない） ===== */
@@ -944,7 +1045,7 @@ function refreshAggregates() {
   });
 
   var summary = calcClassSummary(sub, students);
-  sub.items.forEach(function (it) {
+  visibleItems(sub).forEach(function (it) {
     if (it.type === "test") {
       activeVps(it).forEach(function (v) {
         var c = area.querySelector('[data-foot="' + it.id + "-" + v + '"]');
@@ -968,12 +1069,22 @@ function refreshAggregates() {
     if (c1) c1.textContent = a.max > 0 ? a.sum + "/" + a.max : "―";
     if (c2) c2.textContent = rateText(a.rate);
   });
+  refreshMikyuu();
 }
 
 /* ===== 自動保存 ===== */
 function scheduleSave() {
   if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(doSave, 400);
+}
+/** 保存待ちが残っていたら、その場で書き出す */
+function flushSave() {
+  if (!saveTimer || !DATA) return;
+  clearTimeout(saveTimer);
+  saveTimer = null;
+  if (storageMode === "local") { writeLocal(DATA); return; }
+  Store.save(DATA);
+  writeLocal(DATA);  // IndexedDBの書き込みが間に合わないときの保険
 }
 function doSave() {
   saveTimer = null;
@@ -1028,6 +1139,27 @@ function commitCell() {
   refreshAggregates();
   scheduleSave();
 }
+/** 赤枠のまま他のマスへ移ったら、保存されている値に戻す（画面と保存内容を一致させる） */
+function onCellBlur(e) {
+  var el = e.target;
+  if (!el.classList || !el.classList.contains("cell")) return;
+  if (!el.classList.contains("err")) return;
+  var sub = getSubject();
+  if (!sub) return;
+  var item = sub.items.filter(function (x) { return x.id === el.dataset.item; })[0];
+  if (!item) return;
+  var sid = el.dataset.sid;
+  if (el.dataset.type === "test") {
+    var sc = item.scores[sid];
+    var v = (sc && sc[el.dataset.vp] != null) ? sc[el.dataset.vp] : "";
+    el.value = v;
+  } else {
+    var g = item.grades[sid];
+    el.value = g ? evText(g) : "";
+  }
+  el.classList.remove("err");
+  toast("入力できない値だったので、元の内容に戻しました");
+}
 function onCellKeydown(e) {
   var el = e.target;
   if (!el.classList || !el.classList.contains("cell")) return;
@@ -1048,6 +1180,7 @@ function renderHeader() {
   $("nendo").value = DATA.nendo;
   $("chk-maru").checked = !!DATA.settings.maru;
   $("chk-mask").checked = !!DATA.settings.mask;
+  $("gakki-filter").value = DATA.settings.gakki || "";
 
   var sel = $("class-select");
   sel.innerHTML = DATA.classes.map(function (c) {
@@ -1106,7 +1239,8 @@ function renderSettings() {
     var sts = cls.students.slice().sort(function (a, b) { return a.no - b.no; });
     $("student-list").innerHTML = sts.map(function (st) {
       return '<div class="listrow"><span style="width:50px;">' + esc(st.no) + "</span>" +
-        '<span class="grow">' + esc(st.name || "（氏名なし）") + "</span>" +
+        '<span class="grow">' + (DATA.settings.mask ? "（氏名マスク中）"
+          : esc(st.name || "（氏名なし）")) + "</span>" +
         '<button class="sub mini" data-st-edit="' + st.id + '">編集</button>' +
         '<button class="danger mini" data-st-del="' + st.id + '">削除</button></div>';
     }).join("") || '<div class="listrow">児童がいません</div>';
@@ -1140,6 +1274,10 @@ function renderSettings() {
   } else {
     $("item-list").innerHTML = "";
   }
+
+  // サンプルデータは、まだ誰も登録していないときだけ出す（既存データへの誤追加を防ぐ）
+  $("sample-section").style.display =
+    DATA.classes.some(function (c) { return c.students.length > 0; }) ? "none" : "";
 
   // ロック設定
   var row = $("lock-setting-row");
@@ -1181,9 +1319,11 @@ function openItemDialog(id, type) {
   $("dlg-item").dataset.type = t;
   $("item-name").value = it ? it.name : (t === "test" ? "テスト" : "実技");
   $("item-date").value = it && it.date ? it.date : "";
-  $("item-manten-k").value = it ? it.manten.k : 50;
-  $("item-manten-s").value = it ? it.manten.s : 30;
-  $("item-manten-t").value = it ? it.manten.t : 20;
+  $("item-gakki").value = it && it.gakki ? it.gakki : (DATA.settings.gakki || "");
+  var mt = (it && it.manten) ? it.manten : { k: 50, s: 30, t: 20 };
+  $("item-manten-k").value = mt.k;
+  $("item-manten-s").value = mt.s;
+  $("item-manten-t").value = mt.t;
   $("item-kanten").value = it && it.kanten ? it.kanten : "t";
   $("dlg-item").showModal();
 }
@@ -1193,26 +1333,62 @@ function saveItemDialog() {
   var t = $("dlg-item").dataset.type;
   var name = $("item-name").value.trim() || (t === "test" ? "テスト" : "実技");
   var it = editingItemId ? sub.items.filter(function (x) { return x.id === editingItemId; })[0] : null;
+
+  // --- 先に入力内容を検証する（データを変更するのはすべて通ってから）---
+  var newManten = null, newDate = "", newKanten = "", newGakki = "";
+  if (t === "test") {
+    newDate = $("item-date").value;
+    newGakki = $("item-gakki").value;
+    newManten = {
+      k: Math.max(0, Math.round(Number($("item-manten-k").value) || 0)),
+      s: Math.max(0, Math.round(Number($("item-manten-s").value) || 0)),
+      t: Math.max(0, Math.round(Number($("item-manten-t").value) || 0))
+    };
+    if (newManten.k + newManten.s + newManten.t === 0) {
+      alert("どれか1つは満点を1点以上にしてください。");
+      return;
+    }
+    // 満点を下げたとき、すでに入っている得点が満点を超えないか確認する
+    if (it && it.manten) {
+      var over = [];
+      VPS.forEach(function (v) {
+        if (newManten[v] >= (Number(it.manten[v]) || 0)) return;
+        Object.keys(it.scores).forEach(function (sid) {
+          var sc = it.scores[sid];
+          if (sc && sc[v] != null && Number(sc[v]) > newManten[v]) over.push({ sid: sid, v: v });
+        });
+      });
+      if (over.length > 0) {
+        if (!confirm("満点を下げると、すでに入力されている点数のうち " + over.length +
+          "か所が満点を超えます。\n超えた点数は空欄に戻します。よろしいですか？")) return;
+        over.forEach(function (o) { delete it.scores[o.sid][o.v]; });
+      }
+      // 満点を0にした観点の得点は、計算から外れたまま残らないよう消す
+      VPS.forEach(function (v) {
+        if (newManten[v] > 0) return;
+        Object.keys(it.scores).forEach(function (sid) {
+          if (it.scores[sid]) delete it.scores[sid][v];
+        });
+      });
+    }
+  } else {
+    newKanten = $("item-kanten").value;
+  }
+
+  // --- ここから変更 ---
   if (!it) {
     it = { id: uid(), type: t, name: name, scores: {}, grades: {} };
-    if (t === "test") { it.manten = { k: 0, s: 0, t: 0 }; it.date = ""; }
+    if (t === "test") { it.manten = { k: 0, s: 0, t: 0 }; it.date = ""; it.gakki = ""; }
     else { it.kanten = "t"; }
     sub.items.push(it);
   }
   it.name = name;
   if (t === "test") {
-    it.date = $("item-date").value;
-    it.manten = {
-      k: Math.max(0, Number($("item-manten-k").value) || 0),
-      s: Math.max(0, Number($("item-manten-s").value) || 0),
-      t: Math.max(0, Number($("item-manten-t").value) || 0)
-    };
-    if (it.manten.k + it.manten.s + it.manten.t === 0) {
-      alert("どれか1つは満点を1点以上にしてください。");
-      return;
-    }
+    it.date = newDate;
+    it.gakki = newGakki;
+    it.manten = newManten;
   } else {
-    it.kanten = $("item-kanten").value;
+    it.kanten = newKanten;
   }
   doSave();
   $("dlg-item").close();
@@ -1236,11 +1412,12 @@ function makeSample() {
     }
     ["国語", "算数"].forEach(function (sname) {
       var s = newSubject(sname);
-      [["第1回 単元テスト", "2026-05-12", 50, 30, 20],
-      ["第2回 単元テスト", "2026-06-16", 60, 20, 20],
-      ["まとめテスト", "2026-07-10", 40, 40, 20]].forEach(function (t) {
+      [["第1回 単元テスト", "2026-05-12", 50, 30, 20, "1"],
+      ["第2回 単元テスト", "2026-06-16", 60, 20, 20, "1"],
+      ["まとめテスト", "2026-07-10", 40, 40, 20, "1"],
+      ["第3回 単元テスト", "2026-10-07", 50, 30, 20, "2"]].forEach(function (t) {
         var it = {
-          id: uid(), type: "test", name: t[0], date: t[1],
+          id: uid(), type: "test", name: t[0], date: t[1], gakki: t[5],
           manten: { k: t[2], s: t[3], t: t[4] }, scores: {}, grades: {}
         };
         c.students.forEach(function (st) {
@@ -1324,8 +1501,10 @@ function backupExport() {
   var json = JSON.stringify(DATA);
   var stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
   if (!pass) {
+    if (!confirm("パスワードが空欄です。\n\n児童の氏名と点数が、だれでも読める状態のファイルになります。" +
+      "\nUSBメモリやクラウドに置く場合はパスワードを付けてください。\n\nこのまま書き出しますか？")) return;
     downloadBlob(new Blob([json], { type: "application/json" }), "成績データ_" + stamp + ".json");
-    toast("書き出しました");
+    toast("書き出しました（暗号化なし）");
     return;
   }
   if (!window.crypto || !crypto.subtle) { toast("この環境では暗号化できません"); return; }
@@ -1368,11 +1547,133 @@ function backupImport() {
   };
   fr.readAsText(f);
 }
+/* --- 読み込んだファイルの形を点検して、安全な形に直す --- */
+function numOr(v, def) {
+  var n = Number(v);
+  return isFinite(n) ? n : def;
+}
+function strOr(v, def) {
+  return typeof v === "string" ? v : def;
+}
+function cleanScores(src, maxOf) {
+  var out = {};
+  if (!src || typeof src !== "object") return out;
+  Object.keys(src).forEach(function (sid) {
+    var sc = src[sid];
+    if (!sc || typeof sc !== "object") return;
+    var one = {};
+    VPS.forEach(function (v) {
+      if (sc[v] == null || sc[v] === "") return;
+      var n = Number(sc[v]);
+      if (!isFinite(n) || n < 0) return;
+      var mx = maxOf[v];
+      if (mx > 0 && n > mx) return;
+      one[v] = n;
+    });
+    if (Object.keys(one).length > 0) out[sid] = one;
+  });
+  return out;
+}
+function cleanGrades(src) {
+  var out = {};
+  if (!src || typeof src !== "object") return out;
+  Object.keys(src).forEach(function (sid) {
+    var g = src[sid];
+    if (g === "A" || g === "B" || g === "C") out[sid] = g;
+  });
+  return out;
+}
+function cleanItem(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  var type = raw.type === "dankai" ? "dankai" : (raw.type === "test" ? "test" : null);
+  if (!type) return null;
+  var it = {
+    id: strOr(raw.id, "") || uid(),
+    type: type,
+    name: strOr(raw.name, type === "test" ? "テスト" : "実技"),
+    scores: {}, grades: {}
+  };
+  if (type === "test") {
+    var m = (raw.manten && typeof raw.manten === "object") ? raw.manten : {};
+    it.manten = {
+      k: Math.max(0, Math.round(numOr(m.k, 0))),
+      s: Math.max(0, Math.round(numOr(m.s, 0))),
+      t: Math.max(0, Math.round(numOr(m.t, 0)))
+    };
+    if (it.manten.k + it.manten.s + it.manten.t === 0) return null;
+    it.date = strOr(raw.date, "");
+    it.gakki = strOr(raw.gakki, "");
+    it.scores = cleanScores(raw.scores, it.manten);
+  } else {
+    it.kanten = VPS.indexOf(raw.kanten) >= 0 ? raw.kanten : "t";
+    it.grades = cleanGrades(raw.grades);
+  }
+  return it;
+}
+function cleanSubject(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  var s = newSubject(strOr(raw.name, "教科"));
+  s.id = strOr(raw.id, "") || s.id;
+  var kj = (raw.kijun && typeof raw.kijun === "object") ? raw.kijun : {};
+  ["k", "s", "t", "z"].forEach(function (v) {
+    var src = (kj[v] && typeof kj[v] === "object") ? kj[v] : {};
+    s.kijun[v] = { a: kijunNum(src.a, 80), b: kijunNum(src.b, 50) };
+  });
+  var dk = (raw.dankai && typeof raw.dankai === "object") ? raw.dankai : {};
+  s.dankai = { hanei: !!dk.hanei, weight: Math.max(1, Math.round(numOr(dk.weight, 10))) };
+  s.items = (Array.isArray(raw.items) ? raw.items : [])
+    .map(cleanItem).filter(function (x) { return !!x; });
+  return s;
+}
+function cleanClass(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  var c = { id: strOr(raw.id, "") || uid(), name: strOr(raw.name, "クラス"), students: [], subjects: [] };
+  var seen = {};
+  (Array.isArray(raw.students) ? raw.students : []).forEach(function (st) {
+    if (!st || typeof st !== "object") return;
+    var id = strOr(st.id, "") || uid();
+    if (seen[id]) return;
+    seen[id] = 1;
+    c.students.push({ id: id, no: Math.max(0, Math.round(numOr(st.no, 0))), name: strOr(st.name, "") });
+  });
+  c.subjects = (Array.isArray(raw.subjects) ? raw.subjects : [])
+    .map(cleanSubject).filter(function (x) { return !!x; });
+  if (c.subjects.length === 0) c.subjects = [newSubject("国語")];
+  return c;
+}
+/** 読み込んだ内容を点検する。問題があれば ok:false を返し、いまのデータには触らない */
+function sanitizeData(obj) {
+  if (!obj || typeof obj !== "object" || !Array.isArray(obj.classes)) {
+    return { ok: false, reason: "成績データのファイルではありません" };
+  }
+  var classes = obj.classes.map(cleanClass).filter(function (x) { return !!x; });
+  if (classes.length === 0) {
+    return { ok: false, reason: "クラスのデータが見つかりませんでした" };
+  }
+  var st = (obj.settings && typeof obj.settings === "object") ? obj.settings : {};
+  var gk = strOr(st.gakki, "");
+  if (["", "1", "2", "3", "zen", "kou"].indexOf(gk) < 0) gk = "";
+  return {
+    ok: true,
+    data: {
+      version: 1,
+      nendo: strOr(obj.nendo, String(new Date().getFullYear())),
+      settings: {
+        maru: !!st.maru, mask: !!st.mask, gakki: gk,
+        lock: (st.lock && typeof st.lock === "object") ? st.lock : null
+      },
+      classes: classes
+    }
+  };
+}
 function applyImported(obj) {
-  if (!obj || !obj.classes) { $("bk-msg").textContent = "成績データのファイルではありません"; return; }
-  if (!confirm("いまのデータを、読み込んだ内容で置きかえます。よろしいですか？")) return;
-  DATA = obj;
-  if (!DATA.settings) DATA.settings = { maru: false, mask: false, lock: null };
+  var r = sanitizeData(obj);
+  if (!r.ok) { $("bk-msg").textContent = r.reason; return; }
+  var n = r.data.classes.length;
+  var sn = r.data.classes.reduce(function (a, c) { return a + c.students.length; }, 0);
+  if (!confirm("読み込んだ内容：" + n + "クラス・" + sn + "人\n" +
+    "いまのデータは消えて、この内容に置きかわります。よろしいですか？")) return;
+  DATA = r.data;
   cur.classId = null; cur.subjectId = null;
   doSave();
   renderAll();
@@ -1457,7 +1758,10 @@ function zipBuild(files) {
   return out;
 }
 function xmlEsc(s) {
-  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+  // 制御文字が1つでも混ざるとExcelがファイルを開けなくなるので、先に取り除く
+  return String(s == null ? "" : s)
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 }
 function colName(n) {
@@ -1573,7 +1877,7 @@ function sheetRowsFor(sub, cls, includeName) {
   if (includeName) head.push({ v: "氏名", t: "s", s: ST_H });
   var widths = [10]; if (includeName) widths.push(16);
 
-  sub.items.forEach(function (it) {
+  visibleItems(sub).forEach(function (it) {
     if (it.type === "test") {
       activeVps(it).forEach(function (v) {
         head.push({ v: it.name + "\n" + VP_SHORT[v] + "(" + it.manten[v] + ")", t: "s", s: ST_H });
@@ -1598,7 +1902,7 @@ function sheetRowsFor(sub, cls, includeName) {
     var r = calcStudent(sub, st.id);
     var row = [{ v: st.no, t: "n", s: ST_C }];
     if (includeName) row.push({ v: st.name || "", t: "s", s: ST_C });
-    sub.items.forEach(function (it) {
+    visibleItems(sub).forEach(function (it) {
       if (it.type === "test") {
         activeVps(it).forEach(function (v) {
           var sc = it.scores[st.id];
@@ -1622,7 +1926,7 @@ function sheetRowsFor(sub, cls, includeName) {
   var summary = calcClassSummary(sub, students);
   var frow = [{ v: "平均", t: "s", s: ST_H }];
   if (includeName) frow.push({ v: "", t: "s", s: ST_H });
-  sub.items.forEach(function (it) {
+  visibleItems(sub).forEach(function (it) {
     if (it.type === "test") {
       activeVps(it).forEach(function (v) {
         var a = summary.itemAvg[it.id][v];
@@ -1646,19 +1950,32 @@ function sheetRowsFor(sub, cls, includeName) {
 function safeName(s) {
   return String(s).replace(/[\\\/:\*\?"<>\|\[\]]/g, "").slice(0, 28) || "シート";
 }
+/** Excelは同じシート名を2つ持てないので、重なったら (2) を付ける */
+function uniqueNames(names) {
+  var used = {}, out = [];
+  names.forEach(function (n) {
+    var base = safeName(n), name = base, i = 2;
+    while (used[name]) { name = base.slice(0, 24) + "(" + i + ")"; i++; }
+    used[name] = 1;
+    out.push(name);
+  });
+  return out;
+}
 function exportExcel() {
   var cls = getClass(), sub = getSubject();
   if (!cls || !sub) { toast("クラスと教科を作ってください"); return; }
   var all = document.querySelector('input[name="exrange"]:checked').value === "all";
   var includeName = $("ex-name").checked;
   var targets = all ? cls.subjects : [sub];
-  var sheets = targets.map(function (s) {
+  var names = uniqueNames(targets.map(function (s) { return s.name; }));
+  var sheets = targets.map(function (s, i) {
     var d = sheetRowsFor(s, cls, includeName);
-    return { name: safeName(s.name), rows: d.rows, widths: d.widths };
+    return { name: names[i], rows: d.rows, widths: d.widths };
   });
   var bytes = buildXlsx(sheets);
   var fname = DATA.nendo + "_" + cls.name + "_" +
-    (all ? "" : sub.name + "_") + "成績.xlsx";
+    (all ? "" : sub.name + "_") +
+    (DATA.settings.gakki ? gakkiLabel(DATA.settings.gakki) + "_" : "") + "成績.xlsx";
   downloadBlob(new Blob([bytes], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   }), fname.replace(/[\\\/:\*\?"<>\|]/g, ""));
@@ -1670,6 +1987,7 @@ function exportExcel() {
 function wire() {
   $("table-area").addEventListener("input", onCellInput);
   $("table-area").addEventListener("keydown", onCellKeydown);
+  $("table-area").addEventListener("focusout", onCellBlur);
   $("table-area").addEventListener("click", function (e) {
     var id = e.target.dataset && e.target.dataset.editItem;
     if (id) openItemDialog(id);
@@ -1694,6 +2012,13 @@ function wire() {
     DATA.settings.mask = $("chk-mask").checked; doSave(); renderTable();
     $("ex-name").checked = !DATA.settings.mask;
   });
+  $("gakki-filter").addEventListener("change", function () {
+    DATA.settings.gakki = $("gakki-filter").value;
+    doSave(); renderTable();
+  });
+  // 入力直後にタブを閉じても消えないよう、保存待ちを書き出してしまう
+  window.addEventListener("pagehide", flushSave);
+  window.addEventListener("beforeunload", flushSave);
 
   $("btn-help").onclick = function () { $("dlg-help").showModal(); };
   $("btn-print").onclick = function () { window.print(); };
@@ -1703,7 +2028,10 @@ function wire() {
     var cls = getClass();
     $("ex-name").checked = !DATA.settings.mask;
     $("ex-note").textContent = "いまの表示（" +
-      (DATA.settings.maru ? "◎〇△" : "A/B/C") + "）のまま書き出します。";
+      (DATA.settings.maru ? "◎〇△" : "A/B/C") + "）のまま書き出します。" +
+      (DATA.settings.gakki
+        ? "学期が「" + gakkiLabel(DATA.settings.gakki) + "」なので、その学期のテストだけを書き出します。"
+        : "");
     $("dlg-excel").showModal();
   };
   $("btn-excel-run").onclick = exportExcel;
@@ -1753,6 +2081,7 @@ function wire() {
     var cls = getClass(); if (!cls) return;
     var n = $("new-subject-name").value.trim();
     if (!n) { toast("教科名を入れてください"); return; }
+    if (subjectNameTaken(cls, n, null)) { toast("同じ名前の教科があります"); return; }
     cls.subjects.push(newSubject(n));
     $("new-subject-name").value = "";
     doSave(); renderAll(); renderSettings();
@@ -1762,6 +2091,8 @@ function wire() {
     if (!confirm("本当に削除します。元に戻せません。実行しますか？")) return;
     DATA = emptyData();
     cur.classId = null; cur.subjectId = null;
+    // IndexedDB と簡易保存の両方から消す（片方に残ると次回また出てくる）
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { }
     doSave(); renderAll(); renderSettings();
     toast("すべて削除しました");
   };
@@ -1770,8 +2101,12 @@ function wire() {
   $("dlg-settings").addEventListener("click", function (e) {
     var d = e.target.dataset; if (!d) return;
     var cls = getClass(), sub = getSubject();
+    // クラス／教科が無い状態でボタンが押されても落ちないようにする
+    if ((d.stEdit || d.stDel || d.subRename || d.subDel || d.subUp || d.subDown) && !cls) return;
+    if ((d.itDel || d.itUp || d.itDown) && !sub) return;
     if (d.clsRename) {
       var c = DATA.classes.filter(function (x) { return x.id === d.clsRename; })[0];
+      if (!c) return;
       var n = prompt("クラス名", c.name); if (n) { c.name = n.trim(); afterEdit(); }
     } else if (d.clsDel) {
       if (DATA.classes.length <= 1) { toast("最後の1クラスは削除できません"); return; }
@@ -1782,16 +2117,24 @@ function wire() {
       moveItem(DATA.classes, d.clsUp || d.clsDown, d.clsUp ? -1 : 1); afterEdit();
     } else if (d.stEdit) {
       var st = cls.students.filter(function (x) { return x.id === d.stEdit; })[0];
+      if (!st) return;
       var no = prompt("出席番号", st.no); if (no === null) return;
       var nm = prompt("氏名（空欄可）", st.name || ""); if (nm === null) return;
       st.no = Number(no) || st.no; st.name = nm.trim(); afterEdit();
     } else if (d.stDel) {
       if (!confirm("この児童と入力済みの点数を削除します。よろしいですか？")) return;
       cls.students = cls.students.filter(function (x) { return x.id !== d.stDel; });
+      purgeStudentScores(cls, d.stDel);
       afterEdit();
     } else if (d.subRename) {
       var s = cls.subjects.filter(function (x) { return x.id === d.subRename; })[0];
-      var sn = prompt("教科名", s.name); if (sn) { s.name = sn.trim(); afterEdit(); }
+      if (!s) return;
+      var sn = prompt("教科名", s.name);
+      if (sn) {
+        sn = sn.trim();
+        if (subjectNameTaken(cls, sn, s.id)) { toast("同じ名前の教科があります"); return; }
+        s.name = sn; afterEdit();
+      }
     } else if (d.subDel) {
       if (cls.subjects.length <= 1) { toast("最後の1教科は削除できません"); return; }
       if (!confirm("この教科と成績をすべて削除します。よろしいですか？")) return;
@@ -1830,6 +2173,21 @@ function wire() {
   });
 }
 function afterEdit() { doSave(); renderAll(); renderSettings(); }
+/** 削除した児童の点数が残らないよう、全教科の全項目から消す */
+function purgeStudentScores(cls, sid) {
+  cls.subjects.forEach(function (s) {
+    s.items.forEach(function (it) {
+      if (it.scores) delete it.scores[sid];
+      if (it.grades) delete it.grades[sid];
+    });
+  });
+}
+/** 同じ名前の教科があるか（自分自身は除く） */
+function subjectNameTaken(cls, name, exceptId) {
+  return cls.subjects.some(function (s) {
+    return s.id !== exceptId && s.name === name;
+  });
+}
 function moveItem(arr, id, dir) {
   var i = arr.findIndex(function (x) { return x.id === id; });
   var j = i + dir;
@@ -1846,8 +2204,14 @@ function start() {
 }
 function boot() {
   Store.init().then(function () { return Store.load(); }).then(function (saved) {
-    DATA = saved && saved.classes ? saved : emptyData();
-    if (!DATA.settings) DATA.settings = { maru: false, mask: false, lock: null };
+    var r = { ok: false };
+    try { if (saved) r = sanitizeData(saved); } catch (e) { r = { ok: false }; }
+    if (!r.ok && saved) {
+      // 読めなかった中身は捨てずに残す（あとから取り出せるようにする）
+      try { localStorage.setItem(STORE_KEY + "-rescue", JSON.stringify(saved)); } catch (e) { }
+      setTimeout(function () { toast("前回のデータを読み込めませんでした。新しく始めます"); }, 500);
+    }
+    DATA = r.ok ? r.data : emptyData();
     if (DATA.settings.lock) {
       var ls = $("lockscreen");
       ls.style.display = "flex";
