@@ -262,17 +262,48 @@
 
   /* ===== 印刷（A4横） ===== */
   @page{size:A4 landscape;margin:10mm;}
+  /* 印刷の幅をはかるために、印刷時と同じ見た目を一瞬だけ画面にも当てる */
+  html.print-measure .tablewrap{max-height:none;overflow:visible;zoom:1;}
+  html.print-measure table.seiseki{font-size:10px;white-space:normal;}
+  html.print-measure table.seiseki th,html.print-measure table.seiseki td{padding:2px 3px;}
+  html.print-measure table.seiseki thead th{position:static;}
+  html.print-measure table.seiseki th.sticky-no,html.print-measure table.seiseki td.sticky-no,
+  html.print-measure table.seiseki th.sticky-name,html.print-measure table.seiseki td.sticky-name{
+    position:static;white-space:nowrap;
+  }
+  html.print-measure table.seiseki thead th{white-space:nowrap;}
+  html.print-measure table.seiseki td.sticky-name{padding-right:8px;}
+  html.print-measure .itemhead .edit{display:none;}
+  html.print-measure input.cell{border:none;width:auto;min-width:34px;font-size:10px;}
+  /* 「集計だけ」で印刷するとき、テスト1本ごとの列は出さない */
+  html.print-summary table.seiseki .itemcol{display:none;}
+  /* 印刷のときだけ氏名を伏せる（欄は残すので手書きできる） */
+  html.print-noname table.seiseki .nmtext{display:none;}
+  html.print-noname table.seiseki th.sticky-name,
+  html.print-noname table.seiseki td.sticky-name{min-width:70px;}
+
   @media print{
     body{background:#fff;}
     .topbar,.no-print,dialog,#lockscreen,.toast{display:none !important;}
     .main{padding:0;}
     .card{box-shadow:none;border-radius:0;padding:0;margin:0;}
-    .tablewrap{max-height:none;overflow:visible;border:none;}
+    /* 列が多いときは、用紙の幅に収まるように縮めて印刷する（JSで倍率を入れる） */
+    .tablewrap{max-height:none;overflow:visible;border:none;zoom:var(--print-zoom,1);}
     table.seiseki{font-size:10px;white-space:normal;}
     table.seiseki th,table.seiseki td{padding:2px 3px;}
     table.seiseki thead th{position:static;}
     table.seiseki th.sticky-no,table.seiseki td.sticky-no,
     table.seiseki th.sticky-name,table.seiseki td.sticky-name{position:static;}
+    /* 氏名が1文字ずつ縦に折り返さないようにする */
+    table.seiseki th.sticky-no,table.seiseki td.sticky-no,
+    table.seiseki th.sticky-name,table.seiseki td.sticky-name,
+    table.seiseki thead th{white-space:nowrap;}
+    table.seiseki td.sticky-name{padding-right:8px;}
+    /* 紙の上では押せないので、編集リンクは出さない */
+    .itemhead .edit{display:none !important;}
+    /* ページをまたぐときに見出しを繰り返し、行を分断しない */
+    table.seiseki thead{display:table-header-group;}
+    table.seiseki tr{break-inside:avoid;page-break-inside:avoid;}
     input.cell{border:none;width:auto;min-width:34px;font-size:10px;background:transparent;}
     .print-title{display:block !important;font-size:14px;font-weight:700;margin-bottom:6px;}
   }
@@ -403,6 +434,94 @@
     <p class="note">のぞき見防止の機能です。保存されたデータ自体に鍵はかからないので、
       共用のパソコンでは氏名を入れずに使うことをおすすめします。</p>
     <div class="row" id="lock-setting-row"></div>
+  </div>
+</dialog>
+
+<!-- ===== 印刷 ===== -->
+<dialog id="dlg-print">
+  <div class="dlg-head">
+    <h2>印刷</h2>
+    <button class="sub mini" data-close>閉じる</button>
+  </div>
+  <div class="dlg-body">
+    <p class="note">A4横で印刷します。用紙に収まるよう自動で縮めます。</p>
+    <div class="row">
+      <label class="toggle">
+        <input type="radio" name="prrange" value="summary" checked>
+        集計だけ（観点別の合計・得点率・評価）
+      </label>
+    </div>
+    <div class="row">
+      <label class="toggle">
+        <input type="radio" name="prrange" value="all">
+        テスト1本ごとの点数も全部
+      </label>
+    </div>
+    <div class="row">
+      <label class="toggle"><input type="checkbox" id="pr-name" checked> 氏名を出す</label>
+    </div>
+    <p class="note" id="pr-note"></p>
+    <div class="row">
+      <button id="btn-print-run">印刷する</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== 番号だけまとめて追加 ===== -->
+<dialog id="dlg-bulk">
+  <div class="dlg-head">
+    <h2>番号だけまとめて追加</h2>
+    <button class="sub mini" data-close>閉じる</button>
+  </div>
+  <div class="dlg-body">
+    <p class="note">出席番号だけを登録します。氏名はあとから「編集」で入れられます。</p>
+    <div class="row">
+      <label style="width:130px;">何人ぶん</label>
+      <input type="number" id="bulk-count" min="1" max="60" value="30" style="width:100px;">
+      <span class="note" style="margin:0;">1〜60人</span>
+    </div>
+    <div class="row">
+      <button id="btn-bulk-run">追加する</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== 名前の変更 ===== -->
+<dialog id="dlg-rename">
+  <div class="dlg-head">
+    <h2 id="dlg-rename-title">名前の変更</h2>
+    <button class="sub mini" data-close>閉じる</button>
+  </div>
+  <div class="dlg-body">
+    <div class="row">
+      <label style="width:130px;" id="dlg-rename-label">名前</label>
+      <input type="text" id="rename-value" style="width:240px;">
+    </div>
+    <div class="row">
+      <button id="btn-rename-run">変更する</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== 児童の編集 ===== -->
+<dialog id="dlg-student">
+  <div class="dlg-head">
+    <h2>児童の編集</h2>
+    <button class="sub mini" data-close>閉じる</button>
+  </div>
+  <div class="dlg-body">
+    <div class="row">
+      <label style="width:130px;">出席番号</label>
+      <input type="number" id="st-no" min="1" style="width:100px;">
+    </div>
+    <div class="row">
+      <label style="width:130px;">氏名</label>
+      <input type="text" id="st-name" style="width:240px;">
+      <span class="note" style="margin:0;">空欄のままでも使えます</span>
+    </div>
+    <div class="row">
+      <button id="btn-student-save">保存する</button>
+    </div>
   </div>
 </dialog>
 
@@ -542,11 +661,16 @@
     <h3>1. はじめに</h3>
     <ul>
       <li>「設定」からクラス・児童・教科・評価項目を登録します。まず試したいときは「サンプルデータを入れる」が便利です。</li>
+      <li>児童の登録は、番号と氏名を入れて<code>Enter</code>を押すだけで次々に追加できます
+        （番号は自動で1つずつ増えます）。氏名をあとから入れるなら「番号だけまとめて追加」が早いです。</li>
       <li>入力したデータはこのパソコンの中だけに自動保存されます。外部には一切送信しません。</li>
     </ul>
     <h3>2. 点数の入力</h3>
     <ul>
-      <li>表のマスに直接入力します。<code>Enter</code>で下へ、<code>Tab</code>で右へ移動します。</li>
+      <li>表のマスに直接入力します。<code>Enter</code>で下へ、<code>Tab</code>で右へ移動します。
+        列のいちばん下で<code>Enter</code>を押すと次の列の先頭へ、行のいちばん右で<code>Tab</code>を押すと
+        次の行の先頭へ移るので、マウスを使わずに最後まで入力できます
+        （<code>Shift</code>と一緒に押すと逆に戻ります）。</li>
       <li>満点を超える数や数字以外を入れると赤わくになり、保存されません。</li>
       <li>欠席などで空欄にしたマスは、平均や得点率の計算から外れます。</li>
       <li>段階評価（実技・態度など）の列は <code>A</code> <code>B</code> <code>C</code> を直接入力します（◎〇△でも入れられます）。</li>
@@ -560,7 +684,9 @@
     <h3>4. 書き出し</h3>
     <ul>
       <li>「Excel出力」で .xlsx ファイルを作ります。画面がABC表示なら A/B/C、◎〇△表示なら ◎〇△ で出力されます。</li>
-      <li>「印刷」はA4横のレイアウトで印刷します。</li>
+      <li>「印刷」はA4横です。「集計だけ」なら1枚に収まります。テストの点数も全部出すと
+        列が多くて小さくなるので、そのときは上の「学期」でしぼり込んでください。</li>
+      <li>印刷のときだけ氏名を伏せることもできます（欄は残るので、あとから手書きできます）。</li>
       <li>「バックアップ」で全データをファイルに保存できます。パスワードを付けると暗号化されます。</li>
     </ul>
     <h3>5. 学期で絞って見る</h3>
@@ -891,7 +1017,17 @@ function renderTable() {
   if (!cls) { area.innerHTML = '<div class="empty">「設定」からクラスを追加してください。</div>'; return; }
   if (!sub) { area.innerHTML = '<div class="empty">「設定」から教科を追加してください。</div>'; return; }
   if (cls.students.length === 0) {
-    area.innerHTML = '<div class="empty">まだ児童が登録されていません。<br>「設定」→「児童」から追加するか、「サンプルデータを入れる」をお試しください。</div>';
+    area.innerHTML = '<div class="empty">まだ児童が登録されていません。<br><br>' +
+      '<button id="empty-settings">児童を登録する</button>　' +
+      '<button class="sub" id="empty-sample">サンプルで試してみる</button></div>';
+    $("empty-settings").onclick = function () {
+      renderSettings();
+      $("dlg-settings").showModal();
+      $("new-student-no").focus();
+      $("new-student-no").scrollIntoView({ block: "center" });
+    };
+    $("empty-sample").onclick = makeSample;
+    refreshMikyuu();
     return;
   }
 
@@ -906,17 +1042,17 @@ function renderTable() {
     if (it.type === "test") {
       var vps = activeVps(it);
       if (vps.length === 0) return;
-      h1 += '<th colspan="' + vps.length + '"><div class="itemhead">' +
+      h1 += '<th class="itemcol" colspan="' + vps.length + '"><div class="itemhead">' +
         '<span class="nm">' + esc(it.name) + "</span>" +
         (it.date ? '<span class="dt">' + esc(it.date) + "</span>" : "") +
         '<span class="edit" data-edit-item="' + it.id + '">編集</span>' +
         "</div></th>";
       vps.forEach(function (v) {
-        h2 += '<th class="' + VP_CLASS[v] + '">' + VP_SHORT[v] +
+        h2 += '<th class="itemcol ' + VP_CLASS[v] + '">' + VP_SHORT[v] +
           '<br><span class="mantenlabel">' + it.manten[v] + "点</span></th>";
       });
     } else {
-      h1 += '<th rowspan="2" class="' + VP_CLASS[it.kanten] + '"><div class="itemhead">' +
+      h1 += '<th rowspan="2" class="itemcol ' + VP_CLASS[it.kanten] + '"><div class="itemhead">' +
         '<span class="nm">' + esc(it.name) + "</span>" +
         '<span class="dt">' + VP_SHORT[it.kanten] + "</span>" +
         '<span class="edit" data-edit-item="' + it.id + '">編集</span>' +
@@ -939,19 +1075,19 @@ function renderTable() {
     var col = 0;
     body += '<tr data-sid="' + st.id + '">';
     body += '<td class="sticky-no">' + esc(st.no) + "</td>";
-    body += '<td class="sticky-name">' + esc(studentName(st)) + "</td>";
+    body += '<td class="sticky-name"><span class="nmtext">' + esc(studentName(st)) + "</span></td>";
     visibleItems(sub).forEach(function (it) {
       if (it.type === "test") {
         activeVps(it).forEach(function (v) {
           var sc = it.scores[st.id];
           var val = (sc && sc[v] != null) ? sc[v] : "";
-          body += "<td>" + '<input class="cell" type="text" inputmode="numeric" ' +
+          body += '<td class="itemcol">' + '<input class="cell" type="text" inputmode="numeric" ' +
             'data-sid="' + st.id + '" data-item="' + it.id + '" data-vp="' + v + '" ' +
             'data-type="test" data-col="' + (col++) + '" value="' + esc(val) + '"></td>';
         });
       } else {
         var g = it.grades[st.id] || "";
-        body += "<td>" + '<input class="cell dankai" type="text" ' +
+        body += '<td class="itemcol">' + '<input class="cell dankai" type="text" ' +
           'data-sid="' + st.id + '" data-item="' + it.id + '" ' +
           'data-type="dankai" data-col="' + (col++) + '" value="' +
           esc(g ? evText(g) : "") + '"></td>';
@@ -972,11 +1108,11 @@ function renderTable() {
     if (it.type === "test") {
       activeVps(it).forEach(function (v) {
         var a = summary.itemAvg[it.id][v];
-        foot += '<td data-foot="' + it.id + "-" + v + '">' + (a == null ? "―" : a) + "</td>";
+        foot += '<td class="itemcol" data-foot="' + it.id + "-" + v + '">' + (a == null ? "―" : a) + "</td>";
       });
     } else {
       var c = summary.itemAvg[it.id].count;
-      foot += '<td style="font-size:11px;" data-foot="' + it.id + '-count">A' +
+      foot += '<td class="itemcol" style="font-size:11px;" data-foot="' + it.id + '-count">A' +
         c.A + " B" + c.B + " C" + c.C + "</td>";
     }
   });
@@ -1160,19 +1296,50 @@ function onCellBlur(e) {
   el.classList.remove("err");
   toast("入力できない値だったので、元の内容に戻しました");
 }
+function moveFocus(el, next) {
+  if (!next) return;
+  next.focus();
+  next.select();
+  // 画面の外に出た先へ飛んだときは、見える位置まで寄せる
+  if (next.scrollIntoViewIfNeeded) next.scrollIntoViewIfNeeded(false);
+  else next.scrollIntoView({ block: "nearest", inline: "nearest" });
+}
 function onCellKeydown(e) {
   var el = e.target;
   if (!el.classList || !el.classList.contains("cell")) return;
-  if (e.key !== "Enter") return;
-  e.preventDefault();
+  if (e.key !== "Enter" && e.key !== "Tab") return;
   var area = $("table-area");
   var inputs = Array.prototype.slice.call(area.querySelectorAll("input.cell"));
   var firstRow = area.querySelector("tbody tr");
   var nCols = firstRow ? firstRow.querySelectorAll("input.cell").length : 0;
   if (!nCols) return;
   var i = inputs.indexOf(el);
-  var next = e.shiftKey ? inputs[i - nCols] : inputs[i + nCols];
-  if (next) { next.focus(); next.select(); }
+  var nRows = Math.ceil(inputs.length / nCols);
+  var row = Math.floor(i / nCols), col = i % nCols;
+  var next;
+
+  if (e.key === "Enter") {
+    if (e.shiftKey) {
+      // 上へ。列の先頭なら、ひとつ左の列のいちばん下へ
+      next = row > 0 ? inputs[i - nCols]
+        : (col > 0 ? inputs[(nRows - 1) * nCols + (col - 1)] : null);
+    } else {
+      // 下へ。列の最後なら、ひとつ右の列のいちばん上へ
+      next = row < nRows - 1 ? inputs[i + nCols]
+        : (col < nCols - 1 ? inputs[col + 1] : null);
+    }
+  } else {
+    if (e.shiftKey) {
+      // 左へ。行の先頭なら、ひとつ上の行のいちばん右へ
+      next = col > 0 ? inputs[i - 1] : (row > 0 ? inputs[i - 1] : null);
+    } else {
+      // 右へ。行の最後なら、次の行のいちばん左へ（表の外には出さない）
+      next = inputs[i + 1];
+    }
+    if (!next) return;   // 表のいちばん最後だけは、ふつうのTabで外へ出す
+  }
+  e.preventDefault();
+  moveFocus(el, next);
 }
 
 /* ===== ヘッダーUI ===== */
@@ -1983,6 +2150,86 @@ function exportExcel() {
   toast("Excelファイルを書き出しました");
 }
 
+/* ===== 名前の変更・児童の編集（prompt を使わない） ===== */
+var renameDone = null;
+var editingStudentId = null;
+function openRename(title, label, value, done) {
+  $("dlg-rename-title").textContent = title;
+  $("dlg-rename-label").textContent = label;
+  $("rename-value").value = value || "";
+  renameDone = done;
+  $("dlg-rename").showModal();
+  $("rename-value").focus();
+  $("rename-value").select();
+}
+function runRename() {
+  var v = $("rename-value").value.trim();
+  if (!v) { toast("名前を入れてください"); return; }
+  // done が false を返したときは、直せるようにダイアログを開いたままにする
+  if (renameDone && renameDone(v) === false) return;
+  $("dlg-rename").close();
+}
+function saveStudentDialog() {
+  var cls = getClass();
+  if (!cls || !editingStudentId) return;
+  var st = cls.students.filter(function (x) { return x.id === editingStudentId; })[0];
+  if (!st) { $("dlg-student").close(); return; }
+  var no = Math.round(Number($("st-no").value));
+  if (!no || no < 1) { toast("出席番号を入れてください"); return; }
+  st.no = no;
+  st.name = $("st-name").value.trim();
+  $("dlg-student").close();
+  afterEdit();
+}
+
+/** 入力欄でEnterを押したときに、ボタンを押したのと同じことをする */
+function enterRuns(el, fn) {
+  if (!el) return;
+  el.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    fn();
+  });
+}
+
+/* ===== 印刷（A4横の幅に収める） ===== */
+/** 用紙に収まる倍率を、印刷と同じ見た目で実際にはかって決める */
+function printZoom() {
+  var table = document.querySelector("table.seiseki");
+  var html = document.documentElement;
+  html.style.removeProperty("--print-zoom");
+  if (!table) return 1;
+  // A4横 297mm から余白10mm×2を引いた幅（1mm ≒ 3.78px）
+  var pageW = (297 - 20) * 3.7795;
+  html.classList.add("print-measure");
+  var printW = table.getBoundingClientRect().width;
+  html.classList.remove("print-measure");
+  var z = printW > pageW ? pageW / printW : 1;
+  return z < 1 ? Math.floor(z * 100) / 100 : 1;
+}
+/** 印刷ダイアログの選択を画面に当てて、見え方の説明を出す */
+function updatePrintPreview() {
+  var html = document.documentElement;
+  var all = document.querySelector('input[name="prrange"]:checked').value === "all";
+  html.classList.toggle("print-summary", !all);
+  // 印刷のときだけ氏名を隠す（画面の「氏名マスク」設定は変えない）
+  html.classList.toggle("print-noname", !$("pr-name").checked);
+  var z = printZoom();
+  html.style.setProperty("--print-zoom", String(z));
+  var pt = Math.round(10 * z * 10) / 10;
+  $("pr-note").textContent = z >= 1
+    ? "そのままの大きさで1枚の幅に収まります。"
+    : (pt >= 6
+      ? "用紙に収まるよう " + Math.round(z * 100) + "% に縮めます（読める大きさです）。"
+      : "列が多いため " + Math.round(z * 100) + "% まで縮みます。文字が小さすぎるので、" +
+      "「集計だけ」にするか、上の「学期」でしぼり込むことをおすすめします。");
+}
+function runPrint() {
+  updatePrintPreview();
+  $("dlg-print").close();
+  setTimeout(function () { window.print(); }, 50);
+}
+
 /* ===== 画面のイベント ===== */
 function wire() {
   $("table-area").addEventListener("input", onCellInput);
@@ -2021,7 +2268,30 @@ function wire() {
   window.addEventListener("beforeunload", flushSave);
 
   $("btn-help").onclick = function () { $("dlg-help").showModal(); };
-  $("btn-print").onclick = function () { window.print(); };
+  $("btn-print").onclick = function () {
+    $("pr-name").checked = !DATA.settings.mask;
+    updatePrintPreview();
+    $("dlg-print").showModal();
+  };
+  $("btn-print-run").onclick = runPrint;
+  $("pr-name").addEventListener("change", updatePrintPreview);
+  document.querySelectorAll('input[name="prrange"]').forEach(function (r) {
+    r.addEventListener("change", updatePrintPreview);
+  });
+  // Ctrl+P など、ボタンを使わずに印刷したときも用紙に合わせる
+  window.addEventListener("beforeprint", function () {
+    if (!document.documentElement.style.getPropertyValue("--print-zoom")) {
+      document.documentElement.style.setProperty("--print-zoom", String(printZoom()));
+    }
+  });
+  $("dlg-print").addEventListener("close", function () {
+    // 印刷用の見た目を画面に残さない
+    setTimeout(function () {
+      var h = document.documentElement;
+      h.classList.remove("print-summary", "print-noname");
+      h.style.removeProperty("--print-zoom");
+    }, 1000);
+  });
   $("btn-settings").onclick = function () { renderSettings(); $("dlg-settings").showModal(); };
   $("btn-backup").onclick = function () { $("bk-msg").textContent = ""; $("dlg-backup").showModal(); };
   $("btn-excel").onclick = function () {
@@ -2053,31 +2323,26 @@ function wire() {
   $("btn-add-dankai").onclick = function () { openItemDialog(null, "dankai"); };
   $("btn-sample").onclick = makeSample;
 
-  $("btn-add-class").onclick = function () {
+  var addClass = function () {
     var n = $("new-class-name").value.trim();
     if (!n) { toast("クラス名を入れてください"); return; }
     DATA.classes.push(newClass(n));
     $("new-class-name").value = "";
     doSave(); renderAll(); renderSettings();
+    $("new-class-name").focus();
   };
-  $("btn-add-student").onclick = function () {
+  var addStudent = function () {
     var cls = getClass(); if (!cls) return;
     var no = Number($("new-student-no").value);
     if (!no) { toast("番号を入れてください"); return; }
     cls.students.push({ id: uid(), no: no, name: $("new-student-name").value.trim() });
     $("new-student-no").value = no + 1; $("new-student-name").value = "";
     doSave(); renderAll(); renderSettings();
+    // 続けて次の児童を入れられるよう、氏名欄にカーソルを戻す
+    $("new-student-name").focus();
+    $("new-student-name").scrollIntoView({ block: "nearest" });
   };
-  $("btn-add-students-bulk").onclick = function () {
-    var cls = getClass(); if (!cls) return;
-    var n = prompt("何人ぶん追加しますか？（番号だけ登録します）", "20");
-    n = Number(n);
-    if (!n || n < 1 || n > 60) return;
-    var start = cls.students.reduce(function (m, s) { return Math.max(m, s.no); }, 0) + 1;
-    for (var i = 0; i < n; i++) cls.students.push({ id: uid(), no: start + i, name: "" });
-    doSave(); renderAll(); renderSettings();
-  };
-  $("btn-add-subject").onclick = function () {
+  var addSubject = function () {
     var cls = getClass(); if (!cls) return;
     var n = $("new-subject-name").value.trim();
     if (!n) { toast("教科名を入れてください"); return; }
@@ -2085,7 +2350,42 @@ function wire() {
     cls.subjects.push(newSubject(n));
     $("new-subject-name").value = "";
     doSave(); renderAll(); renderSettings();
+    $("new-subject-name").focus();
   };
+  $("btn-add-class").onclick = addClass;
+  $("btn-add-student").onclick = addStudent;
+  $("btn-add-subject").onclick = addSubject;
+  // Enterキーでも登録できるようにする（1人ずつ入れるときにマウスを使わずにすむ）
+  enterRuns($("new-class-name"), addClass);
+  enterRuns($("new-student-no"), function () { $("new-student-name").focus(); });
+  enterRuns($("new-student-name"), addStudent);
+  enterRuns($("new-subject-name"), addSubject);
+
+  $("btn-add-students-bulk").onclick = function () {
+    var cls = getClass(); if (!cls) return;
+    $("bulk-count").value = "30";
+    $("dlg-bulk").showModal();
+    $("bulk-count").focus();
+    $("bulk-count").select();
+  };
+  var runBulk = function () {
+    var cls = getClass(); if (!cls) return;
+    var n = Math.round(Number($("bulk-count").value));
+    if (!n || n < 1 || n > 60) { toast("1〜60の数を入れてください"); return; }
+    var start = cls.students.reduce(function (m, s) { return Math.max(m, s.no); }, 0) + 1;
+    for (var i = 0; i < n; i++) cls.students.push({ id: uid(), no: start + i, name: "" });
+    doSave(); renderAll(); renderSettings();
+    $("new-student-no").value = start + n;   // 次の番号に合わせておく
+    $("dlg-bulk").close();
+    toast(n + "人ぶんの番号を追加しました");
+  };
+  $("btn-bulk-run").onclick = runBulk;
+  enterRuns($("bulk-count"), runBulk);
+  $("btn-rename-run").onclick = runRename;
+  enterRuns($("rename-value"), runRename);
+  $("btn-student-save").onclick = saveStudentDialog;
+  enterRuns($("st-no"), function () { $("st-name").focus(); });
+  enterRuns($("st-name"), saveStudentDialog);
   $("btn-delete-all").onclick = function () {
     if (!confirm("すべての年度・クラス・成績データを削除します。よろしいですか？")) return;
     if (!confirm("本当に削除します。元に戻せません。実行しますか？")) return;
@@ -2107,7 +2407,9 @@ function wire() {
     if (d.clsRename) {
       var c = DATA.classes.filter(function (x) { return x.id === d.clsRename; })[0];
       if (!c) return;
-      var n = prompt("クラス名", c.name); if (n) { c.name = n.trim(); afterEdit(); }
+      openRename("クラス名の変更", "クラス名", c.name, function (n) {
+        c.name = n; afterEdit();
+      });
     } else if (d.clsDel) {
       if (DATA.classes.length <= 1) { toast("最後の1クラスは削除できません"); return; }
       if (!confirm("このクラスと成績をすべて削除します。よろしいですか？")) return;
@@ -2118,9 +2420,11 @@ function wire() {
     } else if (d.stEdit) {
       var st = cls.students.filter(function (x) { return x.id === d.stEdit; })[0];
       if (!st) return;
-      var no = prompt("出席番号", st.no); if (no === null) return;
-      var nm = prompt("氏名（空欄可）", st.name || ""); if (nm === null) return;
-      st.no = Number(no) || st.no; st.name = nm.trim(); afterEdit();
+      editingStudentId = st.id;
+      $("st-no").value = st.no;
+      $("st-name").value = st.name || "";
+      $("dlg-student").showModal();
+      $("st-name").focus();
     } else if (d.stDel) {
       if (!confirm("この児童と入力済みの点数を削除します。よろしいですか？")) return;
       cls.students = cls.students.filter(function (x) { return x.id !== d.stDel; });
@@ -2129,12 +2433,10 @@ function wire() {
     } else if (d.subRename) {
       var s = cls.subjects.filter(function (x) { return x.id === d.subRename; })[0];
       if (!s) return;
-      var sn = prompt("教科名", s.name);
-      if (sn) {
-        sn = sn.trim();
-        if (subjectNameTaken(cls, sn, s.id)) { toast("同じ名前の教科があります"); return; }
+      openRename("教科名の変更", "教科名", s.name, function (sn) {
+        if (subjectNameTaken(cls, sn, s.id)) { toast("同じ名前の教科があります"); return false; }
         s.name = sn; afterEdit();
-      }
+      });
     } else if (d.subDel) {
       if (cls.subjects.length <= 1) { toast("最後の1教科は削除できません"); return; }
       if (!confirm("この教科と成績をすべて削除します。よろしいですか？")) return;
