@@ -44,7 +44,7 @@
   .topbar-row + .topbar-row{margin-top:10px;}
   .spacer{flex:1;}
   .field{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#555;}
-  select,input[type="text"],input[type="number"],input[type="password"],input[type="date"]{
+  select,input[type="text"],input[type="number"],input[type="password"],input[type="date"],textarea{
     padding:7px 10px;
     border-radius:10px;
     border:1px solid var(--line);
@@ -52,6 +52,25 @@
     font-family:inherit;
     background:#fff;
     color:#2a2a2a;
+  }
+  textarea{width:100%;box-sizing:border-box;resize:vertical;line-height:1.6;}
+  .roster-preview{
+    border:1px solid var(--line);border-radius:12px;margin:10px 0;
+    max-height:220px;overflow:auto;
+  }
+  .roster-preview table{width:100%;border-collapse:collapse;font-size:13px;}
+  .roster-preview th,.roster-preview td{
+    border-bottom:1px solid var(--line);padding:5px 10px;text-align:left;
+  }
+  .roster-preview th{background:#eef3fb;position:sticky;top:0;}
+  .roster-preview td.no{width:70px;font-weight:700;}
+  .roster-warn{
+    background:#fff6f6;border:1px solid #f3c7c7;color:#b4453f;
+    border-radius:10px;padding:8px 12px;font-size:13px;line-height:1.8;margin:10px 0;
+  }
+  .roster-ok{
+    background:#f2fbf4;border:1px solid #bfe4c8;color:#2f7d45;
+    border-radius:10px;padding:8px 12px;font-size:13px;margin:10px 0;
   }
   button{
     font-family:inherit;
@@ -400,6 +419,7 @@
       <input type="text" id="new-student-name" placeholder="氏名（空欄でも可）" style="width:200px;">
       <button class="sub mini" id="btn-add-student">児童を追加</button>
       <button class="sub mini" id="btn-add-students-bulk">番号だけまとめて追加</button>
+      <button class="sub mini" id="btn-paste-roster">Excelから貼り付け</button>
     </div>
 
     <h3>教科（いま選んでいるクラス）</h3>
@@ -464,6 +484,30 @@
     <div class="row">
       <button id="btn-print-run">印刷する</button>
     </div>
+  </div>
+</dialog>
+
+<!-- ===== Excelから名簿を貼り付け ===== -->
+<dialog id="dlg-roster">
+  <div class="dlg-head">
+    <h2>Excelから名簿を貼り付け</h2>
+    <button class="sub mini" data-close>閉じる</button>
+  </div>
+  <div class="dlg-body">
+    <p class="note">Excelで名簿の範囲を選んでコピー（Ctrl+C）し、下の枠の中で貼り付け（Ctrl+V）してください。<br>
+      「番号＋氏名」でも「氏名だけ」でも大丈夫です。姓と名が別の列に分かれていても、つなげて読み取ります。<br>
+      1行目が「番号」「氏名」などの見出しなら、自動でとばします。</p>
+    <textarea id="roster-text" rows="8"
+      placeholder="ここに貼り付けてください&#10;&#10;例）&#10;1&#9;安藤　太郎&#10;2&#9;伊藤　さくら"></textarea>
+    <div id="roster-result"></div>
+    <div class="row" id="roster-mode-row" style="display:none;">
+      <label class="toggle"><input type="radio" name="rostermode" value="add" checked> いまの児童のあとに追加する</label>
+      <label class="toggle"><input type="radio" name="rostermode" value="replace"> いまの児童を置きかえる</label>
+    </div>
+    <div class="row">
+      <button id="btn-roster-run" disabled>この内容で登録する</button>
+    </div>
+    <p class="note">貼り付けた名簿は、このパソコンの中だけで処理されます。外部には送信されません。</p>
   </div>
 </dialog>
 
@@ -663,6 +707,10 @@
       <li>「設定」からクラス・児童・教科・評価項目を登録します。まず試したいときは「サンプルデータを入れる」が便利です。</li>
       <li>児童の登録は、番号と氏名を入れて<code>Enter</code>を押すだけで次々に追加できます
         （番号は自動で1つずつ増えます）。氏名をあとから入れるなら「番号だけまとめて追加」が早いです。</li>
+      <li><b>Excelの名簿があるなら「Excelから貼り付け」がいちばん早いです。</b>
+        名簿の範囲を選んでコピーし、枠の中で貼り付けるだけです。「番号＋氏名」でも「氏名だけ」でも、
+        姓と名が別の列でも読み取ります。ふりがなの列は自動で除きます。
+        登録する前に読み取り結果を表で確認できます。</li>
       <li>入力したデータはこのパソコンの中だけに自動保存されます。外部には一切送信しません。</li>
     </ul>
     <h3>2. 点数の入力</h3>
@@ -709,6 +757,10 @@
         USBメモリやクラウドに置くときは必ずパスワードを付けてください。</li>
       <li>ブラウザの「閲覧データの削除」でサイトデータを消すと、このツールのデータも消えます。
         学期末などにバックアップを取っておくと安心です。</li>
+      <li>Excelから名簿を貼り付けても、中身はこのパソコンから出ません（通信は技術的に遮断してあります）。
+        ただし<b>Windowsのクリップボード履歴（Win+V）を「デバイス間で同期」にしていると、
+        コピーした名簿がクラウドに送られます。</b>これはこのツールの外の話ですが、
+        名簿を扱うなら同期はオフにしておくことをおすすめします。</li>
     </ul>
   </div>
 </dialog>
@@ -2150,6 +2202,202 @@ function exportExcel() {
   toast("Excelファイルを書き出しました");
 }
 
+/* ===== Excelからの名簿貼り付け ===== */
+/** 全角の数字を半角にする */
+function toHalfNum(s) {
+  return String(s).replace(/[０-９]/g, function (c) {
+    return String.fromCharCode(c.charCodeAt(0) - 0xFEE0);
+  });
+}
+/** 1行目が「番号」「氏名」などの見出しかどうか */
+function looksLikeHeader(cells) {
+  if (/\d/.test(toHalfNum(cells[0]))) return false;
+  return /番号|氏名|名前|なまえ|ふりがな|出席|せき|name|no\.?/i.test(cells.join(" "));
+}
+/** 見出しの行から、どの列が番号・氏名・姓・名なのかを探す */
+function mapHeader(cells) {
+  var map = { no: -1, name: -1, sei: -1, mei: -1 };
+  cells.forEach(function (c, i) {
+    var t = c.replace(/\s/g, "");
+    // ふりがなの列は氏名として使わない
+    if (/ふりがな|フリガナ|ふり仮名|振り?仮名|よみ|ヨミ|読み|かな|カナ/.test(t)) return;
+    if (map.no < 0 && /^(番号|出席番号|出席№|№|No\.?|番)$/i.test(t)) map.no = i;
+    else if (map.name < 0 && /^(氏名|名前|なまえ|生徒名|児童名|学生名)$/.test(t)) map.name = i;
+    else if (map.sei < 0 && /^(姓|せい|名字|苗字)$/.test(t)) map.sei = i;
+    else if (map.mei < 0 && /^(名|めい)$/.test(t)) map.mei = i;
+  });
+  return map;
+}
+/** 空でない列をつないで1つの氏名にする */
+function joinNameCells(cells) {
+  return cells.filter(function (c) { return c !== ""; }).join(" ");
+}
+/**
+ * 見出しが無いときに、ふりがなの列を見つける。
+ * 「その列が全部かなだけ」かつ「ほかの列に漢字がある」ときだけ、ふりがなとみなす。
+ * （姓と名が分かれていて「名」がたまたま かな の子がいても、列全体が かな にはならないので消えない）
+ */
+function furiganaColumns(rows, startCol) {
+  var maxLen = rows.reduce(function (m, r) { return Math.max(m, r.length); }, 0);
+  var otherHasKanji = rows.some(function (r) {
+    return r.some(function (v) { return /[一-鿿]/.test(v || ""); });
+  });
+  var drop = {};
+  if (!otherHasKanji) return drop;
+  for (var c = startCol; c < maxLen; c++) {
+    var vals = [];
+    rows.forEach(function (r) {
+      var v = (r[c] || "").replace(/^\s+|\s+$/g, "");
+      if (v !== "") vals.push(v);
+    });
+    if (vals.length < 2) continue;   // 1件だけでは判断しない
+    var allKana = vals.every(function (v) { return /^[ぁ-んァ-ヶー・\s]+$/.test(v); });
+    if (allKana) drop[c] = true;
+  }
+  return drop;
+}
+/**
+ * 貼り付けた文字列を {no, name} の並びに読み取る。
+ * Excelからのコピーはタブ区切り。CSVや1列だけの貼り付けにも対応する。
+ */
+function parseRoster(text) {
+  var lines = String(text == null ? "" : text).replace(/\r\n?/g, "\n").split("\n");
+  var rows = [];
+  lines.forEach(function (ln) {
+    if (!ln.trim()) return;
+    var cells = ln.indexOf("\t") >= 0 ? ln.split("\t")
+      : (ln.indexOf(",") >= 0 ? ln.split(",") : [ln]);
+    cells = cells.map(function (c) {
+      return c.replace(/^\s+|\s+$/g, "").replace(/^"|"$/g, "").replace(/^\s+|\s+$/g, "");
+    });
+    while (cells.length > 0 && cells[cells.length - 1] === "") cells.pop();
+    if (cells.length === 0) return;
+    rows.push(cells);
+  });
+
+  // 見出しがあれば、どの列を使うかをそこから決める（ふりがな列を取り込まないため）
+  var map = null;
+  if (rows.length > 0 && looksLikeHeader(rows[0])) {
+    var m = mapHeader(rows.shift());
+    if (m.name >= 0 || (m.sei >= 0 && m.mei >= 0)) map = m;
+  }
+
+  // 見出しが無いときは、1列目が番号かどうかと、ふりがなの列を先に調べておく
+  var allNumeric = !map && rows.length > 0 && rows.every(function (cells) {
+    return /^\d{1,3}$/.test(toHalfNum(cells[0]));
+  });
+  // 番号だけを貼り付けた場合（氏名はあとから入れる）
+  var onlyNumbers = allNumeric && rows.every(function (cells) { return cells.length === 1; });
+  // 氏名が空の行が1つでもあると数が合わなくなるので、行ごとではなく列全体で判断する
+  var noFirst = allNumeric && !onlyNumbers;
+  var drop = map ? {} : furiganaColumns(rows, noFirst ? 1 : 0);
+
+  var out = [], last = 0;
+  rows.forEach(function (cells) {
+    var no = null, name;
+    if (map) {
+      if (map.no >= 0) {
+        var v = toHalfNum(cells[map.no] || "");
+        if (/^\d{1,3}$/.test(v)) no = Number(v);
+      }
+      // 姓と名の列は、そのままつなぐ（かな判定はしない）
+      name = map.name >= 0 ? (cells[map.name] || "")
+        : joinNameCells([cells[map.sei] || "", cells[map.mei] || ""]);
+    } else if (onlyNumbers) {
+      no = Number(toHalfNum(cells[0]));
+      name = "";
+    } else {
+      var start = 0;
+      if (noFirst) { no = Number(toHalfNum(cells[0])); start = 1; }
+      name = joinNameCells(cells.filter(function (c, i) {
+        return i >= start && !drop[i];
+      }));
+    }
+    if (no == null || no < 1) no = last + 1;
+    last = no;
+    out.push({ no: no, name: String(name || "").replace(/^\s+|\s+$/g, "") });
+  });
+  return out;
+}
+/** 読み取り結果を表で見せ、気になる点があれば伝える */
+function renderRosterPreview() {
+  var list = parseRoster($("roster-text").value);
+  var box = $("roster-result");
+  var btn = $("btn-roster-run");
+  var cls = getClass();
+  rosterParsed = list;
+
+  if (list.length === 0) {
+    box.innerHTML = "";
+    $("roster-mode-row").style.display = "none";
+    btn.disabled = true;
+    return;
+  }
+
+  var warn = [];
+  var seen = {}, dup = [];
+  list.forEach(function (s) {
+    if (seen[s.no]) { if (dup.indexOf(s.no) < 0) dup.push(s.no); }
+    seen[s.no] = 1;
+  });
+  if (dup.length > 0) warn.push("出席番号が重なっています：" + dup.join("、"));
+  var noName = list.filter(function (s) { return !s.name; }).length;
+  if (noName > 0) warn.push("氏名が空の行が " + noName + " 件あります（番号だけで登録されます）");
+  if (list.length > 60) warn.push("人数が " + list.length + " 人と多いです。範囲を選びまちがえていないか確かめてください");
+
+  var rows = list.map(function (s) {
+    return '<tr><td class="no">' + esc(s.no) + "</td><td>" +
+      (s.name ? esc(s.name) : '<span style="color:#b4453f;">（氏名なし）</span>') + "</td></tr>";
+  }).join("");
+  box.innerHTML =
+    '<div class="roster-ok">' + list.length + "人を読み取りました。下の内容でよければ登録してください。</div>" +
+    (warn.length ? '<div class="roster-warn">' + warn.map(esc).join("<br>") + "</div>" : "") +
+    '<div class="roster-preview"><table><thead><tr><th>番号</th><th>氏名</th></tr></thead>' +
+    "<tbody>" + rows + "</tbody></table></div>";
+
+  // すでに児童がいるときだけ「追加」か「置きかえ」かを選んでもらう
+  $("roster-mode-row").style.display = (cls && cls.students.length > 0) ? "" : "none";
+  btn.disabled = false;
+}
+var rosterParsed = [];
+function runRoster() {
+  var cls = getClass();
+  if (!cls) return;
+  if (!rosterParsed || rosterParsed.length === 0) return;
+  var replace = cls.students.length > 0 &&
+    document.querySelector('input[name="rostermode"]:checked').value === "replace";
+
+  if (replace) {
+    var scored = 0;
+    cls.subjects.forEach(function (s) {
+      s.items.forEach(function (it) {
+        scored += Object.keys(it.scores || {}).length + Object.keys(it.grades || {}).length;
+      });
+    });
+    var msg = "いまの " + cls.students.length + "人を消して、" + rosterParsed.length + "人に置きかえます。";
+    if (scored > 0) msg += "\n\n入力済みの点数・評価（" + scored + "か所）も一緒に消えます。";
+    msg += "\n\nよろしいですか？";
+    if (!confirm(msg)) return;
+    cls.students.slice().forEach(function (st) { purgeStudentScores(cls, st.id); });
+    cls.students = [];
+  }
+
+  var start = replace ? 0
+    : cls.students.reduce(function (m, s) { return Math.max(m, s.no); }, 0);
+  rosterParsed.forEach(function (s, i) {
+    cls.students.push({
+      id: uid(),
+      no: replace ? s.no : start + i + 1,   // 追加のときは今の続き番号にする
+      name: s.name
+    });
+  });
+  doSave(); renderAll(); renderSettings();
+  $("new-student-no").value =
+    cls.students.reduce(function (m, s) { return Math.max(m, s.no); }, 0) + 1;
+  $("dlg-roster").close();
+  toast(rosterParsed.length + "人を登録しました");
+}
+
 /* ===== 名前の変更・児童の編集（prompt を使わない） ===== */
 var renameDone = null;
 var editingStudentId = null;
@@ -2381,6 +2629,23 @@ function wire() {
   };
   $("btn-bulk-run").onclick = runBulk;
   enterRuns($("bulk-count"), runBulk);
+
+  $("btn-paste-roster").onclick = function () {
+    if (!getClass()) { toast("先にクラスを追加してください"); return; }
+    $("roster-text").value = "";
+    $("roster-result").innerHTML = "";
+    $("roster-mode-row").style.display = "none";
+    $("btn-roster-run").disabled = true;
+    rosterParsed = [];
+    $("dlg-roster").showModal();
+    $("roster-text").focus();
+  };
+  $("roster-text").addEventListener("input", renderRosterPreview);
+  // 貼り付け直後は値がまだ入っていないので、少し待ってから読み取る
+  $("roster-text").addEventListener("paste", function () {
+    setTimeout(renderRosterPreview, 0);
+  });
+  $("btn-roster-run").onclick = runRoster;
   $("btn-rename-run").onclick = runRename;
   enterRuns($("rename-value"), runRename);
   $("btn-student-save").onclick = saveStudentDialog;
