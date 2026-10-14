@@ -81,6 +81,12 @@ export default async function ToolPage(props: PageProps<"/tools/[slug]">) {
             </div>
           </div>
         )}
+        {tool.details && (
+          <div className="mt-6 rounded-2xl border border-line bg-white p-5">
+            <h2 className="mb-2 text-sm font-bold text-navy">くわしく</h2>
+            <p className="text-sm leading-relaxed text-muted">{tool.details}</p>
+          </div>
+        )}
         {tool.status !== "live" && (
           <div className="mt-4 rounded-2xl border border-dashed border-line bg-white p-10 text-center text-sm text-muted">
             このツールはまだ準備中です。公開までしばらくお待ちください。
