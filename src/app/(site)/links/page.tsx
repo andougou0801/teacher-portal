@@ -8,12 +8,15 @@ import {
 export const metadata: Metadata = {
   title: "便利な公式サイト集 | 全国教員支援ポータル",
   description:
-    "文部科学省・NHK for Schoolなど、教員が必要とする公式サイトをまとめて紹介します。",
+    "プリント・ぬりえ・なぞなぞから、教科の理解を深めるサイト、教科書会社の授業サポート、朝の会で使える毎日の話題まで、教員に役立つサイトをまとめて紹介します。",
 };
 
 const categories: OfficialLink["category"][] = [
   "教育委員会・公的機関",
   "プリント・ドリル",
+  "教科の理解を深める",
+  "教科書会社の授業サポート",
+  "毎日の話題（朝の会・帰りの会）",
   "ぬりえ",
   "めいろ・なぞなぞ",
 ];
@@ -27,7 +30,9 @@ export default function LinksPage() {
         </div>
         <h1 className="mt-2 mb-2 text-2xl font-bold">🔗 便利な公式サイト集</h1>
         <p className="mx-auto max-w-lg text-sm text-muted">
-          教員が必要とする公式サイトを、何ができるか・どんなときに使うかとあわせて紹介します。
+          授業準備に使えるサイトを、何ができるか・どんなときに使うかとあわせて紹介します。
+          プリントやぬりえだけでなく、教科の理解を深めるサイト、教科書会社の授業サポート、
+          朝の会で紹介できる毎日の話題も集めました。
         </p>
       </div>
 
@@ -48,8 +53,13 @@ export default function LinksPage() {
                   rel="noopener noreferrer"
                   className="rounded-2xl border border-line bg-white p-4"
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <h3 className="text-sm font-bold">{link.name}</h3>
+                    {link.subject && (
+                      <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[13px] font-bold text-accent">
+                        {link.subject}
+                      </span>
+                    )}
                     <span className="rounded-full bg-background px-2 py-0.5 text-[13px] font-bold text-muted">
                       外部サイト ↗
                     </span>
