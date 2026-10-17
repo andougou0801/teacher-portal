@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabaseClient";
 import ReportButton from "@/components/ReportButton";
-import { findPersonalInfoRisks, type PersonalInfoRisk } from "@/lib/personalInfoCheck";
+import {
+  findPersonalInfoRisksInPost,
+  type PersonalInfoRisk,
+} from "@/lib/personalInfoCheck";
 import {
   PostingGuideline,
   PersonalInfoWarning,
@@ -102,7 +105,7 @@ export default function QuestionDetailPage() {
     // 警告をまだ出していないときだけ、ここで止めて確認してもらう。
     // 同じ本文のまま2回目を押されたら、そのまま投稿する。
     if (infoRisks === null) {
-      const risks = findPersonalInfoRisks(text);
+      const risks = findPersonalInfoRisksInPost(text, formNickname);
       if (risks.length > 0) {
         setInfoRisks(risks);
         setSubmitMessage(null);
@@ -228,7 +231,11 @@ export default function QuestionDetailPage() {
                   id="answer-nickname"
                   type="text"
                   value={formNickname}
-                  onChange={(e) => setFormNickname(e.target.value)}
+                  onChange={(e) => {
+                    setFormNickname(e.target.value);
+                    // ニックネームもチェック対象なので、直したら調べ直す。
+                    setInfoRisks(null);
+                  }}
                   maxLength={20}
                   placeholder="ニックネーム（任意）"
                   className="rounded-xl border border-line px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
