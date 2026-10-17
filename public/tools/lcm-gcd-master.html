@@ -68,6 +68,19 @@
   .unit-chip .acc b{display:block;font-size:15px;color:var(--ok);}
 
   .count-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+
+  /* ---- 数の範囲えらび ---- */
+  .range-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+  .range-btn{
+    border:3px solid #e2e8f0;background:#fafcff;border-radius:14px;padding:13px 10px;
+    cursor:pointer;color:#555;font-family:inherit;text-align:left;
+  }
+  .range-btn b{display:block;font-size:15px;font-weight:800;color:#3b4a5c;line-height:1.5;}
+  .range-btn span{display:block;font-size:11.5px;font-weight:700;color:#8a97a8;margin-top:3px;line-height:1.7;}
+  .range-btn.selected{border-color:var(--accent);background:#eaf2ff;}
+  .range-btn.selected b{color:var(--accent-dark);}
+  .range-btn:active{transform:scale(0.98);}
+  @media (max-width:560px){ .range-grid{grid-template-columns:1fr;} }
   .count-btn{border:3px solid #e2e8f0;background:#fafcff;border-radius:14px;padding:13px 4px;font-size:15px;font-weight:800;cursor:pointer;color:#555;font-family:inherit;}
   .count-btn.selected{border-color:var(--accent);background:#eaf2ff;color:var(--accent-dark);}
 
@@ -246,6 +259,11 @@
         </button>
       </div>
     </div>
+    <div class="card">
+      <h2 class="section-title">数の大きさ（どちらのモードにも使われます）</h2>
+      <div class="range-grid" id="rangeGridHome"></div>
+      <p class="mini-note" id="rangeNoteHome"></p>
+    </div>
     <div class="card" id="homeRecordCard">
       <h2 class="section-title">きろく</h2>
       <p class="rank-note" id="homeRecord"></p>
@@ -260,7 +278,10 @@
       <div class="unit-list" id="unitList"></div>
     </div>
     <div class="card">
-      <h2 class="section-title">なんもん やる？</h2>
+      <h2 class="section-title">数の大きさ</h2>
+      <div class="range-grid" id="rangeGridUnits"></div>
+      <p class="mini-note" id="rangeNoteUnits"></p>
+      <h2 class="section-title" style="margin-top:18px;">なんもん やる？</h2>
       <div class="count-grid" id="countGrid"></div>
       <button class="main-btn" id="startBasicBtn">はじめる</button>
       <button class="sub-btn" id="backHomeFromUnits">もどる</button>
@@ -404,6 +425,43 @@ const PAIRS_GCD = [
 const NUMS_DIVISOR = [12,16,18,20,24,28,30,32,36,40,42,45,48,54,56,60,64,72];
 const BASES_MULTIPLE = [2,3,4,5,6,7,8,9,11,12];
 
+/* ---------- 九九の範囲にしぼった出題用の数 ----------
+   倍数・約数は、九九が身についていれば書き出せる数にそろえてある。
+   ・倍数のもとの数は 2〜9（九九の段）
+   ・公倍数の組は 2〜9 どうし（この組の最小公倍数は必ず九九の答えになる）
+   ・約数でさがす数は「九九の答え」だけ（12=2×6、72=8×9 など）
+   これにより、児童は九九を思い出すだけで書き出せる。 */
+const BASES_MULTIPLE_KUKU = [2,3,4,5,6,7,8,9];
+const PAIRS_LCM_KUKU = (function(){
+  const out = [];
+  for(let a = 2; a <= 9; a++){
+    for(let b = a + 1; b <= 9; b++) out.push([a, b]);
+  }
+  return out;
+})();
+const NUMS_DIVISOR_KUKU = [12,16,18,20,24,27,28,30,32,36,40,42,45,48,54,56,63,64,72,81];
+const PAIRS_GCD_KUKU = [
+  [12,18],[12,16],[12,20],[14,21],[16,20],[16,24],[18,24],[18,27],
+  [20,30],[21,28],[24,32],[24,36],[27,36],[28,42],[30,45],[32,40],
+  [36,48],[36,54],[42,56],[45,63],[48,72],[54,72],[56,63],[64,72]
+];
+
+// 「九九の中だけ」か「100までの数」か。初めは九九から取り組めるようにしておく。
+const RANGE_KEY = 'lcm-gcd-master-range-v1';
+let numberRange = (lsGet(RANGE_KEY, 'kuku') === 'wide') ? 'wide' : 'kuku';
+function isKuku(){ return numberRange === 'kuku'; }
+// 九九の答え（1×1〜9×9）の集合。九九でたどりつける数かどうかの判定に使う。
+const KUKU_ANSWERS = (function(){
+  const s = new Set();
+  for(let a = 1; a <= 9; a++) for(let b = 1; b <= 9; b++) s.add(a * b);
+  return s;
+})();
+function inKuku(n){ return KUKU_ANSWERS.has(n); }
+function basesMultiple(){ return isKuku() ? BASES_MULTIPLE_KUKU : BASES_MULTIPLE; }
+function pairsLcm(){ return isKuku() ? PAIRS_LCM_KUKU : PAIRS_LCM; }
+function pairsGcd(){ return isKuku() ? PAIRS_GCD_KUKU : PAIRS_GCD; }
+function numsDivisor(){ return isKuku() ? NUMS_DIVISOR_KUKU : NUMS_DIVISOR; }
+
 /* ---------- 単元の定義 ---------- */
 const UNITS = [
   {
@@ -442,7 +500,7 @@ const UNITS = [
 /* ---------- 問題づくり（基本モード） ---------- */
 // 返す形：{ kind, text, sub, answer, check(), explain() }
 function makeBaiQuestion(){
-  const base = pick(BASES_MULTIPLE);
+  const base = pick(basesMultiple());
   if(Math.random() < 0.5){
     // 小さいほうから3つ書く
     const ans = multiplesOf(base, 3);
@@ -477,9 +535,19 @@ function makeBaiQuestion(){
 }
 
 function makeKoubaiQuestion(){
-  const [a, b] = pick(PAIRS_LCM);
-  const L = lcm(a, b);
-  if(Math.random() < 0.45){
+  let [a, b] = pick(pairsLcm());
+  let L = lcm(a, b);
+  const askTwo = Math.random() < 0.45;
+  // 公倍数を2つ答えるときは「2つ目（最小公倍数の2倍）」も九九でたどりつける
+  // 組だけを使う。そうしないと 8と9 で 144 のような数が答えになってしまう。
+  if(askTwo && isKuku() && !inKuku(L * 2)){
+    const ok = pairsLcm().filter(p => inKuku(lcm(p[0], p[1]) * 2));
+    if(ok.length){
+      [a, b] = pick(ok);
+      L = lcm(a, b);
+    }
+  }
+  if(askTwo){
     // 公倍数を2つ
     return {
       kind:'inputs', count:2,
@@ -514,7 +582,7 @@ function koubaiExplain(a, b){
 }
 
 function makeYakuQuestion(){
-  const n = pick(NUMS_DIVISOR);
+  const n = pick(numsDivisor());
   const divs = divisorsOf(n);
   if(Math.random() < 0.5){
     // 約数をすべてえらぶ
@@ -554,7 +622,7 @@ function yakuExplain(n){
 }
 
 function makeKouyakuQuestion(){
-  const [a, b] = pick(PAIRS_GCD);
+  const [a, b] = pick(pairsGcd());
   const G = gcd(a, b);
   const common = divisorsOf(G);
   if(Math.random() < 0.45){
@@ -641,7 +709,7 @@ const WORD_GCD = [
 // ここを選べることが、この単元でいちばん大事な力なので、ヒントで答えを先に教えない。
 function makeChoiceQuestion(){
   const useLcm = Math.random() < 0.5;
-  const [a, b] = pick(useLcm ? PAIRS_LCM : PAIRS_GCD);
+  const [a, b] = pick(useLcm ? pairsLcm() : pairsGcd());
   const v = useLcm ? lcm(a, b) : gcd(a, b);
   const q = pick(useLcm ? WORD_LCM : WORD_GCD).make(a, b, v);
   const correct = useLcm ? '最小公倍数' : '最大公約数';
@@ -665,7 +733,7 @@ function makeWordQuestion(){
   // 3問に1問は「どちらを使うか」だけを問う（計算より先に判断の練習）
   if(Math.random() < 0.34) return makeChoiceQuestion();
   if(Math.random() < 0.5){
-    const [a, b] = pick(PAIRS_LCM);
+    const [a, b] = pick(pairsLcm());
     const L = lcm(a, b);
     const q = pick(WORD_LCM).make(a, b, L);
     return {
@@ -677,7 +745,7 @@ function makeWordQuestion(){
       }
     };
   }
-  const [a, b] = pick(PAIRS_GCD);
+  const [a, b] = pick(pairsGcd());
   const G = gcd(a, b);
   const q = pick(WORD_GCD).make(a, b, G);
   return {
@@ -777,6 +845,43 @@ function renderUnitList(){
       + '<span class="acc">せいかい率<b>' + acc + '</b></span>';
     b.addEventListener('click', () => { selectedUnit = u.id; renderUnitList(); });
     wrap.appendChild(b);
+  });
+}
+
+const RANGE_OPTIONS = [
+  {
+    id:'kuku', label:'九九の中だけ',
+    note:'2〜9の段でさがせる数だけが出ます。九九を思い出せば書き出せます。'
+  },
+  {
+    id:'wide', label:'100までの数',
+    note:'12や18などもふくめた、教科書と同じくらいの大きさの数が出ます。'
+  }
+];
+
+function renderRangeGrids(){
+  [['rangeGridHome','rangeNoteHome'], ['rangeGridUnits','rangeNoteUnits']].forEach(([gridId, noteId]) => {
+    const wrap = document.getElementById(gridId);
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    RANGE_OPTIONS.forEach(opt => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'range-btn' + (opt.id === numberRange ? ' selected' : '');
+      b.innerHTML = '<b>' + opt.label + '</b><span>' + opt.note + '</span>';
+      b.addEventListener('click', () => {
+        numberRange = opt.id;
+        lsSet(RANGE_KEY, numberRange);
+        renderRangeGrids();
+      });
+      wrap.appendChild(b);
+    });
+    const note = document.getElementById(noteId);
+    if(note){
+      note.textContent = isKuku()
+        ? '※ いまは「九九の中だけ」。かけ算九九でさがせる数だけが出ます。'
+        : '※ いまは「100までの数」。九九より大きい数も出ます。';
+    }
   });
 }
 
@@ -1081,8 +1186,13 @@ function gameQuestion(depth){
   const type = pick(types);
 
   if(type === 'isbai'){
-    const base = pick(level === 1 ? [2,3,4,5,6] : [4,6,7,8,9,12]);
-    const n = base * (2 + Math.floor(Math.random() * 8)) + (Math.random() < 0.5 ? 0 : pick([1,2,3]));
+    // 九九の範囲では、もとの数は九九の段（2〜9）、くらべる数も9倍まで。
+    const base = isKuku()
+      ? pick(level === 1 ? [2,3,4,5,6] : [4,6,7,8,9])
+      : pick(level === 1 ? [2,3,4,5,6] : [4,6,7,8,9,12]);
+    let n = base * (2 + Math.floor(Math.random() * 8)) + (Math.random() < 0.5 ? 0 : pick([1,2,3]));
+    // 九九の範囲では、くらべる数も9×9＝81までにおさめる
+    if(isKuku() && n > 81) n = base * (2 + Math.floor(Math.random() * Math.max(1, Math.floor(81 / base) - 1)));
     const yes = n % base === 0;
     return {
       label: (yes || !yes) ? '倍数かな？' : '',
@@ -1092,7 +1202,7 @@ function gameQuestion(depth){
     };
   }
   if(type === 'isyaku'){
-    const n = pick(NUMS_DIVISOR);
+    const n = pick(numsDivisor());
     const d = pick(divisorsOf(n).concat([Math.min(n - 1, 7), 11, 13]));
     const yes = n % d === 0;
     return {
@@ -1103,10 +1213,11 @@ function gameQuestion(depth){
     };
   }
   if(type === 'lcm'){
-    const pool = level === 1 ? PAIRS_LCM.filter(p => lcm(p[0],p[1]) <= 36)
-               : level === 2 ? PAIRS_LCM.filter(p => lcm(p[0],p[1]) <= 72)
-               : PAIRS_LCM;
-    const [a, b] = pick(pool.length ? pool : PAIRS_LCM);
+    const src = pairsLcm();
+    const pool = level === 1 ? src.filter(p => lcm(p[0],p[1]) <= 36)
+               : level === 2 ? src.filter(p => lcm(p[0],p[1]) <= 72)
+               : src;
+    const [a, b] = pick(pool.length ? pool : src);
     const L = lcm(a, b);
     const wrongs = new Set();
     wrongs.add(a * b);
@@ -1116,8 +1227,9 @@ function gameQuestion(depth){
     const opts = shuffle([L].concat(Array.from(wrongs).filter(x => x !== L && x > 0).slice(0, 3)));
     return { label:'最小公倍数', text: a + ' と ' + b, choices: opts.map(String), answer: String(L) };
   }
-  const pool = level === 1 ? PAIRS_GCD.filter(p => p[0] <= 24 && p[1] <= 36) : PAIRS_GCD;
-  const [a, b] = pick(pool.length ? pool : PAIRS_GCD);
+  const srcG = pairsGcd();
+  const pool = level === 1 ? srcG.filter(p => p[0] <= 24 && p[1] <= 36) : srcG;
+  const [a, b] = pick(pool.length ? pool : srcG);
   const G = gcd(a, b);
   const wrongs = new Set();
   divisorsOf(G).forEach(d => { if(d !== G) wrongs.add(d); });
@@ -1333,7 +1445,7 @@ function askYesNo(message, onYes, onNo){
 
 /* ---------- イベント ---------- */
 document.getElementById('toBasicBtn').addEventListener('click', () => {
-  renderUnitList(); renderCountGrid(); show('units');
+  renderUnitList(); renderCountGrid(); renderRangeGrids(); show('units');
 });
 document.getElementById('toGameBtn').addEventListener('click', startGame);
 document.getElementById('startBasicBtn').addEventListener('click', startBasic);
@@ -1371,6 +1483,7 @@ document.getElementById('homeBtn').addEventListener('click', () => {
 renderHomeRecord();
 renderUnitList();
 renderCountGrid();
+renderRangeGrids();
 </script>
 </body>
 </html>
