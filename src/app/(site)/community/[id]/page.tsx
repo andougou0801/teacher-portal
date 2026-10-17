@@ -5,6 +5,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabaseClient";
 import ReportButton from "@/components/ReportButton";
+import { findPersonalInfoRisks, type PersonalInfoRisk } from "@/lib/personalInfoCheck";
+import {
+  PostingGuideline,
+  PersonalInfoWarning,
+} from "@/components/PersonalInfoNotice";
 
 const REPORT_HIDE_THRESHOLD = 3;
 
@@ -41,6 +46,8 @@ export default function QuestionDetailPage() {
   const [formAnswer, setFormAnswer] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+  // 個人情報らしき記述が見つかったら、1回だけ送信を止めて確認してもらう。
+  const [infoRisks, setInfoRisks] = useState<PersonalInfoRisk[] | null>(null);
 
   const load = useCallback(async () => {
     const supabase = getSupabaseClient();
@@ -92,6 +99,16 @@ export default function QuestionDetailPage() {
       setSubmitMessage("回答は1000字以内でお願いします。");
       return;
     }
+    // 警告をまだ出していないときだけ、ここで止めて確認してもらう。
+    // 同じ本文のまま2回目を押されたら、そのまま投稿する。
+    if (infoRisks === null) {
+      const risks = findPersonalInfoRisks(text);
+      if (risks.length > 0) {
+        setInfoRisks(risks);
+        setSubmitMessage(null);
+        return;
+      }
+    }
     setSubmitting(true);
     setSubmitMessage(null);
     const { error } = await supabase.from("answers").insert({
@@ -105,6 +122,7 @@ export default function QuestionDetailPage() {
       return;
     }
     setFormAnswer("");
+    setInfoRisks(null);
     setSubmitMessage("回答しました！");
     load();
   }
@@ -182,6 +200,7 @@ export default function QuestionDetailPage() {
 
           <div className="mt-8 rounded-2xl border border-line bg-white p-5">
             <h2 className="mb-3 text-sm font-bold text-navy">回答する</h2>
+            <PostingGuideline />
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
               <label htmlFor="answer-text" className="sr-only">
                 回答内容
@@ -189,11 +208,18 @@ export default function QuestionDetailPage() {
               <textarea
                 id="answer-text"
                 value={formAnswer}
-                onChange={(e) => setFormAnswer(e.target.value)}
+                onChange={(e) => {
+                  setFormAnswer(e.target.value);
+                  // 書きかえたら、もう一度チェックし直す。
+                  setInfoRisks(null);
+                }}
                 maxLength={1000}
                 placeholder="回答を入力してください（1000字まで）"
                 className="min-h-24 w-full rounded-xl border border-line p-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
               />
+              {infoRisks && infoRisks.length > 0 && (
+                <PersonalInfoWarning risks={infoRisks} />
+              )}
               <div className="flex flex-wrap items-center gap-2">
                 <label htmlFor="answer-nickname" className="sr-only">
                   ニックネーム（任意）
@@ -212,7 +238,11 @@ export default function QuestionDetailPage() {
                   disabled={submitting}
                   className="rounded-full bg-cta px-6 py-2 text-sm font-bold text-white hover:bg-cta-dark disabled:opacity-60"
                 >
-                  {submitting ? "投稿中..." : "回答する"}
+                  {submitting
+                    ? "投稿中..."
+                    : infoRisks && infoRisks.length > 0
+                      ? "確認したので投稿する"
+                      : "回答する"}
                 </button>
                 {submitMessage && (
                   <span className="text-sm text-muted">{submitMessage}</span>
