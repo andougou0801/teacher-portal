@@ -30,6 +30,14 @@ export default function MobileNav() {
               {item.label}
             </Link>
           ))}
+          {/* 幅の狭い画面ではヘッダーの丸いボタンを隠しているので、ここに入れる。 */}
+          <Link
+            href="/about"
+            onClick={() => setOpen(false)}
+            className="rounded-lg px-2 py-2.5 opacity-90 hover:bg-navy-dark hover:opacity-100"
+          >
+            サイトについて
+          </Link>
         </nav>
       )}
     </div>
