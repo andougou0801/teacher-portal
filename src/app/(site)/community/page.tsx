@@ -4,6 +4,14 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { qaCategories } from "@/lib/qaCategories";
+import {
+  findPersonalInfoRisksInPost,
+  type PersonalInfoRisk,
+} from "@/lib/personalInfoCheck";
+import {
+  PostingGuideline,
+  PersonalInfoWarning,
+} from "@/components/PersonalInfoNotice";
 
 type QuestionRow = {
   id: string;
@@ -32,6 +40,8 @@ export default function CommunityPage() {
   const [formQuestion, setFormQuestion] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+  // 個人情報らしき記述が見つかったら、1回だけ送信を止めて確認してもらう。
+  const [infoRisks, setInfoRisks] = useState<PersonalInfoRisk[] | null>(null);
 
   const loadQuestions = useCallback(async () => {
     const supabase = getSupabaseClient();
@@ -78,6 +88,16 @@ export default function CommunityPage() {
       setSubmitMessage("質問は300字以内でお願いします。");
       return;
     }
+    // 警告をまだ出していないときだけ、ここで止めて確認してもらう。
+    // 同じ本文のまま2回目を押されたら、そのまま投稿する。
+    if (infoRisks === null) {
+      const risks = findPersonalInfoRisksInPost(text, formNickname);
+      if (risks.length > 0) {
+        setInfoRisks(risks);
+        setSubmitMessage(null);
+        return;
+      }
+    }
     setSubmitting(true);
     setSubmitMessage(null);
     const { error } = await supabase.from("questions").insert({
@@ -91,6 +111,7 @@ export default function CommunityPage() {
       return;
     }
     setFormQuestion("");
+    setInfoRisks(null);
     setSubmitMessage("投稿しました！");
     loadQuestions();
   }
@@ -125,6 +146,7 @@ export default function CommunityPage() {
         <>
           <div className="mb-8 rounded-2xl border border-line bg-white p-5">
             <h2 className="mb-3 text-sm font-bold text-navy">質問を投稿する</h2>
+            <PostingGuideline />
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
               <div className="flex flex-wrap gap-2">
                 {qaCategories.map((cat) => (
@@ -154,11 +176,18 @@ export default function CommunityPage() {
               <textarea
                 id="question-text"
                 value={formQuestion}
-                onChange={(e) => setFormQuestion(e.target.value)}
+                onChange={(e) => {
+                  setFormQuestion(e.target.value);
+                  // 書きかえたら、もう一度チェックし直す。
+                  setInfoRisks(null);
+                }}
                 maxLength={300}
                 placeholder="困っていることを書いてください（300字まで）"
                 className="min-h-24 w-full rounded-xl border border-line p-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
               />
+              {infoRisks && infoRisks.length > 0 && (
+                <PersonalInfoWarning risks={infoRisks} />
+              )}
               <div className="flex flex-wrap items-center gap-2">
                 <label htmlFor="question-nickname" className="sr-only">
                   ニックネーム（任意）
@@ -167,7 +196,11 @@ export default function CommunityPage() {
                   id="question-nickname"
                   type="text"
                   value={formNickname}
-                  onChange={(e) => setFormNickname(e.target.value)}
+                  onChange={(e) => {
+                    setFormNickname(e.target.value);
+                    // ニックネームもチェック対象なので、直したら調べ直す。
+                    setInfoRisks(null);
+                  }}
                   maxLength={20}
                   placeholder="ニックネーム（任意）"
                   className="rounded-xl border border-line px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
@@ -177,7 +210,11 @@ export default function CommunityPage() {
                   disabled={submitting}
                   className="rounded-full bg-cta px-6 py-2 text-sm font-bold text-white hover:bg-cta-dark disabled:opacity-60"
                 >
-                  {submitting ? "投稿中..." : "質問を投稿する"}
+                  {submitting
+                    ? "投稿中..."
+                    : infoRisks && infoRisks.length > 0
+                      ? "確認したので投稿する"
+                      : "質問を投稿する"}
                 </button>
                 {submitMessage && (
                   <span className="text-sm text-muted">{submitMessage}</span>

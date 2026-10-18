@@ -28,9 +28,10 @@ type TermGroup = {
 
 // 国家公務員の休暇制度（人事院規則15-14）を「一例」として紹介する一覧。
 // 教員を含む地方公務員は都道府県・市区町村ごとに条例が異なり、種類の数・分類・
-// 日数のいずれも、この一例とは違う場合がある（実際、岐阜市の規則を調べたところ
-// 項目数・分類・日数のいずれにも国基準との相違が見つかった）。あくまで
+// 日数のいずれも、この一例とは違う場合がある（実際にいくつかの自治体の規則を
+// 調べたところ、項目数・分類・日数のいずれにも国基準との相違が見つかった）。あくまで
 // 「こういう種類の休暇がある」というイメージをつかむための参考として掲載している。
+// 特定の自治体に偏った記述はしないこと（運営者の勤務地が推測できてしまうため）。
 // common: true は、多くの人が働く中で実際に使う場面がある休暇（黄色マーカー表示）。
 const tokubetsuKyukaItems: SubItem[] = [
   {
@@ -205,18 +206,23 @@ const termGroups: TermGroup[] = [
   },
 ];
 
+// 全国どの都道府県の先生にも当てはまる、国レベルの窓口だけを並べる。
+// 特定の県の教育委員会・共済組合支部へのリンクは置かない（CLAUDE.mdの個人情報ルール）。
 const officialLinksForLife = [
   {
-    linkName: "岐阜県教育委員会「教職員の働き方改革」",
-    url: "https://www.pref.gifu.lg.jp/site/edu/16206.html",
+    linkName: "人事院（休暇制度の条文・人事院規則15-14）",
+    url: "https://www.jinji.go.jp/",
+    note: "このページで紹介している休暇の「国の基準」の出どころです。",
   },
   {
-    linkName: "公立学校共済組合 岐阜支部（医療費・出産・弔慰金などの給付）",
-    url: "https://www.kouritu.or.jp/gifu/",
+    linkName: "公立学校共済組合（医療費・出産・弔慰金などの給付）",
+    url: "https://www.kouritu.or.jp/",
+    note: "全国の公立学校教職員が加入する共済組合の本部サイトです。手続きの窓口は都道府県ごとの支部になります。",
   },
   {
-    linkName: "岐阜県教職員互助会（共済組合とは別の福利厚生事業）",
-    url: "https://www.gikyogo.jp/",
+    linkName: "文部科学省「学校における働き方改革について」",
+    url: "https://www.mext.go.jp/a_menu/shotou/hatarakikata/index.htm",
+    note: "勤務時間の上限の指針など、国が出している方針をまとめたページです。",
   },
 ];
 
@@ -305,26 +311,29 @@ export default function LifePage() {
           正確な日数・金額・手続きを知りたいとき
         </h2>
         <p className="mb-3 text-sm text-muted">
-          岐阜県のケースを例に、公式の窓口をまとめています。
+          全国共通で使える、国の公式窓口をまとめています。
         </p>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {officialLinksForLife.map((link) => (
-            <a
-              key={link.url}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-bold text-accent hover:underline"
-            >
-              {link.linkName} →
-            </a>
+            <div key={link.url}>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-bold text-accent hover:underline"
+              >
+                {link.linkName} →
+              </a>
+              <span className="mt-0.5 block text-sm text-muted">{link.note}</span>
+            </div>
           ))}
         </div>
         <p className="mt-4 text-sm text-muted">
-          岐阜県以外の先生は、お住まいの都道府県・市区町村名＋「教職員 共済組合」または
-          「教職員 互助会」で検索すると、同じような制度の窓口が見つかります。休暇の正式な
-          種類・日数を条例で確認したいときは、都道府県・市区町村名＋「職員 勤務時間 休暇 条例」
-          で検索すると、公式の条例・規則のページが見つかります。
+          休暇の種類・日数は都道府県・市区町村ごとの条例で決まっているため、正式な日数を
+          確認したいときは、お住まいの都道府県・市区町村名＋「職員 勤務時間 休暇 条例」で
+          検索すると、公式の条例・規則のページが見つかります。共済組合の支部や互助会の
+          窓口を探すときは、都道府県名＋「教職員 共済組合」または「教職員 互助会」で
+          検索してください。
         </p>
       </div>
     </section>
