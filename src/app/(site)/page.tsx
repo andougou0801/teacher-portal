@@ -37,9 +37,10 @@ export default async function Home() {
             type="text"
             name="q"
             placeholder="何を探していますか？ 例：算数プリント、学級開き、保護者対応"
-            className="flex-1 rounded-full border-none px-4 py-2.5 text-sm text-[#1E2732] outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="min-w-0 flex-1 rounded-full border-none px-4 py-2.5 text-sm text-[#1E2732] outline-none focus-visible:ring-2 focus-visible:ring-accent"
           />
-          <button className="rounded-full bg-cta px-6 py-2.5 text-sm font-bold text-white hover:bg-cta-dark">
+          {/* shrink-0 と whitespace-nowrap がないと、スマホで「検／索／す／る」と縦に崩れる。 */}
+          <button className="shrink-0 rounded-full bg-cta px-6 py-2.5 text-sm font-bold whitespace-nowrap text-white hover:bg-cta-dark">
             検索する
           </button>
         </form>
@@ -74,7 +75,7 @@ export default async function Home() {
             <Link
               key={category.slug}
               href={category.href}
-              className="relative flex flex-col items-center gap-2 rounded-2xl border border-line bg-white p-4 text-center"
+              className="relative flex flex-col items-center gap-2 rounded-2xl border border-line bg-white p-3 text-center sm:p-4"
             >
               {category.status === "coming-soon" && (
                 <span className="absolute top-2 right-2 rounded-full bg-background px-2 py-0.5 text-[12px] font-bold text-muted">
@@ -82,7 +83,14 @@ export default async function Home() {
                 </span>
               )}
               <div className="text-2xl">{category.icon}</div>
-              <div className="text-xs font-bold">{category.label}</div>
+              {/*
+                word-break:auto-phrase は、日本語を意味のまとまりで折り返す指定。
+                「先生の便利ツー／ル」のように単語の途中で切れるのを防ぐ。
+                対応していないブラウザでは、これまでどおりの折り返しになるだけ。
+              */}
+              <div className="text-xs leading-snug font-bold [word-break:auto-phrase]">
+                {category.label}
+              </div>
             </Link>
           ))}
         </div>
