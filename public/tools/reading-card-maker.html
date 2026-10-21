@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>音読カードメーカー</title>
+<style>
+  :root {
+    --accent: #2d6cdf;
+    --line: #d7dde5;
+    --muted: #5b6673;
+    --sat: #1d6fb8;
+    --sun: #c0392b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    background: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+  }
+
+  /* ===== 設定パネル（印刷には出さない） ===== */
+  .no-print {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    max-width: 760px;
+    margin: 0 auto 22px;
+  }
+  .no-print h1 {
+    color: var(--accent);
+    font-size: 21px;
+    margin: 0 0 4px;
+  }
+  .lead {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 18px;
+    line-height: 1.7;
+  }
+  fieldset {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px 14px;
+    margin: 0 0 14px;
+  }
+  legend {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--accent);
+    padding: 0 6px;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 18px;
+    align-items: flex-end;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field > span { font-size: 12px; font-weight: bold; color: #444; }
+  input[type="text"], input[type="number"], select {
+    padding: 7px 10px;
+    border: 1px solid #c5ccd6;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+  }
+  input[type="text"] { min-width: 180px; }
+  .checks { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  .checks label {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+  }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+  }
+  .primary { background: var(--accent); color: #fff; }
+  .primary:hover { background: #2559b8; }
+  .ghost { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+  .ghost:hover { background: #eef3fc; }
+  .hint { font-size: 12px; color: var(--muted); margin: 10px 0 0; line-height: 1.7; }
+
+  /* ===== A4の用紙 ===== */
+  #sheet-wrap { max-width: 760px; margin: 0 auto; }
+  .sheet {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 12mm 12mm 10mm;
+    margin: 0 auto 20px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.12);
+    transform-origin: top center;
+  }
+  /* 画面では用紙を縮めて全体が見えるようにする（印刷には影響しない） */
+  @media (max-width: 840px) {
+    .sheet { transform: scale(.45); margin-bottom: -150mm; }
+  }
+
+  .card { page-break-inside: avoid; }
+  .card + .card { margin-top: 8mm; padding-top: 8mm; border-top: 1px dashed #aaa; }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 10px;
+    margin-bottom: 5mm;
+  }
+  .card-title { font-size: 20pt; font-weight: bold; letter-spacing: .05em; }
+  .card-sub { font-size: 11pt; color: #333; }
+  .name-row {
+    display: flex;
+    gap: 6mm;
+    font-size: 11pt;
+    align-items: flex-end;
+  }
+  .name-box {
+    border-bottom: 1.2px solid #333;
+    min-width: 34mm;
+    padding: 0 2mm 1mm;
+  }
+  .name-box.small { min-width: 16mm; }
+
+  .goal {
+    border: 1.2px solid #333;
+    border-radius: 2mm;
+    padding: 2mm 3mm;
+    font-size: 10.5pt;
+    margin-bottom: 4mm;
+    display: flex;
+    gap: 3mm;
+    align-items: baseline;
+  }
+  .goal b { white-space: nowrap; }
+  .goal .blank { flex: 1; border-bottom: 1px dotted #666; min-height: 6mm; }
+
+  /* 2列のとき、月の前半と後半を左右に並べる */
+  .two-col { display: flex; gap: 6mm; align-items: flex-start; }
+  .two-col > table { flex: 1; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td {
+    border: 1px solid #333;
+    text-align: center;
+    font-size: 10pt;
+    padding: 0;
+    height: 7.2mm;
+  }
+  th { background: #eef2f7; font-weight: bold; font-size: 9.5pt; }
+  td.day-num { width: 9mm; }
+  td.day-week { width: 9mm; }
+  td.hol { font-size: 7pt; width: 16mm; color: var(--sun); line-height: 1.2; }
+  .sat { color: var(--sat); }
+  .sun { color: var(--sun); }
+  tr.off td { background: #f6f6f6; }
+
+  .foot-note {
+    margin-top: 3mm;
+    font-size: 9pt;
+    color: #333;
+    display: flex;
+    gap: 4mm;
+    align-items: baseline;
+  }
+  .foot-note .blank { flex: 1; border-bottom: 1px dotted #666; min-height: 5mm; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .no-print { display: none !important; }
+    #sheet-wrap { max-width: none; }
+    .sheet {
+      width: auto;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      transform: none !important;
+    }
+    .sheet + .sheet { page-break-before: always; }
+    @page { size: A4 portrait; margin: 12mm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <h1>音読カードメーカー</h1>
+  <p class="lead">
+    学年と月を選ぶだけで、日付と曜日が入った音読カード・家庭学習カードがA4で印刷できます。
+    土日と祝日には色がつき、祝日の名前も入ります。毎月の日付の打ち直しが要りません。<br>
+    <strong>名前は手書きの欄にしてあります。</strong>児童名などの個人情報を入力する必要はありません。
+    入力した内容はこのパソコンの中だけで処理され、外部には送信されません。
+  </p>
+
+  <fieldset>
+    <legend>カードの内容</legend>
+    <div class="row">
+      <label class="field">
+        <span>カードの種類</span>
+        <select id="preset">
+          <option value="ondoku">音読カード</option>
+          <option value="katei">家庭学習カード</option>
+          <option value="free">自由（題名を自分で書く）</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>題名</span>
+        <input type="text" id="title" value="おんどくカード">
+      </label>
+      <label class="field">
+        <span>年</span>
+        <input type="number" id="year" min="2020" max="2099" step="1">
+      </label>
+      <label class="field">
+        <span>月</span>
+        <select id="month"></select>
+      </label>
+      <label class="field">
+        <span>学年</span>
+        <select id="grade">
+          <option value="1">1年</option>
+          <option value="2">2年</option>
+          <option value="3">3年</option>
+          <option value="4">4年</option>
+          <option value="5">5年</option>
+          <option value="6">6年</option>
+        </select>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>記入する欄（チェックを外すと列が消えます）</legend>
+    <div class="checks" id="col-checks"></div>
+    <div class="row" style="margin-top:12px">
+      <label class="field">
+        <span>「読んだところ」欄の見出し</span>
+        <input type="text" id="colA" value="よんだところ">
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>作り方</legend>
+    <div class="row">
+      <label class="field">
+        <span>入れる日</span>
+        <select id="dayfilter">
+          <option value="all">その月の全部の日</option>
+          <option value="weekday">平日だけ（土日祝を入れない）</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>ならべ方</span>
+        <select id="percard">
+          <option value="1">1列（たてに長く）</option>
+          <option value="2">2列（月の前半と後半を左右に）</option>
+        </select>
+      </label>
+      <div class="checks" style="padding-bottom:6px">
+        <label><input type="checkbox" id="kana"> ひらがなで表示（1・2年生むけ）</label>
+        <label><input type="checkbox" id="goal" checked> 「今月のめあて」欄を入れる</label>
+        <label><input type="checkbox" id="comment" checked> 下に「ひとこと」欄を入れる</label>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="primary" id="btn-print">印刷する</button>
+      <button class="ghost" id="btn-reset">はじめの設定にもどす</button>
+    </div>
+    <p class="hint">
+      印刷の画面が出たら、用紙は「A4・たて」、拡大縮小は「なし（100%）」にしてください。
+      背景の色がうすく出ないときは、印刷画面の「背景のグラフィック」にチェックを入れてください。
+    </p>
+  </fieldset>
+</div>
+
+<div id="sheet-wrap"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  // 保存のキー名は変えないこと（変えると利用者の設定が消えたのと同じになる）
+  var STORAGE_KEY = "reading_card_settings_v1";
+
+  var WEEK = ["日", "月", "火", "水", "木", "金", "土"];
+
+  // 列の定義。idは保存に使うので変えない。
+  var COLUMNS = [
+    { id: "range",  label: "よんだところ",       kana: "よんだところ",       w: "" ,   on: true  },
+    { id: "times",  label: "回数",               kana: "かいすう",           w: "14mm", on: true  },
+    { id: "rating", label: "できばえ",           kana: "できばえ",           w: "18mm", on: true  },
+    { id: "sign",   label: "おうちの人のサイン", kana: "おうちのひと",       w: "26mm", on: true  },
+    { id: "teacher",label: "先生から",           kana: "せんせいから",       w: "18mm", on: false }
+  ];
+
+  var PRESETS = {
+    ondoku: { title: "おんどくカード", colA: "よんだところ" },
+    katei:  { title: "家庭学習カード", colA: "やったこと" },
+    free:   { title: "",               colA: "" }
+  };
+
+  var el = {
+    preset: document.getElementById("preset"),
+    title: document.getElementById("title"),
+    year: document.getElementById("year"),
+    month: document.getElementById("month"),
+    grade: document.getElementById("grade"),
+    colA: document.getElementById("colA"),
+    checks: document.getElementById("col-checks"),
+    dayfilter: document.getElementById("dayfilter"),
+    percard: document.getElementById("percard"),
+    kana: document.getElementById("kana"),
+    goal: document.getElementById("goal"),
+    comment: document.getElementById("comment"),
+    wrap: document.getElementById("sheet-wrap")
+  };
+
+  /* ---------- 祝日（時間割メーカーと同じ考え方で計算する） ---------- */
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function key(y, m, d) { return y + "-" + pad(m) + "-" + pad(d); }
+
+  function nthMonday(year, month, nth) {
+    var d = new Date(year, month - 1, 1);
+    var shift = (8 - d.getDay()) % 7;
+    return new Date(year, month - 1, 1 + shift + (nth - 1) * 7).getDate();
+  }
+
+  function addDays(ds, n) {
+    var p = ds.split("-");
+    var d = new Date(+p[0], +p[1] - 1, +p[2] + n);
+    return key(d.getFullYear(), d.getMonth() + 1, d.getDate());
+  }
+
+  var holidayCache = {};
+  function holidayMapOf(year) {
+    if (holidayCache[year]) return holidayCache[year];
+    var map = {};
+    function put(m, d, name) { map[key(year, m, d)] = name; }
+
+    put(1, 1, "元日");
+    put(1, nthMonday(year, 1, 2), "成人の日");
+    put(2, 11, "建国記念の日");
+    put(2, 23, "天皇誕生日");
+    // 春分・秋分は近似式（1980〜2099年に有効）
+    put(3, Math.floor(20.8431 + 0.242194 * (year - 1980) - Math.floor((year - 1980) / 4)), "春分の日");
+    put(4, 29, "昭和の日");
+    put(5, 3, "憲法記念日");
+    put(5, 4, "みどりの日");
+    put(5, 5, "こどもの日");
+    put(7, nthMonday(year, 7, 3), "海の日");
+    put(8, 11, "山の日");
+    put(9, nthMonday(year, 9, 3), "敬老の日");
+    put(9, Math.floor(23.2488 + 0.242194 * (year - 1980) - Math.floor((year - 1980) / 4)), "秋分の日");
+    put(10, nthMonday(year, 10, 2), "スポーツの日");
+    put(11, 3, "文化の日");
+    put(11, 23, "勤労感謝の日");
+
+    // 日曜と重なった祝日は、次の平日が振替休日
+    Object.keys(map).slice().sort().forEach(function (k) {
+      var p = k.split("-");
+      if (new Date(+p[0], +p[1] - 1, +p[2]).getDay() !== 0) return;
+      var next = addDays(k, 1);
+      while (map[next]) next = addDays(next, 1);
+      map[next] = "振替休日";
+    });
+
+    // 祝日と祝日に挟まれた平日は「国民の休日」
+    Object.keys(map).slice().sort().forEach(function (k) {
+      var next2 = addDays(k, 2), mid = addDays(k, 1);
+      var p = mid.split("-");
+      if (map[next2] && !map[mid] && new Date(+p[0], +p[1] - 1, +p[2]).getDay() !== 0) {
+        map[mid] = "国民の休日";
+      }
+    });
+
+    holidayCache[year] = map;
+    return map;
+  }
+
+  /* ---------- 設定の読み書き ---------- */
+
+  function currentSettings() {
+    var cols = {};
+    COLUMNS.forEach(function (c) {
+      var cb = document.getElementById("col-" + c.id);
+      cols[c.id] = cb ? cb.checked : c.on;
+    });
+    return {
+      preset: el.preset.value,
+      title: el.title.value,
+      year: +el.year.value,
+      month: +el.month.value,
+      grade: el.grade.value,
+      colA: el.colA.value,
+      cols: cols,
+      dayfilter: el.dayfilter.value,
+      percard: el.percard.value,
+      kana: el.kana.checked,
+      goal: el.goal.checked,
+      comment: el.comment.checked
+    };
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(currentSettings()));
+    } catch (e) {
+      // 保存できなくても使えるので、ここでは何もしない
+    }
+  }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      var s = JSON.parse(raw);
+      if (!s || typeof s !== "object") return null;
+      return s;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /* ---------- 画面を組み立てる ---------- */
+
+  function buildMonthOptions() {
+    for (var m = 1; m <= 12; m++) {
+      var o = document.createElement("option");
+      o.value = m;
+      o.textContent = m + "月";
+      el.month.appendChild(o);
+    }
+  }
+
+  function buildColumnChecks() {
+    COLUMNS.forEach(function (c) {
+      var label = document.createElement("label");
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.id = "col-" + c.id;
+      cb.checked = c.on;
+      cb.addEventListener("change", update);
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(c.label));
+      el.checks.appendChild(label);
+    });
+  }
+
+  function applyDefaults() {
+    var now = new Date();
+    // 月末が近いときは翌月を出す（来月ぶんを作ることが多いため）
+    var y = now.getFullYear(), m = now.getMonth() + 1;
+    if (now.getDate() >= 20) {
+      m += 1;
+      if (m > 12) { m = 1; y += 1; }
+    }
+    el.year.value = y;
+    el.month.value = m;
+  }
+
+  function applySettings(s) {
+    if (!s) return;
+    if (s.preset) el.preset.value = s.preset;
+    if (typeof s.title === "string") el.title.value = s.title;
+    if (s.year) el.year.value = s.year;
+    if (s.month) el.month.value = s.month;
+    if (s.grade) el.grade.value = s.grade;
+    if (typeof s.colA === "string") el.colA.value = s.colA;
+    if (s.cols && typeof s.cols === "object") {
+      COLUMNS.forEach(function (c) {
+        var cb = document.getElementById("col-" + c.id);
+        if (cb && typeof s.cols[c.id] === "boolean") cb.checked = s.cols[c.id];
+      });
+    }
+    if (s.dayfilter) el.dayfilter.value = s.dayfilter;
+    if (s.percard) el.percard.value = s.percard;
+    el.kana.checked = !!s.kana;
+    el.goal.checked = s.goal !== false;
+    el.comment.checked = s.comment !== false;
+  }
+
+  /* ---------- カードを作る ---------- */
+
+  function daysOfMonth(y, m, filter) {
+    var holidays = holidayMapOf(y);
+    var last = new Date(y, m, 0).getDate();
+    var rows = [];
+    for (var d = 1; d <= last; d++) {
+      var dt = new Date(y, m - 1, d);
+      var w = dt.getDay();
+      var k = key(y, m, d);
+      var hol = holidays[k] || "";
+      var off = (w === 0 || w === 6 || !!hol);
+      if (filter === "weekday" && off) continue;
+      rows.push({ d: d, w: w, hol: hol, off: off });
+    }
+    return rows;
+  }
+
+  function activeColumns(s) {
+    return COLUMNS.filter(function (c) { return s.cols[c.id]; }).map(function (c) {
+      var label = s.kana ? c.kana : c.label;
+      if (c.id === "range" && s.colA) label = s.colA;
+      return { id: c.id, label: label, w: c.w };
+    });
+  }
+
+  function makeCard(s, rows, cols, twoCol) {
+    var card = document.createElement("div");
+    card.className = "card";
+
+    var head = document.createElement("div");
+    head.className = "card-head";
+    var left = document.createElement("div");
+    var t = document.createElement("div");
+    t.className = "card-title";
+    t.textContent = s.title || "カード";
+    var sub = document.createElement("div");
+    sub.className = "card-sub";
+    sub.textContent = s.year + "年 " + s.month + "月";
+    left.appendChild(t);
+    left.appendChild(sub);
+
+    var nameRow = document.createElement("div");
+    nameRow.className = "name-row";
+    nameRow.innerHTML =
+      '<div><span class="name-box small">' + s.grade + '</span>' + (s.kana ? "ねん" : "年") + '</div>' +
+      '<div><span class="name-box small"></span>' + (s.kana ? "くみ" : "組") + '</div>' +
+      '<div>' + (s.kana ? "なまえ" : "名前") + ' <span class="name-box"></span></div>';
+
+    head.appendChild(left);
+    head.appendChild(nameRow);
+    card.appendChild(head);
+
+    if (s.goal) {
+      var g = document.createElement("div");
+      g.className = "goal";
+      g.innerHTML = "<b>" + (s.kana ? "こんげつのめあて" : "今月のめあて") + "</b><span class='blank'></span>";
+      card.appendChild(g);
+    }
+
+    // 表を1つ作る。2列のときは、同じ形の表を2つ並べる。
+    function buildTable(part) {
+      var table = document.createElement("table");
+      var thead = document.createElement("thead");
+      var htr = document.createElement("tr");
+      htr.innerHTML = "<th>" + (s.kana ? "ひ" : "日") + "</th><th>" + (s.kana ? "よう" : "曜") + "</th>";
+      cols.forEach(function (c) {
+        var th = document.createElement("th");
+        th.textContent = c.label;
+        if (c.w) th.style.width = c.w;
+        htr.appendChild(th);
+      });
+      thead.appendChild(htr);
+      table.appendChild(thead);
+
+      var tbody = document.createElement("tbody");
+      part.forEach(function (r) {
+        var tr = document.createElement("tr");
+        if (r.off) tr.className = "off";
+
+        var td1 = document.createElement("td");
+        td1.className = "day-num";
+        td1.textContent = r.d;
+
+        var td2 = document.createElement("td");
+        td2.className = "day-week" + (r.w === 6 ? " sat" : (r.w === 0 || r.hol) ? " sun" : "");
+        td2.textContent = WEEK[r.w];
+
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+
+        cols.forEach(function (c, i) {
+          var td = document.createElement("td");
+          // 祝日の名前は、いちばん広い「読んだところ」の列に小さく入れる
+          if (i === 0 && r.hol) {
+            td.className = "hol";
+            td.style.textAlign = "left";
+            td.style.paddingLeft = "2mm";
+            td.style.width = "";
+            td.textContent = r.hol;
+          }
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      return table;
+    }
+
+    if (twoCol) {
+      var half = Math.ceil(rows.length / 2);
+      var box = document.createElement("div");
+      box.className = "two-col";
+      box.appendChild(buildTable(rows.slice(0, half)));
+      box.appendChild(buildTable(rows.slice(half)));
+      card.appendChild(box);
+    } else {
+      card.appendChild(buildTable(rows));
+    }
+
+    if (s.comment) {
+      var f = document.createElement("div");
+      f.className = "foot-note";
+      f.innerHTML = "<b>" + (s.kana ? "ひとこと" : "ひとこと") + "</b><span class='blank'></span>";
+      card.appendChild(f);
+    }
+
+    return card;
+  }
+
+  // A4の1枚に必ず収まるように、行の高さを行数に合わせて決める。
+  // 31日の月でも2枚目にこぼれないようにするのが目的。
+  // 逆に「平日だけ」で行が少ないときは、行を高くして書きやすくする。
+  var MM = 96 / 25.4;
+  function fitRows(card, rowCount, availableMm) {
+    var cells = card.querySelectorAll("td, th");
+    if (!cells.length) return;
+    // いったん基準の高さにして、表より上下にある部分（題名・めあて・ひとこと）の高さを測る
+    var base = 7;
+    cells.forEach(function (c) { c.style.height = base + "mm"; });
+    var table = card.querySelector("table");
+    var fixedMm = (card.getBoundingClientRect().height - table.getBoundingClientRect().height) / MM;
+    var rowsTotal = rowCount + 1; // 見出しの行をふくむ
+    var h = (availableMm - fixedMm - 1) / rowsTotal;
+    if (h > 8.2) h = 8.2;
+    if (h < 4.4) h = 4.4;
+    cells.forEach(function (c) { c.style.height = h.toFixed(2) + "mm"; });
+  }
+
+  function update() {
+    var s = currentSettings();
+    if (!s.year || s.year < 2020 || s.year > 2099) s.year = new Date().getFullYear();
+
+    var rows = daysOfMonth(s.year, s.month, s.dayfilter);
+    var cols = activeColumns(s);
+    if (cols.length === 0) {
+      // 列を全部外されたら、最低1つは残して空の表にならないようにする
+      cols = [{ id: "range", label: s.kana ? "よんだところ" : "よんだところ", w: "" }];
+    }
+
+    el.wrap.innerHTML = "";
+    var half = (s.percard === "2");
+
+    // 印刷したときに中身が使える高さ（A4の高さ297mm − 上下の余白12mmずつ）
+    var PAGE_MM = 297 - 24;
+    var twoCol = (s.percard === "2");
+
+    var sheet = document.createElement("div");
+    sheet.className = "sheet";
+    var card = makeCard(s, rows, cols, twoCol);
+    sheet.appendChild(card);
+    el.wrap.appendChild(sheet);
+
+    // 2列のときは、縦に並ぶ行数が半分になるので、その数で高さを決める
+    var verticalRows = twoCol ? Math.ceil(rows.length / 2) : rows.length;
+    fitRows(card, verticalRows, PAGE_MM);
+
+    save();
+  }
+
+  /* ---------- つなぎこみ ---------- */
+
+  function onPresetChange() {
+    var p = PRESETS[el.preset.value];
+    if (!p) return;
+    if (el.preset.value !== "free") {
+      el.title.value = el.kana.checked && el.preset.value === "ondoku" ? "おんどくカード" : p.title;
+      el.colA.value = p.colA;
+    }
+    update();
+  }
+
+  buildMonthOptions();
+  buildColumnChecks();
+  applyDefaults();
+  applySettings(load());
+
+  ["change", "input"].forEach(function (ev) {
+    [el.title, el.year, el.month, el.grade, el.colA, el.dayfilter, el.percard,
+     el.kana, el.goal, el.comment].forEach(function (n) {
+      n.addEventListener(ev, update);
+    });
+  });
+  el.preset.addEventListener("change", onPresetChange);
+
+  document.getElementById("btn-print").addEventListener("click", function () {
+    window.print();
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    el.preset.value = "ondoku";
+    el.title.value = PRESETS.ondoku.title;
+    el.colA.value = PRESETS.ondoku.colA;
+    el.grade.value = "1";
+    el.dayfilter.value = "all";
+    el.percard.value = "1";
+    el.kana.checked = false;
+    el.goal.checked = true;
+    el.comment.checked = true;
+    COLUMNS.forEach(function (c) {
+      var cb = document.getElementById("col-" + c.id);
+      if (cb) cb.checked = c.on;
+    });
+    applyDefaults();
+    update();
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>

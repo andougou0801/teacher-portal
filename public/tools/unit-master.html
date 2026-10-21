@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>たんいマスター（単位の直し方）</title>
+<!-- 外部への通信はしません。フォントも端末にあるものだけを使います。 -->
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+    --ok:#18a058;
+    --ok-dark:#0f7a42;
+    --ng:#e0453a;
+    --ng-dark:#b3261e;
+    --ink:#2a3442;
+    --sub:#6b7889;
+    --line:#e2e8f0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"M PLUS Rounded 1c","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#333;
+    min-height:100vh;
+    -webkit-text-size-adjust:100%;
+  }
+  rt{font-size:9px;color:#8a97a8;font-weight:700;}
+  .wrap{max-width:860px;margin:0 auto;padding:14px 12px 70px;}
+  .hidden{display:none !important;}
+
+  .app-header{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 12px;gap:10px;}
+  .app-title{font-size:19px;font-weight:800;color:var(--accent-dark);display:flex;align-items:center;gap:7px;line-height:1.4;}
+  .icon-btn{background:#fff;border:2px solid var(--line);border-radius:50%;width:44px;height:44px;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,0.06);font-family:inherit;flex:none;}
+  .icon-btn:active{transform:scale(0.92);}
+
+  .card{background:#fff;border-radius:18px;padding:16px 14px;box-shadow:0 4px 16px rgba(30,50,90,0.08);margin-bottom:14px;}
+  h2.section-title{margin:0 0 10px;font-size:15px;color:#51607a;font-weight:800;}
+  .lead{font-size:13.5px;color:#66717f;line-height:1.95;margin:0 0 12px;}
+  .mini-note{font-size:12px;color:#8a97a8;font-weight:700;line-height:1.85;margin:8px 0 0;}
+
+  /* ---- モードえらび ---- */
+  .mode-list{display:grid;grid-template-columns:1fr;gap:10px;}
+  .mode-btn{
+    border:3px solid var(--line);background:#fafcff;border-radius:16px;padding:14px 12px;
+    cursor:pointer;text-align:left;display:flex;gap:11px;align-items:flex-start;
+    font-family:inherit;width:100%;min-height:56px;
+  }
+  .mode-btn:active{transform:scale(0.98);}
+  .mode-btn .emoji{font-size:27px;flex:none;line-height:1.2;}
+  .mode-btn b{display:block;font-size:16px;color:var(--ink);line-height:1.6;}
+  .mode-btn span.d{display:block;font-size:12px;color:#8a97a8;margin-top:3px;line-height:1.75;font-weight:700;}
+  .mode-btn.m1{border-color:#cfe0ff;}
+  .mode-btn.m2{border-color:#cfe9d8;background:#f7fcf9;}
+  .mode-btn.m3{border-color:#ffd7b0;background:#fffaf5;}
+  .mode-btn:disabled{opacity:.5;cursor:default;}
+
+  /* ---- えらぶボタン共通 ---- */
+  .pick-grid{display:grid;gap:8px;}
+  .g5{grid-template-columns:repeat(5,1fr);}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .pick-btn{
+    border:3px solid var(--line);background:#fafcff;border-radius:13px;padding:10px 2px;
+    font-size:13px;font-weight:800;color:#55607a;cursor:pointer;font-family:inherit;
+    min-height:48px;line-height:1.45;
+  }
+  .pick-btn:active{transform:scale(0.96);}
+  .pick-btn.on{border-color:var(--accent);background:#eaf2ff;color:var(--accent-dark);}
+  .pick-btn .em{display:block;font-size:17px;margin-bottom:1px;}
+
+  .toggle-row{
+    display:flex;align-items:center;gap:10px;margin-top:12px;border:3px solid var(--line);
+    border-radius:13px;padding:10px 12px;background:#fafcff;cursor:pointer;min-height:48px;
+    font-family:inherit;width:100%;text-align:left;
+  }
+  .toggle-row .box{
+    width:26px;height:26px;border-radius:7px;border:3px solid #cbd5e1;background:#fff;flex:none;
+    display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:800;
+  }
+  .toggle-row.on{border-color:var(--accent);background:#eaf2ff;}
+  .toggle-row.on .box{background:var(--accent);border-color:var(--accent);}
+  .toggle-row b{font-size:13.5px;color:var(--ink);font-weight:800;display:block;line-height:1.5;}
+  .toggle-row small{font-size:11.5px;color:#8a97a8;font-weight:700;display:block;margin-top:2px;line-height:1.7;}
+
+  .main-btn{width:100%;border:none;border-radius:15px;background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:#fff;font-size:18px;font-weight:800;padding:16px;cursor:pointer;box-shadow:0 4px 0 #1a459b;font-family:inherit;min-height:56px;}
+  .main-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #1a459b;}
+  .main-btn.green{background:linear-gradient(180deg,#34c07a,#18a058);box-shadow:0 4px 0 #0f7a42;}
+  .main-btn.green:active{box-shadow:0 1px 0 #0f7a42;}
+  .main-btn.orange{background:linear-gradient(180deg,#ff9f45,#f07c10);box-shadow:0 4px 0 #c96406;}
+  .main-btn.orange:active{box-shadow:0 1px 0 #c96406;}
+  .main-btn:disabled{opacity:.5;box-shadow:none;}
+  .sub-btn{width:100%;border:2px solid var(--line);border-radius:13px;background:#fff;color:#66717f;font-size:14px;font-weight:800;padding:13px;cursor:pointer;margin-top:9px;font-family:inherit;min-height:48px;}
+  .sub-btn:active{background:#f3f6fb;}
+
+  /* ---- きろく ---- */
+  .rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .rec{background:#f6f9ff;border-radius:13px;padding:11px 4px;text-align:center;}
+  .rec b{display:block;font-size:22px;color:var(--accent-dark);font-weight:800;line-height:1.3;}
+  .rec span{display:block;font-size:11px;color:#8a97a8;font-weight:800;margin-top:2px;}
+
+  /* ---- 問題 ---- */
+  .q-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap;}
+  .q-progress{font-size:12.5px;font-weight:800;color:#8a97a8;}
+  .progress-bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:14px;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,#5b9cff,#2d6cdf);border-radius:99px;transition:width .3s;}
+
+  .q-badge{display:inline-block;font-size:11.5px;font-weight:800;color:#fff;background:var(--accent);border-radius:99px;padding:4px 11px;margin-bottom:9px;}
+  .q-badge.rev{background:#f07c10;}
+  .q-text{font-size:22px;font-weight:800;color:var(--ink);line-height:1.8;margin-bottom:4px;word-break:break-all;}
+  .q-text .big{color:var(--accent-dark);}
+  .q-sub{font-size:12.5px;color:#8a97a8;font-weight:700;margin-bottom:14px;line-height:1.8;}
+
+  .ans-row{display:flex;gap:9px;align-items:center;margin-bottom:12px;}
+  .num-input{
+    flex:1;min-width:0;padding:13px 10px;border:3px solid #d8dfea;border-radius:14px;
+    font-size:24px;font-weight:800;text-align:center;font-family:inherit;color:var(--ink);
+    background:#fff;min-height:56px;
+  }
+  .num-input:focus{outline:none;border-color:var(--accent);background:#f7faff;}
+  .num-input:disabled{background:#f3f6fb;color:#8a97a8;}
+  .num-unit{font-size:19px;font-weight:800;color:#44506a;flex:none;}
+
+  .numpad{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px;}
+  .numpad button{
+    border:3px solid #d8dfea;background:#fff;border-radius:13px;padding:0;
+    font-size:21px;font-weight:800;color:var(--ink);cursor:pointer;font-family:inherit;min-height:48px;
+  }
+  .numpad button:active{transform:scale(0.95);background:#eaf2ff;}
+  .numpad button.util{font-size:15px;color:#66717f;background:#f4f7fb;}
+  .numpad button:disabled{opacity:.35;}
+
+  .feedback{font-size:17px;font-weight:800;margin:2px 0 10px;min-height:24px;line-height:1.7;}
+  .feedback.ok{color:var(--ok-dark);}
+  .feedback.ng{color:var(--ng-dark);}
+
+  /* ---- 位取りの表 ---- */
+  .explain{background:#fffdf5;border:3px solid #ffe3a3;border-radius:15px;padding:13px 12px;margin-bottom:12px;}
+  .explain h4{margin:0 0 9px;font-size:13.5px;color:#9a6500;font-weight:800;line-height:1.6;}
+  .explain p{margin:0 0 7px;font-size:13.5px;line-height:1.95;color:#4a5668;font-weight:700;}
+  .explain p:last-child{margin-bottom:0;}
+  .explain .hl-f{color:var(--accent-dark);}
+  .explain .hl-t{color:var(--ok-dark);}
+
+  .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:5px;margin-bottom:8px;}
+  .tbl-scroll::-webkit-scrollbar{height:7px;}
+  .tbl-scroll::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px;}
+  .ptbl{display:flex;gap:0;min-width:min-content;border-radius:11px;overflow:hidden;border:2px solid #d8dfea;background:#fff;}
+  .pcol{
+    flex:none;width:36px;border-right:1px solid #e9eef6;display:flex;flex-direction:column;
+    text-align:center;background:#fff;
+  }
+  .pcol:last-child{border-right:none;}
+  .pcol .u{
+    font-size:10.5px;font-weight:800;color:#8a97a8;height:26px;display:flex;align-items:center;
+    justify-content:center;background:#f6f9ff;border-bottom:1px solid #e9eef6;white-space:nowrap;
+  }
+  .pcol .d{font-size:21px;font-weight:800;color:var(--ink);height:40px;display:flex;align-items:center;justify-content:center;}
+  .pcol.has-u .u{color:#44506a;background:#eef3fb;}
+  .pcol.from{background:#eaf2ff;}
+  .pcol.from .u{background:var(--accent);color:#fff;}
+  .pcol.from .d{color:var(--accent-dark);}
+  .pcol.to{background:#e8f7ee;}
+  .pcol.to .u{background:var(--ok);color:#fff;}
+  .pcol.to .d{color:var(--ok-dark);}
+  .pcol.zero .d{color:#b6c0ce;}
+  .pdot{flex:none;width:11px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;font-size:22px;font-weight:800;color:var(--ng);background:#fff;}
+  .tbl-hint{font-size:11.5px;color:#8a97a8;font-weight:700;margin:0 0 8px;}
+
+  .shift-note{
+    background:#fff;border-radius:11px;padding:9px 12px;font-size:14px;font-weight:800;
+    color:#44506a;line-height:1.85;margin-bottom:8px;
+  }
+  .shift-note em{font-style:normal;color:var(--ng-dark);font-size:17px;}
+  .eq-line{
+    background:#fff;border-radius:11px;padding:11px 12px;font-size:17px;font-weight:800;
+    color:var(--ink);line-height:1.8;text-align:center;word-break:break-all;
+  }
+  .eq-line .a{color:var(--ok-dark);}
+
+  .fact-list{display:grid;gap:6px;margin:8px 0 0;}
+  .fact{background:#fff;border-radius:10px;padding:8px 11px;font-size:14px;font-weight:800;color:#44506a;line-height:1.7;}
+  .fact.key{background:#fff4f3;color:var(--ng-dark);}
+
+  /* ---- 結果 ---- */
+  .result-big{text-align:center;padding:8px 0 2px;}
+  .result-big .emoji{font-size:54px;line-height:1.2;}
+  .result-big .score{font-size:28px;font-weight:800;color:var(--accent-dark);margin-top:5px;}
+  .result-big .msg{font-size:14.5px;font-weight:800;color:#66717f;margin-top:7px;line-height:1.85;}
+  .miss-list{display:grid;gap:7px;margin-top:12px;}
+  .miss{background:#fdf1f0;border-radius:11px;padding:9px 12px;font-size:13.5px;font-weight:800;color:#8a4a44;line-height:1.7;word-break:break-all;}
+
+  /* ---- 換算表モード ---- */
+  .inp-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
+  .conv-tbl{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden;border:2px solid #d8dfea;}
+  .conv-tbl th,.conv-tbl td{padding:11px 8px;font-size:15px;font-weight:800;text-align:right;border-bottom:1px solid #e9eef6;}
+  .conv-tbl th{background:#f6f9ff;color:#51607a;text-align:left;width:74px;white-space:nowrap;font-size:14px;}
+  .conv-tbl td{color:var(--ink);word-break:break-all;}
+  .conv-tbl tr:last-child th,.conv-tbl tr:last-child td{border-bottom:none;}
+  .conv-tbl tr.cur th{background:var(--accent);color:#fff;}
+  .conv-tbl tr.cur td{background:#eaf2ff;color:var(--accent-dark);}
+  .conv-tbl td small{display:block;font-size:11px;color:#8a97a8;font-weight:700;margin-top:2px;}
+
+  @media (max-width:420px){
+    .app-title{font-size:17px;}
+    .q-text{font-size:19px;}
+    .pcol{width:32px;}
+    .pcol .d{font-size:19px;}
+    .rec b{font-size:19px;}
+    .pick-btn{font-size:12px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="app-header">
+    <div class="app-title">📐 たんいマスター</div>
+    <button class="icon-btn" id="homeBtn" title="さいしょの画面にもどる">🏠</button>
+  </div>
+
+  <!-- ========== ホーム ========== -->
+  <div id="screen-home">
+    <div class="card">
+      <h2 class="section-title">なにを する？</h2>
+      <p class="lead">長さ・かさ・重さ・<ruby>面積<rt>めんせき</rt></ruby>・時間の <ruby>単位<rt>たんい</rt></ruby>を なおす れんしゅうです。<br><ruby>位取<rt>くらいど</rt></ruby>りの 表で「けたが いくつ うごくか」を見ながら 考えられます。</p>
+      <div class="mode-list">
+        <button class="mode-btn m1" id="toQuizBtn">
+          <span class="emoji">✏️</span>
+          <span>
+            <b>れんしゅう</b>
+            <span class="d">1もんずつ こたえます。まちがえたら、<ruby>位取<rt>くらいど</rt></ruby>りの表で せつめいします。</span>
+          </span>
+        </button>
+        <button class="mode-btn m2" id="toTableBtn">
+          <span class="emoji">🔎</span>
+          <span>
+            <b><ruby>位取<rt>くらいど</rt></ruby>りの表で しらべる</b>
+            <span class="d">数と<ruby>単位<rt>たんい</rt></ruby>を入れると、ほかの<ruby>単位<rt>たんい</rt></ruby>でいくつになるかを 表で見られます。</span>
+          </span>
+        </button>
+        <button class="mode-btn m3" id="toReviewBtn">
+          <span class="emoji">🔁</span>
+          <span>
+            <b>まちがえた もんだい</b>
+            <span class="d" id="reviewCount">まだ ありません</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">学年で もんだいの はんいを えらぶ</h2>
+      <div class="pick-grid g5" id="gradeGrid"></div>
+      <p class="mini-note" id="gradeNote"></p>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">どの <ruby>単位<rt>たんい</rt></ruby>を れんしゅうする？（いくつでも えらべます）</h2>
+      <div class="pick-grid g5" id="domainGrid"></div>
+      <button class="toggle-row" id="decToggle">
+        <span class="box" id="decBox"></span>
+        <span>
+          <b>小数の こたえも 出す</b>
+          <small>5年生ごろ・6年生ごろ・ぜんぶ の ときだけ えらべます（れい：250m は 0.25km）</small>
+        </span>
+      </button>
+      <h2 class="section-title" style="margin-top:16px;">なんもん やる？</h2>
+      <div class="pick-grid g3" id="countGrid"></div>
+      <button class="main-btn" id="startBtn" style="margin-top:12px;">れんしゅうを はじめる</button>
+      <p class="mini-note" id="poolNote"></p>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">きろく</h2>
+      <div class="rec-grid">
+        <div class="rec"><b id="recToday">0</b><span>きょうの せいかい</span></div>
+        <div class="rec"><b id="recStreak">0</b><span>いま れんぞく</span></div>
+        <div class="rec"><b id="recBest">0</b><span>さいこう れんぞく</span></div>
+      </div>
+      <p class="mini-note" id="recTotal"></p>
+      <button class="sub-btn" id="clearRecBtn">きろくを ぜんぶ けす</button>
+    </div>
+  </div>
+
+  <!-- ========== 問題 ========== -->
+  <div id="screen-quiz" class="hidden">
+    <div class="card">
+      <div class="q-top">
+        <div class="q-progress" id="quizProgress"></div>
+        <div class="q-progress" id="quizScore"></div>
+      </div>
+      <div class="progress-bar"><div class="progress-inner" id="quizBar" style="width:0%"></div></div>
+
+      <div id="qBadge"></div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-sub" id="qSub"></div>
+
+      <div class="ans-row">
+        <input class="num-input" id="ansInput" type="text" inputmode="numeric" autocomplete="off" aria-label="こたえの数">
+        <span class="num-unit" id="ansUnit"></span>
+      </div>
+
+      <div class="numpad" id="numpad"></div>
+
+      <div class="feedback" id="feedback"></div>
+      <div id="explainArea"></div>
+
+      <button class="main-btn" id="checkBtn">こたえあわせ</button>
+      <button class="main-btn green hidden" id="nextBtn">つぎの もんだい</button>
+      <button class="sub-btn hidden" id="showExplainBtn">考え方を 見る</button>
+      <button class="sub-btn" id="quitQuizBtn">やめる</button>
+    </div>
+  </div>
+
+  <!-- ========== 結果 ========== -->
+  <div id="screen-result" class="hidden">
+    <div class="card">
+      <div class="result-big">
+        <div class="emoji" id="resultEmoji">🎉</div>
+        <div class="score" id="resultScore"></div>
+        <div class="msg" id="resultMsg"></div>
+      </div>
+      <div id="resultMiss"></div>
+      <button class="main-btn" id="againBtn" style="margin-top:14px;">もういちど</button>
+      <button class="sub-btn" id="resultHomeBtn">さいしょの画面へ</button>
+    </div>
+  </div>
+
+  <!-- ========== 換算表 ========== -->
+  <div id="screen-table" class="hidden">
+    <div class="card">
+      <h2 class="section-title">🔎 <ruby>位取<rt>くらいど</rt></ruby>りの表で しらべる</h2>
+      <div class="pick-grid g5" id="tDomainGrid" style="margin-bottom:12px;"></div>
+      <div class="inp-row">
+        <input class="num-input" id="tInput" type="text" inputmode="decimal" autocomplete="off" value="1" aria-label="しらべる数">
+        <span class="num-unit" id="tUnitLabel"></span>
+      </div>
+      <div class="pick-grid g5" id="tUnitGrid"></div>
+      <p class="mini-note">数を 入れかえると、下の表が すぐ かわります。</p>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">おなじ 大きさを ほかの <ruby>単位<rt>たんい</rt></ruby>で いうと</h2>
+      <div id="tResult"></div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">おぼえておきたい ところ</h2>
+      <div id="tFacts"></div>
+      <button class="sub-btn" id="tableHomeBtn" style="margin-top:12px;">さいしょの画面へ</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   たんいマスター（小3〜小6「単位の直し方」）
+   - 長さ・かさ・重さ・面積 は 10 のべき乗の関係なので、
+     位取りの表（けたがいくつ動くか）で考え方を示す。
+   - 時間だけは 10 ずつではないので、×24 / ×60 の関係図で示す。
+   - 学年のわけ方は目安。配当がはっきりしないものは「ぜんぶ」に入れている。
+   - 外部への通信は一切しない。保存はこの端末の中だけ。
+   ========================================================= */
+
+/* ---------- ちいさな道具 ---------- */
+function $(id){ return document.getElementById(id); }
+function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
+function repeat(c, n){ var s = ''; for(var i = 0; i < n; i++) s += c; return s; }
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+/* 3けたごとのくぎり（読みやすさのため） */
+function comma(s){
+  s = String(s);
+  var p = s.split('.');
+  p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return p.join('.');
+}
+/* 小数点を k けた 右へうごかす（k がマイナスなら左へ）。
+   かけ算・わり算を使わないので、誤差が出ない。 */
+function shiftStr(s, k){
+  s = String(s).trim();
+  var dot = s.indexOf('.');
+  var intPart = dot < 0 ? s : s.slice(0, dot);
+  var frac = dot < 0 ? '' : s.slice(dot + 1);
+  if(intPart === '') intPart = '0';
+  var digits = intPart + frac;
+  var pos = intPart.length + k;
+  if(pos < 1){ digits = repeat('0', 1 - pos) + digits; pos = 1; }
+  if(pos > digits.length){ digits = digits + repeat('0', pos - digits.length); }
+  var ip = digits.slice(0, pos).replace(/^0+(?=\d)/, '');
+  var fp = digits.slice(pos).replace(/0+$/, '');
+  return fp ? (ip + '.' + fp) : ip;
+}
+/* 全角の数字・記号を半角にそろえる */
+function normalizeNum(s){
+  s = String(s);
+  var out = '';
+  for(var i = 0; i < s.length; i++){
+    var c = s.charCodeAt(i);
+    if(c >= 0xFF10 && c <= 0xFF19) out += String.fromCharCode(c - 0xFF10 + 0x30);
+    else if(c === 0xFF0E || c === 0x3002) out += '.';
+    else if(c === 0xFF0F) out += '/';
+    else out += s.charAt(i);
+  }
+  return out.replace(/[,\s、]/g, '');
+}
+function isNumStr(s){ return /^\d+(\.\d+)?$/.test(s); }
+
+/* ---------- 単位のデータ ----------
+   exp = いちばん小さい単位を 1 としたときの「10 の何乗か」
+   （長さなら mm を 0 とする。1cm=10mm → cm は 1、1m=1000mm → m は 3）
+------------------------------------ */
+var DOMAINS = {
+  length: { id:'length', name:'長さ', emoji:'📏', kind:'dec',
+    units:[ {n:'km',exp:6}, {n:'m',exp:3}, {n:'cm',exp:1}, {n:'mm',exp:0} ],
+    facts:[ ['1km','1000m'], ['1m','100cm'], ['1cm','10mm'], ['1m','1000mm'] ],
+    keyFact:'1km = 1000m、1m = 100cm、1cm = 10mm'
+  },
+  volume: { id:'volume', name:'かさ', emoji:'🥤', kind:'dec',
+    units:[ {n:'kL',exp:6}, {n:'L',exp:3}, {n:'dL',exp:2}, {n:'mL',exp:0} ],
+    facts:[ ['1kL','1000L'], ['1L','10dL'], ['1dL','100mL'], ['1L','1000mL'] ],
+    keyFact:'1L = 10dL、1dL = 100mL、だから 1L = 1000mL'
+  },
+  weight: { id:'weight', name:'重さ', emoji:'⚖️', kind:'dec',
+    units:[ {n:'t',exp:9}, {n:'kg',exp:6}, {n:'g',exp:3}, {n:'mg',exp:0} ],
+    facts:[ ['1t','1000kg'], ['1kg','1000g'], ['1g','1000mg'], ['1t','1000000g'] ],
+    keyFact:'1t = 1000kg、1kg = 1000g、1g = 1000mg（どれも 1000 ばい）'
+  },
+  area: { id:'area', name:'面積', emoji:'🟦', kind:'dec',
+    units:[ {n:'km²',exp:10}, {n:'ha',exp:8}, {n:'a',exp:6}, {n:'m²',exp:4}, {n:'cm²',exp:0} ],
+    facts:[ ['1km²','100ha'], ['1ha','100a'], ['1a','100m²'], ['1ha','10000m²'], ['1km²','1000000m²'], ['1m²','10000cm²'] ],
+    keyFact:'1m² = 10000cm²、1a = 100m²、1ha = 10000m²（1a・1ha は 大人も よくまちがえます）'
+  },
+  time: { id:'time', name:'時間', emoji:'⏰', kind:'time',
+    units:[ {n:'日',sec:86400}, {n:'時間',sec:3600}, {n:'分',sec:60}, {n:'秒',sec:1} ],
+    facts:[ ['1日','24時間'], ['1時間','60分'], ['1分','60秒'], ['1日','1440分'], ['1時間','3600秒'], ['1日','86400秒'] ],
+    keyFact:'時間だけは 10 ずつでは ありません。1日=24時間、1時間=60分、1分=60秒'
+  }
+};
+var DOMAIN_ORDER = ['length','volume','weight','area','time'];
+
+function unitOf(dom, name){
+  for(var i = 0; i < dom.units.length; i++){ if(dom.units[i].n === name) return dom.units[i]; }
+  return null;
+}
+
+/* ---------- 出題の組（a が 大きい単位・b が 小さい単位） ----------
+   g = この組が 出はじめる学年の目安。
+   学年の配当は目安なので、はっきりしないものは 6（＝「ぜんぶ」でだけ出る）にしている。
+------------------------------------------------------------------ */
+var PAIRS = [
+  { d:'length', a:'km', b:'m',   g:3 },
+  { d:'length', a:'m',  b:'cm',  g:3 },
+  { d:'length', a:'cm', b:'mm',  g:3 },
+  { d:'length', a:'m',  b:'mm',  g:5 },
+  { d:'length', a:'km', b:'cm',  g:6 },
+
+  { d:'weight', a:'t',  b:'kg',  g:3 },
+  { d:'weight', a:'kg', b:'g',   g:3 },
+  { d:'weight', a:'g',  b:'mg',  g:6 },
+  { d:'weight', a:'t',  b:'g',   g:6 },
+
+  { d:'volume', a:'kL', b:'L',   g:4 },
+  { d:'volume', a:'L',  b:'dL',  g:4 },
+  { d:'volume', a:'dL', b:'mL',  g:4 },
+  { d:'volume', a:'L',  b:'mL',  g:4 },
+  { d:'volume', a:'kL', b:'mL',  g:6 },
+
+  { d:'area',   a:'km²',b:'ha',  g:4 },
+  { d:'area',   a:'ha', b:'a',   g:4 },
+  { d:'area',   a:'a',  b:'m²',  g:4 },
+  { d:'area',   a:'ha', b:'m²',  g:4 },
+  { d:'area',   a:'km²',b:'m²',  g:5 },
+  { d:'area',   a:'m²', b:'cm²', g:5 },
+  { d:'area',   a:'km²',b:'a',   g:6 },
+
+  { d:'time',   a:'日',  b:'時間', g:3 },
+  { d:'time',   a:'時間',b:'分',   g:3 },
+  { d:'time',   a:'分',  b:'秒',   g:3 },
+  { d:'time',   a:'時間',b:'秒',   g:5 },
+  { d:'time',   a:'日',  b:'分',   g:5 },
+  { d:'time',   a:'日',  b:'秒',   g:6 }
+];
+
+var GRADES = [
+  { id:'g3', num:3, label:'3年生', em:'3️⃣',
+    note:'長さ（km・m・cm・mm）、重さ（t・kg・g）、時間を れんしゅうします。となりどうしの 単位だけです。' },
+  { id:'g4', num:4, label:'4年生', em:'4️⃣',
+    note:'3年生のものに、かさ（kL・L・dL・mL）と 面積（km²・ha・a・m²）が 入ります。' },
+  { id:'g5', num:5, label:'5年生', em:'5️⃣',
+    note:'1m² = 10000cm² のような、はなれた 単位の なおし方も 入ります。小数の こたえも えらべます。' },
+  { id:'g6', num:6, label:'6年生', em:'6️⃣',
+    note:'mg や t と g など、ぜんぶの 組み合わせが 出ます。' },
+  { id:'all', num:6, label:'ぜんぶ', em:'🌈',
+    note:'学年を きにせず、ぜんぶの 単位から 出ます。学年のわけ方は あくまで 目安です。' }
+];
+
+/* ---------- 保存（この端末の中だけ） ---------- */
+var KEY_SCORE = 'unit_master_score';
+var KEY_WEAK  = 'unit_master_weak';
+
+function defScore(){ return { v:1, best:0, streak:0, totalC:0, totalT:0, day:'', dayC:0 }; }
+var score = defScore();
+var weak = [];
+
+function todayStr(){
+  var d = new Date();
+  function p(n){ return (n < 10 ? '0' : '') + n; }
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function loadAll(){
+  /* 読みこみに しっぱいしても、その場で 初期値を 書きこまない（上書きで消さないため） */
+  try{
+    var raw = localStorage.getItem(KEY_SCORE);
+    if(raw){
+      var o = JSON.parse(raw);
+      if(o && typeof o === 'object' && !Array.isArray(o)){
+        var s = defScore();
+        if(typeof o.best === 'number' && isFinite(o.best) && o.best >= 0) s.best = Math.floor(o.best);
+        if(typeof o.streak === 'number' && isFinite(o.streak) && o.streak >= 0) s.streak = Math.floor(o.streak);
+        if(typeof o.totalC === 'number' && isFinite(o.totalC) && o.totalC >= 0) s.totalC = Math.floor(o.totalC);
+        if(typeof o.totalT === 'number' && isFinite(o.totalT) && o.totalT >= 0) s.totalT = Math.floor(o.totalT);
+        if(typeof o.day === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(o.day)) s.day = o.day;
+        if(typeof o.dayC === 'number' && isFinite(o.dayC) && o.dayC >= 0) s.dayC = Math.floor(o.dayC);
+        if(s.totalC > s.totalT) s.totalC = s.totalT;
+        score = s;
+      }
+    }
+  }catch(e){ score = defScore(); }
+  try{
+    var rawW = localStorage.getItem(KEY_WEAK);
+    if(rawW){
+      var w = JSON.parse(rawW);
+      if(Array.isArray(w)){
+        var out = [];
+        for(var i = 0; i < w.length && out.length < 60; i++){
+          var it = w[i];
+          if(!it || typeof it !== 'object') continue;
+          if(typeof it.d !== 'string' || !DOMAINS[it.d]) continue;
+          if(typeof it.f !== 'string' || typeof it.t !== 'string') continue;
+          if(!unitOf(DOMAINS[it.d], it.f) || !unitOf(DOMAINS[it.d], it.t)) continue;
+          if(typeof it.v !== 'string' || !isNumStr(it.v)) continue;
+          out.push({ d:it.d, f:it.f, t:it.t, v:it.v });
+        }
+        weak = out;
+      }
+    }
+  }catch(e){ weak = []; }
+  /* 日づけが かわったら「きょうの せいかい」を 0 にもどす（画面の上だけ） */
+  if(score.day !== todayStr()){ score.day = todayStr(); score.dayC = 0; }
+}
+function saveScore(){
+  try{ localStorage.setItem(KEY_SCORE, JSON.stringify(score)); }catch(e){}
+}
+function saveWeak(){
+  try{ localStorage.setItem(KEY_WEAK, JSON.stringify(weak)); }catch(e){}
+}
+function weakKey(q){ return q.d + '|' + q.v + '|' + q.f + '|' + q.t; }
+function addWeak(q){
+  var k = weakKey(q);
+  for(var i = 0; i < weak.length; i++){ if(weakKey(weak[i]) === k) return; }
+  weak.unshift({ d:q.d, f:q.f, t:q.t, v:q.v });
+  while(weak.length > 40) weak.pop();
+  saveWeak();
+}
+function removeWeak(q){
+  var k = weakKey(q);
+  var before = weak.length;
+  weak = weak.filter(function(w){ return weakKey(w) !== k; });
+  if(weak.length !== before) saveWeak();
+}
+
+/* ---------- 画面のきりかえ ---------- */
+var screens = {
+  home:   $('screen-home'),
+  quiz:   $('screen-quiz'),
+  result: $('screen-result'),
+  table:  $('screen-table')
+};
+function show(name){
+  for(var k in screens){ if(screens.hasOwnProperty(k)) screens[k].classList.toggle('hidden', k !== name); }
+  window.scrollTo(0, 0);
+}
+
+/* ---------- 設定 ---------- */
+var gradeId = 'g4';
+var domainOn = { length:true, volume:true, weight:true, area:true, time:true };
+var allowDecimal = false;
+var quizCount = 10;
+
+function gradeNum(){
+  for(var i = 0; i < GRADES.length; i++){ if(GRADES[i].id === gradeId) return GRADES[i].num; }
+  return 6;
+}
+function decimalAllowedHere(){ return gradeId === 'g5' || gradeId === 'g6' || gradeId === 'all'; }
+function availablePairs(){
+  var gn = gradeNum();
+  return PAIRS.filter(function(p){ return p.g <= gn && domainOn[p.d]; });
+}
+
+function renderGrade(){
+  var wrap = $('gradeGrid');
+  wrap.innerHTML = '';
+  GRADES.forEach(function(g){
+    var b = document.createElement('button');
+    b.className = 'pick-btn' + (g.id === gradeId ? ' on' : '');
+    b.innerHTML = '<span class="em">' + g.em + '</span>' + esc(g.label);
+    b.addEventListener('click', function(){
+      gradeId = g.id;
+      if(!decimalAllowedHere()) allowDecimal = false;
+      renderGrade(); renderDomains(); renderPool();
+    });
+    wrap.appendChild(b);
+  });
+  var note = '';
+  for(var i = 0; i < GRADES.length; i++){ if(GRADES[i].id === gradeId) note = GRADES[i].note; }
+  $('gradeNote').textContent = '※ 学年のわけ方は 目安です。' + note;
+}
+function renderDomains(){
+  var wrap = $('domainGrid');
+  wrap.innerHTML = '';
+  DOMAIN_ORDER.forEach(function(id){
+    var d = DOMAINS[id];
+    var b = document.createElement('button');
+    b.className = 'pick-btn' + (domainOn[id] ? ' on' : '');
+    b.innerHTML = '<span class="em">' + d.emoji + '</span>' + esc(d.name);
+    b.addEventListener('click', function(){
+      domainOn[id] = !domainOn[id];
+      var any = false;
+      DOMAIN_ORDER.forEach(function(x){ if(domainOn[x]) any = true; });
+      if(!any) domainOn[id] = true;   /* ぜんぶ 消えないようにする */
+      renderDomains(); renderPool();
+    });
+    wrap.appendChild(b);
+  });
+  var t = $('decToggle');
+  t.classList.toggle('on', allowDecimal);
+  $('decBox').textContent = allowDecimal ? '✓' : '';
+  t.disabled = !decimalAllowedHere();
+  t.style.opacity = decimalAllowedHere() ? '1' : '0.5';
+}
+function renderCount(){
+  var wrap = $('countGrid');
+  wrap.innerHTML = '';
+  [5, 10, 20].forEach(function(n){
+    var b = document.createElement('button');
+    b.className = 'pick-btn' + (n === quizCount ? ' on' : '');
+    b.textContent = n + 'もん';
+    b.addEventListener('click', function(){ quizCount = n; renderCount(); });
+    wrap.appendChild(b);
+  });
+}
+function renderPool(){
+  var n = availablePairs().length;
+  $('poolNote').textContent = 'いま えらんでいる はんい：' + n + 'しゅるいの なおし方から 出ます。';
+  $('startBtn').disabled = (n === 0);
+}
+function renderRecord(){
+  $('recToday').textContent = score.dayC;
+  $('recStreak').textContent = score.streak;
+  $('recBest').textContent = score.best;
+  if(score.totalT > 0){
+    $('recTotal').textContent = 'いままでに といた もんだい：' + score.totalT + 'もん（せいかい ' +
+      Math.round(score.totalC / score.totalT * 100) + '％）';
+  }else{
+    $('recTotal').textContent = 'まだ といて いません。';
+  }
+  var rc = weak.length;
+  $('reviewCount').textContent = rc > 0
+    ? ('まちがえた もんだいが ' + rc + 'もん あります。もういちど やってみよう。')
+    : 'まだ ありません（まちがえると ここに たまります）';
+  $('toReviewBtn').disabled = (rc === 0);
+}
+
+/* ---------- 問題を つくる ---------- */
+function valuePool(k){
+  if(k <= 1) return [2,3,4,5,6,7,8,9,12,15,20,25,30,40,45,60,80];
+  if(k === 2) return [1,2,3,4,5,6,7,8,9,12,15,20,25,30,50];
+  if(k === 3) return [1,2,3,4,5,6,7,8,9,12,15,20,25];
+  if(k <= 5) return [1,2,3,4,5,6,7,8,9];
+  return [1,2,3,4,5];
+}
+function timePool(r){
+  if(r === 24) return [1,2,3,4,5,6,7,8,9,10,12];
+  if(r === 60) return [1,2,3,4,5,6,7,8,9,10,12,15,20,30];
+  if(r === 1440) return [1,2,3,4,5];
+  if(r === 3600) return [1,2,3,4,5,6];
+  return [1,2,3];
+}
+
+function makeQuestion(pairs, useDecimal){
+  var p = pick(pairs);
+  var dom = DOMAINS[p.d];
+  var uA = unitOf(dom, p.a), uB = unitOf(dom, p.b);
+
+  if(dom.kind === 'time'){
+    var r = uA.sec / uB.sec;
+    var n = pick(timePool(r));
+    if(Math.random() < 0.5){
+      return { d:p.d, f:uA.n, t:uB.n, v:String(n), ans:String(n * r) };
+    }
+    return { d:p.d, f:uB.n, t:uA.n, v:String(n * r), ans:String(n) };
+  }
+
+  var k = uA.exp - uB.exp;   /* けたが いくつ ちがうか */
+  if(useDecimal && k >= 2 && Math.random() < 0.4){
+    /* こたえが 小数になる もんだい（5年・6年だけ） */
+    var dmax = Math.min(2, k - 1);
+    var dd = dmax >= 2 ? pick([1, 2]) : 1;
+    var nn = 0;
+    while(nn % 10 === 0){ nn = 2 + Math.floor(Math.random() * 97); }   /* 2〜98 で 10のばいすう以外 */
+    return { d:p.d, f:uB.n, t:uA.n, v:shiftStr(nn, k - dd), ans:shiftStr(nn, -dd) };
+  }
+  var v = pick(valuePool(k));
+  if(Math.random() < 0.5){
+    return { d:p.d, f:uA.n, t:uB.n, v:String(v), ans:shiftStr(v, k) };
+  }
+  return { d:p.d, f:uB.n, t:uA.n, v:shiftStr(v, k), ans:String(v) };
+}
+
+/* まちがえた問題から こたえを つくり直す（保存には こたえを入れていない） */
+function answerFor(q){
+  var dom = DOMAINS[q.d];
+  var uf = unitOf(dom, q.f), ut = unitOf(dom, q.t);
+  if(dom.kind === 'time'){
+    var sec = Number(q.v) * uf.sec;
+    return String(sec / ut.sec);
+  }
+  return shiftStr(q.v, uf.exp - ut.exp);
+}
+
+/* ---------- 位取りの表を 組み立てる ---------- */
+function placeTableHTML(domId, valueStr, fromName, toName){
+  var dom = DOMAINS[domId];
+  if(dom.kind === 'time') return '';
+  var uf = unitOf(dom, fromName), ut = unitOf(dom, toName);
+  var dot = valueStr.indexOf('.');
+  var intPart = dot < 0 ? valueStr : valueStr.slice(0, dot);
+  var frac = dot < 0 ? '' : valueStr.slice(dot + 1);
+  var digits = intPart + frac;
+  var topExp = uf.exp + intPart.length - 1;
+  var botExp = uf.exp - frac.length;
+
+  var hi = Math.max(topExp, ut.exp);
+  var lo = Math.min(botExp, ut.exp);
+  /* 表の中に 単位の名前が ちゃんと入るように、となりの単位まで すこし広げる */
+  for(var i = 0; i < dom.units.length; i++){
+    var ue = dom.units[i].exp;
+    if(ue <= hi && ue >= lo){ /* すでに入っている */ }
+  }
+  if(hi - lo > 13){ lo = hi - 13; }   /* 長くなりすぎないようにする */
+
+  function digitAt(e){
+    var idx = topExp - e;
+    if(idx < 0 || idx >= digits.length) return '0';
+    return digits.charAt(idx);
+  }
+  var unitAt = {};
+  dom.units.forEach(function(u){ unitAt[u.exp] = u.n; });
+
+  var html = '<div class="tbl-scroll"><div class="ptbl">';
+  for(var e = hi; e >= lo; e--){
+    var cls = 'pcol';
+    if(unitAt[e]) cls += ' has-u';
+    if(e === uf.exp) cls += ' from';
+    else if(e === ut.exp) cls += ' to';
+    var d = digitAt(e);
+    if(d === '0' && !(e === uf.exp || e === ut.exp)) cls += ' zero';
+    html += '<div class="' + cls + '"><div class="u">' + (unitAt[e] ? esc(unitAt[e]) : '') + '</div>'
+          + '<div class="d">' + d + '</div></div>';
+    if(e === ut.exp && e > lo){
+      html += '<div class="pdot">.</div>';
+    }
+  }
+  html += '</div></div>';
+  html += '<p class="tbl-hint">※ 青が <b>' + esc(fromName) + '</b> の 一のくらい、みどりが <b>' + esc(toName) +
+          '</b> の 一のくらいです。よこに スクロールできます。</p>';
+  return html;
+}
+
+/* ---------- 解説（まちがえたとき・考え方を見るとき） ---------- */
+function explainHTML(q, ans){
+  var dom = DOMAINS[q.d];
+  var uf = unitOf(dom, q.f), ut = unitOf(dom, q.t);
+  var h = '<div class="explain">';
+
+  if(dom.kind === 'time'){
+    var r, dir;
+    if(uf.sec > ut.sec){ r = uf.sec / ut.sec; dir = 'x'; }
+    else { r = ut.sec / uf.sec; dir = 'd'; }
+    h += '<h4>⏰ 時間は 10 ずつでは ありません</h4>';
+    h += '<p>1日 ＝ 24時間　／　1時間 ＝ 60分　／　1分 ＝ 60秒</p>';
+    h += '<p>だから <b class="hl-f">1' + esc(uf.n) + '</b> と <b class="hl-t">1' + esc(ut.n) + '</b> は、';
+    if(dir === 'x'){
+      h += '<b>1' + esc(uf.n) + ' ＝ ' + comma(r) + esc(ut.n) + '</b> の かんけいです。</p>';
+      h += '<div class="shift-note">大きい <ruby>単位<rt>たんい</rt></ruby>から 小さい <ruby>単位<rt>たんい</rt></ruby>へ なおすので <em>× ' + comma(r) + '</em></div>';
+      h += '<div class="eq-line">' + comma(q.v) + esc(uf.n) + ' × ' + comma(r) + ' ＝ <span class="a">' + comma(ans) + esc(ut.n) + '</span></div>';
+    }else{
+      h += '<b>1' + esc(ut.n) + ' ＝ ' + comma(r) + esc(uf.n) + '</b> の かんけいです。</p>';
+      h += '<div class="shift-note">小さい <ruby>単位<rt>たんい</rt></ruby>から 大きい <ruby>単位<rt>たんい</rt></ruby>へ なおすので <em>÷ ' + comma(r) + '</em></div>';
+      h += '<div class="eq-line">' + comma(q.v) + esc(uf.n) + ' ÷ ' + comma(r) + ' ＝ <span class="a">' + comma(ans) + esc(ut.n) + '</span></div>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  var k = uf.exp - ut.exp;          /* プラスなら 右へ、マイナスなら 左へ */
+  var moves = Math.abs(k);
+  h += '<h4>🔢 <ruby>位取<rt>くらいど</rt></ruby>りの 表で みてみよう</h4>';
+  h += placeTableHTML(q.d, q.v, q.f, q.t);
+  h += '<div class="shift-note">1' + esc(uf.n) + ' ＝ ' + comma(shiftStr(1, k >= 0 ? k : -k)) +
+       (k >= 0 ? esc(ut.n) : esc(uf.n)) + ' …… ';
+  if(k >= 0){
+    h += 'けたが <em>' + moves + 'つ 左</em> に ずれているので、数は <em>' + moves + 'けた ふえます</em>。</div>';
+  }else{
+    h += 'けたが <em>' + moves + 'つ 右</em> に ずれているので、数は <em>' + moves + 'けた へります</em>。</div>';
+  }
+  h += '<div class="eq-line">' + comma(q.v) + esc(uf.n) + ' ＝ <span class="a">' + comma(ans) + esc(ut.n) + '</span></div>';
+  h += '<p style="margin-top:8px;">おぼえかた：' + esc(dom.keyFact) + '</p>';
+  h += '</div>';
+  return h;
+}
+
+/* ---------- れんしゅう ---------- */
+var quizList = [], quizIdx = 0, quizCorrect = 0, curQ = null, answered = false;
+var quizMiss = [], isReview = false;
+
+function startQuiz(reviewMode){
+  isReview = !!reviewMode;
+  quizList = [];
+  if(isReview){
+    var src = weak.slice(0, 20);
+    for(var i = 0; i < src.length; i++){
+      var q = { d:src[i].d, f:src[i].f, t:src[i].t, v:src[i].v };
+      q.ans = answerFor(q);
+      quizList.push(q);
+    }
+  }else{
+    var pairs = availablePairs();
+    if(pairs.length === 0) return;
+    var useDec = allowDecimal && decimalAllowedHere();
+    var seen = {};
+    var guard = 0;
+    while(quizList.length < quizCount && guard < 500){
+      guard++;
+      var nq = makeQuestion(pairs, useDec);
+      var key = weakKey(nq);
+      if(seen[key] && quizList.length < 40) continue;
+      seen[key] = true;
+      quizList.push(nq);
+    }
+  }
+  if(quizList.length === 0) return;
+  quizIdx = 0; quizCorrect = 0; quizMiss = [];
+  show('quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  curQ = quizList[quizIdx];
+  answered = false;
+  var dom = DOMAINS[curQ.d];
+  $('quizProgress').textContent = (quizIdx + 1) + ' / ' + quizList.length + ' もん目';
+  $('quizScore').textContent = 'せいかい ' + quizCorrect + ' もん';
+  $('quizBar').style.width = (quizIdx / quizList.length * 100) + '%';
+  $('qBadge').innerHTML = '<span class="q-badge' + (isReview ? ' rev' : '') + '">' +
+    (isReview ? '🔁 まちがえた もんだい' : esc(dom.emoji + ' ' + dom.name)) + '</span>';
+  $('qText').innerHTML = '<span class="big">' + comma(curQ.v) + esc(curQ.f) + '</span> は なん' + esc(curQ.t) + '？';
+  $('qSub').textContent = 'こたえの 数だけ 入れてね。';
+
+  var ai = $('ansInput');
+  ai.value = '';
+  ai.disabled = false;
+  ai.setAttribute('inputmode', curQ.ans.indexOf('.') >= 0 ? 'decimal' : 'numeric');
+  $('ansUnit').textContent = curQ.t;
+  $('feedback').textContent = '';
+  $('feedback').className = 'feedback';
+  $('explainArea').innerHTML = '';
+  $('checkBtn').classList.remove('hidden');
+  $('nextBtn').classList.add('hidden');
+  $('showExplainBtn').classList.add('hidden');
+  renderNumpad();
+  try{ ai.focus({ preventScroll:true }); }catch(e){}
+}
+
+function renderNumpad(){
+  var wrap = $('numpad');
+  if(wrap.childNodes.length > 0 && wrap.getAttribute('data-built') === '1'){
+    /* すでに つくってある。「.」が 使えるかだけ 切りかえる */
+    var dotBtn = wrap.querySelector('[data-key="."]');
+    if(dotBtn) dotBtn.disabled = !allowDecimal || !decimalAllowedHere();
+    return;
+  }
+  wrap.innerHTML = '';
+  var keys = ['1','2','3','4','5','6','7','8','9','0','.','C','←'];
+  keys.forEach(function(k){
+    var b = document.createElement('button');
+    b.setAttribute('data-key', k);
+    b.textContent = k;
+    if(k === 'C' || k === '←' || k === '.') b.className = 'util';
+    if(k === '.') b.disabled = !allowDecimal || !decimalAllowedHere();
+    b.addEventListener('click', function(){
+      if(answered) return;
+      var ai = $('ansInput');
+      if(k === 'C') ai.value = '';
+      else if(k === '←') ai.value = ai.value.slice(0, -1);
+      else if(k === '.'){ if(ai.value.indexOf('.') < 0 && ai.value !== '') ai.value += '.'; }
+      else if(ai.value.length < 13) ai.value += k;
+    });
+    wrap.appendChild(b);
+  });
+  wrap.setAttribute('data-built', '1');
+}
+
+function checkAnswer(){
+  if(answered) return;
+  var raw = normalizeNum($('ansInput').value);
+  if(!isNumStr(raw)){
+    $('feedback').className = 'feedback ng';
+    $('feedback').textContent = '数を 入れてね。';
+    return;
+  }
+  answered = true;
+  $('ansInput').disabled = true;
+  $('checkBtn').classList.add('hidden');
+  $('nextBtn').classList.remove('hidden');
+
+  var ok = (Number(raw) === Number(curQ.ans));
+  score.totalT++;
+  if(ok){
+    quizCorrect++;
+    score.totalC++;
+    score.streak++;
+    if(score.streak > score.best) score.best = score.streak;
+    if(score.day !== todayStr()){ score.day = todayStr(); score.dayC = 0; }
+    score.dayC++;
+    $('feedback').className = 'feedback ok';
+    $('feedback').textContent = '⭕ せいかい！　' + (score.streak >= 3 ? ('れんぞく ' + score.streak + 'もん！') : '');
+    $('showExplainBtn').classList.remove('hidden');
+    if(isReview) removeWeak(curQ);
+  }else{
+    score.streak = 0;
+    $('feedback').className = 'feedback ng';
+    $('feedback').innerHTML = '❌ ざんねん。こたえは <b>' + comma(curQ.ans) + esc(curQ.t) + '</b> です。';
+    $('explainArea').innerHTML = explainHTML(curQ, curQ.ans);
+    quizMiss.push(curQ);
+    addWeak(curQ);
+  }
+  saveScore();
+  $('quizScore').textContent = 'せいかい ' + quizCorrect + ' もん';
+}
+
+function nextQuestion(){
+  quizIdx++;
+  if(quizIdx >= quizList.length){ showResult(); return; }
+  renderQuestion();
+}
+
+function showResult(){
+  $('quizBar').style.width = '100%';
+  var n = quizList.length, c = quizCorrect;
+  var rate = Math.round(c / n * 100);
+  $('resultScore').textContent = n + 'もん中 ' + c + 'もん せいかい';
+  var em = '🎉', msg = '';
+  if(rate === 100){ em = '🏆'; msg = 'ぜんぶ せいかい！ <ruby>単位<rt>たんい</rt></ruby>の なおし方が ばっちりだね。'; }
+  else if(rate >= 80){ em = '😄'; msg = 'あと すこし！ まちがえた ところを もういちど やってみよう。'; }
+  else if(rate >= 50){ em = '🙂'; msg = '<ruby>位取<rt>くらいど</rt></ruby>りの 表を 見ながら、けたの うごき方を たしかめよう。'; }
+  else { em = '💪'; msg = 'まずは 1km＝1000m のような、きほんの かんけいから おぼえよう。'; }
+  $('resultEmoji').textContent = em;
+  $('resultMsg').innerHTML = msg;
+
+  var mh = '';
+  if(quizMiss.length > 0){
+    mh = '<h2 class="section-title" style="margin-top:16px;">まちがえた もんだい</h2><div class="miss-list">';
+    quizMiss.forEach(function(q){
+      mh += '<div class="miss">' + comma(q.v) + esc(q.f) + ' ＝ ' + comma(q.ans) + esc(q.t) + '</div>';
+    });
+    mh += '</div><p class="mini-note">さいしょの画面の「まちがえた もんだい」から、もういちど れんしゅうできます。</p>';
+  }
+  $('resultMiss').innerHTML = mh;
+  renderRecord();
+  show('result');
+}
+
+/* ---------- 換算表モード ---------- */
+var tDomain = 'length';
+var tUnit = 'm';
+
+function renderTablePickers(){
+  var wrap = $('tDomainGrid');
+  wrap.innerHTML = '';
+  DOMAIN_ORDER.forEach(function(id){
+    var d = DOMAINS[id];
+    var b = document.createElement('button');
+    b.className = 'pick-btn' + (id === tDomain ? ' on' : '');
+    b.innerHTML = '<span class="em">' + d.emoji + '</span>' + esc(d.name);
+    b.addEventListener('click', function(){
+      tDomain = id;
+      tUnit = DOMAINS[id].units[Math.min(1, DOMAINS[id].units.length - 1)].n;
+      renderTablePickers(); renderConv();
+    });
+    wrap.appendChild(b);
+  });
+  var uw = $('tUnitGrid');
+  uw.innerHTML = '';
+  DOMAINS[tDomain].units.forEach(function(u){
+    var b = document.createElement('button');
+    b.className = 'pick-btn' + (u.n === tUnit ? ' on' : '');
+    b.textContent = u.n;
+    b.addEventListener('click', function(){ tUnit = u.n; renderTablePickers(); renderConv(); });
+    uw.appendChild(b);
+  });
+  $('tUnitLabel').textContent = tUnit;
+}
+
+function renderConv(){
+  var dom = DOMAINS[tDomain];
+  var raw = normalizeNum($('tInput').value);
+  var out = $('tResult');
+  if(!isNumStr(raw)){
+    out.innerHTML = '<p class="mini-note">数を 入れてね（れい：1、3.5、250）。</p>';
+    renderFacts();
+    return;
+  }
+  var html = '';
+
+  if(dom.kind === 'time'){
+    var uf0 = unitOf(dom, tUnit);
+    var sec = Number(raw) * uf0.sec;
+    html += '<table class="conv-tbl">';
+    dom.units.forEach(function(u){
+      var val = sec / u.sec;
+      var txt, note = '';
+      if(Math.abs(val - Math.round(val)) < 1e-9){
+        txt = comma(String(Math.round(val)));
+      }else{
+        txt = 'およそ ' + comma(String(Math.round(val * 10000) / 10000));
+        note = 'わりきれません';
+      }
+      html += '<tr' + (u.n === tUnit ? ' class="cur"' : '') + '><th>' + esc(u.n) + '</th><td>' + txt +
+              (note ? '<small>' + note + '</small>' : '') + '</td></tr>';
+    });
+    html += '</table>';
+    /* 日・時間・分・秒 の 組み合わせ */
+    if(Math.abs(sec - Math.round(sec)) < 1e-9 && Math.abs(sec) < 1e12){
+      var s = Math.round(sec);
+      var dd = Math.floor(s / 86400); s -= dd * 86400;
+      var hh = Math.floor(s / 3600);  s -= hh * 3600;
+      var mm = Math.floor(s / 60);    s -= mm * 60;
+      var parts = [];
+      if(dd) parts.push(dd + '日');
+      if(hh) parts.push(hh + '時間');
+      if(mm) parts.push(mm + '分');
+      if(s || parts.length === 0) parts.push(s + '秒');
+      html += '<div class="eq-line" style="margin-top:10px;">あわせた いい方： <span class="a">' + parts.join('') + '</span></div>';
+    }
+    html += '<p class="mini-note">時間は 10 ずつでは ないので、<ruby>位取<rt>くらいど</rt></ruby>りの 表は 使えません。</p>';
+    out.innerHTML = html;
+    renderFacts();
+    return;
+  }
+
+  var uf = unitOf(dom, tUnit);
+  html += '<table class="conv-tbl">';
+  dom.units.forEach(function(u){
+    var val = shiftStr(raw, uf.exp - u.exp);
+    html += '<tr' + (u.n === tUnit ? ' class="cur"' : '') + '><th>' + esc(u.n) + '</th><td>' + comma(val) + '</td></tr>';
+  });
+  html += '</table>';
+
+  /* 位取りの表（いちばん大きい単位 ↔ いちばん小さい単位 のはばで出す） */
+  var big = dom.units[0].n, small = dom.units[dom.units.length - 1].n;
+  var other = (tUnit === big) ? small : big;
+  html += '<h2 class="section-title" style="margin-top:16px;"><ruby>位取<rt>くらいど</rt></ruby>りの 表</h2>';
+  html += placeTableHTML(tDomain, raw, tUnit, other);
+  out.innerHTML = html;
+  renderFacts();
+}
+
+function renderFacts(){
+  var dom = DOMAINS[tDomain];
+  var h = '<div class="fact-list">';
+  dom.facts.forEach(function(f, i){
+    var isKey = (tDomain === 'area');
+    h += '<div class="fact' + (isKey && i >= 2 ? ' key' : '') + '">' + esc(f[0]) + ' ＝ ' + comma(f[1].replace(/[^0-9]/g, '')) +
+         esc(f[1].replace(/[0-9]/g, '')) + '</div>';
+  });
+  h += '</div>';
+  if(tDomain === 'area'){
+    h += '<p class="mini-note">a（アール）と ha（ヘクタール）は、大人も よく まちがえます。1a＝100m²、1ha＝10000m² を たしかめてください。</p>';
+  }
+  $('tFacts').innerHTML = h;
+}
+
+/* ---------- イベント ---------- */
+$('homeBtn').addEventListener('click', function(){ renderRecord(); show('home'); });
+$('toQuizBtn').addEventListener('click', function(){
+  window.scrollTo(0, document.body.scrollHeight);
+  $('startBtn').focus({ preventScroll:true });
+});
+$('startBtn').addEventListener('click', function(){ startQuiz(false); });
+$('toReviewBtn').addEventListener('click', function(){ if(weak.length > 0) startQuiz(true); });
+$('toTableBtn').addEventListener('click', function(){ renderTablePickers(); renderConv(); show('table'); });
+$('tableHomeBtn').addEventListener('click', function(){ renderRecord(); show('home'); });
+$('tInput').addEventListener('input', renderConv);
+
+$('decToggle').addEventListener('click', function(){
+  if(!decimalAllowedHere()) return;
+  allowDecimal = !allowDecimal;
+  renderDomains();
+  renderNumpad();
+});
+$('checkBtn').addEventListener('click', checkAnswer);
+$('nextBtn').addEventListener('click', nextQuestion);
+$('showExplainBtn').addEventListener('click', function(){
+  $('explainArea').innerHTML = explainHTML(curQ, curQ.ans);
+  $('showExplainBtn').classList.add('hidden');
+});
+$('quitQuizBtn').addEventListener('click', function(){ renderRecord(); show('home'); });
+$('againBtn').addEventListener('click', function(){ startQuiz(isReview && weak.length > 0); });
+$('resultHomeBtn').addEventListener('click', function(){ renderRecord(); show('home'); });
+$('ansInput').addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    if(answered) nextQuestion(); else checkAnswer();
+  }
+});
+$('clearRecBtn').addEventListener('click', function(){
+  score = defScore();
+  score.day = todayStr();
+  weak = [];
+  saveScore(); saveWeak();
+  renderRecord();
+});
+
+/* ---------- さいしょに ひらいたとき ---------- */
+loadAll();
+renderGrade();
+renderDomains();
+renderCount();
+renderPool();
+renderRecord();
+renderTablePickers();
+show('home');
+</script>
+</body>
+</html>

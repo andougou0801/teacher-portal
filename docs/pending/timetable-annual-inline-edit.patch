@@ -1,0 +1,218 @@
+diff --git a/public/tools/timetable-maker.html b/public/tools/timetable-maker.html
+index 562220f..46b0139 100644
+--- a/public/tools/timetable-maker.html
++++ b/public/tools/timetable-maker.html
+@@ -300,6 +300,49 @@
+     font-size: 12px;
+   }
+   .annual-del-btn:hover { background: #fbd6d6; }
++  /* 一覧の中で直す(編集/保存/やめる) */
++  .annual-edit-btn {
++    background: #eaf2ff;
++    color: #2d6cdf;
++    border: none;
++    border-radius: 6px;
++    padding: 4px 10px;
++    cursor: pointer;
++    font-size: 12px;
++    margin-right: 6px;
++  }
++  .annual-edit-btn:hover { background: #d7e6ff; }
++  .annual-save-btn {
++    background: #2d6cdf;
++    color: #fff;
++    border: none;
++    border-radius: 6px;
++    padding: 4px 12px;
++    cursor: pointer;
++    font-size: 12px;
++    margin-right: 6px;
++  }
++  .annual-save-btn:hover { background: #1f54b8; }
++  .annual-cancel-btn {
++    background: #e8ecf2;
++    color: #444;
++    border: none;
++    border-radius: 6px;
++    padding: 4px 10px;
++    cursor: pointer;
++    font-size: 12px;
++  }
++  .annual-cancel-btn:hover { background: #d8dfe9; }
++  .annual-edit-row input[type="date"],
++  .annual-edit-row input[type="text"] {
++    padding: 5px 7px;
++    border: 1px solid #ccc;
++    border-radius: 5px;
++    font-size: 13px;
++  }
++  .annual-edit-row input[type="text"] { width: 100%; box-sizing: border-box; }
++  .annual-edit-row .annual-range-sep { margin: 0 4px; }
++  tr.annual-edit-row { background-color: #f7faff; }
+ 
+   /* 予定表の取り込み */
+   .import-bar {
+@@ -1847,6 +1890,8 @@
+   let currentData = null;  // 現在表示中の週データ
+   let SUBJECTS = [];
+   let ANNUAL_EVENTS = [];
++  // いま一覧の中で編集している予定のid(編集していないときはnull)
++  let editingAnnualId = null;
+   let TARGETS = {};
+   let CARRY = {};   // ツールを使い始める前(前期など)に実施した時数
+   let PATTERN_DATA = null;
+@@ -2155,6 +2200,7 @@
+   }
+ 
+   function removeAnnualEvent(id) {
++    if (editingAnnualId === id) editingAnnualId = null;
+     ANNUAL_EVENTS = ANNUAL_EVENTS.filter(ev => ev.id !== id);
+     saveAnnualEvents();
+     renderAnnualList();
+@@ -2321,29 +2367,120 @@
+       return;
+     }
+     list.forEach(ev => {
+-      const tr = document.createElement("tr");
+-      if (eventEndDate(ev) < today) tr.style.opacity = "0.5";
++      annualBody.appendChild(
++        editingAnnualId === ev.id ? annualEditRow(ev) : annualViewRow(ev, today)
++      );
++    });
++  }
+ 
+-      const tdDate = document.createElement("td");
+-      tdDate.textContent = formatDateWithDow(ev.date) +
+-        (ev.endDate ? " 〜 " + formatDateWithDow(ev.endDate) : "");
++  // ふだんの表示(日付 / 内容 / 編集・削除)
++  function annualViewRow(ev, today) {
++    const tr = document.createElement("tr");
++    if (eventEndDate(ev) < today) tr.style.opacity = "0.5";
+ 
+-      const tdText = document.createElement("td");
+-      tdText.textContent = ev.text;
++    const tdDate = document.createElement("td");
++    tdDate.textContent = formatDateWithDow(ev.date) +
++      (ev.endDate ? " 〜 " + formatDateWithDow(ev.endDate) : "");
+ 
+-      const tdDel = document.createElement("td");
+-      const delBtn = document.createElement("button");
+-      delBtn.type = "button";
+-      delBtn.className = "annual-del-btn";
+-      delBtn.textContent = "削除";
+-      delBtn.addEventListener("click", () => removeAnnualEvent(ev.id));
+-      tdDel.appendChild(delBtn);
++    const tdText = document.createElement("td");
++    tdText.textContent = ev.text;
+ 
+-      tr.appendChild(tdDate);
+-      tr.appendChild(tdText);
+-      tr.appendChild(tdDel);
+-      annualBody.appendChild(tr);
++    const tdBtn = document.createElement("td");
++    const editBtn = document.createElement("button");
++    editBtn.type = "button";
++    editBtn.className = "annual-edit-btn";
++    editBtn.textContent = "編集";
++    editBtn.addEventListener("click", () => {
++      editingAnnualId = ev.id;
++      renderAnnualList();
+     });
++    const delBtn = document.createElement("button");
++    delBtn.type = "button";
++    delBtn.className = "annual-del-btn";
++    delBtn.textContent = "削除";
++    delBtn.addEventListener("click", () => removeAnnualEvent(ev.id));
++    tdBtn.appendChild(editBtn);
++    tdBtn.appendChild(delBtn);
++
++    tr.appendChild(tdDate);
++    tr.appendChild(tdText);
++    tr.appendChild(tdBtn);
++    return tr;
++  }
++
++  // 「編集」を押したときの行。その場で日付・期間・内容を直せる
++  function annualEditRow(ev) {
++    const tr = document.createElement("tr");
++    tr.className = "annual-edit-row";
++
++    const tdDate = document.createElement("td");
++    const dateInput = document.createElement("input");
++    dateInput.type = "date";
++    dateInput.value = ev.date;
++    const sep = document.createElement("span");
++    sep.className = "annual-range-sep";
++    sep.textContent = "〜";
++    const endInput = document.createElement("input");
++    endInput.type = "date";
++    endInput.value = ev.endDate || "";
++    endInput.title = "何日かにまたがる予定のときだけ入れてください";
++    tdDate.appendChild(dateInput);
++    tdDate.appendChild(sep);
++    tdDate.appendChild(endInput);
++
++    const tdText = document.createElement("td");
++    const textInput = document.createElement("input");
++    textInput.type = "text";
++    textInput.value = ev.text;
++    tdText.appendChild(textInput);
++
++    const tdBtn = document.createElement("td");
++    const saveBtn = document.createElement("button");
++    saveBtn.type = "button";
++    saveBtn.className = "annual-save-btn";
++    saveBtn.textContent = "保存";
++    const cancelBtn = document.createElement("button");
++    cancelBtn.type = "button";
++    cancelBtn.className = "annual-cancel-btn";
++    cancelBtn.textContent = "やめる";
++
++    const save = () => {
++      const date = dateInput.value;
++      const end = endInput.value;
++      const text = textInput.value.trim();
++      if (!isValidDateStr(date)) { showToast("日付を入れてください"); dateInput.focus(); return; }
++      if (!text) { showToast("内容を入れてください"); textInput.focus(); return; }
++      if (end && end < date) { showToast("終わりの日が始まりの日より前になっています"); return; }
++      ev.date = date;
++      ev.text = text;
++      if (end && isValidDateStr(end) && end > date) ev.endDate = end;
++      else delete ev.endDate;
++      ANNUAL_EVENTS.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
++      editingAnnualId = null;
++      saveAnnualEvents();
++      renderAnnualList();
++      renderUpcoming();
++      refreshTableIfNeeded();
++      showToast("予定を直しました");
++    };
++    const cancel = () => { editingAnnualId = null; renderAnnualList(); };
++
++    saveBtn.addEventListener("click", save);
++    cancelBtn.addEventListener("click", cancel);
++    // Enterで保存、Escでやめる
++    textInput.addEventListener("keydown", e => {
++      if (e.key === "Enter") { e.preventDefault(); save(); }
++      if (e.key === "Escape") { e.preventDefault(); cancel(); }
++    });
++
++    tdBtn.appendChild(saveBtn);
++    tdBtn.appendChild(cancelBtn);
++    tr.appendChild(tdDate);
++    tr.appendChild(tdText);
++    tr.appendChild(tdBtn);
++    // 開いたらすぐ直せるように、内容欄にカーソルを置く
++    setTimeout(() => { textInput.focus(); textInput.select(); }, 0);
++    return tr;
+   }
+ 
+   /* ---------- 定型パターン(曜日ごとの基本時間割、年度ごと) ---------- */
+@@ -2986,6 +3123,7 @@
+     activeYear = year;
+     SUBJECTS = loadSubjects();
+     ANNUAL_EVENTS = loadAnnualEvents();
++    editingAnnualId = null;   // 年度を変えたら編集中の行は閉じる
+     TARGETS = loadTargets();
+     CARRY = loadCarry();
+     const p = loadPattern();

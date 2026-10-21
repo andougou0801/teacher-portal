@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>当番表メーカー</title>
+<style>
+  :root{
+    --accent:#2d6cdf;
+    --accent-dark:#1f54b8;
+    --accent-soft:#eaf1ff;
+    --line:#e2e8f0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",YuGothic,"Meiryo",sans-serif;
+    background:linear-gradient(180deg,#f4f8ff 0%, #eef3fb 100%);
+    color:#2a2a2a;
+    min-height:100vh;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:18px 14px 60px;}
+
+  .app-header{padding:6px 2px 14px;}
+  .app-title{font-size:21px;font-weight:800;color:var(--accent-dark);margin:0;}
+  .app-lead{font-size:13px;color:#667085;margin:8px 0 0;line-height:1.8;}
+
+  .card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 16px rgba(30,50,90,0.08);margin-bottom:16px;}
+  h2.section-title{margin:0 0 12px;font-size:15px;color:#444;font-weight:800;}
+  .section-note{font-size:12px;color:#8a93a3;margin:-6px 0 12px;line-height:1.8;}
+  label{display:block;font-size:13px;font-weight:700;color:#555;margin-bottom:6px;}
+  .hint{font-size:11.5px;color:#8a93a3;margin:6px 0 0;line-height:1.7;}
+
+  input[type="text"],input[type="number"],input[type="date"],select,textarea{
+    font-family:inherit;font-size:15px;padding:9px 10px;border-radius:10px;
+    border:1.5px solid #d8dfea;background:#fff;color:#2a2a2a;max-width:100%;
+  }
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);}
+  textarea{width:100%;min-height:150px;resize:vertical;line-height:1.8;}
+  input[type="number"]{width:80px;}
+
+  .field-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .field-row > label{margin-bottom:0;}
+  .radio-row{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:12px;}
+  .radio-row label{display:flex;align-items:center;gap:6px;margin-bottom:0;font-size:14px;}
+  .check-row{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:6px;}
+  .check-row label{display:flex;align-items:center;gap:6px;margin-bottom:0;font-size:14px;}
+  input[type="checkbox"],input[type="radio"]{width:17px;height:17px;accent-color:var(--accent);flex:none;}
+
+  /* 当番の種類 */
+  .duty-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px;}
+  .duty-row{
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    background:#f7f9fc;border:1.5px solid var(--line);border-radius:12px;padding:10px;
+  }
+  .duty-row .duty-name{flex:1 1 140px;min-width:110px;}
+  .duty-row .need-box{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#555;}
+  .duty-row .need-box input{width:62px;}
+  .duty-row .del{flex:none;}
+
+  .btn-primary{
+    width:100%;padding:15px;border:none;border-radius:15px;
+    background:var(--accent);color:#fff;font-size:16px;font-weight:800;cursor:pointer;
+    font-family:inherit;box-shadow:0 4px 10px rgba(45,108,223,0.25);
+  }
+  .btn-primary:active{transform:scale(0.99);}
+  .btn{
+    border:2px solid var(--line);background:#fafcff;border-radius:12px;
+    padding:9px 14px;font-size:13.5px;font-weight:800;color:#555;cursor:pointer;font-family:inherit;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn.accent{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-dark);}
+  .btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .btn-row .btn{flex:1 1 auto;}
+
+  .msg{font-size:13px;line-height:1.8;margin-top:12px;border-radius:12px;padding:0;}
+  .msg:empty{display:none;}
+  .msg .warn{background:#fff8e1;color:#8a6100;border:1.5px solid #ffe0a3;border-radius:12px;padding:10px 12px;margin-bottom:8px;font-weight:700;}
+  .msg .err{background:#fdecea;color:#b3261e;border:1.5px solid #f6c3bd;border-radius:12px;padding:10px 12px;margin-bottom:8px;font-weight:700;}
+  .msg .ok{background:#e9f7ef;color:#1d7a44;border:1.5px solid #bde5cc;border-radius:12px;padding:10px 12px;margin-bottom:8px;font-weight:700;}
+
+  /* 回数の一覧 */
+  .count-wrap{overflow-x:auto;}
+  table.count{border-collapse:collapse;width:100%;min-width:300px;font-size:13.5px;}
+  table.count th,table.count td{border:1.5px solid var(--line);padding:7px 8px;text-align:center;white-space:nowrap;}
+  table.count th{background:#f4f8ff;color:var(--accent-dark);font-weight:800;}
+  table.count td.name{text-align:left;font-weight:700;}
+  table.count tr.sum-row td,table.count tr.sum-row th{background:#fafcff;color:#777;font-weight:800;}
+
+  /* ===== 掲示用のA4 ===== */
+  .sheet-area{margin-top:4px;}
+  .sheet{
+    width:210mm;height:297mm;background:#fff;color:#111;
+    padding:12mm;margin:0 auto 18px;
+    box-shadow:0 4px 18px rgba(30,50,90,0.14);
+    overflow:hidden;transform-origin:top left;
+  }
+  .sheet.landscape{width:297mm;height:210mm;}
+  .sheet-head{text-align:center;margin-bottom:6mm;}
+  .sheet-title{font-size:30px;font-weight:800;letter-spacing:.06em;margin:0;}
+  .sheet-sub{font-size:14px;color:#444;margin:6px 0 0;}
+  table.toban{border-collapse:collapse;width:100%;table-layout:fixed;}
+  table.toban th,table.toban td{border:2px solid #333;padding:8px 6px;text-align:center;vertical-align:middle;word-break:break-word;}
+  table.toban thead th{background:#eef3fb;font-weight:800;}
+  table.toban th.period{background:#f7f7f7;font-weight:800;line-height:1.5;}
+  table.toban td .nm{display:block;line-height:1.45;}
+  .sheet-foot{margin-top:5mm;text-align:right;font-size:11px;color:#777;}
+
+  .sheet.fs-s{font-size:13px;}
+  .sheet.fs-s table.toban th,.sheet.fs-s table.toban td{padding:6px 5px;font-size:13px;}
+  .sheet.fs-s .sheet-title{font-size:26px;}
+  .sheet.fs-m{font-size:16px;}
+  .sheet.fs-m table.toban th,.sheet.fs-m table.toban td{padding:10px 6px;font-size:16px;}
+  .sheet.fs-l{font-size:21px;}
+  .sheet.fs-l table.toban th,.sheet.fs-l table.toban td{padding:15px 6px;font-size:21px;}
+  .sheet.fs-l .sheet-title{font-size:34px;}
+
+  /* スマートフォンでは用紙を縮めて全体を見せる */
+  @media screen and (max-width:840px){
+    .sheet{transform:scale(.42);margin-bottom:calc(14px - 297mm * .58);}
+    .sheet.landscape{transform:scale(.30);margin-bottom:calc(14px - 210mm * .70);}
+    .sheet-area{overflow:hidden;}
+  }
+  @media screen and (max-width:420px){
+    .wrap{padding:14px 10px 50px;}
+    .card{padding:14px;border-radius:14px;}
+    .sheet{transform:scale(.38);margin-bottom:calc(14px - 297mm * .62);}
+    .sheet.landscape{transform:scale(.27);margin-bottom:calc(14px - 210mm * .73);}
+  }
+
+  /* ===== 印刷 ===== */
+  @media print{
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body{background:#fff;}
+    .wrap{max-width:none;padding:0;}
+    .no-print{display:none !important;}
+    .sheet-area{overflow:visible;}
+    .sheet,.sheet.landscape{
+      width:auto;height:auto;padding:0;margin:0;
+      box-shadow:none;transform:none;page-break-after:always;break-after:page;
+    }
+    .sheet:last-child{page-break-after:auto;break-after:auto;}
+    table.toban tr{page-break-inside:avoid;break-inside:avoid;}
+    table.toban thead{display:table-header-group;}
+  }
+</style>
+<style id="pageStyle">@page{size:A4 portrait;margin:12mm;}</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="app-header no-print">
+    <h1 class="app-title">当番表メーカー</h1>
+    <p class="app-lead">
+      当番の種類・名簿・期間を入れるだけで、みんなの回数がそろうように当番を割りふります。<br>
+      できた表はA4で印刷して、そのまま教室に貼れます。入力した名前はこのブラウザの中だけで使われ、どこにも送られません。
+    </p>
+  </div>
+
+  <!-- ① 当番の種類 -->
+  <div class="card no-print">
+    <h2 class="section-title">① 当番の種類</h2>
+    <p class="section-note">学校によって呼び方がちがうので、自由に名前を変えたり、ふやしたり、へらしたりできます。</p>
+    <div class="duty-list" id="dutyList"></div>
+    <button class="btn" id="addDutyBtn" type="button">＋ 当番をふやす</button>
+  </div>
+
+  <!-- ② 名簿 -->
+  <div class="card no-print">
+    <h2 class="section-title">② 名簿</h2>
+    <div class="radio-row">
+      <label><input type="radio" name="rosterMode" value="names" id="rmNames"><span>名前を入れる</span></label>
+      <label><input type="radio" name="rosterMode" value="numbers" id="rmNumbers"><span>出席番号だけで作る</span></label>
+    </div>
+    <div id="namesBox">
+      <label for="rosterText">1行に1人ずつ入れてください</label>
+      <textarea id="rosterText" placeholder="山田 太郎&#10;佐藤 花子&#10;鈴木 一郎&#10;（1行に1人ずつ）"></textarea>
+      <p class="hint">空の行は読みとばします。今の人数：<strong id="rosterCount">0</strong>人</p>
+    </div>
+    <div id="numbersBox">
+      <div class="field-row">
+        <label for="memberCount">人数</label>
+        <input type="number" id="memberCount" min="1" max="60" step="1">
+        <span style="font-size:13px;color:#555;font-weight:700;">人（1番〜○番として作ります）</span>
+      </div>
+      <p class="hint">名簿を用意しなくても、人数だけで当番表が作れます。</p>
+    </div>
+  </div>
+
+  <!-- ③ 期間 -->
+  <div class="card no-print">
+    <h2 class="section-title">③ 期間</h2>
+    <div class="field-row">
+      <label for="startDate">はじめの日</label>
+      <input type="date" id="startDate">
+    </div>
+    <div class="radio-row">
+      <label><input type="radio" name="endMode" value="date" id="emDate"><span>おわりの日で決める</span></label>
+      <label><input type="radio" name="endMode" value="weeks" id="emWeeks"><span>週の数で決める</span></label>
+    </div>
+    <div class="field-row" id="endDateBox">
+      <label for="endDate">おわりの日</label>
+      <input type="date" id="endDate">
+    </div>
+    <div class="field-row" id="weeksBox">
+      <label for="weeks">週の数</label>
+      <input type="number" id="weeks" min="1" max="52" step="1">
+      <span style="font-size:13px;color:#555;font-weight:700;">週ぶん</span>
+    </div>
+    <div class="check-row">
+      <label><input type="checkbox" id="skipWeekend"><span>土曜・日曜を入れない</span></label>
+      <label><input type="checkbox" id="skipHoliday"><span>祝日を入れない</span></label>
+    </div>
+    <p class="hint">祝日はカレンダーを持たずに計算で出しています（春分の日・秋分の日、振替休日、国民の休日もふくみます）。</p>
+  </div>
+
+  <!-- ④ 交代の区切り -->
+  <div class="card no-print">
+    <h2 class="section-title">④ 交代の区切り</h2>
+    <div class="radio-row">
+      <label><input type="radio" name="rotate" value="day" id="rtDay"><span>毎日かわる</span></label>
+      <label><input type="radio" name="rotate" value="week" id="rtWeek"><span>毎週かわる</span></label>
+      <label><input type="radio" name="rotate" value="days" id="rtDays"><span>○日ごとにかわる</span></label>
+    </div>
+    <div class="field-row" id="rotateDaysBox">
+      <label for="rotateDays">何日ごと</label>
+      <input type="number" id="rotateDays" min="1" max="31" step="1">
+      <span style="font-size:13px;color:#555;font-weight:700;">日ごと（土日などをのぞいた日で数えます）</span>
+    </div>
+  </div>
+
+  <!-- ⑤ 見た目 -->
+  <div class="card no-print">
+    <h2 class="section-title">⑤ 掲示用の表の見た目</h2>
+    <div class="field-row">
+      <label for="sheetTitle">表の題名</label>
+      <input type="text" id="sheetTitle" style="flex:1 1 180px;min-width:140px;" placeholder="当番表">
+    </div>
+    <div class="field-row">
+      <label for="className">クラス名（なくても可）</label>
+      <input type="text" id="className" style="flex:1 1 160px;min-width:120px;" placeholder="3年2組">
+    </div>
+    <div class="field-row">
+      <label for="orientation">用紙の向き</label>
+      <select id="orientation">
+        <option value="portrait">たて（A4）</option>
+        <option value="landscape">よこ（A4）</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <label for="fontSize">文字の大きさ</label>
+      <select id="fontSize">
+        <option value="s">小さめ（1枚にたくさん）</option>
+        <option value="m">ふつう</option>
+        <option value="l">大きめ（遠くからも読める）</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 作る（ここは見出しをつけず、番号は飛ばさない） -->
+  <div class="card no-print">
+    <button class="btn-primary" id="makeBtn" type="button">当番表を作る</button>
+    <div class="btn-row">
+      <button class="btn accent" id="shuffleBtn" type="button">やり直す（シャッフル）</button>
+      <button class="btn" id="printBtn" type="button">印刷する</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <!-- ⑦ 回数の一覧 -->
+  <div class="card no-print" id="countCard" style="display:none;">
+    <h2 class="section-title">⑥ 回数の一覧</h2>
+    <p class="section-note">「あの子だけ多い」をふせぐための確認表です。印刷する表には出ません。</p>
+    <div class="count-wrap" id="countWrap"></div>
+  </div>
+
+  <!-- 掲示用の表 -->
+  <div class="sheet-area" id="sheetArea"></div>
+
+  <!-- ⑧ バックアップ -->
+  <div class="card no-print">
+    <h2 class="section-title">⑦ 書き出し・読み込み（バックアップ）</h2>
+    <p class="section-note">設定と名簿をファイルに保存できます。別のパソコンで使うときや、来年また使うときに便利です。ファイルはこのパソコンの中だけに保存されます。</p>
+    <div class="btn-row">
+      <button class="btn" id="exportBtn" type="button">設定を書き出す（.json）</button>
+      <button class="btn" id="importBtn" type="button">設定を読み込む（.json）</button>
+    </div>
+    <input type="file" id="importFile" accept=".json,application/json" style="display:none;">
+    <div class="btn-row">
+      <button class="btn" id="resetBtn" type="button">はじめの状態にもどす</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ===================== 保存キー ===================== */
+  var STORAGE_KEY = "toban_maker_v1";
+
+  /* ===================== 日付のきほん ===================== */
+  var DOW = ["日","月","火","水","木","金","土"];
+
+  function pad(n){ return String(n).padStart(2,"0"); }
+  function toDateStr(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+  function parseDateStr(s){
+    var a = String(s).split("-").map(Number);
+    return new Date(a[0], a[1]-1, a[2]);
+  }
+  function isValidDateStr(s){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(String(s||""))) return false;
+    var d = parseDateStr(s);
+    return d instanceof Date && !isNaN(d.getTime());
+  }
+  function addDays(s,n){ var d=parseDateStr(s); d.setDate(d.getDate()+n); return toDateStr(d); }
+  function getMonday(s){
+    var d=parseDateStr(s), w=d.getDay();
+    d.setDate(d.getDate() + (w===0 ? -6 : 1-w));
+    return toDateStr(d);
+  }
+  function todayStr(){ return toDateStr(new Date()); }
+  function fmtMD(s){ var d=parseDateStr(s); return (d.getMonth()+1)+"/"+d.getDate(); }
+  function fmtMDW(s){ var d=parseDateStr(s); return (d.getMonth()+1)+"/"+d.getDate()+"("+DOW[d.getDay()]+")"; }
+  function fmtLong(s){ var d=parseDateStr(s); return d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日"; }
+
+  /* ===================== 祝日（計算で出す） ===================== */
+  /* timetable-maker.html の holidayMapOf() と同じ考え方で求めています */
+  function nthMonday(year, month, nth){
+    var d = new Date(year, month-1, 1);
+    var shift = (8 - d.getDay()) % 7;
+    return new Date(year, month-1, 1 + shift + (nth-1)*7).getDate();
+  }
+  var holidayCache = {};
+  function holidayMapOf(year){
+    if(holidayCache[year]) return holidayCache[year];
+    var map = {};
+    var put = function(m,d,name){ map[year+"-"+pad(m)+"-"+pad(d)] = name; };
+
+    put(1,1,"元日");
+    put(1, nthMonday(year,1,2), "成人の日");
+    put(2,11,"建国記念の日");
+    put(2,23,"天皇誕生日");
+    // 春分・秋分は近似式（1980〜2099年に有効）
+    put(3, Math.floor(20.8431 + 0.242194*(year-1980) - Math.floor((year-1980)/4)), "春分の日");
+    put(4,29,"昭和の日");
+    put(5,3,"憲法記念日");
+    put(5,4,"みどりの日");
+    put(5,5,"こどもの日");
+    put(7, nthMonday(year,7,3), "海の日");
+    put(8,11,"山の日");
+    put(9, nthMonday(year,9,3), "敬老の日");
+    put(9, Math.floor(23.2488 + 0.242194*(year-1980) - Math.floor((year-1980)/4)), "秋分の日");
+    put(10, nthMonday(year,10,2), "スポーツの日");
+    put(11,3,"文化の日");
+    put(11,23,"勤労感謝の日");
+
+    // 日曜と重なった祝日は、次の平日が振替休日
+    Object.keys(map).slice().sort().forEach(function(key){
+      if(parseDateStr(key).getDay() !== 0) return;
+      var next = addDays(key,1);
+      while(map[next]) next = addDays(next,1);
+      map[next] = "振替休日";
+    });
+    // 祝日と祝日にはさまれた平日は「国民の休日」
+    Object.keys(map).slice().sort().forEach(function(key){
+      var next2 = addDays(key,2), mid = addDays(key,1);
+      if(map[next2] && !map[mid] && parseDateStr(mid).getDay() !== 0) map[mid] = "国民の休日";
+    });
+
+    holidayCache[year] = map;
+    return map;
+  }
+  function holidayNameOf(s){
+    if(!isValidDateStr(s)) return "";
+    return holidayMapOf(parseDateStr(s).getFullYear())[s] || "";
+  }
+
+  /* ===================== 乱数（やり直しのたびに変わる） ===================== */
+  function mulberry32(a){
+    return function(){
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function shuffled(arr, rnd){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(rnd()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  /* ===================== 状態 ===================== */
+  var MAX_DUTIES = 8;
+  var MAX_DAYS = 300;     // 画面に出す区切りの上限のもと
+  var MAX_BLOCKS = 200;   // 区切りの数の上限
+
+  function defaultState(){
+    var start = todayStr();
+    return {
+      duties: [
+        { name:"日直",   need:1 },
+        { name:"給食",   need:2 },
+        { name:"そうじ", need:2 }
+      ],
+      rosterMode: "names",
+      rosterText: "",
+      memberCount: 30,
+      startDate: start,
+      endMode: "weeks",
+      endDate: addDays(start, 27),
+      weeks: 4,
+      skipWeekend: true,
+      skipHoliday: true,
+      rotate: "week",
+      rotateDays: 3,
+      sheetTitle: "当番表",
+      className: "",
+      orientation: "portrait",
+      fontSize: "m",
+      seed: 1
+    };
+  }
+
+  var state = defaultState();
+  var lastResult = null;
+
+  /* ===================== 保存・読み出し ===================== */
+  function sanitize(raw){
+    // 形をたしかめながら、わかるところだけ取り込む
+    var base = defaultState();
+    if(!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+
+    if(Array.isArray(raw.duties)){
+      var ds = [];
+      raw.duties.forEach(function(d){
+        if(!d || typeof d !== "object") return;
+        var nm = typeof d.name === "string" ? d.name.slice(0,12) : "";
+        var nd = Number(d.need);
+        if(!nm) return;
+        ds.push({ name: nm, need: (isFinite(nd) && nd>=1 && nd<=20) ? Math.floor(nd) : 1 });
+      });
+      if(ds.length) base.duties = ds.slice(0, MAX_DUTIES);
+    }
+    if(raw.rosterMode === "names" || raw.rosterMode === "numbers") base.rosterMode = raw.rosterMode;
+    if(typeof raw.rosterText === "string") base.rosterText = raw.rosterText.slice(0, 4000);
+    if(isFinite(Number(raw.memberCount))) base.memberCount = clampInt(raw.memberCount,1,60,30);
+    if(isValidDateStr(raw.startDate)) base.startDate = raw.startDate;
+    if(raw.endMode === "date" || raw.endMode === "weeks") base.endMode = raw.endMode;
+    if(isValidDateStr(raw.endDate)) base.endDate = raw.endDate;
+    if(isFinite(Number(raw.weeks))) base.weeks = clampInt(raw.weeks,1,52,4);
+    if(typeof raw.skipWeekend === "boolean") base.skipWeekend = raw.skipWeekend;
+    if(typeof raw.skipHoliday === "boolean") base.skipHoliday = raw.skipHoliday;
+    if(raw.rotate === "day" || raw.rotate === "week" || raw.rotate === "days") base.rotate = raw.rotate;
+    if(isFinite(Number(raw.rotateDays))) base.rotateDays = clampInt(raw.rotateDays,1,31,3);
+    if(typeof raw.sheetTitle === "string") base.sheetTitle = raw.sheetTitle.slice(0,40);
+    if(typeof raw.className === "string") base.className = raw.className.slice(0,30);
+    if(raw.orientation === "portrait" || raw.orientation === "landscape") base.orientation = raw.orientation;
+    if(raw.fontSize === "s" || raw.fontSize === "m" || raw.fontSize === "l") base.fontSize = raw.fontSize;
+    if(isFinite(Number(raw.seed))) base.seed = Math.floor(Number(raw.seed)) || 1;
+    return base;
+  }
+
+  function clampInt(v, lo, hi, def){
+    var n = Math.floor(Number(v));
+    if(!isFinite(n)) return def;
+    return Math.min(hi, Math.max(lo, n));
+  }
+
+  function save(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }catch(e){ /* 保存できなくても使えるようにする */ }
+  }
+
+  function load(){
+    var raw = null;
+    try{
+      raw = localStorage.getItem(STORAGE_KEY);
+    }catch(e){ return; }
+    if(!raw) return;                       // 何もなければ初期値のまま（上書き保存はしない）
+    var parsed = null;
+    try{ parsed = JSON.parse(raw); }catch(e){ return; }
+    var ok = sanitize(parsed);
+    if(ok) state = ok;                     // こわれていたら読みとばす（消さない）
+  }
+
+  /* ===================== 画面の部品 ===================== */
+  function $(id){ return document.getElementById(id); }
+
+  function renderDutyList(){
+    var box = $("dutyList");
+    box.innerHTML = "";
+    state.duties.forEach(function(d, i){
+      var row = document.createElement("div");
+      row.className = "duty-row";
+
+      var name = document.createElement("input");
+      name.type = "text"; name.className = "duty-name"; name.value = d.name;
+      name.maxLength = 12; name.placeholder = "当番の名前";
+      name.setAttribute("aria-label", "当番の名前");
+      name.addEventListener("input", function(){ state.duties[i].name = name.value; save(); });
+
+      var needBox = document.createElement("span");
+      needBox.className = "need-box";
+      var needLabel = document.createElement("span");
+      needLabel.textContent = "1回に";
+      var need = document.createElement("input");
+      need.type = "number"; need.min = "1"; need.max = "20"; need.step = "1"; need.value = d.need;
+      need.setAttribute("aria-label", "1回に必要な人数");
+      need.addEventListener("input", function(){ state.duties[i].need = clampInt(need.value,1,20,1); save(); });
+      var needTail = document.createElement("span");
+      needTail.textContent = "人";
+      needBox.appendChild(needLabel); needBox.appendChild(need); needBox.appendChild(needTail);
+
+      var del = document.createElement("button");
+      del.type = "button"; del.className = "btn del"; del.textContent = "削除";
+      del.addEventListener("click", function(){
+        if(state.duties.length <= 1){ showMsg([{type:"err", text:"当番は1つ以上のこしてください。"}]); return; }
+        state.duties.splice(i,1); save(); renderDutyList();
+      });
+
+      row.appendChild(name); row.appendChild(needBox); row.appendChild(del);
+      box.appendChild(row);
+    });
+    $("addDutyBtn").disabled = state.duties.length >= MAX_DUTIES;
+  }
+
+  function fillForm(){
+    $("rmNames").checked = state.rosterMode === "names";
+    $("rmNumbers").checked = state.rosterMode === "numbers";
+    $("rosterText").value = state.rosterText;
+    $("memberCount").value = state.memberCount;
+    $("startDate").value = state.startDate;
+    $("emDate").checked = state.endMode === "date";
+    $("emWeeks").checked = state.endMode === "weeks";
+    $("endDate").value = state.endDate;
+    $("weeks").value = state.weeks;
+    $("skipWeekend").checked = !!state.skipWeekend;
+    $("skipHoliday").checked = !!state.skipHoliday;
+    $("rtDay").checked = state.rotate === "day";
+    $("rtWeek").checked = state.rotate === "week";
+    $("rtDays").checked = state.rotate === "days";
+    $("rotateDays").value = state.rotateDays;
+    $("sheetTitle").value = state.sheetTitle;
+    $("className").value = state.className;
+    $("orientation").value = state.orientation;
+    $("fontSize").value = state.fontSize;
+    renderDutyList();
+    syncVisibility();
+    updateRosterCount();
+  }
+
+  function syncVisibility(){
+    $("namesBox").style.display   = state.rosterMode === "names" ? "" : "none";
+    $("numbersBox").style.display = state.rosterMode === "numbers" ? "" : "none";
+    $("endDateBox").style.display = state.endMode === "date" ? "" : "none";
+    $("weeksBox").style.display   = state.endMode === "weeks" ? "" : "none";
+    $("rotateDaysBox").style.display = state.rotate === "days" ? "" : "none";
+  }
+
+  function updateRosterCount(){
+    $("rosterCount").textContent = String(peopleFromState().length);
+  }
+
+  /* ===================== 入力のとりこみ ===================== */
+  function peopleFromState(){
+    if(state.rosterMode === "numbers"){
+      var n = clampInt(state.memberCount,1,60,30);
+      var out = [];
+      for(var i=1;i<=n;i++) out.push(i+"番");
+      return out;
+    }
+    return String(state.rosterText||"")
+      .split(/\r?\n/)
+      .map(function(s){ return s.trim(); })
+      .filter(function(s){ return s.length > 0; })
+      .slice(0, 80);
+  }
+
+  function resolvedEndDate(){
+    if(state.endMode === "weeks"){
+      var w = clampInt(state.weeks,1,52,4);
+      return addDays(state.startDate, w*7 - 1);
+    }
+    return state.endDate;
+  }
+
+  function buildDates(){
+    var start = state.startDate, end = resolvedEndDate();
+    if(!isValidDateStr(start) || !isValidDateStr(end) || end < start) return { dates:[], over:false };
+    var dates = [], d = start, guard = 0, over = false;
+    while(d <= end && guard < 740){
+      guard++;
+      var dt = parseDateStr(d), w = dt.getDay(), ok = true;
+      if(state.skipWeekend && (w === 0 || w === 6)) ok = false;
+      if(ok && state.skipHoliday && holidayNameOf(d)) ok = false;
+      if(ok){
+        if(dates.length >= MAX_DAYS){ over = true; break; }
+        dates.push(d);
+      }
+      d = addDays(d,1);
+    }
+    return { dates: dates, over: over };
+  }
+
+  function buildBlocks(dates){
+    if(!dates.length) return [];
+    var out = [], i;
+    if(state.rotate === "day"){
+      for(i=0;i<dates.length;i++) out.push([dates[i]]);
+    }else if(state.rotate === "week"){
+      var cur = [], key = null;
+      for(i=0;i<dates.length;i++){
+        var k = getMonday(dates[i]);
+        if(k !== key){ if(cur.length) out.push(cur); cur = []; key = k; }
+        cur.push(dates[i]);
+      }
+      if(cur.length) out.push(cur);
+    }else{
+      var n = clampInt(state.rotateDays,1,31,3);
+      for(i=0;i<dates.length;i+=n) out.push(dates.slice(i, i+n));
+    }
+    return out.slice(0, MAX_BLOCKS);
+  }
+
+  /* ===================== わりふり ===================== */
+  // 1) まずは「順ぐり」でわりふる → これだけで回数の差は必ず1以内になる
+  // 2) そのあと、同じ当番の中だけで人を入れかえて（回数は変わらない）
+  //    「同じ日に二役」「前の回と同じ人」をへらす
+  function assignAll(people, duties, nb, rnd){
+    var n = people.length, nd = duties.length;
+    var assign = [];
+    for(var d=0; d<nd; d++){
+      var order = shuffled(rangeN(n), rnd);
+      var need = Math.min(duties[d].need, n);
+      var cur = 0, rows = [];
+      for(var b=0; b<nb; b++){
+        var row = [];
+        for(var k=0; k<need; k++){ row.push(order[cur % n]); cur++; }
+        rows.push(row);
+      }
+      assign.push(rows);
+    }
+    repair(assign, nd, nb, rnd);
+    return assign;
+  }
+
+  function rangeN(n){ var a=[]; for(var i=0;i<n;i++) a.push(i); return a; }
+
+  function dupAt(assign, nd, b){
+    var seen = {}, c = 0;
+    for(var d=0; d<nd; d++){
+      var row = assign[d][b];
+      for(var i=0;i<row.length;i++){
+        var p = row[i];
+        if(seen[p]) c++; else seen[p] = 1;
+      }
+    }
+    return c;
+  }
+  function repAt(assign, d, b){
+    if(b <= 0) return 0;
+    var prev = assign[d][b-1], row = assign[d][b], c = 0;
+    for(var i=0;i<row.length;i++) if(prev.indexOf(row[i]) >= 0) c++;
+    return c;
+  }
+  function localCost(assign, nd, nb, b1, b2, d){
+    var c = dupAt(assign,nd,b1) * 10;
+    if(b2 !== b1) c += dupAt(assign,nd,b2) * 10;
+    var seen = {};
+    [b1, b1+1, b2, b2+1].forEach(function(x){
+      if(x < 1 || x >= nb || seen[x]) return;
+      seen[x] = 1;
+      c += repAt(assign, d, x);
+    });
+    return c;
+  }
+
+  function repair(assign, nd, nb, rnd){
+    if(nb < 2) return;
+    var passes = 6;
+    for(var pass=0; pass<passes; pass++){
+      var improved = false;
+      for(var b=0; b<nb; b++){
+        for(var d=0; d<nd; d++){
+          var row = assign[d][b];
+          for(var s=0; s<row.length; s++){
+            var tries = Math.min(nb*2, 36);
+            for(var t=0; t<tries; t++){
+              var b2 = Math.floor(rnd()*nb);
+              if(b2 === b) continue;
+              var row2 = assign[d][b2];
+              var s2 = Math.floor(rnd()*row2.length);
+              if(row[s] === row2[s2]) continue;
+              var before = localCost(assign, nd, nb, b, b2, d);
+              var tmp = row[s]; row[s] = row2[s2]; row2[s2] = tmp;
+              var after = localCost(assign, nd, nb, b, b2, d);
+              if(after < before){ improved = true; }
+              else { var t2 = row[s]; row[s] = row2[s2]; row2[s2] = t2; }
+            }
+          }
+        }
+      }
+      if(!improved) break;
+    }
+  }
+
+  function countProblems(assign, nd, nb){
+    var dup = 0, rep = 0, b, d;
+    for(b=0; b<nb; b++) dup += dupAt(assign, nd, b);
+    for(d=0; d<nd; d++) for(b=1; b<nb; b++) rep += repAt(assign, d, b);
+    return { dup: dup, rep: rep };
+  }
+
+  /* ===================== 作る ===================== */
+  function generate(){
+    var msgs = [];
+    var people = peopleFromState();
+    var duties = state.duties
+      .map(function(d){ return { name: (d.name||"").trim() || "当番", need: clampInt(d.need,1,20,1) }; });
+
+    if(!duties.length){ showMsg([{type:"err", text:"当番の種類を1つ以上入れてください。"}]); clearOutput(); return; }
+    if(people.length < 1){
+      showMsg([{type:"err", text: state.rosterMode === "names"
+        ? "名簿が空です。1行に1人ずつ名前を入れてください。"
+        : "人数を1人以上にしてください。" }]);
+      clearOutput(); return;
+    }
+    if(!isValidDateStr(state.startDate)){ showMsg([{type:"err", text:"はじめの日を入れてください。"}]); clearOutput(); return; }
+    var end = resolvedEndDate();
+    if(!isValidDateStr(end) || end < state.startDate){
+      showMsg([{type:"err", text:"おわりの日は、はじめの日より後にしてください。"}]); clearOutput(); return;
+    }
+
+    var built = buildDates();
+    if(built.over) msgs.push({type:"warn", text:"期間が長いので、はじめの"+MAX_DAYS+"日ぶんまでにしぼって作りました。"});
+    if(!built.dates.length){
+      showMsg([{type:"err", text:"あてはまる日が1日もありません。土日や祝日の設定、期間をご確認ください。"}]);
+      clearOutput(); return;
+    }
+
+    var blocks = buildBlocks(built.dates);
+    if(blocks.length >= MAX_BLOCKS) msgs.push({type:"warn", text:"区切りが多いので、はじめの"+MAX_BLOCKS+"回ぶんまでにしました。交代の区切りを長くすると全部入ります。"});
+
+    var totalNeed = duties.reduce(function(a,d){ return a + Math.min(d.need, people.length); }, 0);
+    duties.forEach(function(d){
+      if(d.need > people.length) msgs.push({type:"warn", text:"「"+d.name+"」は1回に"+d.need+"人ですが、名簿は"+people.length+"人です。"+people.length+"人で作りました。"});
+    });
+
+    var rnd = mulberry32(state.seed * 2654435761 + 12345);
+    var assign = assignAll(people, duties, blocks.length, rnd);
+    var prob = countProblems(assign, duties.length, blocks.length);
+
+    if(totalNeed > people.length){
+      msgs.push({type:"warn", text:"1回に必要な人数の合計（"+totalNeed+"人）が名簿の人数（"+people.length+"人）より多いので、同じ回に二役になる人がいます。"});
+    }else if(prob.dup > 0){
+      msgs.push({type:"warn", text:"人数がぎりぎりのため、同じ回に二役になっている人が"+prob.dup+"か所あります。「やり直す（シャッフル）」を押すと変わることがあります。"});
+    }
+    if(prob.rep > 0){
+      msgs.push({type:"warn", text:"前の回とつづけて同じ当番になっている人が"+prob.rep+"か所あります。人数がふえるとなくなります。"});
+    }
+
+    // 回数の集計
+    var counts = people.map(function(){ return duties.map(function(){ return 0; }); });
+    for(var d=0; d<duties.length; d++){
+      for(var b=0; b<blocks.length; b++){
+        assign[d][b].forEach(function(p){ counts[p][d]++; });
+      }
+    }
+    var spreadOK = true;
+    for(var dd=0; dd<duties.length; dd++){
+      var mx = -1, mn = 1e9;
+      for(var pi=0; pi<people.length; pi++){ var v = counts[pi][dd]; if(v>mx) mx=v; if(v<mn) mn=v; }
+      if(mx - mn > 1) spreadOK = false;
+    }
+    if(spreadOK) msgs.push({type:"ok", text:"できました。どの当番も、いちばん多い人といちばん少ない人の差は1回以内です。"});
+    else msgs.push({type:"warn", text:"できましたが、回数の差が2回以上の当番があります。回数の一覧をご確認ください。"});
+
+    lastResult = { people: people, duties: duties, blocks: blocks, assign: assign, counts: counts, dates: built.dates };
+    showMsg(msgs);
+    renderCounts();
+    renderSheets();
+  }
+
+  function clearOutput(){
+    lastResult = null;
+    $("countCard").style.display = "none";
+    $("countWrap").innerHTML = "";
+    $("sheetArea").innerHTML = "";
+  }
+
+  function showMsg(list){
+    var box = $("msg");
+    box.innerHTML = "";
+    (list||[]).forEach(function(m){
+      var div = document.createElement("div");
+      div.className = m.type;
+      div.textContent = m.text;
+      box.appendChild(div);
+    });
+  }
+
+  /* ===================== 回数の一覧 ===================== */
+  function renderCounts(){
+    if(!lastResult) return;
+    var r = lastResult;
+    var tb = document.createElement("table");
+    tb.className = "count";
+
+    var thead = document.createElement("thead");
+    var tr = document.createElement("tr");
+    tr.appendChild(th("名前"));
+    r.duties.forEach(function(d){ tr.appendChild(th(d.name)); });
+    tr.appendChild(th("合計"));
+    thead.appendChild(tr);
+    tb.appendChild(thead);
+
+    var tbody = document.createElement("tbody");
+    r.people.forEach(function(nm, i){
+      var row = document.createElement("tr");
+      var tdn = document.createElement("td"); tdn.className = "name"; tdn.textContent = nm;
+      row.appendChild(tdn);
+      var sum = 0;
+      r.duties.forEach(function(_, d){
+        var c = r.counts[i][d]; sum += c;
+        var td = document.createElement("td"); td.textContent = String(c);
+        row.appendChild(td);
+      });
+      var tds = document.createElement("td"); tds.textContent = String(sum); tds.style.fontWeight = "800";
+      row.appendChild(tds);
+      tbody.appendChild(row);
+    });
+
+    // いちばん多い人といちばん少ない人
+    var sumRow = document.createElement("tr");
+    sumRow.className = "sum-row";
+    var lab = document.createElement("th"); lab.textContent = "多い〜少ない";
+    sumRow.appendChild(lab);
+    var grand = 0;
+    r.duties.forEach(function(_, d){
+      var mx = 0, mn = 1e9;
+      r.people.forEach(function(_, i){ var v = r.counts[i][d]; if(v>mx)mx=v; if(v<mn)mn=v; grand += v; });
+      var td = document.createElement("td");
+      td.textContent = (mn === mx) ? (mx + "回でそろい") : (mn + "〜" + mx + "回");
+      sumRow.appendChild(td);
+    });
+    var tg = document.createElement("td"); tg.textContent = String(grand);
+    sumRow.appendChild(tg);
+    tbody.appendChild(sumRow);
+
+    tb.appendChild(tbody);
+    $("countWrap").innerHTML = "";
+    $("countWrap").appendChild(tb);
+    $("countCard").style.display = "";
+  }
+  function th(text){ var e = document.createElement("th"); e.textContent = text; return e; }
+
+  /* ===================== 掲示用の表 ===================== */
+  var ROWS_PER_PAGE = {
+    portrait:  { s:22, m:16, l:12 },
+    landscape: { s:14, m:11, l:8 }
+  };
+
+  function blockLabel(block){
+    if(block.length === 1) return fmtMDW(block[0]);
+    return fmtMDW(block[0]) + "〜" + fmtMDW(block[block.length-1]);
+  }
+
+  function renderSheets(){
+    var area = $("sheetArea");
+    area.innerHTML = "";
+    if(!lastResult) return;
+    var r = lastResult;
+    var land = state.orientation === "landscape";
+    var per = ROWS_PER_PAGE[land ? "landscape" : "portrait"][state.fontSize] || 16;
+    var pages = Math.max(1, Math.ceil(r.blocks.length / per));
+
+    // 用紙の向きを印刷にも反映する
+    var ps = $("pageStyle");
+    if(ps) ps.textContent = "@page{size:A4 " + (land ? "landscape" : "portrait") + ";margin:12mm;}";
+
+    var periodLabel = (state.rotate === "day") ? "日" : "きかん";
+    var span = fmtLong(r.dates[0]) + " 〜 " + fmtLong(r.dates[r.dates.length-1]);
+
+    for(var p=0; p<pages; p++){
+      var sheet = document.createElement("div");
+      sheet.className = "sheet fs-" + state.fontSize + (land ? " landscape" : "");
+
+      var head = document.createElement("div");
+      head.className = "sheet-head";
+      var h = document.createElement("div");
+      h.className = "sheet-title";
+      h.textContent = (state.sheetTitle || "当番表");
+      head.appendChild(h);
+      var sub = document.createElement("div");
+      sub.className = "sheet-sub";
+      sub.textContent = (state.className ? state.className + "　" : "") + span;
+      head.appendChild(sub);
+      sheet.appendChild(head);
+
+      var table = document.createElement("table");
+      table.className = "toban";
+
+      var colg = document.createElement("colgroup");
+      var c0 = document.createElement("col");
+      c0.style.width = (state.rotate === "day" ? "18%" : "24%");
+      colg.appendChild(c0);
+      var restW = (100 - (state.rotate === "day" ? 18 : 24)) / r.duties.length;
+      r.duties.forEach(function(){
+        var c = document.createElement("col"); c.style.width = restW + "%"; colg.appendChild(c);
+      });
+      table.appendChild(colg);
+
+      var thead = document.createElement("thead");
+      var htr = document.createElement("tr");
+      htr.appendChild(th(periodLabel));
+      r.duties.forEach(function(d){ htr.appendChild(th(d.name)); });
+      thead.appendChild(htr);
+      table.appendChild(thead);
+
+      var tbody = document.createElement("tbody");
+      var from = p * per, to = Math.min(r.blocks.length, from + per);
+      for(var b=from; b<to; b++){
+        var tr = document.createElement("tr");
+        var tp = document.createElement("th");
+        tp.className = "period";
+        tp.textContent = blockLabel(r.blocks[b]);
+        tr.appendChild(tp);
+        for(var d=0; d<r.duties.length; d++){
+          var td = document.createElement("td");
+          r.assign[d][b].forEach(function(pi){
+            var sp = document.createElement("span");
+            sp.className = "nm";
+            sp.textContent = r.people[pi];
+            td.appendChild(sp);
+          });
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      }
+      table.appendChild(tbody);
+      sheet.appendChild(table);
+
+      var foot = document.createElement("div");
+      foot.className = "sheet-foot";
+      foot.textContent = (pages > 1) ? (p+1) + " / " + pages + " ページ" : "";
+      sheet.appendChild(foot);
+
+      area.appendChild(sheet);
+    }
+  }
+
+  /* ===================== 書き出し・読み込み ===================== */
+  function exportJson(){
+    var data = { app:"toban-maker", version:1, savedAt:new Date().toISOString(), state:state };
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "当番表メーカー_バックアップ.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    showMsg([{type:"ok", text:"設定を書き出しました。ダウンロードのフォルダをご確認ください。"}]);
+  }
+
+  function importJson(file){
+    var reader = new FileReader();
+    reader.onload = function(){
+      var obj = null;
+      try{ obj = JSON.parse(String(reader.result)); }
+      catch(e){ showMsg([{type:"err", text:"読み込めませんでした。このツールで書き出した .json ファイルをお選びください。"}]); return; }
+      var src = (obj && typeof obj === "object" && obj.state) ? obj.state : obj;
+      var ok = sanitize(src);
+      if(!ok){ showMsg([{type:"err", text:"ファイルの中身が、このツールの形ではありませんでした。"}]); return; }
+      state = ok;
+      save();
+      fillForm();
+      generate();
+      showMsg([{type:"ok", text:"設定を読み込みました。"}]);
+    };
+    reader.onerror = function(){ showMsg([{type:"err", text:"ファイルを開けませんでした。"}]); };
+    reader.readAsText(file);
+  }
+
+  /* ===================== イベント ===================== */
+  function bind(){
+    $("addDutyBtn").addEventListener("click", function(){
+      if(state.duties.length >= MAX_DUTIES) return;
+      state.duties.push({ name:"", need:1 });
+      save(); renderDutyList();
+    });
+
+    $("rmNames").addEventListener("change", function(){ state.rosterMode = "names"; save(); syncVisibility(); });
+    $("rmNumbers").addEventListener("change", function(){ state.rosterMode = "numbers"; save(); syncVisibility(); });
+    $("rosterText").addEventListener("input", function(){ state.rosterText = $("rosterText").value; save(); updateRosterCount(); });
+    $("memberCount").addEventListener("input", function(){ state.memberCount = clampInt($("memberCount").value,1,60,30); save(); });
+
+    $("startDate").addEventListener("change", function(){
+      if(isValidDateStr($("startDate").value)) state.startDate = $("startDate").value;
+      save();
+    });
+    $("endDate").addEventListener("change", function(){
+      if(isValidDateStr($("endDate").value)) state.endDate = $("endDate").value;
+      save();
+    });
+    $("emDate").addEventListener("change", function(){ state.endMode = "date"; save(); syncVisibility(); });
+    $("emWeeks").addEventListener("change", function(){ state.endMode = "weeks"; save(); syncVisibility(); });
+    $("weeks").addEventListener("input", function(){ state.weeks = clampInt($("weeks").value,1,52,4); save(); });
+    $("skipWeekend").addEventListener("change", function(){ state.skipWeekend = $("skipWeekend").checked; save(); });
+    $("skipHoliday").addEventListener("change", function(){ state.skipHoliday = $("skipHoliday").checked; save(); });
+
+    $("rtDay").addEventListener("change", function(){ state.rotate = "day"; save(); syncVisibility(); });
+    $("rtWeek").addEventListener("change", function(){ state.rotate = "week"; save(); syncVisibility(); });
+    $("rtDays").addEventListener("change", function(){ state.rotate = "days"; save(); syncVisibility(); });
+    $("rotateDays").addEventListener("input", function(){ state.rotateDays = clampInt($("rotateDays").value,1,31,3); save(); });
+
+    $("sheetTitle").addEventListener("input", function(){ state.sheetTitle = $("sheetTitle").value; save(); if(lastResult) renderSheets(); });
+    $("className").addEventListener("input", function(){ state.className = $("className").value; save(); if(lastResult) renderSheets(); });
+    $("orientation").addEventListener("change", function(){ state.orientation = $("orientation").value; save(); if(lastResult) renderSheets(); });
+    $("fontSize").addEventListener("change", function(){ state.fontSize = $("fontSize").value; save(); if(lastResult) renderSheets(); });
+
+    $("makeBtn").addEventListener("click", function(){ generate(); });
+    $("shuffleBtn").addEventListener("click", function(){
+      state.seed = (state.seed + 1 + Math.floor(Math.random()*1000)) % 2147483647 || 1;
+      save(); generate();
+    });
+    $("printBtn").addEventListener("click", function(){
+      if(!lastResult){ showMsg([{type:"err", text:"さきに「当番表を作る」を押してください。"}]); return; }
+      window.print();
+    });
+
+    $("exportBtn").addEventListener("click", exportJson);
+    $("importBtn").addEventListener("click", function(){ $("importFile").click(); });
+    $("importFile").addEventListener("change", function(){
+      var f = $("importFile").files && $("importFile").files[0];
+      if(f) importJson(f);
+      $("importFile").value = "";
+    });
+    $("resetBtn").addEventListener("click", function(){
+      if(!window.confirm("入力した内容をすべて消して、はじめの状態にもどします。よろしいですか？")) return;
+      state = defaultState();
+      save(); fillForm(); clearOutput();
+      showMsg([{type:"ok", text:"はじめの状態にもどしました。"}]);
+    });
+  }
+
+  /* ===================== はじめに動かす ===================== */
+  load();
+  fillForm();
+  bind();
+  if(peopleFromState().length > 0) generate();
+
+  // 動作確認から呼べるようにしておく（画面では使いません）
+  window.__toban = {
+    state: function(){ return state; },
+    result: function(){ return lastResult; },
+    generate: generate,
+    setState: function(o){ var s = sanitize(o); if(s){ state = s; fillForm(); generate(); } return !!s; },
+    holidayNameOf: holidayNameOf
+  };
+})();
+</script>
+</body>
+</html>
