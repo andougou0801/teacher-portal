@@ -95,7 +95,9 @@
   .hint { font-size: 12px; color: var(--muted); margin: 10px 0 0; line-height: 1.7; }
 
   /* ===== A4の用紙 ===== */
-  #sheet-wrap { max-width: 760px; margin: 0 auto; }
+  /* overflow: hidden がないと、縮小しても場所取りは 210mm のままで
+     せまい画面でページが横にはみ出す。 */
+  #sheet-wrap { max-width: 760px; margin: 0 auto; overflow: hidden; }
   .sheet {
     width: 210mm;
     min-height: 297mm;
@@ -107,7 +109,7 @@
   }
   /* 画面では用紙を縮めて全体が見えるようにする（印刷には影響しない） */
   @media (max-width: 840px) {
-    .sheet { transform: scale(.45); margin-bottom: -150mm; }
+    .sheet { transform: scale(.45); transform-origin: top left; margin-bottom: -150mm; }
   }
 
   .card { page-break-inside: avoid; }

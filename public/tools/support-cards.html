@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>気になる子への手立てカード</title>
+<style>
+  :root{
+    --accent:#2d6cdf; --line:#d7dde5; --muted:#5b6673;
+    --warn-bg:#FFF8E6; --warn-line:#E8D9A8; --warn:#7a5c00;
+    --ok:#1b7f4b;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+    background:#f4f6f8;color:#333;margin:0;padding:20px;line-height:1.7;
+  }
+  .wrap{max-width:860px;margin:0 auto}
+  .panel{background:#fff;border-radius:12px;padding:20px 22px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:18px}
+  h1{color:var(--accent);font-size:21px;margin:0 0 6px}
+  .lead{font-size:13px;color:var(--muted);margin:0 0 16px}
+  .notice{
+    border:1px solid var(--warn-line);background:var(--warn-bg);color:var(--warn);
+    border-radius:10px;padding:12px 14px;font-size:13px;margin-bottom:16px;
+  }
+  .notice b{display:block;margin-bottom:4px}
+  .notice ul{margin:6px 0 0;padding-left:18px}
+  h2{font-size:15px;color:var(--accent);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .scenes{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+  .scene{
+    display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);
+    border-radius:10px;padding:9px 11px;cursor:pointer;background:#fff;font-size:13.5px;
+  }
+  .scene:hover{background:#f7faff}
+  .scene input{margin-top:4px;flex-shrink:0}
+  .scene.on{border-color:var(--accent);background:#eef3fc}
+  .opts{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:13px;margin-top:12px}
+  .opts label{display:flex;align-items:center;gap:5px;cursor:pointer}
+  input[type=text]{padding:7px 10px;border:1px solid #c5ccd6;border-radius:6px;font-family:inherit;font-size:14px}
+  button{font-family:inherit;font-size:14px;font-weight:bold;padding:10px 20px;border-radius:999px;border:none;cursor:pointer}
+  .primary{background:var(--accent);color:#fff}
+  .primary:hover{background:#2559b8}
+  .ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+  .ghost:hover{background:#eef3fc}
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .hint{font-size:12px;color:var(--muted);margin-top:10px}
+
+  /* 手立ての一覧 */
+  .group{margin-bottom:18px}
+  .group h3{font-size:14.5px;margin:0 0 8px;padding:7px 11px;background:#eef3fc;border-radius:8px;color:#1f4f9e}
+  .idea{display:flex;gap:9px;align-items:flex-start;padding:7px 10px;border-bottom:1px dotted #dde3ea;font-size:13.5px}
+  .idea:last-child{border-bottom:none}
+  .idea input{margin-top:5px;flex-shrink:0}
+  .idea.on{background:#f1f9f4}
+  .empty{font-size:13px;color:var(--muted)}
+
+  /* ===== 印刷するA4 ===== */
+  .sheet{
+    width:210mm;min-height:297mm;padding:14mm 14mm 12mm;margin:0 auto 20px;
+    background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);
+  }
+  /* せまい画面では用紙を縮めて見せる。transform だけだと場所取りは 210mm のままで
+     画面から横にはみ出すので、外側の箱で隠す（当番表メーカーと同じやり方）。 */
+  #sheet-wrap{overflow:hidden}
+  @media screen and (max-width:900px){
+    .sheet{transform:scale(.42);transform-origin:top left;margin-bottom:calc(14px - 297mm * .58)}
+  }
+  .s-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;border-bottom:2px solid #333;padding-bottom:3mm;margin-bottom:4mm}
+  .s-title{font-size:17pt;font-weight:bold}
+  .s-sub{font-size:9.5pt;color:#444}
+  .s-meta{font-size:10pt;display:flex;gap:5mm;align-items:flex-end}
+  .s-blank{border-bottom:1px solid #333;min-width:28mm;padding:0 2mm 1mm}
+  .s-group{margin-bottom:5mm;page-break-inside:avoid}
+  .s-group h4{font-size:11pt;margin:0 0 2mm;padding:1.5mm 3mm;background:#eef2f7;border-left:4px solid #2d6cdf}
+  .s-idea{display:flex;gap:3mm;align-items:flex-start;font-size:10pt;padding:1.3mm 0 1.3mm 3mm;border-bottom:1px dotted #bbb}
+  .s-box{width:4mm;height:4mm;border:1.2px solid #333;flex-shrink:0;margin-top:1mm}
+  .s-note{margin-top:4mm;border:1.2px solid #333;border-radius:2mm;padding:3mm}
+  .s-note b{font-size:10pt}
+  .s-lines{margin-top:2mm}
+  .s-line{border-bottom:1px dotted #777;height:8mm}
+  .s-foot{margin-top:4mm;font-size:8.5pt;color:#444;border-top:1px solid #999;padding-top:2mm}
+
+  @media print{
+    body{background:#fff;padding:0}
+    .panel,.hint{display:none !important}
+    .sheet{width:auto;min-height:0;margin:0;padding:0;box-shadow:none;transform:none !important}
+    @page{size:A4 portrait;margin:14mm}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="panel">
+  <h1>気になる子への手立てカード</h1>
+  <p class="lead">
+    教室で困っている場面をえらぶと、担任が<strong>その日から試せる工夫</strong>が並びます。
+    試すものにチェックを入れて、A4で印刷して手元に置けます。
+  </p>
+
+  <div class="notice">
+    <b>使うときに大事にしたいこと</b>
+    <ul>
+      <li>これは<strong>診断や、支援を決めるためのものではありません</strong>。校内委員会や専門家との相談に代わるものでもありません。</li>
+      <li>並んでいるのは「子どもを変える方法」ではなく、<strong>まわりの環境や伝え方を変える工夫</strong>です。</li>
+      <li>合うかどうかは子どもによって違います。<strong>1つずつ、しばらく続けて</strong>ようすを見てください。</li>
+      <li>児童名を入力する欄はありません。印刷した紙に手書きしてください。</li>
+    </ul>
+  </div>
+
+  <h2>① 気になっている場面をえらぶ（いくつでも）</h2>
+  <div class="scenes" id="scenes"></div>
+
+  <h2 style="margin-top:18px">② 印刷の設定</h2>
+  <div class="opts">
+    <label>題名 <input type="text" id="title" value="試してみる手立て" size="16"></label>
+    <label><input type="checkbox" id="onlyChecked"> チェックしたものだけ印刷する</label>
+    <label><input type="checkbox" id="kana"> ひらがなを多めにする（低学年の担任向け）</label>
+    <label><input type="checkbox" id="memo" checked> 「やってみて気づいたこと」欄を入れる</label>
+  </div>
+  <div class="btns">
+    <button class="primary" id="btn-print">印刷する</button>
+    <button class="ghost" id="btn-clear">チェックを全部はずす</button>
+    <button class="ghost" id="btn-reset">はじめの状態にもどす</button>
+  </div>
+  <p class="hint">
+    用紙は「A4・たて」、拡大縮小は「なし（100%）」にしてください。
+    えらんだ場面とチェックは、このパソコンの中だけに保存されます。
+  </p>
+</div>
+
+<div class="panel" id="list-panel">
+  <h2>③ 試す工夫にチェックを入れる</h2>
+  <div id="list"></div>
+</div>
+
+<div id="sheet-wrap"></div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* 保存キーは変えないこと（変えると利用者のチェックが消えたのと同じになる） */
+  var KEY = "support_cards_v1";
+
+  /* ------------------------------------------------------------------
+     場面と手立て。
+     方針：「その子を直す」ではなく「環境・伝え方・手順を変える」工夫だけを並べる。
+     医療・診断に関わる表現、子どもを分類する言い方は入れない。
+     出典の考え方は、文部科学省「通常の学級に在籍する特別な教育的支援を必要とする
+     児童生徒に関する調査結果」および同省が示す通常の学級での配慮の一般的な例に基づく。
+     ------------------------------------------------------------------ */
+  var SCENES = [
+    { id:'sit', name:'席にすわっていられない／体が動く', kana:'せきに すわって いられない',
+      ideas:[
+        '席を、出入り口や通る人から離れた静かな場所にしてみる',
+        '授業の中に、立ってよい役割をあらかじめ入れる（配る・黒板を消す・取りに行く）',
+        '足のうらが床につく高さにする。つかないときは足台を置く',
+        '「次の合図まで」と短く区切って伝える。長い時間を一度に求めない',
+        '手に持てる小さなもの（やわらかい消しゴムなど）を認める',
+        '動いたことを注意する前に、すわれていた時間を数えて本人に伝える'
+      ]},
+    { id:'listen', name:'指示が通らない・聞きのがす', kana:'しじが とおりにくい',
+      ideas:[
+        '指示は1回に1つにする。2つ以上をまとめて言わない',
+        '名前を呼び、こちらを見てから伝える',
+        '声だけでなく、黒板やカードに文字でも残す',
+        '「何をするか」を本人の言葉で言い返してもらう',
+        '全体に伝えたあと、机のそばでもう一度短く伝える',
+        '長い説明には「①②③」と番号をつけ、終わった番号を消していく'
+      ]},
+    { id:'board', name:'板書を写しきれない', kana:'こくばんを うつしきれない',
+      ideas:[
+        '写す量を減らす。枠や見出しだけ印刷したプリントを渡す',
+        '「ここからここまでを◯分で」と範囲と時間を先に示す',
+        'チョークの色は2色までにし、大事なところの示し方を統一する',
+        '書き写す代わりに、プリントを受け取る・写真に撮ることを認める',
+        '行と行の間を広くとり、1行ずつ指で追えるようにする',
+        '写し終わっていなくても次に進んでよい、と先に伝えておく'
+      ]},
+    { id:'sound', name:'音や声・光がつらそう', kana:'おとや ひかりが つらそう',
+      ideas:[
+        '席を、廊下側・エアコンの下・スピーカーの近くから離す',
+        'イヤーマフやイヤホンを使うことを認める（理由はクラスに短く説明する）',
+        '休み時間に静かに過ごせる場所を、教室の中か近くに用意する',
+        '全員で大きな声を出す活動の前に、「このあと声を出すよ」と予告する',
+        '窓からの光の向き、蛍光灯のちらつきを確かめ、席を変えてみる'
+      ]},
+    { id:'wait', name:'順番を待つ・がまんが苦手', kana:'じゅんばんを まつのが にがて',
+      ideas:[
+        '待つ時間が短くなるよう、順番を前のほうにする',
+        '待っている間にやることを決めておく（本を読む・数える）',
+        'あと何人で自分の番かを、黒板や札で見えるようにする',
+        '待てたときに、その場で短く「待てたね」と伝える',
+        '長い行列ができる並び方そのものを見直す'
+      ]},
+    { id:'forget', name:'忘れ物・なくし物が多い', kana:'わすれものが おおい',
+      ideas:[
+        '持ち物の置き場所を、写真や絵でその場所に貼る',
+        '連絡帳の書き方を型にして、書けたらチェックする欄をつくる',
+        '予備を教室に置き、叱らずに貸す（借りた記録だけ残す）',
+        '帰りの支度の手順を黒板に貼り、毎日同じ順番にする',
+        '家庭には「できていないこと」ではなく「どんな仕組みなら続くか」を相談する'
+      ]},
+    { id:'write', name:'書くことに時間がかかる', kana:'かくのに じかんが かかる',
+      ideas:[
+        'マス目や罫線の大きさを変えたプリントを用意する',
+        '書く量を減らし、選んで丸をつける形にできないか考える',
+        '鉛筆の濃さ・太さ、グリップを変えて、書きやすいものを探す',
+        '消してやり直すことを求めすぎない。二重線で消してよいことにする',
+        '時間内に終わらない前提で、「どこまでやるか」を先に決めておく'
+      ]},
+    { id:'read', name:'読むことに時間がかかる', kana:'よむのに じかんが かかる',
+      ideas:[
+        '読む行だけが見えるスリットや定規を使う',
+        '行間の広い文、分かち書きにした文を用意する',
+        '読む前に、内容を短く口で伝えてから読ませる',
+        '音読は、当てる順番を先に知らせて準備する時間をとる',
+        'みんなの前で読む以外の方法（班の中・先生とだけ）も用意する'
+      ]},
+    { id:'plan', name:'見通しが持てず不安になる', kana:'さきが わからないと ふあん',
+      ideas:[
+        '1日の流れを黒板のはしに貼り、終わったものを消していく',
+        '予定の変更は、分かった時点ですぐ、理由とセットで伝える',
+        '終わりの時刻を数字やタイマーで示す',
+        '初めての活動は、やり方を1回やって見せてから始める',
+        '行事の前に、当日の流れを絵や写真で見せておく'
+      ]},
+    { id:'trouble', name:'友達とのトラブルが起きやすい', kana:'ともだちと トラブルに なりやすい',
+      ideas:[
+        '起きてから対応するのではなく、起きやすい場面（休み時間の始め・並ぶとき）に先回りして近くにいる',
+        '両方から順番に聞き、「あったこと」と「気持ち」を分けて整理する',
+        '「こう言えばよかった」の言い方を、具体的な言葉で渡す',
+        'うまくいっていた場面を見つけて、本人に言葉で返す',
+        '席やグループの組み方を変えてみる'
+      ]},
+    { id:'calm', name:'気持ちが高ぶると切り替えられない', kana:'きもちが たかぶると もどれない',
+      ideas:[
+        '落ち着ける場所をあらかじめ決めておく（罰ではないことを本人とクラスに伝える）',
+        '高ぶっている最中は言い聞かせない。落ち着いてから短く話す',
+        'クールダウンに入る合図を、本人と一緒に決めておく',
+        '戻ってきたときに、そのことを責めない',
+        'どんな場面の前後で起きやすいかを数日記録し、きっかけを探す'
+      ]},
+    { id:'speak', name:'発表や音読で声が出ない', kana:'はっぴょうで こえが でない',
+      ideas:[
+        '全体の前ではなく、ペアや班の中から始める',
+        '答えを選ぶ形にする。うなずきや指さしでもよいことにする',
+        '発表する内容を先に知らせ、準備する時間をとる',
+        '声の大きさを求めない。聞こえなければ先生が繰り返す',
+        '書いたものを先生が読み上げる形も認める'
+      ]}
+  ];
+
+  var FIRST_CHECK = [
+    '見え方・聞こえ方に困っていないか（健康診断の結果を確かめる）',
+    '席の位置と、まわりの子との関係',
+    '睡眠や食事、家庭での変化がないか（分かる範囲で）',
+    '本人に「どうすると やりやすい？」と聞いてみる'
+  ];
+
+  var el = {
+    scenes: document.getElementById('scenes'),
+    list: document.getElementById('list'),
+    title: document.getElementById('title'),
+    onlyChecked: document.getElementById('onlyChecked'),
+    kana: document.getElementById('kana'),
+    memo: document.getElementById('memo'),
+    wrap: document.getElementById('sheet-wrap')
+  };
+
+  var picked = {};   /* 場面id -> true */
+  var checked = {};  /* 場面id + '/' + 番号 -> true */
+
+  /* ---------- 保存 ---------- */
+  function save(){
+    try{
+      localStorage.setItem(KEY, JSON.stringify({
+        picked: picked, checked: checked, title: el.title.value,
+        onlyChecked: el.onlyChecked.checked, kana: el.kana.checked, memo: el.memo.checked
+      }));
+    }catch(e){ /* 保存できなくても使えるようにする */ }
+  }
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(!raw) return;
+      var s = JSON.parse(raw);
+      if(!s || typeof s !== 'object') return;
+      if(s.picked && typeof s.picked === 'object') picked = s.picked;
+      if(s.checked && typeof s.checked === 'object') checked = s.checked;
+      if(typeof s.title === 'string') el.title.value = s.title;
+      el.onlyChecked.checked = !!s.onlyChecked;
+      el.kana.checked = !!s.kana;
+      el.memo.checked = s.memo !== false;
+    }catch(e){ /* 壊れていたら初期値のまま使う */ }
+  }
+
+  function sceneName(sc){ return el.kana.checked ? sc.kana : sc.name; }
+
+  /* ---------- 画面を組み立てる ---------- */
+  function renderScenes(){
+    el.scenes.innerHTML = '';
+    SCENES.forEach(function(sc){
+      var lab = document.createElement('label');
+      lab.className = 'scene' + (picked[sc.id] ? ' on' : '');
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = !!picked[sc.id];
+      cb.addEventListener('change', function(){
+        if(cb.checked) picked[sc.id] = true; else delete picked[sc.id];
+        renderScenes(); renderList(); renderSheet(); save();
+      });
+      lab.appendChild(cb);
+      lab.appendChild(document.createTextNode(sceneName(sc)));
+      el.scenes.appendChild(lab);
+    });
+  }
+
+  function pickedScenes(){ return SCENES.filter(function(sc){ return picked[sc.id]; }); }
+
+  function renderList(){
+    el.list.innerHTML = '';
+    var ps = pickedScenes();
+    if(ps.length === 0){
+      el.list.innerHTML = '<p class="empty">上で場面をえらぶと、ここに工夫が出ます。</p>';
+      return;
+    }
+    ps.forEach(function(sc){
+      var g = document.createElement('div');
+      g.className = 'group';
+      var h = document.createElement('h3');
+      h.textContent = sceneName(sc);
+      g.appendChild(h);
+      sc.ideas.forEach(function(text, i){
+        var key = sc.id + '/' + i;
+        var lab = document.createElement('label');
+        lab.className = 'idea' + (checked[key] ? ' on' : '');
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = !!checked[key];
+        cb.addEventListener('change', function(){
+          if(cb.checked) checked[key] = true; else delete checked[key];
+          renderList(); renderSheet(); save();
+        });
+        lab.appendChild(cb);
+        lab.appendChild(document.createTextNode(text));
+        g.appendChild(lab);
+      });
+      el.list.appendChild(g);
+    });
+  }
+
+  /* ---------- 印刷するA4 ---------- */
+  function renderSheet(){
+    el.wrap.innerHTML = '';
+    var ps = pickedScenes();
+    if(ps.length === 0) return;
+
+    var sheet = document.createElement('div');
+    sheet.className = 'sheet';
+
+    var head = document.createElement('div');
+    head.className = 's-head';
+    head.innerHTML =
+      '<div><div class="s-title">' + esc(el.title.value || '試してみる手立て') + '</div>' +
+      '<div class="s-sub">教室でその日から試せる工夫です。1つずつ、しばらく続けてようすを見ます。</div></div>' +
+      '<div class="s-meta"><div>学年・組 <span class="s-blank"></span></div>' +
+      '<div>記入日 <span class="s-blank" style="min-width:22mm"></span></div></div>';
+    sheet.appendChild(head);
+
+    var any = false;
+    ps.forEach(function(sc){
+      var items = sc.ideas.filter(function(t, i){
+        return el.onlyChecked.checked ? !!checked[sc.id + '/' + i] : true;
+      });
+      if(items.length === 0) return;
+      any = true;
+      var g = document.createElement('div');
+      g.className = 's-group';
+      var h = document.createElement('h4');
+      h.textContent = sceneName(sc);
+      g.appendChild(h);
+      sc.ideas.forEach(function(text, i){
+        if(el.onlyChecked.checked && !checked[sc.id + '/' + i]) return;
+        var row = document.createElement('div');
+        row.className = 's-idea';
+        var box = document.createElement('span');
+        box.className = 's-box';
+        var sp = document.createElement('span');
+        sp.textContent = text;
+        row.appendChild(box);
+        row.appendChild(sp);
+        g.appendChild(row);
+      });
+      sheet.appendChild(g);
+    });
+
+    if(!any){
+      var p = document.createElement('div');
+      p.className = 's-idea';
+      p.textContent = 'チェックした工夫がありません。「チェックしたものだけ印刷する」をはずすか、工夫にチェックを入れてください。';
+      sheet.appendChild(p);
+    }
+
+    /* まず確かめたいこと */
+    var fc = document.createElement('div');
+    fc.className = 's-note';
+    var fcHtml = '<b>工夫を試す前に、まず確かめたいこと</b>';
+    FIRST_CHECK.forEach(function(t){
+      fcHtml += '<div class="s-idea" style="border-bottom:none;padding:1mm 0 1mm 3mm">' +
+                '<span class="s-box"></span><span>' + esc(t) + '</span></div>';
+    });
+    fc.innerHTML = fcHtml;
+    sheet.appendChild(fc);
+
+    if(el.memo.checked){
+      var memo = document.createElement('div');
+      memo.className = 's-note';
+      memo.innerHTML = '<b>やってみて気づいたこと（日づけ・ようす）</b>' +
+        '<div class="s-lines">' +
+        '<div class="s-line"></div><div class="s-line"></div><div class="s-line"></div>' +
+        '<div class="s-line"></div><div class="s-line"></div>' +
+        '</div>';
+      sheet.appendChild(memo);
+    }
+
+    var foot = document.createElement('div');
+    foot.className = 's-foot';
+    foot.textContent = 'この紙は、診断や支援を決めるためのものではありません。' +
+      '気になることが続くときは、校内の委員会や専門の先生に相談してください。';
+    sheet.appendChild(foot);
+
+    el.wrap.appendChild(sheet);
+  }
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];
+    });
+  }
+
+  /* ---------- つなぎこみ ---------- */
+  load();
+  renderScenes(); renderList(); renderSheet();
+
+  ['input','change'].forEach(function(ev){
+    [el.title, el.onlyChecked, el.memo].forEach(function(n){
+      n.addEventListener(ev, function(){ renderSheet(); save(); });
+    });
+  });
+  el.kana.addEventListener('change', function(){
+    renderScenes(); renderList(); renderSheet(); save();
+  });
+
+  document.getElementById('btn-print').addEventListener('click', function(){ window.print(); });
+
+  document.getElementById('btn-clear').addEventListener('click', function(){
+    checked = {};
+    renderList(); renderSheet(); save();
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', function(){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    picked = {}; checked = {};
+    el.title.value = '試してみる手立て';
+    el.onlyChecked.checked = false;
+    el.kana.checked = false;
+    el.memo.checked = true;
+    renderScenes(); renderList(); renderSheet();
+  });
+})();
+</script>
+</body>
+</html>
