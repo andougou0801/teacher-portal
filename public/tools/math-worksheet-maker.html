@@ -222,62 +222,37 @@
     .hissan-mondai {
       display: flex;
       align-items: flex-start;
-      gap: 6px;
-      margin: 8px 0;
+      gap: 8px;
+      margin: 2px 0 10px 0;
+      --hissan-keta-haba: max(1.3em, 10mm);
     }
-    .hissan-honban {
-      display: flex;
-      flex-direction: column;
+    .hissan-keta {
+      display: inline-block;
+      width: var(--hissan-keta-haba);
+      height: var(--hissan-keta-haba);
+      line-height: var(--hissan-keta-haba);
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      box-sizing: border-box;
     }
-    .hissan-suuji-waku {
-      border: 1.5px solid #333;
-      display: flex;
-      flex-direction: column;
+    .hissan-keta-sen {
+      border-bottom: 1.5px solid #000;
     }
-    .hissan-suuji-row {
-      display: flex;
-      position: relative;
+    .hissan-simple {
+      display: inline-block;
     }
-    .hissan-enzan {
-      position: absolute;
-      left: -1.5em;
-      top: 0;
-      width: 1.3em;
-      height: 1.7em;
+    .hissan-simple-gyou {
       display: flex;
       align-items: center;
-      justify-content: center;
+    }
+    .hissan-simple-enzan {
+      width: 1.3em;
+      height: var(--hissan-keta-haba);
+      line-height: var(--hissan-keta-haba);
       font-weight: bold;
     }
-    .hissan-masu {
-      width: 1.5em;
-      height: 1.7em;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-right: 1px dotted #999;
-      font-variant-numeric: tabular-nums;
-    }
-    .hissan-masu:last-child {
-      border-right: none;
-    }
-    .hissan-kotae-row {
-      display: flex;
-      margin-top: 2px;
-    }
-    .hissan-kotae-masu {
-      width: 1.5em;
-      height: 1.7em;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-right: 1px dotted #999;
-      font-variant-numeric: tabular-nums;
-    }
-    .hissan-kotae-masu:last-child {
-      border-right: none;
+    .hissan-simple-sen-gyou {
+      border-bottom: 2.5px solid #000;
     }
     .warizan-hissan {
       display: flex;
@@ -289,7 +264,9 @@
     }
     .warizan-warukazu {
       font-variant-numeric: tabular-nums;
-      padding-right: 4px;
+      padding-right: 6px;
+      height: var(--hissan-keta-haba);
+      line-height: var(--hissan-keta-haba);
       visibility: hidden;
     }
     .warizan-waku-gyou .warizan-warukazu {
@@ -299,36 +276,35 @@
       display: flex;
       border-top: 2px solid #000;
       border-left: 2px solid #000;
-      padding: 2px 4px 0 4px;
+      padding-left: 4px;
+    }
+    .warizan-shou-waku {
+      display: flex;
+      border-left: 2px solid transparent;
+      padding-left: 4px;
+    }
+    .warizan-shita-waku {
+      display: flex;
+      border-left: 2px solid transparent;
+      padding-left: 4px;
     }
     .warizan-sagyou {
-      margin-left: 1.6em;
+      background-image:
+        repeating-linear-gradient(to right, transparent, transparent calc(var(--hissan-keta-haba) - 1px), #aaa calc(var(--hissan-keta-haba) - 1px), #aaa var(--hissan-keta-haba)),
+        repeating-linear-gradient(to bottom, transparent, transparent calc(var(--hissan-keta-haba) - 1px), #aaa calc(var(--hissan-keta-haba) - 1px), #aaa var(--hissan-keta-haba));
     }
-    .warizan-waraeru-suuji {
-      font-variant-numeric: tabular-nums;
-      padding: 0 1px;
-    }
-    .warizan-shou-masu-retsu {
+    .warizan-katei-gyou {
       display: flex;
-      padding: 0 4px 2px 4px;
-    }
-    .warizan-shou-masu {
-      width: 1.3em;
-      height: 1.5em;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-right: 1px dotted #999;
-      font-variant-numeric: tabular-nums;
-    }
-    .warizan-shou-masu:last-child {
-      border-right: none;
     }
     .warizan-amari {
       margin-left: 8px;
-      align-self: flex-end;
+      height: var(--hissan-keta-haba);
+      line-height: var(--hissan-keta-haba);
       white-space: nowrap;
+      font-size: 0.75em;
+    }
+    .hissan-mondai .bangou {
+      min-width: 1.4em;
     }
     .bunsuu {
       display: inline-flex;
@@ -397,7 +373,8 @@
       ※簡単設定では、次のルールで自動的に数字が作られます。<br>
       ・たし算：1けたの数（1〜9）どうし<br>
       ・ひき算：答えがマイナスにならない、最大20までの数<br>
-      ・かけ算・わり算：九九の範囲（1〜9）
+      ・かけ算・わり算：九九の範囲（1〜9）<br>
+      ・「筆算で表示する」を選んだ場合は、2けた以上の数を使った筆算らしい問題になります。
     </div>
 
     <label>プリントのタイトル：<input type="text" id="title" value="計算プリント"></label>
@@ -538,12 +515,12 @@
     </label>
     <label>文字の大きさ：<input type="range" id="fontsize" min="14" max="50" value="20" oninput="fontSizeUpdate()"> <span id="fontsize-hyouji">20</span>px</label>
     <label><input type="checkbox" id="kotae-hyouji" onchange="hyouji()"> 答えを表示する</label>
-    <label><input type="checkbox" id="hissan-hyouji" onchange="hyouji()"> 筆算（縦書き）で表示する</label>
+    <label><input type="checkbox" id="hissan-hyouji" onchange="hissanKirikae()"> 筆算（縦書き）で表示する</label>
     <div class="setsumei">※整数どうしの問題のみ筆算になります。小数・分数が関わる問題は横書きのまま表示されます。わり算は商を書く場所だけ空欄にし、計算の途中経過は表示しません。</div>
     <button onclick="tsukuru()">問題を作る</button>
     <button onclick="insatsuJikkou()">印刷する</button>
     <button onclick="hozonJikkou()">保存する</button>
-    <p class="setsumei overflow-warning" id="overflow-warning" style="display:none;">⚠ 問題数または文字の大きさが多く、1ページに収まっていません。問題数を減らすか、文字の大きさを小さくしてください（このままでは印刷時に点数欄などと重なります）。</p>
+    <p class="setsumei overflow-warning" id="overflow-warning" style="display:none;">⚠ 1ページに収まっていません。問題数を減らす、列数を減らす、文字の大きさを小さくする、のいずれかで調整してください（このままでは印刷時に欄が重なったり、右側が切れたりします）。</p>
 
     <hr>
   </div>
@@ -694,9 +671,34 @@
       }
     }
 
-    function kantanMondaiTsukuru(shurui) {
+    function kantanMondaiTsukuru(shurui, hissanMode) {
       let op = shurui === "tashizan" ? "+" : shurui === "hikizan" ? "-" : shurui === "kakezan" ? "×" : "÷";
       let a, b, kotae;
+
+      if (hissanMode) {
+        if (shurui === "tashizan") {
+          a = Math.floor(Math.random() * 90) + 10;
+          b = Math.floor(Math.random() * 90) + 10;
+          kotae = a + b;
+        } else if (shurui === "hikizan") {
+          a = Math.floor(Math.random() * 90) + 10;
+          b = Math.floor(Math.random() * 90) + 10;
+          if (a < b) {
+            let tmp = a; a = b; b = tmp;
+          }
+          kotae = a - b;
+        } else if (shurui === "kakezan") {
+          a = Math.floor(Math.random() * 90) + 10;
+          b = Math.floor(Math.random() * 8) + 2;
+          kotae = a * b;
+        } else {
+          let wariKotae = Math.floor(Math.random() * 9) + 2;
+          b = Math.floor(Math.random() * 8) + 2;
+          a = wariKotae * b;
+          kotae = wariKotae;
+        }
+        return { a: a, b: b, op: op, kotae: kotae };
+      }
 
       if (shurui === "tashizan") {
         a = Math.floor(Math.random() * 9) + 1;
@@ -1219,11 +1221,13 @@
 
       if (setteiMode === "kantan") {
         genzaiNoMondai = [];
+        let hissanCheckboxKantan = document.getElementById("hissan-hyouji");
+        let hissanModeKantan = hissanCheckboxKantan ? hissanCheckboxKantan.checked : false;
 
         for (let i = 0; i < kaisu; i++) {
           let shurui = keisanList[Math.floor(Math.random() * keisanList.length)];
 
-          let mondai = kantanMondaiTsukuru(shurui);
+          let mondai = kantanMondaiTsukuru(shurui, hissanModeKantan);
 
           let anaBasho = anaBashoSentaku;
           if (anaBashoSentaku === "random") {
@@ -1377,27 +1381,13 @@
       return Number.isInteger(kotae) || (typeof kotae === "object" && kotae !== null && "remainder" in kotae);
     }
 
-    function hissanKetaHairetsu(moji, keta) {
-      let hairetsu = [];
-      let padding = keta - moji.length;
-      if (padding < 0) {
-        moji = moji.slice(-keta);
-        padding = 0;
-      }
-      for (let i = 0; i < padding; i++) {
-        hairetsu.push("");
-      }
-      for (let i = 0; i < moji.length; i++) {
-        hairetsu.push(moji[i]);
-      }
-      return hairetsu;
-    }
-
-    function hissanKetaMasuHTML(moji, keta, kurasuMei) {
-      let ketaHairetsu = hissanKetaHairetsu(moji, keta);
+    function hissanKetaCellsHTML(moji, endCol, keta, senAri) {
       let html = "";
-      for (let i = 0; i < keta; i++) {
-        html += "<div class='" + kurasuMei + "'>" + (ketaHairetsu[i] || "") + "</div>";
+      for (let col = 0; col < keta; col++) {
+        let idx = moji.length - 1 - (endCol - col);
+        let aru = (idx >= 0 && idx < moji.length);
+        let kurasu = "hissan-keta" + (senAri ? " hissan-keta-sen" : "");
+        html += "<span class='" + kurasu + "'>" + (aru ? moji[idx] : "&nbsp;") + "</span>";
       }
       return html;
     }
@@ -1406,44 +1396,84 @@
       let aMoji = aIsAna ? "" : String(mondai.a);
       let bMoji = bIsAna ? "" : String(mondai.b);
       let kotaeMoji = kotaeIsAna ? "" : String(mondai.kotae);
+      let keta = hissanHaba;
+      let migi = keta - 1;
 
       return "<div class='hissan-mondai'>"
         + "<span class='bangou'>" + maruSuuji(i + 1, genzaiNoMondai.length) + "</span>"
-        + "<div class='hissan-honban'>"
-        + "<div class='hissan-suuji-waku'>"
-        + "<div class='hissan-suuji-row'>" + hissanKetaMasuHTML(aMoji, hissanHaba, "hissan-masu") + "</div>"
-        + "<div class='hissan-suuji-row'><span class='hissan-enzan'>" + mondai.op + "</span>" + hissanKetaMasuHTML(bMoji, hissanHaba, "hissan-masu") + "</div>"
-        + "</div>"
-        + "<div class='hissan-kotae-row'>" + hissanKetaMasuHTML(kotaeMoji, hissanHaba, "hissan-kotae-masu") + "</div>"
+        + "<div class='hissan-simple'>"
+        + "<div class='hissan-simple-gyou'><span class='hissan-simple-enzan'></span>" + hissanKetaCellsHTML(aMoji, migi, keta, false) + "</div>"
+        + "<div class='hissan-simple-gyou hissan-simple-sen-gyou'><span class='hissan-simple-enzan'>" + mondai.op + "</span>" + hissanKetaCellsHTML(bMoji, migi, keta, false) + "</div>"
+        + "<div class='hissan-simple-gyou'><span class='hissan-simple-enzan'></span>" + hissanKetaCellsHTML(kotaeMoji, migi, keta, false) + "</div>"
         + "</div></div>";
     }
 
-    function warizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna) {
-      let wareruKeta = String(mondai.a).length;
-      let wareruHTML = aIsAna ? "<span class='ana ana-sen'>&nbsp;</span>" : String(mondai.a);
+    function warizanKeisanKatei(dividendStr, divisor) {
+      let value = 0;
+      let steps = [];
+      for (let i = 0; i < dividendStr.length; i++) {
+        value = value * 10 + Number(dividendStr[i]);
+        if (value < divisor) {
+          continue;
+        }
+        let qDigit = Math.floor(value / divisor);
+        let product = qDigit * divisor;
+        steps.push({ value: value, product: product, endCol: i });
+        value = value - product;
+      }
+      return { steps: steps, saigoNoAmari: value };
+    }
+
+    function warizanKateiGyousuu(dividendStr, divisor) {
+      let katei = warizanKeisanKatei(dividendStr, divisor);
+      return katei.steps.length > 0 ? katei.steps.length * 2 + 1 : 1;
+    }
+
+    function warizanKateiHTMLTsukuru(dividendStr, divisor, keta) {
+      let katei = warizanKeisanKatei(dividendStr, divisor);
+      let html = "";
+      katei.steps.forEach(function (step) {
+        html += "<div class='warizan-katei-gyou'>" + hissanKetaCellsHTML(String(step.value), step.endCol, keta, false) + "</div>";
+        html += "<div class='warizan-katei-gyou'>" + hissanKetaCellsHTML(String(step.product), step.endCol, keta, true) + "</div>";
+      });
+      if (katei.steps.length > 0) {
+        html += "<div class='warizan-katei-gyou'>" + hissanKetaCellsHTML(String(katei.saigoNoAmari), keta - 1, keta, false) + "</div>";
+      }
+      return "<div>" + html + "</div>";
+    }
+
+    function warizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, kotaeHyouji) {
+      let wareruMoji = String(mondai.a);
+      let wareruKeta = wareruMoji.length;
+      let migi = wareruKeta - 1;
+      let wareruHTML = aIsAna ? hissanKetaCellsHTML("", migi, wareruKeta, false) : hissanKetaCellsHTML(wareruMoji, migi, wareruKeta, false);
       let waruHTML = bIsAna ? "<span class='ana ana-sen'>&nbsp;</span>" : String(mondai.b);
 
       let isRemainder = (typeof mondai.kotae === "object" && mondai.kotae !== null && "remainder" in mondai.kotae);
       let shouMoji = kotaeIsAna ? "" : String(isRemainder ? mondai.kotae.quotient : mondai.kotae);
-      let shouMasuHTML = hissanKetaMasuHTML(shouMoji, wareruKeta, "warizan-shou-masu");
+      let shouHTML = hissanKetaCellsHTML(shouMoji, migi, wareruKeta, false);
 
+      // 筆算では、あまりは計算の一番下の行に出るため、横に「あまり◯」は並べない
       let amariHTML = "";
-      if (isRemainder) {
-        let amariNaiyou = kotaeIsAna ? "<span class='ana ana-sen'>&nbsp;</span>" : "<span class='ana'>" + mondai.kotae.remainder + "</span>";
-        amariHTML = "<span class='warizan-amari'>あまり" + amariNaiyou + "</span>";
+
+      let sagyouNakami;
+      if (kotaeHyouji && !aIsAna && !bIsAna) {
+        sagyouNakami = warizanKateiHTMLTsukuru(wareruMoji, mondai.b, wareruKeta);
+      } else {
+        let gyousuu = bIsAna ? Math.max(1, wareruKeta) : warizanKateiGyousuu(wareruMoji, mondai.b);
+        sagyouNakami = "<div class='warizan-sagyou' style='height:calc(var(--hissan-keta-haba) * " + gyousuu + "); width:calc(var(--hissan-keta-haba) * " + wareruKeta + ");'></div>";
       }
 
-      let sagyouGyousuu = Math.max(1, wareruKeta);
-      let sagyouHTML = "<div class='warizan-sagyou' style='height:" + (sagyouGyousuu * 1.7) + "em;'></div>";
+      let bangouMoji = maruSuuji(i + 1, genzaiNoMondai.length);
+      let bangouYohaku = "<span class='bangou' style='visibility:hidden;'>" + bangouMoji + "</span>";
+      let bangou = "<span class='bangou'>" + bangouMoji + "</span>";
 
       return "<div class='hissan-mondai'>"
-        + "<span class='bangou'>" + maruSuuji(i + 1, genzaiNoMondai.length) + "</span>"
         + "<div class='warizan-hissan'>"
-        + "<div class='warizan-gyou'><span class='warizan-warukazu'>" + waruHTML + "</span><span class='warizan-shou-masu-retsu'>" + shouMasuHTML + "</span></div>"
-        + "<div class='warizan-gyou warizan-waku-gyou'><span class='warizan-warukazu'>" + waruHTML + "</span><span class='warizan-waraeru-waku'><span class='warizan-waraeru-suuji'>" + wareruHTML + "</span></span></div>"
-        + sagyouHTML
+        + "<div class='warizan-gyou'>" + bangouYohaku + "<span class='warizan-warukazu'>" + waruHTML + "</span><span class='warizan-shou-waku'>" + shouHTML + "</span></div>"
+        + "<div class='warizan-gyou warizan-waku-gyou'>" + bangou + "<span class='warizan-warukazu'>" + waruHTML + "</span><span class='warizan-waraeru-waku'>" + wareruHTML + "</span>" + amariHTML + "</div>"
+        + "<div class='warizan-gyou'>" + bangouYohaku + "<span class='warizan-warukazu'>" + waruHTML + "</span><span class='warizan-shita-waku'>" + sagyouNakami + "</span></div>"
         + "</div>"
-        + amariHTML
         + "</div>";
     }
 
@@ -1465,7 +1495,7 @@
         if (hissanMode && hissanTaishou(mondai)) {
           mondaiHTML += hissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, hissanHaba);
         } else if (hissanMode && warizanHissanTaishou(mondai)) {
-          mondaiHTML += warizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna);
+          mondaiHTML += warizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, kotaeHyouji);
         } else {
           mondaiHTML += "<p>"
             + "<span class='bangou'>" + maruSuuji(i + 1, genzaiNoMondai.length) + "</span>"
@@ -1511,7 +1541,21 @@
       frame.style.margin = "0";
       let hamidashiteiru = printArea.scrollHeight > printArea.clientHeight + 2;
       frame.style.cssText = motoNoCss;
-      warning.style.display = hamidashiteiru ? "block" : "none";
+
+      let mondaiWaku = document.getElementById("mondai");
+      let yokoHamidashi = mondaiWaku ? (mondaiWaku.scrollWidth > mondaiWaku.clientWidth + 2) : false;
+
+      warning.style.display = (hamidashiteiru || yokoHamidashi) ? "block" : "none";
+    }
+
+    function hissanKirikae() {
+      let hissanOn = document.getElementById("hissan-hyouji").checked;
+      let fontsize = document.getElementById("fontsize");
+      if (hissanOn && Number(fontsize.value) < 30) {
+        fontsize.value = 32;
+        fontSizeUpdate();
+      }
+      hyouji();
     }
 
     function fontSizeUpdate() {
@@ -1588,61 +1632,83 @@
       return value;
     }
 
-    function wordHissanMasuSutairu(retsu, keta, gyouShurui) {
-      let hidari = (retsu === 0) ? "border-left:1.5px solid #333;" : "";
-      let migi = (retsu === keta - 1) ? "border-right:1.5px solid #333;" : "border-right:1px dotted #999;";
-      if (gyouShurui === "ue") {
-        return "border-top:1.5px solid #333;" + hidari + migi;
-      }
-      if (gyouShurui === "shita") {
-        return "border-bottom:2px solid #000;" + hidari + migi;
-      }
-      return migi;
-    }
-
-    function wordHissanMasuTr(enzan, value, isAna, keta, gyouShurui) {
-      let moji = isAna ? "" : String(value);
-      let ketaHairetsu = hissanKetaHairetsu(moji, keta);
-      let html = "<tr>"
-        + "<td style='width:1.3em; height:1.7em; text-align:center; font-weight:bold;'>" + (enzan || "") + "</td>";
-      for (let i = 0; i < keta; i++) {
-        html += "<td style='width:1.5em; height:1.7em; text-align:center; " + wordHissanMasuSutairu(i, keta, gyouShurui) + "'>" + (ketaHairetsu[i] || "") + "</td>";
-      }
-      html += "</tr>";
-      return html;
+    function wordKetaHabaMm(fontSize) {
+      let emMm = Number(fontSize) * 1.3 * 25.4 / 96;
+      return Math.max(10, emMm).toFixed(1);
     }
 
     function wordHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, hissanHaba, fontSize) {
+      let aMoji = aIsAna ? "" : String(mondai.a);
+      let bMoji = bIsAna ? "" : String(mondai.b);
+      let kotaeMoji = kotaeIsAna ? "" : String(mondai.kotae);
+      let keta = hissanHaba;
+      let migi = keta - 1;
+      let habaMm = wordKetaHabaMm(fontSize);
+
       return "<span style='font-size:" + fontSize + "px;'>" + maruSuuji(i + 1, genzaiNoMondai.length) + "</span>　"
         + "<table style='display:inline-table; border-collapse:collapse; font-size:" + fontSize + "px;'>"
-        + wordHissanMasuTr("", mondai.a, aIsAna, hissanHaba, "ue")
-        + wordHissanMasuTr(mondai.op, mondai.b, bIsAna, hissanHaba, "shita")
-        + wordHissanMasuTr("", mondai.kotae, kotaeIsAna, hissanHaba, "kotae")
+        + "<tr><td style='width:1.3em;'></td>" + retsuHaichiTdHTML(aMoji, migi, keta, "", habaMm) + "</tr>"
+        + "<tr><td style='width:1.3em; font-weight:bold; text-align:left;'>" + mondai.op + "</td>" + retsuHaichiTdHTML(bMoji, migi, keta, "border-bottom:2.5px solid #000;", habaMm) + "</tr>"
+        + "<tr><td></td>" + retsuHaichiTdHTML(kotaeMoji, migi, keta, "", habaMm) + "</tr>"
         + "</table>";
     }
 
-    function wordWarizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, fontSize) {
+    function retsuHaichiTdHTML(moji, endCol, keta, sutairu, habaMm) {
+      let html = "";
+      let haba = habaMm || 10;
+      for (let col = 0; col < keta; col++) {
+        let idx = moji.length - 1 - (endCol - col);
+        let aru = (idx >= 0 && idx < moji.length);
+        html += "<td style='width:" + haba + "mm; height:" + haba + "mm; text-align:center; " + sutairu + "'>" + (aru ? moji[idx] : "&nbsp;") + "</td>";
+      }
+      return html;
+    }
+
+    function wordWarizanKateiHTMLTsukuru(dividendStr, divisor, keta, habaMm) {
+      let katei = warizanKeisanKatei(dividendStr, divisor);
+      let html = "<table style='display:inline-table; border-collapse:collapse;'>";
+      katei.steps.forEach(function (step) {
+        html += "<tr>" + retsuHaichiTdHTML(String(step.value), step.endCol, keta, "", habaMm) + "</tr>";
+        html += "<tr>" + retsuHaichiTdHTML(String(step.product), step.endCol, keta, "border-bottom:1.5px solid #000;", habaMm) + "</tr>";
+      });
+      if (katei.steps.length > 0) {
+        html += "<tr>" + retsuHaichiTdHTML(String(katei.saigoNoAmari), keta - 1, keta, "", habaMm) + "</tr>";
+      }
+      html += "</table>";
+      return html;
+    }
+
+    function wordWarizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, kotaeHyouji, fontSize) {
       let wareruNaiyou = aIsAna ? wordSenHTML(String(mondai.a).length) : String(mondai.a);
       let waruNaiyou = bIsAna ? wordSenHTML(1.4) : String(mondai.b);
       let isRemainder = (typeof mondai.kotae === "object" && mondai.kotae !== null && "remainder" in mondai.kotae);
-      let shouNaiyou = kotaeIsAna ? wordSenHTML(String(mondai.a).length) : String(isRemainder ? mondai.kotae.quotient : mondai.kotae);
-      let amariMoji = "";
-      if (isRemainder) {
-        amariMoji = "　あまり" + (kotaeIsAna ? wordSenHTML(1.2) : mondai.kotae.remainder);
+      let shouNaiyou = kotaeIsAna ? "&nbsp;" : String(isRemainder ? mondai.kotae.quotient : mondai.kotae);
+      // 筆算では、あまりは計算の一番下の行に出るため、横に「あまり◯」は並べない
+      let amariTd = "<td></td>";
+
+      let warukazuSutairu = "text-align:right; padding-right:4px; white-space:nowrap; vertical-align:bottom;";
+      let wareruKeta = String(mondai.a).length;
+      let migi = wareruKeta - 1;
+      let habaMm = wordKetaHabaMm(fontSize);
+      let wakuSutairu = "border-top:2px solid #000; border-left:2px solid #000; padding-left:4px;";
+
+      let sagyouHTML;
+      if (kotaeHyouji && !aIsAna && !bIsAna) {
+        sagyouHTML = wordWarizanKateiHTMLTsukuru(String(mondai.a), mondai.b, wareruKeta, habaMm);
+      } else {
+        let gyousuu = bIsAna ? Math.max(1, wareruKeta) : warizanKateiGyousuu(String(mondai.a), mondai.b);
+        sagyouHTML = "<div style='border:1px dashed #999; width:" + (habaMm * wareruKeta).toFixed(1) + "mm; height:" + (habaMm * gyousuu).toFixed(1) + "mm;'></div>";
       }
 
-      let warukazuSutairu = "text-align:right; padding-right:4px; white-space:nowrap;";
-      let waraeruSutairu = "text-align:right; border-top:2px solid #000; border-left:2px solid #000; padding:2px 6px 0 6px; white-space:nowrap;";
-      let sagyouGyousuu = Math.max(1, String(mondai.a).length);
-      let sagyouSutairu = "border-left:2px solid transparent; height:" + (sagyouGyousuu * 1.7) + "em;";
+      let wareruCells = aIsAna ? retsuHaichiTdHTML("", migi, wareruKeta, "", habaMm) : retsuHaichiTdHTML(String(mondai.a), migi, wareruKeta, "", habaMm);
+      let shouCells = retsuHaichiTdHTML(kotaeIsAna ? "" : shouNaiyou, migi, wareruKeta, "", habaMm);
 
       return "<span style='font-size:" + fontSize + "px;'>" + maruSuuji(i + 1, genzaiNoMondai.length) + "</span>　"
         + "<table style='display:inline-table; border-collapse:collapse; font-size:" + fontSize + "px;'>"
-        + "<tr><td style='" + warukazuSutairu + "'></td><td style='text-align:right; padding:0 6px; white-space:nowrap;'>" + shouNaiyou + "</td></tr>"
-        + "<tr><td style='" + warukazuSutairu + "'>" + waruNaiyou + "</td><td style='" + waraeruSutairu + "'>" + wareruNaiyou + "</td></tr>"
-        + "<tr><td></td><td style='" + sagyouSutairu + "'></td></tr>"
-        + "</table>"
-        + amariMoji;
+        + "<tr><td style='" + warukazuSutairu + "'></td><td style='padding-left:6px;'><table style='display:inline-table; border-collapse:collapse;'><tr>" + shouCells + "</tr></table></td><td></td></tr>"
+        + "<tr><td style='" + warukazuSutairu + "'>" + waruNaiyou + "</td><td style='" + wakuSutairu + "'><table style='display:inline-table; border-collapse:collapse;'><tr>" + wareruCells + "</tr></table></td>" + amariTd + "</tr>"
+        + "<tr><td></td><td style='padding-left:6px;'>" + sagyouHTML + "</td><td></td></tr>"
+        + "</table>";
     }
 
     function wordMondaiMoji(mondai, i, kotaeHyouji, fontSize, ataiHaba, hissanMode, hissanHaba) {
@@ -1654,7 +1720,7 @@
         return wordHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, hissanHaba, fontSize);
       }
       if (hissanMode && warizanHissanTaishou(mondai)) {
-        return wordWarizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, fontSize);
+        return wordWarizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, kotaeHyouji, fontSize);
       }
 
       return "<span style='font-size:" + fontSize + "px;'>"
