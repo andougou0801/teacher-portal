@@ -276,3 +276,24 @@ curl -s "$URL/rest/v1/tool_settings?select=slug,description" -H "apikey: $KEY" -
 
 `tool_settings`・`articles`・`questions` などは匿名キーで読めるので、
 「保存されない」という相談を受けたときも、まずこの方法で実データを見ると原因が早く分かる。
+
+## A4一枚に収まるかを測るときは `offsetHeight` を使う
+
+印刷するツールで「1枚に収まるか」を画面で測るとき、`getBoundingClientRect()` を使うと
+**縮小表示（`transform: scale()`）の影響を受けて、実際より小さい値が返る。**
+`.sheet` には `min-height: 297mm` もあるため、用紙の箱を測っても中身の量は分からない。
+
+2026-10-24に、この取り違えで判断を2回誤った（「半分しか使っていない」と誤解して
+文字を大きくし、はみ出させた）。
+
+**正しい測り方：**
+
+```js
+const mm = 96 / 25.4;
+// transform の影響を受けない
+const 用紙mm = sheet.offsetHeight / mm;
+const 中身mm = [...sheet.children].reduce((a, e) => a + e.offsetHeight, 0) / mm;
+```
+
+A4で中身に使える高さは、余白12mmのとき **たて273mm・よこ186mm**。
+用紙の高さが `min-height` より大きくなっていたら、その札ははみ出している。
