@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>話し合いの仕方カード</title>
+<style>
+  :root{ --accent:#2d6cdf; --line:#d7dde5; --muted:#5b6673; }
+  *{box-sizing:border-box}
+  body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+       background:#f4f6f8;color:#333;margin:0;padding:20px;line-height:1.7}
+  .wrap{max-width:860px;margin:0 auto}
+  .panel{background:#fff;border-radius:12px;padding:20px 22px;
+         box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:18px}
+  h1{color:var(--accent);font-size:21px;margin:0 0 6px}
+  .lead{font-size:13px;color:var(--muted);margin:0 0 16px}
+  h2{font-size:15px;color:var(--accent);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .row{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end}
+  .field{display:flex;flex-direction:column;gap:4px}
+  .field>span{font-size:12px;font-weight:bold;color:#444}
+  input[type=text],input[type=number],select{padding:7px 10px;border:1px solid #c5ccd6;
+         border-radius:6px;font-family:inherit;font-size:14px;background:#fff}
+  input[type=text]{min-width:180px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;margin-top:12px}
+  .checks label{display:flex;align-items:center;gap:5px;cursor:pointer}
+  button{font-family:inherit;font-size:14px;font-weight:bold;padding:10px 20px;
+         border-radius:999px;border:none;cursor:pointer}
+  .primary{background:var(--accent);color:#fff}
+  .primary:hover{background:#2559b8}
+  .ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+  .ghost:hover{background:#eef3fc}
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .hint{font-size:12px;color:var(--muted);margin-top:10px}
+
+  /* ===== 印刷するA4 ===== */
+  #sheet-wrap{overflow:hidden}
+  .sheet{width:210mm;min-height:297mm;padding:12mm 12mm 10mm;margin:0 auto 20px;
+         background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+  @media screen and (max-width:900px){
+    .sheet{transform:scale(.42);transform-origin:top left;margin-bottom:calc(14px - 297mm * .58)}
+  }
+  .c-head{text-align:center;border-bottom:3px solid #2d6cdf;padding-bottom:3mm;margin-bottom:4mm}
+  .c-title{font-size:22pt;font-weight:bold;letter-spacing:.06em;color:#1f4f9e}
+  .c-sub{font-size:10pt;color:#444;margin-top:1mm}
+
+  .flow{display:flex;gap:3mm;margin-bottom:4mm}
+  .flow-step{flex:1;border:2px solid #2d6cdf;border-radius:3mm;padding:2mm 3mm;text-align:center}
+  .flow-no{font-size:9pt;font-weight:bold;color:#fff;background:#2d6cdf;
+           border-radius:999px;display:inline-block;padding:0 3mm;margin-bottom:1mm}
+  .flow-name{font-size:14pt;font-weight:bold}
+  .flow-note{font-size:9pt;color:#444;margin-top:1mm;line-height:1.5}
+  .flow-time{font-size:9.5pt;font-weight:bold;color:#1f4f9e;margin-top:1mm}
+
+  .cols{display:flex;gap:5mm;align-items:flex-start}
+  .col{flex:1}
+  .box{border:1.5px solid #333;border-radius:2mm;padding:2mm 3mm;margin-bottom:2.5mm}
+  .box h3{font-size:11.5pt;margin:0 0 1.5mm;padding-bottom:1mm;border-bottom:1px solid #999}
+  .say{font-size:10.5pt;padding:0.7mm 0 0.7mm 4mm;text-indent:-4mm;line-height:1.6}
+  .say b{color:#1f4f9e}
+  .role{font-size:10.5pt;padding:0.9mm 0;border-bottom:1px dotted #aaa}
+  .role:last-child{border-bottom:none}
+  .role b{display:inline-block;min-width:16mm;color:#1f4f9e}
+  .foot{margin-top:3mm;font-size:8.5pt;color:#444;text-align:center;border-top:1px solid #999;padding-top:2mm}
+  .cutline{border-top:2px dashed #888;margin:7mm 0 6mm;text-align:center;font-size:8pt;color:#888;padding-top:1mm}
+
+  @media print{
+    body{background:#fff;padding:0}
+    .panel,.hint{display:none !important}
+    .sheet{width:auto;min-height:0;margin:0;padding:0;box-shadow:none;transform:none !important}
+    @page{size:A4 portrait;margin:12mm}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="panel">
+  <h1>話し合いの仕方カード</h1>
+  <p class="lead">
+    班での話し合いの進め方・役割・使える言い方を、A4・1枚にまとめて印刷できます。
+    班の机に置いておくと、「何から話せばいいか分からない」で止まらなくなります。<br>
+    入力した内容はこのパソコンの中だけで処理され、どこにも送信されません。
+  </p>
+
+  <h2>① 学年と題名</h2>
+  <div class="row">
+    <label class="field">
+      <span>学年のめやす</span>
+      <select id="grade">
+        <option value="low">低学年（1・2年）</option>
+        <option value="mid" selected>中学年（3・4年）</option>
+        <option value="high">高学年（5・6年）</option>
+      </select>
+    </label>
+    <label class="field">
+      <span>題名</span>
+      <input type="text" id="title" value="話し合いの しかた">
+    </label>
+    <label class="field">
+      <span>話し合いの時間（分）</span>
+      <input type="number" id="minutes" min="0" max="60" step="1" value="10">
+    </label>
+  </div>
+  <p class="hint">時間を入れると、「出し合う→くらべる→まとめる」のめやすの分数が入ります。0にすると出ません。</p>
+
+  <h2 style="margin-top:18px">② 入れるもの</h2>
+  <div class="checks">
+    <label><input type="checkbox" id="c-role" checked> 役割（司会・記録・時間・発表）</label>
+    <label><input type="checkbox" id="c-start" checked> 話し出すときの言い方</label>
+    <label><input type="checkbox" id="c-react" checked> 友だちの考えへの返し方</label>
+    <label><input type="checkbox" id="c-ask" checked> たずねるときの言い方</label>
+    <label><input type="checkbox" id="c-matome" checked> まとめるときの言い方</label>
+    <label><input type="checkbox" id="c-komatta" checked> 困ったときは</label>
+  </div>
+  <div class="btns">
+    <button class="primary" id="btn-print">印刷する</button>
+    <button class="ghost" id="btn-reset">はじめの設定にもどす</button>
+  </div>
+  <p class="hint">用紙は「A4・たて」、拡大縮小は「なし（100%）」にしてください。班の数だけ印刷して机に置けます。</p>
+</div>
+
+<div id="sheet-wrap"></div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* 保存キーは変えないこと */
+  var KEY = "talk_card_settings_v1";
+
+  /* 学年ごとの言い方。低学年ほど短く、ひらがなを多くする。 */
+  var TEXT = {
+    low: {
+      flow: [
+        { name:'出しあう',  note:'じゅんばんに ひとりずつ 言う' },
+        { name:'くらべる',  note:'おなじ・ちがうを 見つける' },
+        { name:'きめる',    note:'ひとつに きめる' }
+      ],
+      roles: [
+        ['しかい','「これから はなしあいを はじめます」'],
+        ['きろく','出た考えを みじかく 書く'],
+        ['とけい','「あと〇ふんです」'],
+        ['はっぴょう','きまったことを つたえる']
+      ],
+      start: ['わたしは 〇〇だと おもいます。', 'わけは、〇〇だからです。'],
+      react: ['〇〇さんと おなじで、……', '〇〇さんと すこし ちがって、……', 'つけたします。'],
+      ask:   ['それは どういうことですか。', 'もういちど 言ってください。'],
+      matome:['出た考えは 〇〇と 〇〇です。', '〇〇に きめて いいですか。'],
+      komatta:[
+        ['考えが 出ない','まず じゅんばんに ひとりずつ 言ってみよう'],
+        ['きまらない','おなじ考えを まとめてみよう'],
+        ['ひとりだけ 話している','まだ 言っていない人に きいてみよう']
+      ]
+    },
+    mid: {
+      flow: [
+        { name:'出し合う', note:'一人ずつ、考えとわけを言う' },
+        { name:'くらべる', note:'にているところ・ちがうところを見つける' },
+        { name:'まとめる', note:'班の考えを一つに決める' }
+      ],
+      roles: [
+        ['司会','「これから〇〇について話し合います」「ほかにありませんか」'],
+        ['記録','出た考えを短く書きとめる'],
+        ['時間','「あと〇分です」と知らせる'],
+        ['発表','決まったことを全体に伝える']
+      ],
+      start: ['わたしは〇〇だと思います。', 'わけは、〇〇だからです。', '〇〇についてはどうですか。'],
+      react: ['〇〇さんと似ていて、……', '〇〇さんとは少しちがって、……', 'つけたします。', 'なるほど、いいと思います。'],
+      ask:   ['〇〇というのは、どういうことですか。', 'もう一度言ってもらえますか。', 'なぜそう思ったのですか。'],
+      matome:['出た考えは〇〇と〇〇です。', 'にているものをまとめると〇〇です。', '〇〇に決めてよいですか。'],
+      komatta:[
+        ['考えが出ない','まず一人ずつ順番に言ってみよう'],
+        ['決まらない','にているものをまとめてみよう。それでも決まらなければ、わけをもう一度聞いてみよう'],
+        ['一人だけ話している','まだ言っていない人に「どう思う？」と聞いてみよう'],
+        ['話がそれた','「今は何について話していたっけ？」ともどそう']
+      ]
+    },
+    high: {
+      flow: [
+        { name:'出し合う', note:'考えと理由をそれぞれ出す（この段階では否定しない）' },
+        { name:'くらべる', note:'共通点・ちがいを整理し、理由の強さをくらべる' },
+        { name:'まとめる', note:'班の考えを決め、理由も言えるようにする' }
+      ],
+      roles: [
+        ['司会','「これから〇〇について話し合います」「ほかに意見はありませんか」「そろそろまとめます」'],
+        ['記録','出た意見を、理由とセットで短く書く'],
+        ['時間','「残り〇分です」と区切りを知らせる'],
+        ['発表','班の考えと、その理由を伝える']
+      ],
+      start: ['わたしは〇〇だと考えます。理由は〇〇だからです。', '〇〇の立場から言うと、……', '〇〇についてはどうでしょうか。'],
+      react: ['〇〇さんの考えに賛成です。理由は……', '〇〇さんとは少し見方がちがって、……', '〇〇さんの意見につけたすと、……', 'たしかにそうですが、〇〇の場合はどうでしょうか。'],
+      ask:   ['〇〇というのは、具体的にはどういうことですか。', 'そう考えた理由をくわしく教えてください。', 'それは〇〇の場合にも当てはまりますか。'],
+      matome:['出た意見は大きく〇〇と〇〇に分かれました。', '共通しているのは〇〇です。', '班の考えを〇〇にしてよいですか。理由は〇〇です。'],
+      komatta:[
+        ['意見が出ない','まず一人ずつ順番に。思いつかない人は「〇〇さんと似ています」でもよい'],
+        ['決まらない','共通点から整理する。多数決の前に、少数の意見の理由をもう一度聞く'],
+        ['一人だけ話している','まだ話していない人に先に聞く。司会が順番を決める'],
+        ['話がそれた','「今の話し合いのめあては何だったか」にもどす'],
+        ['意見がぶつかった','どちらが正しいかではなく、なぜそう考えたかをくらべる']
+      ]
+    }
+  };
+
+  var el = {
+    grade: document.getElementById('grade'),
+    title: document.getElementById('title'),
+    minutes: document.getElementById('minutes'),
+    wrap: document.getElementById('sheet-wrap')
+  };
+  var CHECKS = ['c-role','c-start','c-react','c-ask','c-matome','c-komatta'];
+
+  function settings(){
+    var s = { grade: el.grade.value, title: el.title.value, minutes: Number(el.minutes.value) || 0 };
+    CHECKS.forEach(function(id){ s[id] = document.getElementById(id).checked; });
+    return s;
+  }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(settings())); }catch(e){} }
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY); if(!raw) return;
+      var s = JSON.parse(raw); if(!s || typeof s !== 'object') return;
+      if(s.grade) el.grade.value = s.grade;
+      if(typeof s.title === 'string') el.title.value = s.title;
+      if(typeof s.minutes === 'number') el.minutes.value = s.minutes;
+      CHECKS.forEach(function(id){
+        if(typeof s[id] === 'boolean') document.getElementById(id).checked = s[id];
+      });
+    }catch(e){}
+  }
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];
+    });
+  }
+
+  /* 話し合いの時間を 出し合う4 : くらべる3 : まとめる3 で分ける */
+  function splitMinutes(total){
+    if(!total || total < 3) return null;
+    var a = Math.max(1, Math.round(total * 0.4));
+    var b = Math.max(1, Math.round(total * 0.3));
+    var c = total - a - b;
+    if(c < 1){ c = 1; if(a > 1) a -= 1; else b -= 1; }
+    return [a, b, c];
+  }
+
+  function boxHTML(title, lines){
+    var h = '<div class="box"><h3>' + esc(title) + '</h3>';
+    lines.forEach(function(t){ h += '<div class="say">「<b>' + esc(t) + '</b>」</div>'; });
+    return h + '</div>';
+  }
+
+  function render(){
+    var s = settings();
+    var T = TEXT[s.grade] || TEXT.mid;
+    el.wrap.innerHTML = '';
+
+    var sheet = document.createElement('div');
+    sheet.className = 'sheet';
+    var h = '';
+
+    h += '<div class="c-head"><div class="c-title">' + esc(s.title || '話し合いの しかた') + '</div>' +
+         '<div class="c-sub">班の机に置いて、こまったときに見てください</div></div>';
+
+    /* 流れ */
+    var mins = splitMinutes(s.minutes);
+    h += '<div class="flow">';
+    T.flow.forEach(function(f, i){
+      h += '<div class="flow-step"><div class="flow-no">' + (i+1) + '</div>' +
+           '<div class="flow-name">' + esc(f.name) + '</div>' +
+           '<div class="flow-note">' + esc(f.note) + '</div>' +
+           (mins ? '<div class="flow-time">めやす ' + mins[i] + '分</div>' : '') +
+           '</div>';
+    });
+    h += '</div>';
+
+    /* 2列 */
+    h += '<div class="cols"><div class="col">';
+    if(s['c-role']){
+      h += '<div class="box"><h3>役わり</h3>';
+      T.roles.forEach(function(r){
+        h += '<div class="role"><b>' + esc(r[0]) + '</b>' + esc(r[1]) + '</div>';
+      });
+      h += '</div>';
+    }
+    if(s['c-start']) h += boxHTML('話し出すとき', T.start);
+    if(s['c-ask'])   h += boxHTML('たずねるとき', T.ask);
+    h += '</div><div class="col">';
+    if(s['c-react'])  h += boxHTML('友だちの考えへの返し方', T.react);
+    if(s['c-matome']) h += boxHTML('まとめるとき', T.matome);
+    if(s['c-komatta']){
+      h += '<div class="box"><h3>こまったときは</h3>';
+      T.komatta.forEach(function(k){
+        h += '<div class="role"><b>' + esc(k[0]) + '</b>' + esc(k[1]) + '</div>';
+      });
+      h += '</div>';
+    }
+    h += '</div></div>';
+
+    h += '<div class="foot">こまったら、まず「一人ずつ順番に」。それでも進まないときは先生を呼んでください。</div>';
+
+    sheet.innerHTML = h;
+    el.wrap.appendChild(sheet);
+    save();
+  }
+
+  load();
+  render();
+
+  ['change','input'].forEach(function(ev){
+    [el.grade, el.title, el.minutes].forEach(function(n){ n.addEventListener(ev, render); });
+    CHECKS.forEach(function(id){ document.getElementById(id).addEventListener(ev, render); });
+  });
+
+  document.getElementById('btn-print').addEventListener('click', function(){ window.print(); });
+  document.getElementById('btn-reset').addEventListener('click', function(){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    el.grade.value = 'mid';
+    el.title.value = '話し合いの しかた';
+    el.minutes.value = 10;
+    CHECKS.forEach(function(id){ document.getElementById(id).checked = true; });
+    render();
+  });
+})();
+</script>
+</body>
+</html>
