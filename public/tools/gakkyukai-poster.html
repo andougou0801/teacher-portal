@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>学級会の掲示セットメーカー</title>
+<style>
+  :root{ --accent:#2d6cdf; --line:#d7dde5; --muted:#5b6673; }
+  *{box-sizing:border-box}
+  body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+       background:#f4f6f8;color:#333;margin:0;padding:20px;line-height:1.7}
+  .wrap{max-width:900px;margin:0 auto}
+  .panel{background:#fff;border-radius:12px;padding:20px 22px;
+         box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:18px}
+  h1{color:var(--accent);font-size:21px;margin:0 0 6px}
+  .lead{font-size:13px;color:var(--muted);margin:0 0 16px}
+  h2{font-size:15px;color:var(--accent);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .row{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end;margin-bottom:12px}
+  .field{display:flex;flex-direction:column;gap:4px}
+  .field>span{font-size:12px;font-weight:bold;color:#444}
+  .field.wide{flex:1;min-width:280px}
+  input[type=text],input[type=number],select,textarea{padding:7px 10px;border:1px solid #c5ccd6;
+         border-radius:6px;font-family:inherit;font-size:14px;background:#fff;width:100%}
+  textarea{resize:vertical;min-height:52px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px}
+  .checks label{display:flex;align-items:center;gap:5px;cursor:pointer}
+  button{font-family:inherit;font-size:14px;font-weight:bold;padding:10px 20px;
+         border-radius:999px;border:none;cursor:pointer}
+  .primary{background:var(--accent);color:#fff}
+  .primary:hover{background:#2559b8}
+  .ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+  .ghost:hover{background:#eef3fc}
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .hint{font-size:12px;color:var(--muted);margin-top:10px}
+
+  /* ===== 印刷する紙 ===== */
+  #sheet-wrap{overflow:hidden}
+  .sheet{width:297mm;min-height:210mm;padding:12mm;margin:0 auto 20px;background:#fff;
+         box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;flex-direction:column}
+  .sheet.tate{width:210mm;min-height:297mm}
+  @media screen and (max-width:1000px){
+    .sheet{transform:scale(.33);transform-origin:top left;margin-bottom:calc(14px - 210mm * .67)}
+  }
+
+  .card-label{font-size:16pt;font-weight:bold;color:#fff;background:#2d6cdf;
+              align-self:flex-start;padding:1mm 6mm;border-radius:999px;margin-bottom:5mm}
+  .card-body{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;
+             font-weight:bold;line-height:1.5;word-break:auto-phrase}
+  .card-foot{font-size:11pt;color:#555;text-align:right;margin-top:4mm}
+  .frame{border:3px solid #333;border-radius:4mm;padding:6mm;flex:1;display:flex;flex-direction:column}
+
+  /* 流れ・役割の札（1枚に数本） */
+  .strips{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:3mm}
+  .strip{border:3px solid #333;border-radius:3mm;padding:2.5mm 5mm;display:flex;
+         align-items:center;gap:6mm}
+  .strip-no{font-size:20pt;font-weight:bold;color:#fff;background:#2d6cdf;border-radius:999px;
+            min-width:14mm;height:14mm;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .strip-main{font-size:21pt;font-weight:bold;flex-shrink:0}
+  .strip-note{font-size:11pt;color:#444;line-height:1.5}
+  .lines{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;padding:4mm 0}
+  .line{border-bottom:2px dotted #888;height:16mm}
+
+  @media print{
+    body{background:#fff;padding:0}
+    .panel,.hint{display:none !important}
+    .sheet{width:auto;min-height:0;margin:0;padding:0;box-shadow:none;transform:none !important;
+           min-height:calc(210mm - 24mm)}
+    .sheet.tate{min-height:calc(297mm - 24mm)}
+    .sheet + .sheet{page-break-before:always}
+    @page{size:A4 landscape;margin:12mm}
+  }
+  @media print{
+    body.tate-mode .sheet{min-height:calc(297mm - 24mm)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="panel">
+  <h1>学級会の掲示セットメーカー</h1>
+  <p class="lead">
+    「議題」「めあて」「話し合うこと」などを入力すると、<strong>黒板に貼れる大きさ</strong>で印刷できます。
+    学級会のたびに模造紙や短冊に手書きしていたものを、入力して印刷するだけにします。<br>
+    入力した内容はこのパソコンの中だけで処理され、どこにも送信されません。
+  </p>
+
+  <h2>① 今回の学級会</h2>
+  <div class="row">
+    <label class="field" style="width:110px"><span>第何回</span>
+      <input type="number" id="kai" min="1" max="99" value="1"></label>
+    <label class="field" style="width:150px"><span>日にち</span>
+      <input type="text" id="hizuke" placeholder="10月30日"></label>
+    <label class="field wide"><span>議題</span>
+      <input type="text" id="gidai" value="クラスのなかよし集会で何をするか"></label>
+  </div>
+  <div class="row">
+    <label class="field wide"><span>めあて</span>
+      <input type="text" id="meate" value="友だちの考えのよいところを見つけて話し合おう"></label>
+  </div>
+  <div class="row">
+    <label class="field wide"><span>提案理由（空にすると札を出しません）</span>
+      <textarea id="riyuu">もうすぐ2学期が終わります。クラスのみんながもっとなかよくなれる思い出をつくりたいからです。</textarea></label>
+  </div>
+  <div class="row">
+    <label class="field wide"><span>話し合うこと①</span>
+      <input type="text" id="hanashi1" value="何をするか"></label>
+    <label class="field wide"><span>話し合うこと②（空ならなし）</span>
+      <input type="text" id="hanashi2" value="準備は何がいるか"></label>
+  </div>
+
+  <h2>② 出す札</h2>
+  <div class="checks">
+    <label><input type="checkbox" id="c-gidai" checked> 議題</label>
+    <label><input type="checkbox" id="c-riyuu" checked> 提案理由</label>
+    <label><input type="checkbox" id="c-meate" checked> めあて</label>
+    <label><input type="checkbox" id="c-hanashi" checked> 話し合うこと</label>
+    <label><input type="checkbox" id="c-nagare" checked> 話し合いの流れ</label>
+    <label><input type="checkbox" id="c-yakuwari" checked> 役割</label>
+    <label><input type="checkbox" id="c-kimatta" checked> 決まったこと（書きこみ用）</label>
+  </div>
+
+  <h2 style="margin-top:18px">③ 印刷のしかた</h2>
+  <div class="row">
+    <label class="field" style="width:170px"><span>用紙の向き</span>
+      <select id="muki">
+        <option value="yoko" selected>よこ（黒板向き）</option>
+        <option value="tate">たて</option>
+      </select></label>
+    <label class="field" style="width:170px"><span>文字の大きさ</span>
+      <select id="size">
+        <option value="futsuu">ふつう</option>
+        <option value="dai" selected>大きめ</option>
+        <option value="tokudai">特大（後ろの席から）</option>
+      </select></label>
+    <label class="field" style="width:200px;align-self:flex-end">
+      <span style="visibility:hidden">x</span>
+      <label style="display:flex;align-items:center;gap:5px;font-size:13px;padding-bottom:8px">
+        <input type="checkbox" id="kana"> ひらがなを多めにする</label>
+    </label>
+  </div>
+  <div class="btns">
+    <button class="primary" id="btn-print">印刷する</button>
+    <button class="ghost" id="btn-reset">はじめの状態にもどす</button>
+  </div>
+  <p class="hint">
+    印刷の画面で、用紙の向きが上の設定と合っているか確かめてください。拡大縮小は「なし（100%）」にします。
+    1まいに1つの札が出ます。いらない札は②のチェックを外してください。
+  </p>
+</div>
+
+<div id="sheet-wrap"></div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* 保存キーは変えないこと */
+  var KEY = "gakkyukai_poster_v1";
+
+  var FIELDS = ['kai','hizuke','gidai','meate','riyuu','hanashi1','hanashi2'];
+  var CHECKS = ['c-gidai','c-riyuu','c-meate','c-hanashi','c-nagare','c-yakuwari','c-kimatta'];
+
+  /* 文字の大きさ（議題などの本文に使う pt） */
+  var SIZES = { futsuu:40, dai:54, tokudai:72 };
+
+  var WORDS = {
+    kanji: {
+      gidai:'議題', riyuu:'提案理由', meate:'めあて', hanashi:'話し合うこと',
+      nagare:'話し合いの流れ', yakuwari:'役割', kimatta:'決まったこと',
+      nagareList:[
+        ['提案理由を聞く','なぜこの議題なのかを知る'],
+        ['出し合う','考えとわけを出す。まだ決めない'],
+        ['くらべ合う','にているところ・ちがうところを見つける'],
+        ['まとめる','クラスの考えを一つに決める'],
+        ['決まったことをたしかめる','だれが・いつ・何をするかまで決める']
+      ],
+      yakuwariList:[
+        ['司会','話し合いを進める。「ほかにありませんか」'],
+        ['副司会','司会を助ける。時間を見る'],
+        ['記録','出た意見をノートに書く'],
+        ['黒板記録','出た意見を黒板に短く書く']
+      ]
+    },
+    kana: {
+      gidai:'ぎだい', riyuu:'ていあんりゆう', meate:'めあて', hanashi:'はなしあうこと',
+      nagare:'はなしあいの ながれ', yakuwari:'やくわり', kimatta:'きまったこと',
+      nagareList:[
+        ['ていあんりゆうを きく','なぜ この ぎだいなのかを しる'],
+        ['出しあう','かんがえと わけを 出す。まだ きめない'],
+        ['くらべあう','おなじ・ちがうを 見つける'],
+        ['まとめる','クラスの かんがえを ひとつに きめる'],
+        ['きまったことを たしかめる','だれが・いつ・なにを するか まで きめる']
+      ],
+      yakuwariList:[
+        ['しかい','はなしあいを すすめる'],
+        ['ふくしかい','しかいを たすける。じかんを 見る'],
+        ['きろく','出た いけんを ノートに 書く'],
+        ['こくばん','出た いけんを こくばんに 書く']
+      ]
+    }
+  };
+
+  var el = {};
+  FIELDS.concat(['muki','size','kana']).forEach(function(id){ el[id] = document.getElementById(id); });
+  var wrap = document.getElementById('sheet-wrap');
+
+  function settings(){
+    var s = {};
+    FIELDS.forEach(function(id){ s[id] = el[id].value; });
+    CHECKS.forEach(function(id){ s[id] = document.getElementById(id).checked; });
+    s.muki = el.muki.value; s.size = el.size.value; s.kana = el.kana.checked;
+    return s;
+  }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(settings())); }catch(e){} }
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY); if(!raw) return;
+      var s = JSON.parse(raw); if(!s || typeof s !== 'object') return;
+      FIELDS.forEach(function(id){ if(typeof s[id] === 'string') el[id].value = s[id]; });
+      CHECKS.forEach(function(id){
+        if(typeof s[id] === 'boolean') document.getElementById(id).checked = s[id];
+      });
+      if(s.muki) el.muki.value = s.muki;
+      if(s.size) el.size.value = s.size;
+      el.kana.checked = !!s.kana;
+    }catch(e){}
+  }
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];
+    });
+  }
+
+  function makeSheet(s){
+    var d = document.createElement('div');
+    d.className = 'sheet' + (s.muki === 'tate' ? ' tate' : '');
+    return d;
+  }
+
+  /* ラベル＋大きな文字の札 */
+  function cardSheet(s, label, text, pt){
+    var sh = makeSheet(s);
+    var foot = (s.kai ? '第' + esc(s.kai) + '回　' : '') + esc(s.hizuke || '');
+    sh.innerHTML =
+      '<div class="card-label">' + esc(label) + '</div>' +
+      '<div class="frame"><div class="card-body" style="font-size:' + pt + 'pt">' +
+      esc(text) + '</div></div>' +
+      (foot.trim() ? '<div class="card-foot">' + foot + '</div>' : '');
+    return sh;
+  }
+
+  function render(){
+    var s = settings();
+    var W = s.kana ? WORDS.kana : WORDS.kanji;
+    var base = SIZES[s.size] || SIZES.dai;
+    wrap.innerHTML = '';
+
+    if(s['c-gidai'] && s.gidai.trim()){
+      wrap.appendChild(cardSheet(s, W.gidai, s.gidai, base));
+    }
+    if(s['c-riyuu'] && s.riyuu.trim()){
+      /* 理由は文が長いので、議題より小さめにする */
+      wrap.appendChild(cardSheet(s, W.riyuu, s.riyuu, Math.round(base * 0.52)));
+    }
+    if(s['c-meate'] && s.meate.trim()){
+      wrap.appendChild(cardSheet(s, W.meate, s.meate, Math.round(base * 0.78)));
+    }
+    if(s['c-hanashi'] && (s.hanashi1.trim() || s.hanashi2.trim())){
+      var sh = makeSheet(s);
+      var h = '<div class="card-label">' + esc(W.hanashi) + '</div><div class="frame"><div class="strips">';
+      [s.hanashi1, s.hanashi2].forEach(function(t, i){
+        if(!t.trim()) return;
+        h += '<div class="strip"><div class="strip-no">' + (i+1) + '</div>' +
+             '<div class="strip-main" style="font-size:' + Math.round(base*0.62) + 'pt">' + esc(t) + '</div></div>';
+      });
+      h += '</div></div>';
+      sh.innerHTML = h;
+      wrap.appendChild(sh);
+    }
+    if(s['c-nagare']){
+      var sh2 = makeSheet(s);
+      var h2 = '<div class="card-label">' + esc(W.nagare) + '</div><div class="frame"><div class="strips">';
+      W.nagareList.forEach(function(n, i){
+        h2 += '<div class="strip"><div class="strip-no">' + (i+1) + '</div>' +
+              '<div><div class="strip-main">' + esc(n[0]) + '</div>' +
+              '<div class="strip-note">' + esc(n[1]) + '</div></div></div>';
+      });
+      h2 += '</div></div>';
+      sh2.innerHTML = h2;
+      wrap.appendChild(sh2);
+    }
+    if(s['c-yakuwari']){
+      var sh3 = makeSheet(s);
+      var h3 = '<div class="card-label">' + esc(W.yakuwari) + '</div><div class="frame"><div class="strips">';
+      W.yakuwariList.forEach(function(y){
+        h3 += '<div class="strip"><div class="strip-main" style="min-width:42mm">' + esc(y[0]) + '</div>' +
+              '<div class="strip-note">' + esc(y[1]) + '</div></div>';
+      });
+      h3 += '</div></div>';
+      sh3.innerHTML = h3;
+      wrap.appendChild(sh3);
+    }
+    if(s['c-kimatta']){
+      var sh4 = makeSheet(s);
+      sh4.innerHTML = '<div class="card-label">' + esc(W.kimatta) + '</div>' +
+        '<div class="frame"><div class="lines">' +
+        '<div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>' +
+        '</div></div>';
+      wrap.appendChild(sh4);
+    }
+
+    document.body.classList.toggle('tate-mode', s.muki === 'tate');
+    save();
+  }
+
+  load();
+  render();
+
+  ['input','change'].forEach(function(ev){
+    FIELDS.concat(['muki','size']).forEach(function(id){ el[id].addEventListener(ev, render); });
+    CHECKS.forEach(function(id){ document.getElementById(id).addEventListener(ev, render); });
+    el.kana.addEventListener(ev, render);
+  });
+
+  document.getElementById('btn-print').addEventListener('click', function(){
+    /* 用紙の向きを印刷にも伝える */
+    var st = document.getElementById('page-rule');
+    if(!st){ st = document.createElement('style'); st.id = 'page-rule'; document.head.appendChild(st); }
+    st.textContent = '@media print{@page{size:A4 ' +
+      (el.muki.value === 'tate' ? 'portrait' : 'landscape') + ';margin:12mm}}';
+    window.print();
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', function(){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>
