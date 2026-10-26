@@ -213,7 +213,7 @@
         </button>
         <button class="mode-btn m3" id="toCalcBtn">
           <span class="emoji">⏳</span>
-          <span><b>じかんの けいさん</b><span class="d">「２じ１０ふんの ２０ふんごは？」を かんがえる</span></span>
+          <span><b>じかんの けいさん</b><span class="d">「２じ１０ぷんの ２０ぷんごは？」を かんがえる</span></span>
         </button>
         <button class="mode-btn m4" id="toReviewBtn">
           <span class="emoji">🔁</span>
@@ -352,7 +352,7 @@ function f1(n){ return Math.round(n * 10) / 10; }
 var LEVELS = {
   l1:{ em:'🕐', name:'なんじ',     note:'ちょうどの じかんだけ（小学1年）',        step:0,
        mins:function(){ return 0; } },
-  l2:{ em:'🕜', name:'なんじはん', note:'0ふんと 30ふん（小学1年）',               step:30,
+  l2:{ em:'🕜', name:'なんじはん', note:'0ふんと 30ぷん（小学1年）',               step:30,
        mins:function(){ return pick([0,30]); } },
   l3:{ em:'🕔', name:'5ふんごと',  note:'5・10・15…の よみ（小学2年）',            step:5,
        mins:function(){ return pick([0,5,10,15,20,25,30,35,40,45,50,55]); } },
@@ -430,11 +430,20 @@ function fromTotal(t){
   var h = Math.floor(t / 60);
   return { h: (h === 0 ? 12 : h), m: t % 60 };
 }
-function jm(h, m){ return m === 0 ? (h + 'じ') : (h + 'じ' + m + 'ふん'); }
+/* 分の 読みは「ふん」と「ぷん」に わかれる。
+   1・3・4・6・8で おわる 数と、10・20・30… は「ぷん」（30ぷん・1ぷん）。
+   2・5・7・9で おわる 数は「ふん」（5ふん・25ふん）。0は「0ふん」。 */
+function fun(n){
+  var d = Math.abs(n) % 10;
+  if(Math.abs(n) !== 0 && d === 0) return 'ぷん';
+  return (d === 1 || d === 3 || d === 4 || d === 6 || d === 8) ? 'ぷん' : 'ふん';
+}
+function jmin(n){ return n + fun(n); }
+function jm(h, m){ return m === 0 ? (h + 'じ') : (h + 'じ' + jmin(m)); }
 function dLabel(d){
   if(d % 60 === 0) return (d / 60) + 'じかん';
-  if(d > 60) return Math.floor(d / 60) + 'じかん' + (d % 60) + 'ふん';
-  return d + 'ふん';
+  if(d > 60) return Math.floor(d / 60) + 'じかん' + jmin(d % 60);
+  return jmin(d);
 }
 function endOf(q){ return fromTotal(totalOf(q.h, q.m) + q.d); }
 
@@ -706,8 +715,8 @@ function renderMoveGrid(){
   s += '<button type="button" class="bh" data-mv="h-1">− 1じ<small>みじかい はり</small></button>';
   s += '<button type="button" class="bh" data-mv="h1">＋ 1じ<small>みじかい はり</small></button>';
   if(L === 'l2'){
-    s += '<button type="button" class="bm" data-mv="m-30">− 30ふん<small>ながい はり</small></button>';
-    s += '<button type="button" class="bm" data-mv="m30">＋ 30ふん<small>ながい はり</small></button>';
+    s += '<button type="button" class="bm" data-mv="m-30">− 30ぷん<small>ながい はり</small></button>';
+    s += '<button type="button" class="bm" data-mv="m30">＋ 30ぷん<small>ながい はり</small></button>';
   }else if(L === 'l3'){
     s += '<button type="button" class="bm" data-mv="m-5">− 5ふん<small>ながい はり</small></button>';
     s += '<button type="button" class="bm" data-mv="m5">＋ 5ふん<small>ながい はり</small></button>';
@@ -794,7 +803,7 @@ function doCheck(){
     var mv = readBox('inM');
     if(mv === null){ $('feedback').className = 'feedback ng'; $('feedback').textContent = 'すうじを 入れてね'; return; }
     ok = (mv === a.min);
-    got = mv + 'ふん';
+    got = jmin(mv);
   }else{
     var hv = readBox('inH'), mm = readBox('inM');
     if(hv === null || mm === null){ $('feedback').className = 'feedback ng'; $('feedback').textContent = 'すうじを 入れてね'; return; }
@@ -810,7 +819,10 @@ function doCheck(){
     if(score.streak > score.best) score.best = score.streak;
     $('feedback').className = 'feedback ok';
     $('feedback').textContent = '◯ せいかい！　' + ansLabel(cur, a);
-    removeWeak(cur);
+    /* この れんしゅうの さいごの「もう 1かい」で せいかいしても、にがての
+       しるしは けさない。けさないと、あとで「まちがえた もんだい」から
+       もう いちど れんしゅうできる。べつの 回か ふくしゅうで せいかいしたら けす。 */
+    if(!cur.again) removeWeak(cur);
   }else{
     score.streak = 0;
     $('feedback').className = 'feedback ng';
@@ -838,7 +850,7 @@ function renderNow0(a){
   $('nowTime').innerHTML = 'ただしい いちは：<b>' + jm(a.h, a.m) + '</b>';
 }
 function ansLabel(q, a){
-  if(q.t === 'calc' && q.k === 'between') return a.min + 'ふん';
+  if(q.t === 'calc' && q.k === 'between') return jmin(a.min);
   return jm(a.h, a.m);
 }
 
@@ -861,11 +873,11 @@ function explainFace(q){
     if(m % 5 === 0){
       var k = m / 5;
       s += '<p><span class="hl-m">ながい はり</span>が <b>' + k + '</b> を さしている。' +
-           '数字 1つで 5ふんだから <b>' + k + '×5＝' + m + 'ふん</b>。</p>';
+           '数字 1つで 5ふんだから <b>' + k + '×5＝' + m + fun(m) + '</b>。</p>';
     }else{
       var base = Math.floor(m / 5), r = m % 5, bn = (base === 0 ? 12 : base), bm = base * 5;
-      s += '<p><span class="hl-m">ながい はり</span>は <b>' + bn + '</b>（＝' + bm + 'ふん）から、' +
-           'ちいさい めもり <b>' + r + 'こ</b> すすんだ ところ。<b>' + bm + '＋' + r + '＝' + m + 'ふん</b>。</p>';
+      s += '<p><span class="hl-m">ながい はり</span>は <b>' + bn + '</b>（＝' + jmin(bm) + '）から、' +
+           'ちいさい めもり <b>' + r + 'こ</b> すすんだ ところ。<b>' + bm + '＋' + r + '＝' + m + fun(m) + '</b>。</p>';
     }
   }
   s += '<div class="eq">こたえ　<b>' + jm(h, m) + '</b></div></div>';
@@ -875,23 +887,23 @@ function explainCalc(q){
   var a = answerOf(q), s = '<div class="explain"><h4>考え方</h4>';
   if(q.k === 'after'){
     var tm = q.m + q.d, carry = Math.floor(tm / 60), rest = tm % 60;
-    s += '<p>ふんを たす： <b>' + q.m + '＋' + q.d + '＝' + tm + '</b>ふん。</p>';
+    s += '<p>ふんを たす： <b>' + q.m + '＋' + q.d + '＝' + tm + '</b>' + fun(tm) + '。</p>';
     if(carry === 0){
       s += '<p>60より すくないので、じは そのまま <b>' + q.h + 'じ</b>。</p>';
     }else{
-      s += '<p>60ふんで 1じかんに くりあがる。<b>' + tm + '－' + (60 * carry) + '＝' + rest + '</b>ふん、' +
+      s += '<p>60ぷんで 1じかんに くりあがる。<b>' + tm + '－' + (60 * carry) + '＝' + rest + '</b>' + fun(rest) + '、' +
            'くりあがりは <b>' + carry + 'じかん</b>。</p>';
       s += '<p>じは <b>' + q.h + '＋' + carry + '＝' + (q.h + carry) + '</b>。' +
            '12より 大きくなったら 12を ひいて、とけいの 数字に もどす → <b>' + a.h + 'じ</b>。</p>';
     }
   }else if(q.k === 'before'){
     var tm2 = q.m - q.d, borrow = (tm2 >= 0 ? 0 : Math.ceil(-tm2 / 60)), rest2 = tm2 + 60 * borrow;
-    s += '<p>ふんを ひく： <b>' + q.m + '－' + q.d + '＝' + tm2 + '</b>ふん。</p>';
+    s += '<p>ふんを ひく： <b>' + q.m + '－' + q.d + '＝' + tm2 + '</b>' + fun(tm2) + '。</p>';
     if(borrow === 0){
       s += '<p>0より 大きいので、じは そのまま <b>' + q.h + 'じ</b>。</p>';
     }else{
-      s += '<p>ふんが たりないので、1じかんを 60ふんに して かりてくる（' + borrow + 'かい）。' +
-           '<b>' + tm2 + '＋' + (60 * borrow) + '＝' + rest2 + '</b>ふん。</p>';
+      s += '<p>ふんが たりないので、1じかんを 60ぷんに して かりてくる（' + borrow + 'かい）。' +
+           '<b>' + tm2 + '＋' + (60 * borrow) + '＝' + rest2 + '</b>' + fun(rest2) + '。</p>';
       s += '<p>じは <b>' + q.h + '－' + borrow + '＝' + (q.h - borrow) + '</b>。' +
            '0や マイナスに なったら 12を たして、とけいの 数字に もどす → <b>' + a.h + 'じ</b>。</p>';
     }
@@ -899,12 +911,12 @@ function explainCalc(q){
     var e = endOf(q);
     if(q.m + q.d < 60){
       s += '<p>どちらも <b>' + q.h + 'じ</b>の 中。ふんの ちがいを 見る。</p>';
-      s += '<p><b>' + e.m + '－' + q.m + '＝' + q.d + '</b>ふん。</p>';
+      s += '<p><b>' + e.m + '－' + q.m + '＝' + q.d + '</b>' + fun(q.d) + '。</p>';
     }else{
       var toHour = 60 - q.m;
-      s += '<p>まず <b>' + jm(q.h, q.m) + '</b> から <b>' + e.h + 'じ</b> まで： <b>60－' + q.m + '＝' + toHour + '</b>ふん。</p>';
-      s += '<p>そこから <b>' + jm(e.h, e.m) + '</b> まで： <b>' + e.m + '</b>ふん。</p>';
-      s += '<p>あわせて <b>' + toHour + '＋' + e.m + '＝' + q.d + '</b>ふん。</p>';
+      s += '<p>まず <b>' + jm(q.h, q.m) + '</b> から <b>' + e.h + 'じ</b> まで： <b>60－' + q.m + '＝' + toHour + '</b>' + fun(toHour) + '。</p>';
+      s += '<p>そこから <b>' + jm(e.h, e.m) + '</b> まで： <b>' + e.m + '</b>' + fun(e.m) + '。</p>';
+      s += '<p>あわせて <b>' + toHour + '＋' + e.m + '＝' + q.d + '</b>' + fun(q.d) + '。</p>';
     }
   }
   s += '<div class="eq">こたえ　<b>' + ansLabel(q, a) + '</b></div></div>';
@@ -933,11 +945,14 @@ function showResult(){
       var q = misses[i].q, a = answerOf(q), line;
       if(q.t === 'read') line = 'とけいを よむ：' + jm(q.h, q.m);
       else if(q.t === 'set') line = 'はりを うごかす：' + jm(q.h, q.m);
-      else if(q.k === 'between'){ var e = endOf(q); line = jm(q.h, q.m) + ' から ' + jm(e.h, e.m) + ' までは ' + a.min + 'ふん'; }
+      else if(q.k === 'between'){ var e = endOf(q); line = jm(q.h, q.m) + ' から ' + jm(e.h, e.m) + ' までは ' + jmin(a.min); }
       else line = jm(q.h, q.m) + ' の ' + dLabel(q.d) + (q.k === 'after' ? 'あと' : 'まえ') + ' は ' + jm(a.h, a.m);
       h += '<div class="miss">' + line + '</div>';
     }
-    h += '</div><p class="mini-note">さいしょの画面の「まちがえた もんだい」で、もう いちど れんしゅうできます。</p>';
+    h += '</div>';
+    /* にがてが のこっていない ときは あんないを 出さない（出すと、ホームの
+       ボタンが「まだ ありません」なのに あんないだけ 出る ことに なる） */
+    if(weak.length) h += '<p class="mini-note">さいしょの画面の「まちがえた もんだい」で、もう いちど れんしゅうできます。</p>';
   }
   $('resultMiss').innerHTML = h;
   renderHome();
