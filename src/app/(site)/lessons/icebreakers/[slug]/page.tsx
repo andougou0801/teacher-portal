@@ -17,6 +17,10 @@ export async function generateMetadata(
   const ib = getIcebreakerBySlug(slug);
   return {
     title: ib ? `${ib.title} | 全国教員支援ポータル` : "アイスブレイク",
+    // 所要時間・場所・人数・準備物は、検索した人がいちばん知りたい情報
+    description: ib
+      ? `${ib.title}の進め方。所要${ib.duration}・${ib.place}・${ib.groupSize}。準備するもの：${ib.materials}。`
+      : undefined,
   };
 }
 

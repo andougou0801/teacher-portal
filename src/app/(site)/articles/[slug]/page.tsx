@@ -22,6 +22,8 @@ export async function generateMetadata(
     title: article
       ? `${article.title} | 全国教員支援ポータル`
       : "記事",
+    // 記事ごとの要約を検索結果の説明文に使う（全ページ同じ説明になるのを防ぐ）
+    description: article?.summary,
   };
 }
 

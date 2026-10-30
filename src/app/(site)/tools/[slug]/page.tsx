@@ -17,7 +17,10 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const tool = getToolBySlug(slug);
-  return { title: tool ? `${tool.name} | 全国教員支援ポータル` : "ツール" };
+  return {
+    title: tool ? `${tool.name} | 全国教員支援ポータル` : "ツール",
+    description: tool?.description,
+  };
 }
 
 export const revalidate = 60;
