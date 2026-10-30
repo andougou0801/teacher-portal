@@ -1,5 +1,9 @@
 import { articles as staticArticles, type Article } from "./articles";
 import { tools as staticTools, type Tool } from "./tools";
+import {
+  officialLinks as staticOfficialLinks,
+  type OfficialLink,
+} from "./officialLinks";
 import { getSupabaseClient } from "./supabaseClient";
 
 /**
@@ -135,4 +139,46 @@ export async function getVisibleToolBySlug(
 ): Promise<Tool | undefined> {
   const list = await getVisibleTools();
   return list.find((tool) => tool.slug === slug);
+}
+
+/* ---------------------------------------------------------------------------
+   便利な公式サイト集
+   004_official_links.sql を実行するとデータベースが正になる。
+   まだ実行していない / つながらないときは officialLinks.ts にフォールバックする。
+   --------------------------------------------------------------------------- */
+
+type OfficialLinkRow = {
+  name: string;
+  url: string;
+  description: string | null;
+  when_to_use: string | null;
+  category: string;
+  subject: string | null;
+  sort_order: number | null;
+};
+
+function toOfficialLink(row: OfficialLinkRow): OfficialLink {
+  return {
+    name: row.name,
+    url: row.url,
+    description: row.description ?? "",
+    whenToUse: row.when_to_use ?? "",
+    category: row.category as OfficialLink["category"],
+    subject: row.subject ?? undefined,
+  };
+}
+
+/** 公開中の公式サイトを、管理画面で決めた並び順で返す。 */
+export async function getOfficialLinks(): Promise<OfficialLink[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("official_links")
+      .select("name,url,description,when_to_use,category,subject,sort_order")
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length > 0) {
+      return (data as OfficialLinkRow[]).map(toOfficialLink);
+    }
+  }
+  return staticOfficialLinks;
 }
