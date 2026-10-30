@@ -32,6 +32,13 @@ const menu = [
       "AI活用ガイドの追加・編集・削除、並べかえ、表示/非表示ができます。",
   },
   {
+    href: "/admin/life",
+    icon: "💼",
+    title: "忙しい先生のためのページ",
+    description:
+      "休暇や育児・介護の制度の説明を、まとまりごとに追加・編集・削除できます。",
+  },
+  {
     href: "/admin/qa",
     icon: "💬",
     title: "Q&Aの管理",

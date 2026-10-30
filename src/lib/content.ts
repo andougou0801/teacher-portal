@@ -5,6 +5,12 @@ import {
   type OfficialLink,
 } from "./officialLinks";
 import { aiGuides as staticAiGuides, type AiGuide } from "./aiGuides";
+import {
+  termGroups as staticTermGroups,
+  officialLinksForLife as staticLifeLinks,
+  type SubItem,
+  type TermGroup,
+} from "./lifeTerms";
 import { getSupabaseClient } from "./supabaseClient";
 
 /**
@@ -226,4 +232,76 @@ export async function getAiGuides(): Promise<AiGuide[]> {
     }
   }
   return staticAiGuides;
+}
+
+/* ---------------------------------------------------------------------------
+   忙しい先生のためのページ
+   006_life_terms.sql を実行するとデータベースが正になる。
+   グループ（life_groups）と用語（life_terms）を組み立て直して返す。
+   ページ下部の公式窓口は official_links の「忙しい先生のためのページ」カテゴリー。
+   --------------------------------------------------------------------------- */
+
+export type LifeLink = { linkName: string; url: string; note: string };
+
+type LifeGroupRow = { title: string; icon: string | null; note: string | null };
+type LifeTermRow = {
+  group_title: string;
+  name: string;
+  description: string | null;
+  sub_items: SubItem[] | null;
+};
+
+export async function getLifeContent(): Promise<{
+  termGroups: TermGroup[];
+  officialLinksForLife: LifeLink[];
+}> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const [groups, terms, links] = await Promise.all([
+      supabase
+        .from("life_groups")
+        .select("title,icon,note")
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("life_terms")
+        .select("group_title,name,description,sub_items")
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("official_links")
+        .select("name,url,description,sort_order")
+        .eq("category", "忙しい先生のためのページ")
+        .order("sort_order", { ascending: true }),
+    ]);
+
+    if (!groups.error && groups.data && groups.data.length > 0 && !terms.error) {
+      const termRows = (terms.data ?? []) as LifeTermRow[];
+      const built: TermGroup[] = (groups.data as LifeGroupRow[]).map((g) => ({
+        icon: g.icon ?? "",
+        groupTitle: g.title,
+        groupNote: g.note ?? undefined,
+        terms: termRows
+          .filter((t) => t.group_title === g.title)
+          .map((t) => ({
+            name: t.name,
+            description: t.description ?? "",
+            subItems: t.sub_items ?? undefined,
+          })),
+      }));
+
+      // 公式窓口はDBに無ければ、ひかえの3件をそのまま使う
+      const linkRows = links.error ? [] : (links.data ?? []);
+      const builtLinks: LifeLink[] =
+        linkRows.length > 0
+          ? (linkRows as { name: string; url: string; description: string | null }[]).map(
+              (l) => ({ linkName: l.name, url: l.url, note: l.description ?? "" }),
+            )
+          : staticLifeLinks;
+
+      return { termGroups: built, officialLinksForLife: builtLinks };
+    }
+  }
+  return {
+    termGroups: staticTermGroups,
+    officialLinksForLife: staticLifeLinks,
+  };
 }
