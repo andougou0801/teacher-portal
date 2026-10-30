@@ -25,6 +25,13 @@ const menu = [
       "サイト集に出すリンクの追加・編集・削除、並べかえ、表示/非表示ができます。",
   },
   {
+    href: "/admin/ai",
+    icon: "🤖",
+    title: "先生のAI活用ガイド",
+    description:
+      "AI活用ガイドの追加・編集・削除、並べかえ、表示/非表示ができます。",
+  },
+  {
     href: "/admin/qa",
     icon: "💬",
     title: "Q&Aの管理",

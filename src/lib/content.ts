@@ -4,6 +4,7 @@ import {
   officialLinks as staticOfficialLinks,
   type OfficialLink,
 } from "./officialLinks";
+import { aiGuides as staticAiGuides, type AiGuide } from "./aiGuides";
 import { getSupabaseClient } from "./supabaseClient";
 
 /**
@@ -181,4 +182,48 @@ export async function getOfficialLinks(): Promise<OfficialLink[]> {
     }
   }
   return staticOfficialLinks;
+}
+
+/* ---------------------------------------------------------------------------
+   先生のAI活用ガイド
+   005_ai_guides.sql を実行するとデータベースが正になる。
+   --------------------------------------------------------------------------- */
+
+type AiGuideRow = {
+  slug: string;
+  title: string;
+  tool: string | null;
+  summary: string | null;
+  what_it_does: string | null;
+  how_to_use: string[] | null;
+  sample_prompt: string | null;
+  caution: string | null;
+};
+
+function toAiGuide(row: AiGuideRow): AiGuide {
+  return {
+    slug: row.slug,
+    title: row.title,
+    tool: row.tool ?? "",
+    summary: row.summary ?? "",
+    whatItDoes: row.what_it_does ?? "",
+    howToUse: row.how_to_use ?? [],
+    samplePrompt: row.sample_prompt ?? "",
+    caution: row.caution ?? "",
+  };
+}
+
+/** 公開中のAI活用ガイドを、管理画面で決めた並び順で返す。 */
+export async function getAiGuides(): Promise<AiGuide[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("ai_guides")
+      .select("slug,title,tool,summary,what_it_does,how_to_use,sample_prompt,caution")
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length > 0) {
+      return (data as AiGuideRow[]).map(toAiGuide);
+    }
+  }
+  return staticAiGuides;
 }
