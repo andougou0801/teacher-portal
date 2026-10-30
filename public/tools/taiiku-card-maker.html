@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>体育の学習カードメーカー</title>
+<style>
+  :root {
+    --accent: #1d7a4d;
+    --line: #d7dde5;
+    --muted: #5b6673;
+    --fs: 10pt;      /* 用紙の基本の文字の大きさ（収まらないとき小さくする） */
+    --rowh: 11mm;    /* 時間ごとの行の高さ */
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    background: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+  }
+
+  /* ===== 設定パネル（印刷には出さない） ===== */
+  .no-print {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    max-width: 820px;
+    margin: 0 auto 22px;
+  }
+  .no-print h1 { color: var(--accent); font-size: 21px; margin: 0 0 4px; }
+  .lead { font-size: 13px; color: var(--muted); margin: 0 0 18px; line-height: 1.7; }
+  fieldset {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px 14px;
+    margin: 0 0 14px;
+  }
+  legend { font-size: 13px; font-weight: bold; color: var(--accent); padding: 0 6px; }
+  .row { display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: flex-end; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field > span { font-size: 12px; font-weight: bold; color: #444; }
+  input[type="text"], input[type="number"], select, textarea {
+    padding: 7px 10px;
+    border: 1px solid #c5ccd6;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+  }
+  input[type="number"] { width: 84px; }
+  select { max-width: 320px; }
+  .checks { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  .checks label {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+  }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+  }
+  .primary { background: var(--accent); color: #fff; }
+  .primary:hover { background: #166239; }
+  .ghost { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+  .ghost:hover { background: #eaf4ee; }
+  .hint { font-size: 12px; color: var(--muted); margin: 10px 0 0; line-height: 1.7; }
+  .status {
+    font-size: 13px;
+    font-weight: bold;
+    color: #14633d;
+    background: #eaf4ee;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 12px 0 0;
+    line-height: 1.7;
+  }
+  .status .warn { color: #c0392b; }
+
+  /* めあての下書きを直す欄 */
+  .goal-edit { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .goal-edit .ge-row { display: flex; align-items: center; gap: 8px; }
+  .goal-edit .ge-row .n {
+    font-size: 12px;
+    font-weight: bold;
+    width: 4.5em;
+    flex: 0 0 auto;
+    color: #444;
+  }
+  .goal-edit .ge-row input { flex: 1; min-width: 0; }
+
+  /* ===== A4の用紙 ===== */
+  #sheet-wrap { max-width: 820px; margin: 0 auto; overflow: hidden; }
+  .sheet {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 12mm;
+    margin: 0 auto 20px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.12);
+    transform-origin: top center;
+    font-size: var(--fs);
+    line-height: 1.5;
+  }
+  @media (max-width: 900px) {
+    .sheet { transform: scale(.45); transform-origin: top left; margin-bottom: -150mm; }
+  }
+
+  .c-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 6mm;
+    border-bottom: 1.6px solid #333;
+    padding-bottom: 2mm;
+    margin-bottom: 3.5mm;
+  }
+  .c-title { font-size: 1.9em; font-weight: bold; letter-spacing: .04em; }
+  .c-sub { font-size: .95em; color: #333; margin-top: 1mm; }
+  .c-name { display: flex; gap: 4mm; align-items: flex-end; white-space: nowrap; }
+  .c-name .nb { display: flex; align-items: flex-end; gap: 1.2mm; }
+  .c-name .ul { border-bottom: 1.2px solid #333; min-width: 30mm; height: 6.5mm; }
+  .c-name .ul.s { min-width: 11mm; }
+
+  .sec { margin-bottom: 3.5mm; }
+  .sec-h {
+    font-weight: bold;
+    font-size: 1.02em;
+    background: #e8f1ec;
+    border-left: 1.4mm solid var(--accent);
+    padding: 1.2mm 2.5mm;
+    margin-bottom: 1.8mm;
+  }
+  .goals { border: 1.1px solid #333; }
+  .goals .g {
+    display: flex;
+    border-bottom: 1.1px solid #333;
+  }
+  .goals .g:last-child { border-bottom: none; }
+  .goals .g .k {
+    width: 28mm;
+    flex: 0 0 auto;
+    font-weight: bold;
+    padding: 1.6mm 2mm;
+    border-right: 1.1px solid #333;
+    background: #f3f7f4;
+  }
+  .goals .g .v { flex: 1; padding: 1.6mm 2.5mm; }
+
+  .waza { border: 1.1px solid #333; padding: 2mm 2.5mm; }
+  .waza ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; }
+  .waza li {
+    width: 50%;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.8mm;
+    padding: 0.9mm 1.5mm 0.9mm 0;
+  }
+  .waza.one li { width: 100%; }
+  .waza .bx {
+    width: 4.2mm;
+    height: 4.2mm;
+    border: 1.1px solid #333;
+    flex: 0 0 auto;
+    margin-top: 0.4mm;
+  }
+
+  table.hours {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  table.hours th, table.hours td {
+    border: 1.1px solid #333;
+    padding: 1.2mm 1.6mm;
+    vertical-align: top;
+  }
+  table.hours th {
+    background: #f3f7f4;
+    font-size: .92em;
+    text-align: center;
+    padding: 1.4mm 1mm;
+  }
+  table.hours td.n { text-align: center; font-weight: bold; }
+  table.hours td.me { font-size: .95em; }
+  table.hours td.ok { text-align: center; letter-spacing: .14em; white-space: nowrap; }
+  table.hours tbody tr { height: var(--rowh); }
+
+  .free-box {
+    border: 1.1px solid #333;
+    min-height: 16mm;
+    padding: 1.6mm 2.5mm;
+  }
+  .free-box .lb { font-weight: bold; margin-bottom: 1mm; }
+  .safety { font-size: .88em; line-height: 1.5; }
+  .safety ol { margin: 1mm 0 0; padding-left: 5mm; }
+  .note {
+    font-size: .8em;
+    color: #444;
+    margin-top: 2.5mm;
+    text-align: right;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .no-print { display: none !important; }
+    #sheet-wrap { max-width: none; overflow: visible; }
+    .sheet {
+      width: auto;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      transform: none !important;
+    }
+    .sheet + .sheet { page-break-before: always; }
+    @page { size: A4 portrait; margin: 12mm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <h1>体育の学習カードメーカー</h1>
+  <p class="lead">
+    学年と単元、時数を選ぶと、<strong>めあて・毎時間の記録欄・ふりかえり</strong>が入った
+    学習カードをA4一枚で印刷できます。
+    単元のめあてと毎時間のめあては、<strong>学習指導要領の領域と例示をもとに下書きが自動で入ります</strong>。
+    そのまま使っても、画面で書きかえてから印刷してもかまいません。<br>
+    <strong>名前は手書きの欄にしてあります。</strong>児童名などの個人情報を入力する必要はありません。
+    入力した内容はこのパソコンの中だけで処理され、外部には送信されません。
+  </p>
+
+  <fieldset>
+    <legend>単元を選ぶ</legend>
+    <div class="row">
+      <label class="field">
+        <span>学年</span>
+        <select id="grade"></select>
+      </label>
+      <label class="field">
+        <span>領域</span>
+        <select id="area"></select>
+      </label>
+      <label class="field">
+        <span>単元（運動の種類）</span>
+        <select id="unit"></select>
+      </label>
+      <label class="field">
+        <span>時数</span>
+        <input type="number" id="hours" min="1" max="14" step="1" value="6">
+      </label>
+    </div>
+    <p class="hint">
+      領域の分け方は <a href="https://www.mext.go.jp/a_menu/shotou/new-cs/1384661.htm" target="_blank" rel="noopener">文部科学省「平成29・30・31年改訂学習指導要領（本文、解説）」</a>
+      の小学校体育によります。どの学年でどの運動を扱うかは学校で決められる部分があるので、
+      学年を選ぶと出てくる単元は「その学年段階で扱う運動」です。
+    </p>
+  </fieldset>
+
+  <fieldset>
+    <legend>単元のめあて（下書き。書きかえられます）</legend>
+    <div class="goal-edit">
+      <div class="ge-row"><span class="n">できる</span><input type="text" id="g-skill"></div>
+      <div class="ge-row"><span class="n">考える</span><input type="text" id="g-think"></div>
+      <div class="ge-row"><span class="n">心がける</span><input type="text" id="g-att"></div>
+    </div>
+    <div class="btn-row">
+      <button class="ghost" id="btn-regoal">めあての下書きを作り直す</button>
+    </div>
+    <p class="hint">
+      このめあては、学習指導要領の三つのねらい（知識・技能／思考・判断・表現／学びに向かう力）を
+      子どもが読んで分かる言葉にした<strong>下書き</strong>です。
+      学級の実態に合わせて直してから使ってください。
+    </p>
+  </fieldset>
+
+  <fieldset>
+    <legend>カードの中身</legend>
+    <div class="checks">
+      <label><input type="checkbox" id="opt-waza" checked> 「できるようになりたいこと」のチェック欄を入れる</label>
+      <label><input type="checkbox" id="opt-hint" checked> 毎時間のめあての下書きを入れる</label>
+      <label><input type="checkbox" id="opt-date" checked> 日づけの欄を入れる</label>
+      <label><input type="checkbox" id="opt-furi" checked> 毎時間のふりかえり欄を入れる</label>
+      <label><input type="checkbox" id="opt-matome" checked> 単元のまとめの欄を入れる</label>
+      <label><input type="checkbox" id="opt-safety" checked> 安全のやくそくを入れる</label>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <label class="field">
+        <span>カードの題名</span>
+        <input type="text" id="title" value="体育の 学習カード">
+      </label>
+    </div>
+    <p class="status" id="status"></p>
+    <div class="btn-row">
+      <button class="primary" onclick="window.print()">印刷する</button>
+      <button class="ghost" id="btn-reset">はじめの設定にもどす</button>
+    </div>
+    <p class="hint">
+      印刷の設定で「用紙 A4」「倍率 100%」にしてください。
+      ブラウザの「ヘッダーとフッター」を切ると、日付やURLが入りません。
+    </p>
+  </fieldset>
+</div>
+
+<div id="sheet-wrap"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var MM = 96 / 25.4;
+  var SHEET_H = 273;   // A4（297mm）から上下の余白12mmずつを引いた高さ
+
+  /* ===== 単元のデータ =====
+     kind は、めあての言い方を決めるための分け方。
+       waza   … 技を身につける運動（器械運動など）
+       record … 記録をのばす運動（走・跳・水泳）
+       game   … ゲーム・ボール運動
+       expr   … 表現・ダンス
+       karada … 体つくり運動
+     低学年は「〜遊び」の言い方にそろえてある。 */
+  var DATA = {
+    low: {
+      label: "低学年（1・2年）",
+      areas: [
+        { name: "体つくりの運動遊び", units: [
+          { n: "体ほぐしの運動遊び", kind: "karada", w: [
+            "のびのびと体を動かして、気もちよくなる",
+            "友だちとまねっこをして体を動かす",
+            "新聞紙やタオルなどを使って体を動かす",
+            "音楽に合わせて体をゆらす"] },
+          { n: "多様な動きをつくる運動遊び", kind: "karada", w: [
+            "いろいろな歩き方・走り方であるく",
+            "けんけんや両足とびでとぶ",
+            "くまあるき・あざらしあるきをする",
+            "なわやフープを回す・とぶ",
+            "ボールを投げる・受ける",
+            "友だちと力を合わせて運ぶ"] }
+        ] },
+        { name: "器械・器具を使っての運動遊び", units: [
+          { n: "マットを使った運動遊び", kind: "waza", w: [
+            "いろいろな方向へころがる", "前まわりをする", "ゆりかごでおき上がる",
+            "かえるの足うちをする", "手で体をささえる"] },
+          { n: "鉄棒を使った運動遊び", kind: "waza", w: [
+            "ぶら下がる・ゆれる", "つばめのポーズでとまる", "ふとんほしをする",
+            "前まわりおりをする", "こうもりでぶら下がる"] },
+          { n: "跳び箱を使った運動遊び", kind: "waza", w: [
+            "とび乗る・とびおりる", "両足でふみきる", "手をついてまたぎ乗る",
+            "またぎおりをする", "うまとびをする"] },
+          { n: "固定施設を使った運動遊び", kind: "waza", w: [
+            "のぼり棒にのぼる", "ジャングルジムをわたる", "うんていで進む",
+            "平均台をわたる"] }
+        ] },
+        { name: "走・跳の運動遊び", units: [
+          { n: "走の運動遊び", kind: "record", w: [
+            "まっすぐ全力で走る", "合図ですばやく走り出す", "コーンを回って走る",
+            "バトンやリングをわたす", "障害物をこしながら走る"] },
+          { n: "跳の運動遊び", kind: "record", w: [
+            "両足でふみきってとぶ", "片足でふみきって遠くへとぶ",
+            "ゴムやラインをこえてとぶ", "リズムよく続けてとぶ",
+            "ひざを曲げてやわらかく着地する"] }
+        ] },
+        { name: "水遊び", units: [
+          { n: "水の中を移動する運動遊び", kind: "record", w: [
+            "水の中を歩く・走る", "友だちと手をつないで進む", "水をかけ合ってなれる",
+            "けんけんで進む", "いろいろな向きに進む"] },
+          { n: "もぐる・浮く運動遊び", kind: "record", w: [
+            "顔を水につける", "息をはいてぶくぶくする", "頭まで水にもぐる",
+            "だるま浮きをする", "ふし浮き・背浮きをする"] }
+        ] },
+        { name: "ゲーム", units: [
+          { n: "ボールゲーム", kind: "game", w: [
+            "ねらったところへボールを投げる", "ころがってきたボールをとる",
+            "ボールをけってねらう", "空いているところへ動く",
+            "やくそくを守ってゲームをする"] },
+          { n: "鬼遊び", kind: "game", w: [
+            "にげる・おいかける", "空いているところへ走りぬける",
+            "とられないように体をかわす", "宝をとる・守る",
+            "ルールを守ってなかよく遊ぶ"] }
+        ] },
+        { name: "表現リズム遊び", units: [
+          { n: "表現遊び", kind: "expr", w: [
+            "動物や乗りもののまねをして動く", "大きく・小さく動く",
+            "はやく・ゆっくり動かす", "友だちと見せ合う"] },
+          { n: "リズム遊び", kind: "expr", w: [
+            "音楽に合わせて手や足を動かす", "はずむようにとびはねる",
+            "友だちと動きをそろえる", "好きな動きをくりかえす"] }
+        ] }
+      ]
+    },
+    mid: {
+      label: "中学年（3・4年）",
+      areas: [
+        { name: "体つくり運動", units: [
+          { n: "体ほぐしの運動", kind: "karada", w: [
+            "のびのびと体を動かして気もちをほぐす", "友だちと関わりながら動く",
+            "用具を使って体を動かす", "リズムに乗って動く"] },
+          { n: "多様な動きをつくる運動", kind: "karada", w: [
+            "体のバランスをとる動きをする", "体を移動する動きをする",
+            "用具を操作する動きをする", "力試しの動きをする",
+            "いくつかの動きを組み合わせる"] }
+        ] },
+        { name: "器械運動", units: [
+          { n: "マット運動", kind: "waza", w: [
+            "前転をする", "後転をする", "開脚前転をする", "かべ倒立をする",
+            "側方倒立回転をする", "いくつかの技をつなげる"] },
+          { n: "鉄棒運動", kind: "waza", w: [
+            "補助逆上がりをする", "逆上がりをする", "ひざかけふり上がりをする",
+            "前方支持回転をする", "転向前下りをする", "技をつなげる"] },
+          { n: "跳び箱運動", kind: "waza", w: [
+            "リズムよく助走してふみきる", "開脚とびをする", "台上前転をする",
+            "かかえこみとびをする", "着地をピタッと止める"] }
+        ] },
+        { name: "走・跳の運動", units: [
+          { n: "かけっこ・リレー", kind: "record", w: [
+            "まっすぐ全力で走る", "合図ですばやく走り出す",
+            "バトンをわたす・受け取る", "スピードを落とさずにバトンをつなぐ"] },
+          { n: "小型ハードル走", kind: "record", w: [
+            "ハードルをリズムよくこえる", "いつも同じ足でふみきる",
+            "低くこして走りぬける", "3歩や5歩のリズムで走る"] },
+          { n: "幅跳び", kind: "record", w: [
+            "短い助走からふみきる", "ふみきり足を決めてとぶ",
+            "体を前に投げ出してとぶ", "両足でやわらかく着地する"] },
+          { n: "高跳び", kind: "record", w: [
+            "短い助走からふみきる", "ふみきり足で強くふみきる",
+            "ふり上げ足を高く上げる", "はさみとびでバーをこす"] }
+        ] },
+        { name: "水泳運動", units: [
+          { n: "浮いて進む運動", kind: "record", w: [
+            "け伸びをする", "手や足を動かして進む", "面かぶりクロールで進む",
+            "面かぶり平泳ぎで進む"] },
+          { n: "もぐる・浮く運動", kind: "record", w: [
+            "息をはきながらもぐる", "だるま浮き・大の字浮きをする",
+            "背浮きで浮く", "水中で回る・立つ"] }
+        ] },
+        { name: "ゲーム", units: [
+          { n: "ゴール型ゲーム", kind: "game", w: [
+            "パスをつないでシュートする", "空いている場所へ動く",
+            "ボールを持った人の前に立って守る", "作戦を考えてゲームをする"] },
+          { n: "ネット型ゲーム", kind: "game", w: [
+            "ボールを落とさないでつなぐ", "ねらったところへ返す",
+            "返しやすい位置に動く", "作戦を考えてゲームをする"] },
+          { n: "ベースボール型ゲーム", kind: "game", w: [
+            "止まったボールを打つ", "飛んできたボールをとる",
+            "ベースへ送球する", "打ったら全力で走る"] }
+        ] },
+        { name: "表現運動", units: [
+          { n: "表現", kind: "expr", w: [
+            "題材の特徴をとらえて動く", "大きく・ゆっくりなど変化をつける",
+            "はじめ・なか・おわりの流れをつくる", "友だちと見せ合う"] },
+          { n: "リズムダンス", kind: "expr", w: [
+            "軽快なリズムに乗って踊る", "体の中心を動かして踊る",
+            "友だちと関わって踊る", "好きな動きをくりかえす"] }
+        ] }
+      ]
+    },
+    high: {
+      label: "高学年（5・6年）",
+      areas: [
+        { name: "体つくり運動", units: [
+          { n: "体ほぐしの運動", kind: "karada", w: [
+            "のびのびと体を動かして気もちをほぐす", "友だちと関わりながら動く",
+            "用具を使って体を動かす", "自分の体の調子に気づく"] },
+          { n: "体の動きを高める運動", kind: "karada", w: [
+            "体の柔らかさを高める", "巧みな動きを高める",
+            "力強い動きを高める", "動きを続ける力を高める",
+            "自分に合った運動の計画を立てる"] }
+        ] },
+        { name: "器械運動", units: [
+          { n: "マット運動", kind: "waza", w: [
+            "開脚前転をする", "伸膝後転をする", "倒立前転をする",
+            "側方倒立回転をする", "三つ以上の技を組み合わせて続ける"] },
+          { n: "鉄棒運動", kind: "waza", w: [
+            "逆上がりをする", "前方支持回転をする", "後方支持回転をする",
+            "ひざかけ上がりをする", "技を組み合わせて続ける"] },
+          { n: "跳び箱運動", kind: "waza", w: [
+            "開脚とびで遠くへとぶ", "かかえこみとびをする", "台上前転をする",
+            "首はねとびをする", "着地をピタッと止める"] }
+        ] },
+        { name: "陸上運動", units: [
+          { n: "短距離走・リレー", kind: "record", w: [
+            "スタートダッシュをする", "体を軽く前にたおして全力で走る",
+            "受けわたしゾーンで加速してバトンをもらう", "全力のままバトンをわたす"] },
+          { n: "ハードル走", kind: "record", w: [
+            "ハードルの間を3〜5歩でそろえる", "ふみきり足を決めてこす",
+            "低くまたぎこす", "ハードルの間を全力で走る"] },
+          { n: "走り幅跳び", kind: "record", w: [
+            "リズミカルな助走をする", "ふみきりゾーンで強くふみきる",
+            "かがみとびで空中の動きをつくる", "両足で着地する"] },
+          { n: "走り高跳び", kind: "record", w: [
+            "リズミカルな助走をする", "力強くふみきる",
+            "はさみとびでバーをこす", "自分に合った助走の歩数を見つける"] }
+        ] },
+        { name: "水泳運動", units: [
+          { n: "クロール", kind: "record", w: [
+            "手を交互に大きく回す", "足をのばしてバタ足をする",
+            "息つぎをしながら続けて泳ぐ", "25m〜50mを泳ぐ"] },
+          { n: "平泳ぎ", kind: "record", w: [
+            "かえる足で水をはさむ", "手のかきと息つぎを合わせる",
+            "伸びをつくって続けて泳ぐ", "25m〜50mを泳ぐ"] },
+          { n: "安全確保につながる運動", kind: "record", w: [
+            "背浮きで10〜20秒浮く", "浮いて呼吸を確保する",
+            "手足をゆっくり動かして続けて浮く"] }
+        ] },
+        { name: "ボール運動", units: [
+          { n: "ゴール型", kind: "game", w: [
+            "ボールを持たないときに空いた場所へ動く", "味方にパスをつなぐ",
+            "シュートをねらう", "相手の攻めを防ぐ位置に動く",
+            "チームの作戦を立てて実行する"] },
+          { n: "ネット型", kind: "game", w: [
+            "ラリーを続ける", "つなぐ・打つの役わりで攻める",
+            "相手のいない場所へ返す", "チームの作戦を立てて実行する"] },
+          { n: "ベースボール型", kind: "game", w: [
+            "飛んできたボールを打ち返す", "塁を進むか戻るかを判断する",
+            "捕ってすばやく送球する", "守る位置を決めて力を合わせる"] }
+        ] },
+        { name: "表現運動", units: [
+          { n: "表現", kind: "expr", w: [
+            "題材からイメージをふくらませて動く", "動きに変化と起伏をつける",
+            "ひと流れの動きをつくる", "グループで作品にまとめて見せ合う"] },
+          { n: "フォークダンス", kind: "expr", w: [
+            "日本の民踊の踊り方を覚える", "外国のフォークダンスの踊り方を覚える",
+            "足どりを音楽に合わせる", "みんなで輪になって踊る"] }
+        ] }
+      ]
+    }
+  };
+
+  var GRADE_STAGE = { 1: "low", 2: "low", 3: "mid", 4: "mid", 5: "high", 6: "high" };
+
+  /* 三つのねらいのめあての下書き。{u} に単元名が入る。 */
+  var GOAL_TPL = {
+    waza: {
+      skill: "{u}のいろいろな技が、できるようになる。",
+      think: "自分のできそうな技をえらび、こつを見つけて友だちに伝える。",
+      att: "きまりを守り、場や用具を安全にじゅんびして、友だちと助け合って運動する。"
+    },
+    record: {
+      skill: "{u}の動きを身につけ、自分の記録をのばす。",
+      think: "自分の課題を見つけ、それに合ったれんしゅうの仕方をえらぶ。",
+      att: "きまりを守り、友だちの記録や伸びを認め合い、安全に気をつけて運動する。"
+    },
+    game: {
+      skill: "{u}の基本の動きを身につけ、ゲームを楽しむ。",
+      think: "チームのよさをいかした作戦を考え、友だちに伝える。",
+      att: "ルールを守り、勝ち負けを受け入れて、だれとでもなかよくゲームをする。"
+    },
+    expr: {
+      skill: "{u}で、自分の思いを体で表す。",
+      think: "表したいことに合う動きを考え、友だちのよさを見つけて伝え合う。",
+      att: "友だちの表現のよさを認め、すすんで関わって踊る。"
+    },
+    karada: {
+      skill: "体を動かす心地よさを味わい、{u}でいろいろな動きを身につける。",
+      think: "自分の体の動きを見つめ、課題に合った運動をえらぶ。",
+      att: "友だちと関わり、場の安全をたしかめて運動する。"
+    }
+  };
+
+  var SAFETY = [
+    "うんどうの前に、じゅんび運動をします。",
+    "場や用具にこわれたところがないか、みんなでたしかめます。",
+    "友だちの順番や、まわりの人との間かくに気をつけます。",
+    "気分が悪いときや、けがをしたときは、すぐに先生に言います。"
+  ];
+
+  var el = {};
+  ["grade","area","unit","hours","g-skill","g-think","g-att","btn-regoal",
+   "opt-waza","opt-hint","opt-date","opt-furi","opt-matome","opt-safety",
+   "title","status","sheet-wrap","btn-reset"].forEach(function (id) {
+    el[id] = document.getElementById(id);
+  });
+
+  function stage() { return DATA[GRADE_STAGE[el.grade.value] || "mid"]; }
+  function currentArea() { return stage().areas[parseInt(el.area.value, 10) || 0]; }
+  function currentUnit() {
+    var a = currentArea();
+    return a.units[parseInt(el.unit.value, 10) || 0];
+  }
+
+  /* ===== 選べる中身を入れ直す ===== */
+  function fillGrades() {
+    for (var g = 1; g <= 6; g++) {
+      var o = document.createElement("option");
+      o.value = g;
+      o.textContent = g + "年";
+      el.grade.appendChild(o);
+    }
+    el.grade.value = "3";
+  }
+
+  function fillAreas(keepIdx) {
+    el.area.textContent = "";
+    stage().areas.forEach(function (a, i) {
+      var o = document.createElement("option");
+      o.value = i;
+      o.textContent = a.name;
+      el.area.appendChild(o);
+    });
+    el.area.value = String(Math.min(keepIdx || 0, stage().areas.length - 1));
+  }
+
+  function fillUnits(keepIdx) {
+    el.unit.textContent = "";
+    currentArea().units.forEach(function (u, i) {
+      var o = document.createElement("option");
+      o.value = i;
+      o.textContent = u.n;
+      el.unit.appendChild(o);
+    });
+    el.unit.value = String(Math.min(keepIdx || 0, currentArea().units.length - 1));
+  }
+
+  /* ===== めあての下書きを作る ===== */
+  function makeGoals() {
+    var u = currentUnit();
+    var t = GOAL_TPL[u.kind] || GOAL_TPL.waza;
+    el["g-skill"].value = t.skill.replace("{u}", u.n);
+    el["g-think"].value = t.think.replace("{u}", u.n);
+    el["g-att"].value = t.att.replace("{u}", u.n);
+  }
+
+  /* 時数に合わせて、毎時間のめあての下書きを作る。
+     1時間目はオリエンテーション、最後はまとめ。
+     ゲームと表現は、最後の1つ前を「大会」「見せ合い」にする。
+     あいだの時間に、単元の技や動きを順にあてていく。 */
+  function makeHourGoals(n) {
+    var u = currentUnit();
+    var list = [];
+    var first = "学習の進め方と場の使い方をたしかめ、" + u.n + "でどんな動きができるかためしてみよう。";
+    var last = "できるようになったことをたしかめ、学習のまとめをしよう。";
+
+    var showcase = null;
+    if (u.kind === "game") {
+      showcase = "チームの作戦をいかして、ゲーム（大会）をしよう。";
+    } else if (u.kind === "expr") {
+      showcase = "作品を友だちに見てもらい、よさを伝え合おう。";
+    } else if (u.kind === "waza") {
+      showcase = "できるようになった技を、友だちに見てもらおう。";
+    } else if (u.kind === "record") {
+      showcase = "記録をはかって、単元のはじめからの伸びをたしかめよう。";
+    }
+
+    if (n === 1) { return [first + " そして、学習のまとめをしよう。"]; }
+    if (n === 2) { return [first, last]; }
+
+    list.push(first);
+    var tailCount = (showcase && n >= 5) ? 2 : 1;   // 最後の「見せ合い」＋「まとめ」
+    var midCount = n - 1 - tailCount;
+    var w = u.w;
+    for (var i = 0; i < midCount; i++) {
+      if (i < w.length) {
+        list.push(w[i] + "ことができるように、れんしゅうしよう。");
+      } else {
+        // 技の数より時間が多いときは、深める言い方にする
+        var extra = [
+          "友だちの動きを見て、うまくいくこつを見つけよう。",
+          "自分のめあてをえらんで、できるまでくりかえしれんしゅうしよう。",
+          "できるようになった動きを、もっときれいにしよう。",
+          "友だちにアドバイスをして、たがいにうまくなろう。",
+          "自分に合った場やコースをえらんでれんしゅうしよう。"
+        ];
+        list.push(extra[(i - w.length) % extra.length]);
+      }
+    }
+    if (tailCount === 2) { list.push(showcase); }
+    list.push(last);
+    return list;
+  }
+
+  /* ===== 用紙を組み立てる ===== */
+  function buildSheet(o) {
+    var sheet = document.createElement("div");
+    sheet.className = "sheet";
+    var u = currentUnit();
+
+    // 見出し
+    var head = document.createElement("div");
+    head.className = "c-head";
+    var left = document.createElement("div");
+    var t = document.createElement("div");
+    t.className = "c-title";
+    t.textContent = o.title;
+    var sub = document.createElement("div");
+    sub.className = "c-sub";
+    sub.textContent = currentArea().name + "／" + u.n + "（全" + o.hours + "時間）";
+    left.appendChild(t);
+    left.appendChild(sub);
+    var nm = document.createElement("div");
+    nm.className = "c-name";
+    [["年", "s"], ["組", "s"], ["名前", ""]].forEach(function (p) {
+      var nb = document.createElement("div");
+      nb.className = "nb";
+      var ul = document.createElement("div");
+      ul.className = "ul" + (p[1] ? " " + p[1] : "");
+      var sp = document.createElement("span");
+      sp.textContent = p[0];
+      nb.appendChild(ul);
+      nb.appendChild(sp);
+      nm.appendChild(nb);
+    });
+    head.appendChild(left);
+    head.appendChild(nm);
+    sheet.appendChild(head);
+
+    // 単元のめあて
+    var gs = document.createElement("div");
+    gs.className = "sec";
+    gs.appendChild(secH("この単元のめあて"));
+    var gbox = document.createElement("div");
+    gbox.className = "goals";
+    [["できること", o.gSkill],
+     ["考えること", o.gThink],
+     ["心がけること", o.gAtt]].forEach(function (pair) {
+      var g = document.createElement("div");
+      g.className = "g";
+      var k = document.createElement("div");
+      k.className = "k";
+      k.textContent = pair[0];
+      var v = document.createElement("div");
+      v.className = "v";
+      v.textContent = pair[1];
+      g.appendChild(k);
+      g.appendChild(v);
+      gbox.appendChild(g);
+    });
+    gs.appendChild(gbox);
+    sheet.appendChild(gs);
+
+    // できるようになりたいこと
+    if (o.waza) {
+      var ws = document.createElement("div");
+      ws.className = "sec";
+      ws.appendChild(secH("できるようになりたいこと（できたら □ に✓）"));
+      var wb = document.createElement("div");
+      wb.className = "waza" + (u.w.length <= 4 ? "" : "");
+      var ul = document.createElement("ul");
+      u.w.forEach(function (x) {
+        var li = document.createElement("li");
+        var bx = document.createElement("div");
+        bx.className = "bx";
+        var sp = document.createElement("span");
+        sp.textContent = x;
+        li.appendChild(bx);
+        li.appendChild(sp);
+        ul.appendChild(li);
+      });
+      wb.appendChild(ul);
+      ws.appendChild(wb);
+      sheet.appendChild(ws);
+    }
+
+    // 時間ごとの記録
+    var hs = document.createElement("div");
+    hs.className = "sec";
+    hs.appendChild(secH("毎時間の記録"));
+    var tb = document.createElement("table");
+    tb.className = "hours";
+    var cols = [];
+    cols.push({ t: "時", w: "8mm", c: "n" });
+    if (o.date) { cols.push({ t: "日", w: "15mm", c: "n" }); }
+    if (o.hint) { cols.push({ t: "今日のめあて", w: "", c: "me" }); }
+    else { cols.push({ t: "今日のめあて（自分で書く）", w: "", c: "me" }); }
+    cols.push({ t: "できた", w: "19mm", c: "ok" });
+    if (o.furi) { cols.push({ t: "ふりかえり・気づいたこと", w: "52mm", c: "fr" }); }
+
+    var thead = document.createElement("thead");
+    var tr = document.createElement("tr");
+    cols.forEach(function (c) {
+      var th = document.createElement("th");
+      th.textContent = c.t;
+      if (c.w) { th.style.width = c.w; }
+      tr.appendChild(th);
+    });
+    thead.appendChild(tr);
+    tb.appendChild(thead);
+
+    var tbody = document.createElement("tbody");
+    var goals = makeHourGoals(o.hours);
+    for (var i = 0; i < o.hours; i++) {
+      var row = document.createElement("tr");
+      cols.forEach(function (c) {
+        var td = document.createElement("td");
+        td.className = c.c;
+        if (c.c === "n" && c.t === "時") { td.textContent = String(i + 1); }
+        else if (c.c === "me" && o.hint) { td.textContent = goals[i] || ""; }
+        else if (c.c === "ok") { td.textContent = "◎ ○ △"; }
+        row.appendChild(td);
+      });
+      tbody.appendChild(row);
+    }
+    tb.appendChild(tbody);
+    hs.appendChild(tb);
+    sheet.appendChild(hs);
+
+    // 単元のまとめ
+    if (o.matome) {
+      var ms = document.createElement("div");
+      ms.className = "sec";
+      var mb = document.createElement("div");
+      mb.className = "free-box";
+      var lb = document.createElement("div");
+      lb.className = "lb";
+      lb.textContent = "単元のまとめ：できるようになったこと、がんばったこと、次にやってみたいこと";
+      mb.appendChild(lb);
+      ms.appendChild(mb);
+      sheet.appendChild(ms);
+    }
+
+    // 安全のやくそく
+    if (o.safety) {
+      var ss = document.createElement("div");
+      ss.className = "sec safety";
+      ss.appendChild(secH("安全のやくそく"));
+      var ol = document.createElement("ol");
+      SAFETY.forEach(function (x) {
+        var li = document.createElement("li");
+        li.textContent = x;
+        ol.appendChild(li);
+      });
+      ss.appendChild(ol);
+      sheet.appendChild(ss);
+    }
+
+    var note = document.createElement("div");
+    note.className = "note";
+    note.textContent = "領域の分け方は、文部科学省「小学校学習指導要領（平成29年告示）」体育によります。";
+    sheet.appendChild(note);
+
+    return sheet;
+  }
+
+  function secH(text) {
+    var d = document.createElement("div");
+    d.className = "sec-h";
+    d.textContent = text;
+    return d;
+  }
+
+  function readOpts() {
+    return {
+      hours: Math.max(1, Math.min(14, parseInt(el.hours.value, 10) || 6)),
+      waza: el["opt-waza"].checked,
+      hint: el["opt-hint"].checked,
+      date: el["opt-date"].checked,
+      furi: el["opt-furi"].checked,
+      matome: el["opt-matome"].checked,
+      safety: el["opt-safety"].checked,
+      title: el.title.value || "体育の 学習カード",
+      gSkill: el["g-skill"].value,
+      gThink: el["g-think"].value,
+      gAtt: el["g-att"].value
+    };
+  }
+
+  /* ===== A4一枚に収める =====
+     getBoundingClientRect() は画面の縮小表示（transform: scale）の影響を受けるので
+     使わない。offsetHeight で中身の高さを足して測る。 */
+  function render() {
+    var o = readOpts();
+    var fs = 10;      // pt
+    var rowh = 11;    // mm
+
+    var draw = function () {
+      document.documentElement.style.setProperty("--fs", fs + "pt");
+      document.documentElement.style.setProperty("--rowh", rowh + "mm");
+      el["sheet-wrap"].textContent = "";
+      var s = buildSheet(o);
+      el["sheet-wrap"].appendChild(s);
+      return s;
+    };
+
+    var sheet = draw();
+    var guard = 0;
+    while (guard++ < 60 && contentMm(sheet) > SHEET_H) {
+      if (rowh > 6) { rowh = Math.max(6, rowh - 0.4); }
+      else if (fs > 7) { fs = Math.max(7, fs - 0.2); }
+      else { break; }
+      sheet = draw();
+    }
+
+    var inner = contentMm(sheet);
+    var msg = "全" + o.hours + "時間ぶんの行を作りました。文字 " + fs.toFixed(1) +
+              "pt・行の高さ " + rowh.toFixed(1) + "mm。";
+    if (inner > SHEET_H + 0.5) {
+      msg += "<span class='warn'><br>A4一枚に収まりません（中身 " + inner.toFixed(0) +
+             "mm ／ 入る高さ " + SHEET_H + "mm）。時数を減らすか、" +
+             "「ふりかえり欄」や「安全のやくそく」を外してください。</span>";
+    } else {
+      msg += "<br>A4一枚に収まっています（中身 " + inner.toFixed(0) +
+             "mm ／ 入る高さ " + SHEET_H + "mm）。";
+    }
+    el.status.innerHTML = msg;
+  }
+
+  // 用紙の中身の高さ（mm）。
+  // 子要素の offsetHeight を足すだけだと、要素と要素の「すきま」（margin）が
+  // 抜け落ち、実際より低く出てしまう（2026-10-30の点検で見つかった。
+  // 14時間のカードが21mmはみ出しているのに「収まっています」と出ていた）。
+  // 用紙の箱には min-height: 297mm があるので、測るあいだだけそれを外し、
+  // 箱そのものの高さから上下の余白を引く。箱には padding があるため、
+  // 中の margin が外へ逃げることはなく、すきまも高さに入る。
+  // getBoundingClientRect() は画面の縮小表示の影響を受けるので使わない。
+  function contentMm(sheet) {
+    var prev = sheet.style.minHeight;
+    sheet.style.minHeight = "0";
+    var mm = sheet.offsetHeight / MM - 24;   // 上下の余白 12mm ずつ
+    sheet.style.minHeight = prev;
+    return mm;
+  }
+
+  /* ===== 画面の操作 ===== */
+  el.grade.addEventListener("change", function () {
+    fillAreas(0); fillUnits(0); makeGoals(); render();
+  });
+  el.area.addEventListener("change", function () {
+    fillUnits(0); makeGoals(); render();
+  });
+  el.unit.addEventListener("change", function () {
+    makeGoals(); render();
+  });
+  el["btn-regoal"].addEventListener("click", function () {
+    makeGoals(); render();
+  });
+
+  ["hours","opt-waza","opt-hint","opt-date","opt-furi","opt-matome","opt-safety",
+   "title","g-skill","g-think","g-att"].forEach(function (id) {
+    el[id].addEventListener("change", render);
+    el[id].addEventListener("input", render);
+  });
+
+  el["btn-reset"].addEventListener("click", function () {
+    el.grade.value = "3";
+    fillAreas(0); fillUnits(0);
+    el.hours.value = 6;
+    el["opt-waza"].checked = true;
+    el["opt-hint"].checked = true;
+    el["opt-date"].checked = true;
+    el["opt-furi"].checked = true;
+    el["opt-matome"].checked = true;
+    el["opt-safety"].checked = true;
+    el.title.value = "体育の 学習カード";
+    makeGoals();
+    render();
+  });
+
+  fillGrades();
+  fillAreas(0);
+  fillUnits(0);
+  makeGoals();
+  render();
+})();
+</script>
+</body>
+</html>

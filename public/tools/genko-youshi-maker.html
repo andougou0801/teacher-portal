@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>原稿用紙・作文ワークシートメーカー</title>
+<style>
+  :root {
+    --accent: #2d6cdf;
+    --line: #d7dde5;
+    --muted: #5b6673;
+    /* 用紙の罫線の色と太さ（画面の設定で書きかえる） */
+    --rc: #9aa4b0;
+    --lw: 0.3mm;
+    --cell: 9mm;
+    --ruby: 0mm;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    background: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+  }
+
+  /* ===== 設定パネル（印刷には出さない） ===== */
+  .no-print {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    max-width: 760px;
+    margin: 0 auto 22px;
+  }
+  .no-print h1 { color: var(--accent); font-size: 21px; margin: 0 0 4px; }
+  .lead { font-size: 13px; color: var(--muted); margin: 0 0 18px; line-height: 1.7; }
+  fieldset {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px 14px;
+    margin: 0 0 14px;
+  }
+  legend { font-size: 13px; font-weight: bold; color: var(--accent); padding: 0 6px; }
+  .row { display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: flex-end; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field > span { font-size: 12px; font-weight: bold; color: #444; }
+  input[type="text"], input[type="number"], select {
+    padding: 7px 10px;
+    border: 1px solid #c5ccd6;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+  }
+  input[type="number"] { width: 84px; }
+  input[type="text"] { min-width: 180px; }
+  .checks { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  .checks label {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+  }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+  }
+  .primary { background: var(--accent); color: #fff; }
+  .primary:hover { background: #2559b8; }
+  .ghost { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+  .ghost:hover { background: #eef3fc; }
+  .hint { font-size: 12px; color: var(--muted); margin: 10px 0 0; line-height: 1.7; }
+  .count {
+    font-size: 13px;
+    font-weight: bold;
+    color: #1d6fb8;
+    background: #eef3fc;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 12px 0 0;
+    line-height: 1.7;
+  }
+  .count .warn { color: #c0392b; }
+
+  /* ===== A4の用紙 ===== */
+  /* overflow: hidden がないと、縮小しても場所取りは 210mm のままで
+     せまい画面でページが横にはみ出す。 */
+  #sheet-wrap { max-width: 760px; margin: 0 auto; overflow: hidden; }
+  .sheet {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 12mm;
+    margin: 0 auto 20px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.12);
+    transform-origin: top center;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 840px) {
+    .sheet { transform: scale(.45); transform-origin: top left; margin-bottom: -150mm; }
+  }
+
+  /* 題名と名前の欄 */
+  .head-title {
+    border: var(--lw) solid #333;
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 4mm;
+  }
+  .head-title .lb {
+    font-size: 11pt;
+    font-weight: bold;
+    padding: 3mm;
+    border-right: var(--lw) solid #333;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+  }
+  .head-title .bx { flex: 1; min-height: 14mm; }
+
+  .head-name {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5mm;
+    font-size: 11pt;
+    margin-bottom: 4mm;
+  }
+  .head-name .nb {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5mm;
+    white-space: nowrap;
+  }
+  .head-name .ul {
+    border-bottom: 1.2px solid #333;
+    min-width: 32mm;
+    height: 7mm;
+  }
+  .head-name .ul.s { min-width: 12mm; }
+
+  /* 書き出しの例 */
+  .starters {
+    border: var(--lw) dashed #666;
+    border-radius: 2mm;
+    padding: 2.5mm 3mm;
+    font-size: 9.5pt;
+    line-height: 1.6;
+    margin-bottom: 4mm;
+  }
+  .starters b { font-size: 10pt; }
+  .starters ul { margin: 1.5mm 0 0; padding-left: 5mm; }
+  .starters li { margin: 0.6mm 0; }
+
+  /* ===== マス目 ===== */
+  .grid-wrap { display: flex; justify-content: center; }
+  .grid { display: flex; }
+  .grid.tate { flex-direction: row; align-items: flex-start; }
+  .grid.yoko { flex-direction: column; align-items: flex-start; }
+  .gutter-t { width: 7mm; flex: 0 0 auto; }
+  .gutter-y { height: 7mm; flex: 0 0 auto; }
+
+  /* たて書き：1かたまり = ふりがな欄 ＋ 文字のマス（右から左に読む） */
+  .cgroup { display: flex; flex-direction: row; }
+  .cgroup .cells { display: flex; flex-direction: column; }
+  .cgroup .ruby {
+    width: var(--ruby);
+    border: var(--lw) solid var(--rc);
+    margin-right: calc(var(--lw) * -1);
+  }
+  /* よこ書き：1かたまり = 文字のマスの行 ＋ 下にふりがな欄 */
+  .rgroup { display: flex; flex-direction: column; }
+  .rgroup .cells { display: flex; flex-direction: row; }
+  .rgroup .ruby {
+    height: var(--ruby);
+    border: var(--lw) solid var(--rc);
+    margin-bottom: calc(var(--lw) * -1);
+  }
+
+  .cell {
+    width: var(--cell);
+    height: var(--cell);
+    border: var(--lw) solid var(--rc);
+    /* となり合う線を重ねて二重線にしない */
+    margin: 0 calc(var(--lw) * -1) calc(var(--lw) * -1) 0;
+    flex: 0 0 auto;
+  }
+  /* 低学年向けの十字の補助線 */
+  .cell.cross {
+    background-image:
+      linear-gradient(to right, transparent calc(50% - 0.1mm), var(--rc) calc(50% - 0.1mm), var(--rc) calc(50% + 0.1mm), transparent calc(50% + 0.1mm)),
+      linear-gradient(to bottom, transparent calc(50% - 0.1mm), var(--rc) calc(50% - 0.1mm), var(--rc) calc(50% + 0.1mm), transparent calc(50% + 0.1mm));
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    opacity: 1;
+  }
+  .cell.cross { background-blend-mode: normal; }
+
+  /* 用紙の下のきまりの説明 */
+  .rules {
+    margin-top: auto;
+    padding-top: 3mm;
+    border-top: var(--lw) solid #999;
+    font-size: 8.5pt;
+    line-height: 1.55;
+  }
+  .rules b { font-size: 9pt; }
+  .rules ol { margin: 1.5mm 0 0; padding-left: 5.5mm; }
+  .rules li { margin: 0.5mm 0; }
+  .pagefoot {
+    font-size: 9pt;
+    text-align: right;
+    margin-top: 2.5mm;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .no-print { display: none !important; }
+    #sheet-wrap { max-width: none; overflow: visible; }
+    .sheet {
+      width: auto;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      transform: none !important;
+    }
+    .sheet + .sheet { page-break-before: always; }
+    @page { size: A4 portrait; margin: 12mm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <h1>原稿用紙・作文ワークシートメーカー</h1>
+  <p class="lead">
+    マスの数を自由に決めて、作文用紙をA4で印刷できます。
+    400字詰（20字×20行）のような決まった形だけでなく、
+    <strong>低学年の10字×10行から高学年の20字×20行まで、学年や課題に合わせて作れます</strong>。
+    ワープロソフトの原稿用紙の設定では数種類しか選べませんが、このツールは1マスずつ変えられます。<br>
+    <strong>名前は手書きの欄にしてあります。</strong>児童名などの個人情報を入力する必要はありません。
+    入力した内容はこのパソコンの中だけで処理され、外部には送信されません。
+  </p>
+
+  <fieldset>
+    <legend>マスの数</legend>
+    <div class="row">
+      <label class="field">
+        <span>よく使う形から選ぶ</span>
+        <select id="preset">
+          <option value="20x20">400字詰（20字×20行）／標準</option>
+          <option value="20x10">200字詰（20字×10行）</option>
+          <option value="20x30">600字詰（20字×30行）</option>
+          <option value="10x10">低学年 10字×10行（大きいマス）</option>
+          <option value="12x12">低学年 12字×12行</option>
+          <option value="15x15">中学年 15字×15行</option>
+          <option value="free">自由（下の数で決める）</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>1行の字数</span>
+        <input type="number" id="chars" min="4" max="40" step="1" value="20">
+      </label>
+      <label class="field">
+        <span>行数</span>
+        <input type="number" id="lines" min="2" max="40" step="1" value="20">
+      </label>
+      <label class="field">
+        <span>書く向き</span>
+        <select id="dir">
+          <option value="tate">たて書き（右から左）</option>
+          <option value="yoko">よこ書き（左から右）</option>
+        </select>
+      </label>
+    </div>
+    <p class="count" id="count"></p>
+  </fieldset>
+
+  <fieldset>
+    <legend>用紙の中身</legend>
+    <div class="checks">
+      <label><input type="checkbox" id="opt-title" checked> 題名の欄を入れる</label>
+      <label><input type="checkbox" id="opt-name" checked> 学年・組・名前の欄を入れる</label>
+      <label><input type="checkbox" id="opt-ruby"> ふりがなの細い欄を入れる（マスは小さくなります）</label>
+      <label><input type="checkbox" id="opt-gutter"> 中央にあきを作る（本物の原稿用紙の形）</label>
+      <label><input type="checkbox" id="opt-cross"> マスに十字の補助線を入れる（低学年向け）</label>
+      <label><input type="checkbox" id="opt-rules"> 用紙の下に「原稿用紙のきまり」を印刷する</label>
+      <label><input type="checkbox" id="opt-pageno"> 「〇枚目」の番号を入れる</label>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <label class="field">
+        <span>題名の欄の文字</span>
+        <input type="text" id="title-label" value="題名">
+      </label>
+      <label class="field">
+        <span>枚数</span>
+        <input type="number" id="pages" min="1" max="10" step="1" value="1">
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>書き出しの例（入れると、用紙の上に印刷されます）</legend>
+    <div class="row">
+      <label class="field">
+        <span>どんな作文か</span>
+        <select id="starter">
+          <option value="">入れない</option>
+          <option value="gyoji">行事のこと（運動会・遠足など）</option>
+          <option value="book">読んだ本のこと</option>
+          <option value="shirabe">調べたこと・ほうこく</option>
+          <option value="seikatsu">毎日の生活のこと・日記</option>
+          <option value="iken">自分の考えを書く（意見文）</option>
+          <option value="tegami">お礼の手紙・お知らせ</option>
+        </select>
+      </label>
+    </div>
+    <p class="hint">
+      書き出しに何を書けばよいか分からない子が多いため、言い回しの型だけを置いています。
+      本や教材の文章は使っていません。〇〇のところは、子どもが自分の言葉に置きかえて使います。
+    </p>
+  </fieldset>
+
+  <fieldset>
+    <legend>罫線の見え方</legend>
+    <div class="row">
+      <label class="field">
+        <span>線の色</span>
+        <select id="rcolor">
+          <option value="#9aa4b0">灰色（ふつう）</option>
+          <option value="#5b7fa6">青</option>
+          <option value="#5f8a5f">緑</option>
+          <option value="#9a7b5a">茶</option>
+          <option value="#333333">黒（こい）</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>線の濃さ・太さ</span>
+        <select id="rweight">
+          <option value="0.18mm">うすい（インクを節約）</option>
+          <option value="0.3mm" selected>ふつう</option>
+          <option value="0.45mm">こい（コピーしてもはっきり）</option>
+        </select>
+      </label>
+    </div>
+    <div class="btn-row">
+      <button class="primary" onclick="window.print()">印刷する</button>
+      <button class="ghost" id="btn-reset">はじめの設定にもどす</button>
+    </div>
+    <p class="hint">
+      印刷の設定で「用紙 A4」「余白 なし（または既定）」「倍率 100%」にしてください。
+      ブラウザの「ヘッダーとフッター」を切ると、日付やURLが入りません。
+    </p>
+  </fieldset>
+</div>
+
+<div id="sheet-wrap"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var MM = 96 / 25.4;          // 1mm が何pxか
+  var SHEET_W = 186;           // A4（210mm）から左右の余白12mmずつを引いた幅
+  var SHEET_H = 273;           // A4（297mm）から上下の余白12mmずつを引いた高さ
+  var RUBY_RATIO = 0.45;       // ふりがな欄の幅は、マスの何倍か
+
+  var STARTERS = {
+    gyoji: {
+      name: "行事のこと",
+      items: [
+        "わたしがいちばん心にのこっているのは、〇〇です。",
+        "〇〇が始まると、むねがどきどきしました。",
+        "「〇〇。」わたしは、思わず声が出ました。"
+      ]
+    },
+    book: {
+      name: "読んだ本のこと",
+      items: [
+        "わたしは、『〇〇』という本を読みました。",
+        "〇〇が〇〇したところが、心にのこりました。",
+        "もしわたしが〇〇だったら、〇〇したと思います。"
+      ]
+    },
+    shirabe: {
+      name: "調べたこと・ほうこく",
+      items: [
+        "わたしは、〇〇について調べました。",
+        "はじめは〇〇だと思っていましたが、調べてみると〇〇でした。",
+        "調べて分かったことは、三つあります。一つ目は、〇〇です。"
+      ]
+    },
+    seikatsu: {
+      name: "毎日の生活のこと・日記",
+      items: [
+        "〇月〇日、わたしは〇〇をしました。",
+        "〇〇をしていたとき、〇〇に気がつきました。",
+        "朝、〇〇を見て、〇〇だなと思いました。"
+      ]
+    },
+    iken: {
+      name: "自分の考えを書く（意見文）",
+      items: [
+        "わたしは、〇〇だと考えます。理由は三つあります。",
+        "たしかに〇〇という考えもあります。しかし、〇〇です。",
+        "だから、わたしは〇〇がよいと思います。"
+      ]
+    },
+    tegami: {
+      name: "お礼の手紙・お知らせ",
+      items: [
+        "〇〇のみなさま、先日は〇〇をありがとうございました。",
+        "わたしがいちばんうれしかったのは、〇〇です。",
+        "これからは、〇〇をがんばりたいと思います。"
+      ]
+    }
+  };
+
+  var RULES = [
+    "題名は一行目に書き、上を三マスあけます。名前は二行目の下に書き、いちばん下を一マスあけます。",
+    "段落のはじめは、一マスあけてから書きます。",
+    "、や。や「」は、一つで一マス使います。小さい「っ」や「ゃ」も一マス使います。",
+    "、や。が行のはじめに来てしまうときは、前の行のいちばん下のマスに、文字といっしょに入れます。",
+    "数字は、たて書きでは漢数字（十二月）、よこ書きでは算用数字（12月）で書きます。"
+  ];
+
+  var el = {};
+  ["preset","chars","lines","dir","opt-title","opt-name","opt-ruby","opt-gutter",
+   "opt-cross","opt-rules","opt-pageno","title-label","pages","starter",
+   "rcolor","rweight","count","sheet-wrap","btn-reset"].forEach(function (id) {
+    el[id] = document.getElementById(id);
+  });
+
+  var PRESETS = {
+    "20x20": [20, 20], "20x10": [20, 10], "20x30": [20, 30],
+    "10x10": [10, 10], "12x12": [12, 12], "15x15": [15, 15]
+  };
+
+  function readOpts() {
+    var chars = clamp(parseInt(el.chars.value, 10) || 20, 4, 40);
+    var lines = clamp(parseInt(el.lines.value, 10) || 20, 2, 40);
+    return {
+      chars: chars,
+      lines: lines,
+      dir: el.dir.value === "yoko" ? "yoko" : "tate",
+      title: el["opt-title"].checked,
+      name: el["opt-name"].checked,
+      ruby: el["opt-ruby"].checked,
+      gutter: el["opt-gutter"].checked,
+      cross: el["opt-cross"].checked,
+      rules: el["opt-rules"].checked,
+      pageno: el["opt-pageno"].checked,
+      titleLabel: el["title-label"].value || "題名",
+      pages: clamp(parseInt(el.pages.value, 10) || 1, 1, 10),
+      starter: el.starter.value,
+      rcolor: el.rcolor.value,
+      rweight: el.rweight.value
+    };
+  }
+
+  function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+
+  /* ===== 用紙を1枚つくる ===== */
+  function buildSheet(o, pageIndex, cellMm) {
+    var sheet = document.createElement("div");
+    sheet.className = "sheet";
+
+    if (o.title) {
+      var ht = document.createElement("div");
+      ht.className = "head-title";
+      var lb = document.createElement("div");
+      lb.className = "lb";
+      lb.textContent = o.titleLabel;
+      var bx = document.createElement("div");
+      bx.className = "bx";
+      ht.appendChild(lb);
+      ht.appendChild(bx);
+      sheet.appendChild(ht);
+    }
+
+    if (o.name) {
+      var hn = document.createElement("div");
+      hn.className = "head-name";
+      [["年", "s"], ["組", "s"], ["名前", ""]].forEach(function (pair) {
+        var nb = document.createElement("div");
+        nb.className = "nb";
+        var ul = document.createElement("div");
+        ul.className = "ul" + (pair[1] ? " " + pair[1] : "");
+        var sp = document.createElement("span");
+        sp.textContent = pair[0];
+        nb.appendChild(ul);
+        nb.appendChild(sp);
+        hn.appendChild(nb);
+      });
+      sheet.appendChild(hn);
+    }
+
+    if (o.starter && STARTERS[o.starter]) {
+      var st = STARTERS[o.starter];
+      var box = document.createElement("div");
+      box.className = "starters";
+      var b = document.createElement("b");
+      b.textContent = "書き出しの例（" + st.name + "）";
+      box.appendChild(b);
+      var ul2 = document.createElement("ul");
+      st.items.forEach(function (t) {
+        var li = document.createElement("li");
+        li.textContent = t;
+        ul2.appendChild(li);
+      });
+      box.appendChild(ul2);
+      sheet.appendChild(box);
+    }
+
+    sheet.appendChild(buildGrid(o, cellMm));
+
+    if (o.rules) {
+      var rb = document.createElement("div");
+      rb.className = "rules";
+      var rbb = document.createElement("b");
+      rbb.textContent = "原稿用紙のきまり";
+      rb.appendChild(rbb);
+      var ol = document.createElement("ol");
+      RULES.forEach(function (t) {
+        var li = document.createElement("li");
+        li.textContent = t;
+        ol.appendChild(li);
+      });
+      rb.appendChild(ol);
+      sheet.appendChild(rb);
+    }
+
+    if (o.pageno) {
+      var pf = document.createElement("div");
+      pf.className = "pagefoot";
+      pf.textContent = (pageIndex + 1) + " 枚目";
+      sheet.appendChild(pf);
+    }
+
+    return sheet;
+  }
+
+  /* マス目を組み立てる。
+     たて書きは「行」をたてに並べたかたまりを、右から左へ置く。
+     よこ書きは「行」をよこに並べたかたまりを、上から下へ置く。 */
+  function buildGrid(o, cellMm) {
+    var wrap = document.createElement("div");
+    wrap.className = "grid-wrap";
+    var grid = document.createElement("div");
+    grid.className = "grid " + o.dir;
+
+    var groups = [];
+    for (var i = 0; i < o.lines; i++) {
+      var g = document.createElement("div");
+      g.className = o.dir === "tate" ? "cgroup" : "rgroup";
+      var cells = document.createElement("div");
+      cells.className = "cells";
+      for (var j = 0; j < o.chars; j++) {
+        var c = document.createElement("div");
+        c.className = "cell" + (o.cross ? " cross" : "");
+        cells.appendChild(c);
+      }
+      if (o.dir === "tate") {
+        // たて書きのふりがなは、文字のマスの「右」に書く
+        g.appendChild(cells);
+        if (o.ruby) { g.appendChild(mkRuby()); }
+      } else {
+        // よこ書きのふりがなは、文字のマスの「上」に書く
+        if (o.ruby) { g.appendChild(mkRuby()); }
+        g.appendChild(cells);
+      }
+      groups.push(g);
+    }
+
+    // たて書きは右から読むので、並べる順を逆にする
+    if (o.dir === "tate") { groups.reverse(); }
+
+    var half = Math.floor(o.lines / 2);
+    groups.forEach(function (g, idx) {
+      if (o.gutter && o.lines >= 4 && idx === half) {
+        var gu = document.createElement("div");
+        gu.className = o.dir === "tate" ? "gutter-t" : "gutter-y";
+        grid.appendChild(gu);
+      }
+      grid.appendChild(g);
+    });
+
+    wrap.appendChild(grid);
+    return wrap;
+  }
+
+  // ふりがなを書く細い欄。高さ（よこ書きでは幅）は、
+  // flex の既定の伸び（align-items: stretch）でマスの列にそろう。
+  function mkRuby() {
+    var r = document.createElement("div");
+    r.className = "ruby";
+    return r;
+  }
+
+  /* ===== マスの大きさを決めて、A4一枚に収める =====
+     getBoundingClientRect() は画面での縮小表示（transform: scale）の影響を
+     受けるので使わない。offsetHeight は縮小の影響を受けない。 */
+  function render() {
+    var o = readOpts();
+    document.documentElement.style.setProperty("--rc", o.rcolor);
+    document.documentElement.style.setProperty("--lw", o.rweight);
+
+    // まず、幅から入るマスの大きさを計算する（上限14mm・下限3mm）
+    var rubyF = o.ruby ? (1 + RUBY_RATIO) : 1;
+    var gut = o.gutter && o.lines >= 4 ? 7 : 0;
+    var cell;
+    if (o.dir === "tate") {
+      cell = Math.min((SHEET_W - gut) / (o.lines * rubyF), SHEET_H / o.chars);
+    } else {
+      cell = Math.min(SHEET_W / o.chars, (SHEET_H - gut) / (o.lines * rubyF));
+    }
+    cell = clamp(cell, 3, 14);
+
+    // 題名欄・書き出しの例・きまりの説明の分だけ高さが足りなくなるので、
+    // 実際に描いて offsetHeight で測り、はみ出していたら少しずつ縮める。
+    var draw = function (c) {
+      document.documentElement.style.setProperty("--cell", c + "mm");
+      document.documentElement.style.setProperty("--ruby", (c * RUBY_RATIO) + "mm");
+      el["sheet-wrap"].textContent = "";
+      var s = buildSheet(o, 0, c);
+      el["sheet-wrap"].appendChild(s);
+      return s;
+    };
+
+    var sheet = draw(cell);
+    var guard = 0;
+    while (guard++ < 40) {
+      var innerMm = contentMm(sheet);
+      if (innerMm <= SHEET_H + 0.3 || cell <= 3) { break; }
+      cell = Math.max(3, cell - Math.max(0.15, cell * 0.03));
+      sheet = draw(cell);
+    }
+
+    // 2枚目以降を足す
+    for (var p = 1; p < o.pages; p++) {
+      el["sheet-wrap"].appendChild(buildSheet(o, p, cell));
+    }
+
+    showCount(o, cell, contentMm(sheet));
+  }
+
+  // 用紙の中身の高さ（mm）。
+  // 子要素の offsetHeight を足すだけだと、要素と要素の「すきま」（margin）が
+  // 抜け落ち、実際より低く出てしまう（2026-10-30の点検で見つかった。
+  // よこ書きで14mm近くはみ出しているのに「収まっています」と出ていた）。
+  // 用紙の箱には min-height: 297mm があるので、測るあいだだけそれを外し、
+  // 箱そのものの高さから上下の余白を引く。箱には padding があるため、
+  // 中の margin が外へ逃げることはなく、すきまも高さに入る。
+  // getBoundingClientRect() は画面の縮小表示の影響を受けるので使わない。
+  function contentMm(sheet) {
+    var prev = sheet.style.minHeight;
+    sheet.style.minHeight = "0";
+    var mm = sheet.offsetHeight / MM - 24;   // 上下の余白 12mm ずつ
+    sheet.style.minHeight = prev;
+    return mm;
+  }
+
+  function showCount(o, cell, innerMm) {
+    var total = o.chars * o.lines;
+    var msg = "このマス目は <b>" + o.chars + "字 × " + o.lines + "行 ＝ " + total + "字</b>";
+    if (o.pages > 1) { msg += "（" + o.pages + "枚で " + (total * o.pages) + "字）"; }
+    msg += "。マスの大きさは約 " + cell.toFixed(1) + "mm 角です。";
+    if (cell <= 4.2) {
+      msg += "<span class='warn'><br>マスが小さく、子どもには書きにくいかもしれません。" +
+             "字数を減らすか、2枚に分けることをおすすめします。</span>";
+    }
+    if (innerMm > SHEET_H + 0.5) {
+      msg += "<span class='warn'><br>A4一枚に収まりません（中身 " + innerMm.toFixed(0) +
+             "mm ／ 入る高さ " + SHEET_H + "mm）。字数か行数を減らしてください。</span>";
+    } else {
+      msg += "<br>A4一枚に収まっています（中身 " + innerMm.toFixed(0) +
+             "mm ／ 入る高さ " + SHEET_H + "mm）。";
+    }
+    el.count.innerHTML = msg;
+  }
+
+  /* ===== 画面の操作 ===== */
+  el.preset.addEventListener("change", function () {
+    var p = PRESETS[el.preset.value];
+    if (p) { el.chars.value = p[0]; el.lines.value = p[1]; }
+    render();
+  });
+
+  ["chars", "lines"].forEach(function (id) {
+    el[id].addEventListener("input", function () {
+      el.preset.value = "free";
+      render();
+    });
+  });
+
+  ["dir", "opt-title", "opt-name", "opt-ruby", "opt-gutter", "opt-cross",
+   "opt-rules", "opt-pageno", "title-label", "pages", "starter",
+   "rcolor", "rweight"].forEach(function (id) {
+    el[id].addEventListener("change", render);
+    el[id].addEventListener("input", render);
+  });
+
+  el["btn-reset"].addEventListener("click", function () {
+    el.preset.value = "20x20";
+    el.chars.value = 20;
+    el.lines.value = 20;
+    el.dir.value = "tate";
+    el["opt-title"].checked = true;
+    el["opt-name"].checked = true;
+    el["opt-ruby"].checked = false;
+    el["opt-gutter"].checked = false;
+    el["opt-cross"].checked = false;
+    el["opt-rules"].checked = false;
+    el["opt-pageno"].checked = false;
+    el["title-label"].value = "題名";
+    el.pages.value = 1;
+    el.starter.value = "";
+    el.rcolor.value = "#9aa4b0";
+    el.rweight.value = "0.3mm";
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
