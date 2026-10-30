@@ -11,6 +11,7 @@ import {
   type SubItem,
   type TermGroup,
 } from "./lifeTerms";
+import { categories as staticCategories, type Category } from "./categories";
 import { getSupabaseClient } from "./supabaseClient";
 
 /**
@@ -304,4 +305,40 @@ export async function getLifeContent(): Promise<{
     termGroups: staticTermGroups,
     officialLinksForLife: staticLifeLinks,
   };
+}
+
+/* ---------------------------------------------------------------------------
+   トップページのカテゴリー
+   007_site_categories.sql を実行するとデータベースが正になる。
+   --------------------------------------------------------------------------- */
+
+type CategoryRow = {
+  slug: string;
+  label: string;
+  icon: string | null;
+  description: string | null;
+  href: string;
+  status: string | null;
+};
+
+/** 表示するカテゴリーを、管理画面で決めた並び順で返す。 */
+export async function getCategories(): Promise<Category[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("site_categories")
+      .select("slug,label,icon,description,href,status")
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length > 0) {
+      return (data as CategoryRow[]).map((row) => ({
+        slug: row.slug,
+        label: row.label,
+        icon: row.icon ?? "",
+        description: row.description ?? "",
+        href: row.href,
+        status: (row.status === "coming-soon" ? "coming-soon" : "live") as Category["status"],
+      }));
+    }
+  }
+  return staticCategories;
 }

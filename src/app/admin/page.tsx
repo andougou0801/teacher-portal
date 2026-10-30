@@ -39,6 +39,13 @@ const menu = [
       "休暇や育児・介護の制度の説明を、まとまりごとに追加・編集・削除できます。",
   },
   {
+    href: "/admin/categories",
+    icon: "🗂",
+    title: "トップのカテゴリー",
+    description:
+      "トップページのカテゴリーの名前・絵文字・説明・並び順を変えられます。",
+  },
+  {
     href: "/admin/qa",
     icon: "💬",
     title: "Q&Aの管理",
