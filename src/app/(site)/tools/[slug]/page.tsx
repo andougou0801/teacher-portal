@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { tools, getToolBySlug } from "@/lib/tools";
 import { getVisibleToolBySlug } from "@/lib/content";
+import { pageMetadata } from "@/lib/siteMeta";
 import CopyEmbedLinkButton from "@/components/CopyEmbedLinkButton";
 import FavoriteButton from "@/components/FavoriteButton";
 
@@ -17,7 +18,15 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const tool = getToolBySlug(slug);
-  return { title: tool ? `${tool.name} | 全国教員支援ポータル` : "ツール" };
+  if (!tool) {
+    return { title: "ツール" };
+  }
+  return pageMetadata({
+    title: tool.name,
+    description: tool.description,
+    path: `/tools/${slug}`,
+    type: "website",
+  });
 }
 
 export const revalidate = 60;

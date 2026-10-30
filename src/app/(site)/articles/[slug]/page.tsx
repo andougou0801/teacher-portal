@@ -5,6 +5,7 @@ import { articles } from "@/lib/articles";
 import { getToolBySlug } from "@/lib/tools";
 import { getIcebreakerBySlug } from "@/lib/icebreakers";
 import { getPublishedArticleBySlug } from "@/lib/content";
+import { pageMetadata } from "@/lib/siteMeta";
 import FavoriteButton from "@/components/FavoriteButton";
 
 export const revalidate = 60;
@@ -18,11 +19,14 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const article = await getPublishedArticleBySlug(slug);
-  return {
-    title: article
-      ? `${article.title} | 全国教員支援ポータル`
-      : "記事",
-  };
+  if (!article) {
+    return { title: "記事" };
+  }
+  return pageMetadata({
+    title: article.title,
+    description: article.summary,
+    path: `/articles/${slug}`,
+  });
 }
 
 export default async function ArticlePage(

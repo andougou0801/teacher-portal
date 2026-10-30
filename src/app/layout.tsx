@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import {
+  OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/siteMeta";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,9 +20,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "全国教員支援ポータル",
-  description:
-    "現場発の自作ツール・実践記事・教員コミュニティを1つにまとめた、全国の教員のための支援ポータルサイト。",
+  // SNSに貼ったときのカード画像は絶対URLでないと読まれない。
+  // metadataBase を決めておけば、各ページは "/og.png" のような相対パスで書ける。
+  metadataBase: new URL(SITE_URL),
+  title: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    type: "website",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    siteName: SITE_NAME,
+    locale: "ja_JP",
+    images: [OG_IMAGE],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE.url],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
