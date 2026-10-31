@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { categories } from "@/lib/categories";
 import { getPublishedArticles, getVisibleTools } from "@/lib/content";
+
+export const metadata: Metadata = {
+  title: "全国教員支援ポータル｜先生の仕事が軽くなる無料ツールと記事",
+  description:
+    "算数プリント、時間割、座席表、通知表の所見など、先生の仕事に使える無料ツールを公開しています。登録不要・ブラウザですぐ使えます。現役の小学校教員が作っています。",
+};
 
 export const revalidate = 60;
 
