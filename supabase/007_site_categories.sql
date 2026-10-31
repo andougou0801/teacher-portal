@@ -50,7 +50,3 @@ select * from (values
   ('qa', '先生の「困った」Q&A・コミュニティ', '💬', '気軽に質問を投稿し、他の先生から回答をもらえる掲示板。', '/community', 'live', 10)
 ) as seed(slug, label, icon, description, href, status, sort_order)
 where not exists (select 1 from site_categories);
-(node:8308) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/andou/AppData/Local/Temp/claude/C--Users-andou-OneDrive--------claud-code/93e7fb76-5e26-4d73-a573-3c43f0f1b317/scratchpad/wt/src/lib/categories.ts is not specified and it doesn't parse as CommonJS.
-Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
-To eliminate this warning, add "type": "module" to \\?\C:\Users\andou\AppData\Local\Temp\claude\C--Users-andou-OneDrive--------claud-code\93e7fb76-5e26-4d73-a573-3c43f0f1b317\scratchpad\wt\package.json.
-(Use `node --trace-warnings ...` to show where the warning was created)

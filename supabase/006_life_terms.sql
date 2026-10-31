@@ -89,7 +89,3 @@ select * from (values
 where not exists (
   select 1 from official_links where category = '忙しい先生のためのページ'
 );
-(node:21124) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/andou/AppData/Local/Temp/claude/C--Users-andou-OneDrive--------claud-code/93e7fb76-5e26-4d73-a573-3c43f0f1b317/scratchpad/wt/src/lib/lifeTerms.ts is not specified and it doesn't parse as CommonJS.
-Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
-To eliminate this warning, add "type": "module" to \\?\C:\Users\andou\AppData\Local\Temp\claude\C--Users-andou-OneDrive--------claud-code\93e7fb76-5e26-4d73-a573-3c43f0f1b317\scratchpad\wt\package.json.
-(Use `node --trace-warnings ...` to show where the warning was created)
