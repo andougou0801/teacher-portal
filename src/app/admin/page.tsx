@@ -46,6 +46,13 @@ const menu = [
       "トップページのカテゴリーの名前・絵文字・説明・並び順を変えられます。",
   },
   {
+    href: "/admin/activities",
+    icon: "🎲",
+    title: "アイスブレイク・学級レク",
+    description:
+      "遊びの中身の追加・編集・削除、並べかえ、表示/非表示ができます。",
+  },
+  {
     href: "/admin/qa",
     icon: "💬",
     title: "Q&Aの管理",

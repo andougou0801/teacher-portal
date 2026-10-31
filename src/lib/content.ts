@@ -12,6 +12,8 @@ import {
   type TermGroup,
 } from "./lifeTerms";
 import { categories as staticCategories, type Category } from "./categories";
+import { icebreakers as staticIcebreakers, type Icebreaker } from "./icebreakers";
+import { recreations as staticRecreations, type Recreation } from "./recreations";
 import { getSupabaseClient } from "./supabaseClient";
 
 /**
@@ -341,4 +343,113 @@ export async function getCategories(): Promise<Category[]> {
     }
   }
   return staticCategories;
+}
+
+/* ---------------------------------------------------------------------------
+   アイスブレイク・学級レク
+   008_activities.sql を実行するとデータベースが正になる。
+   --------------------------------------------------------------------------- */
+
+type IcebreakerRow = {
+  slug: string;
+  title: string;
+  emoji: string | null;
+  scene: string;
+  category: string;
+  duration: string | null;
+  place: string | null;
+  group_size: string | null;
+  materials: string | null;
+  steps: string[] | null;
+  tip: string | null;
+  variation: string | null;
+};
+
+type RecreationRow = {
+  slug: string;
+  title: string;
+  emoji: string | null;
+  scene: string;
+  category: string;
+  grades: string[] | null;
+  occasions: string[] | null;
+  duration: string | null;
+  prep: string | null;
+  place: string | null;
+  places: string[] | null;
+  group_size: string | null;
+  materials: string | null;
+  steps: string[] | null;
+  tip: string | null;
+  variation: string | null;
+  safety: string | null;
+  inclusion: string | null;
+  icebreaker_slug: string | null;
+};
+
+/** 公開中のアイスブレイクを、管理画面で決めた並び順で返す。 */
+export async function getIcebreakers(): Promise<Icebreaker[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("icebreakers")
+      .select(
+        "slug,title,emoji,scene,category,duration,place,group_size,materials,steps,tip,variation",
+      )
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length > 0) {
+      return (data as IcebreakerRow[]).map((row) => ({
+        slug: row.slug,
+        title: row.title,
+        emoji: row.emoji ?? "",
+        scene: row.scene as Icebreaker["scene"],
+        category: row.category as Icebreaker["category"],
+        duration: row.duration ?? "",
+        place: row.place ?? "",
+        groupSize: row.group_size ?? "",
+        materials: row.materials ?? "",
+        steps: row.steps ?? [],
+        tip: row.tip ?? undefined,
+        variation: row.variation ?? undefined,
+      }));
+    }
+  }
+  return staticIcebreakers;
+}
+
+/** 公開中の学級レクを、管理画面で決めた並び順で返す。 */
+export async function getRecreations(): Promise<Recreation[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("recreations")
+      .select(
+        "slug,title,emoji,scene,category,grades,occasions,duration,prep,place,places,group_size,materials,steps,tip,variation,safety,inclusion,icebreaker_slug",
+      )
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length > 0) {
+      return (data as RecreationRow[]).map((row) => ({
+        slug: row.slug,
+        title: row.title,
+        emoji: row.emoji ?? "",
+        scene: row.scene as Recreation["scene"],
+        category: row.category as Recreation["category"],
+        grades: (row.grades ?? []) as Recreation["grades"],
+        occasions: (row.occasions ?? []) as Recreation["occasions"],
+        duration: row.duration ?? "",
+        prep: row.prep ?? "",
+        place: row.place ?? "",
+        places: (row.places ?? []) as Recreation["places"],
+        groupSize: row.group_size ?? "",
+        materials: row.materials ?? "",
+        steps: row.steps ?? [],
+        tip: row.tip ?? undefined,
+        variation: row.variation ?? undefined,
+        safety: row.safety ?? undefined,
+        inclusion: row.inclusion ?? undefined,
+        icebreakerSlug: row.icebreaker_slug ?? undefined,
+      }));
+    }
+  }
+  return staticRecreations;
 }

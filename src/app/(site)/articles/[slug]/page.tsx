@@ -3,8 +3,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { articles } from "@/lib/articles";
 import { getToolBySlug } from "@/lib/tools";
-import { getIcebreakerBySlug } from "@/lib/icebreakers";
-import { getPublishedArticleBySlug } from "@/lib/content";
+
+import { getIcebreakers, getPublishedArticleBySlug } from "@/lib/content";
 import FavoriteButton from "@/components/FavoriteButton";
 
 export const revalidate = 60;
@@ -40,8 +40,9 @@ export default async function ArticlePage(
   const relatedTools = (article.relatedTools ?? [])
     .map((slug) => getToolBySlug(slug))
     .filter((tool) => tool !== undefined);
+  const allIcebreakers = await getIcebreakers();
   const relatedIcebreakers = (article.relatedIcebreakers ?? [])
-    .map((slug) => getIcebreakerBySlug(slug))
+    .map((slug) => allIcebreakers.find((ib) => ib.slug === slug))
     .filter((ib) => ib !== undefined);
 
   return (
