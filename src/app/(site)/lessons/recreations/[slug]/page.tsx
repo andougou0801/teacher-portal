@@ -2,24 +2,23 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import RecreationScene from "@/components/RecreationScene";
-import {
-  recreations,
-  getRecreationBySlug,
-  sortRecreations,
-  type Recreation,
-} from "@/lib/recreations";
-import { getIcebreakerBySlug } from "@/lib/icebreakers";
+import { sortRecreations, type Recreation } from "@/lib/recreations";
+import { getIcebreakers, getRecreations } from "@/lib/content";
 import FavoriteButton from "@/components/FavoriteButton";
 
-export function generateStaticParams() {
-  return recreations.map((rec) => ({ slug: rec.slug }));
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const list = await getRecreations();
+  return list.map((rec) => ({ slug: rec.slug }));
 }
 
 export async function generateMetadata(
   props: PageProps<"/lessons/recreations/[slug]">,
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  const rec = getRecreationBySlug(slug);
+  const list = await getRecreations();
+  const rec = list.find((item) => item.slug === slug);
   if (!rec) return { title: "学級レク" };
   return {
     title: `${rec.title} | 全国教員支援ポータル`,
@@ -28,9 +27,12 @@ export async function generateMetadata(
 }
 
 /** 同じカテゴリーの並び順で、前後のレクを取り出す。 */
-function getNeighbors(rec: Recreation): { prev?: Recreation; next?: Recreation } {
+function getNeighbors(
+  rec: Recreation,
+  all: Recreation[],
+): { prev?: Recreation; next?: Recreation } {
   const list = sortRecreations(
-    recreations.filter((item) => item.category === rec.category),
+    all.filter((item) => item.category === rec.category),
   );
   const index = list.findIndex((item) => item.slug === rec.slug);
   return { prev: list[index - 1], next: list[index + 1] };
@@ -40,16 +42,20 @@ export default async function RecreationDetailPage(
   props: PageProps<"/lessons/recreations/[slug]">,
 ) {
   const { slug } = await props.params;
-  const rec = getRecreationBySlug(slug);
+  const [recreations, icebreakers] = await Promise.all([
+    getRecreations(),
+    getIcebreakers(),
+  ]);
+  const rec = recreations.find((item) => item.slug === slug);
 
   if (!rec) {
     notFound();
   }
 
   const relatedIcebreaker = rec.icebreakerSlug
-    ? getIcebreakerBySlug(rec.icebreakerSlug)
+    ? icebreakers.find((ib) => ib.slug === rec.icebreakerSlug)
     : undefined;
-  const { prev, next } = getNeighbors(rec);
+  const { prev, next } = getNeighbors(rec, recreations);
   // 「同じ場所でできる」候補。前後リンクと重ならないようにし、
   // まず同じカテゴリーのものを出してから、足りなければ他のカテゴリーで補う。
   const shownSlugs = [rec.slug, prev?.slug, next?.slug];

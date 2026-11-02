@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { aiGuides } from "@/lib/aiGuides";
+import { getAiGuides } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "先生のAI活用 | 全国教員支援ポータル",
@@ -11,7 +11,10 @@ const upcomingTopics = [
   "教育現場でのAI活用事例",
 ];
 
-export default function AiPage() {
+export const revalidate = 60;
+
+export default async function AiPage() {
+  const aiGuides = await getAiGuides();
   return (
     <section className="mx-auto max-w-3xl px-8 py-14">
       <div className="mb-8 text-center">

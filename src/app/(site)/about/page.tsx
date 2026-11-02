@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "このサイトについて | 全国教員支援ポータル",
+  description:
+    "現役の小学校教員が、自分の校務のために作ったツールと記事を公開しています。登録も料金も不要です。このサイトを作った理由と、これからの予定をまとめました。",
 };
 
 const roadmap = [

@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import RecreationFilter from "@/components/RecreationFilter";
-import { recreations } from "@/lib/recreations";
+import { getRecreations } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "学級レク特集 | 全国教員支援ポータル",
-  description: `〇〇鬼などのそとあそびから、ハンカチ落としなどの室内遊びまで。場面・場所・学年で絞り込める学級レク集（全${recreations.length}種類）。所要時間・準備・安全面の確認つき。`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const list = await getRecreations();
+  return {
+    title: "学級レク特集 | 全国教員支援ポータル",
+    description: `〇〇鬼などのそとあそびから、ハンカチ落としなどの室内遊びまで。場面・場所・学年で絞り込める学級レク集（全${list.length}種類）。所要時間・準備・安全面の確認つき。`,
+  };
+}
 
-export default function RecreationsPage() {
+export const revalidate = 60;
+
+export default async function RecreationsPage() {
+  const recreations = await getRecreations();
   return (
     <section className="mx-auto max-w-4xl px-8 py-14">
       <div className="mb-8 text-center">

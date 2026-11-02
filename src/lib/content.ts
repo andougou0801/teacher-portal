@@ -1,5 +1,19 @@
 import { articles as staticArticles, type Article } from "./articles";
 import { tools as staticTools, type Tool } from "./tools";
+import {
+  officialLinks as staticOfficialLinks,
+  type OfficialLink,
+} from "./officialLinks";
+import { aiGuides as staticAiGuides, type AiGuide } from "./aiGuides";
+import {
+  termGroups as staticTermGroups,
+  officialLinksForLife as staticLifeLinks,
+  type SubItem,
+  type TermGroup,
+} from "./lifeTerms";
+import { categories as staticCategories, type Category } from "./categories";
+import { icebreakers as staticIcebreakers, type Icebreaker } from "./icebreakers";
+import { recreations as staticRecreations, type Recreation } from "./recreations";
 import { getSupabaseClient } from "./supabaseClient";
 
 /**
@@ -135,4 +149,307 @@ export async function getVisibleToolBySlug(
 ): Promise<Tool | undefined> {
   const list = await getVisibleTools();
   return list.find((tool) => tool.slug === slug);
+}
+
+/* ---------------------------------------------------------------------------
+   便利な公式サイト集
+   004_official_links.sql を実行するとデータベースが正になる。
+   まだ実行していない / つながらないときは officialLinks.ts にフォールバックする。
+   --------------------------------------------------------------------------- */
+
+type OfficialLinkRow = {
+  name: string;
+  url: string;
+  description: string | null;
+  when_to_use: string | null;
+  category: string;
+  subject: string | null;
+  sort_order: number | null;
+};
+
+function toOfficialLink(row: OfficialLinkRow): OfficialLink {
+  return {
+    name: row.name,
+    url: row.url,
+    description: row.description ?? "",
+    whenToUse: row.when_to_use ?? "",
+    category: row.category as OfficialLink["category"],
+    subject: row.subject ?? undefined,
+  };
+}
+
+/** 公開中の公式サイトを、管理画面で決めた並び順で返す。 */
+export async function getOfficialLinks(): Promise<OfficialLink[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("official_links")
+      .select("name,url,description,when_to_use,category,subject,sort_order")
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length > 0) {
+      return (data as OfficialLinkRow[]).map(toOfficialLink);
+    }
+  }
+  return staticOfficialLinks;
+}
+
+/* ---------------------------------------------------------------------------
+   先生のAI活用ガイド
+   005_ai_guides.sql を実行するとデータベースが正になる。
+   --------------------------------------------------------------------------- */
+
+type AiGuideRow = {
+  slug: string;
+  title: string;
+  tool: string | null;
+  summary: string | null;
+  what_it_does: string | null;
+  how_to_use: string[] | null;
+  sample_prompt: string | null;
+  caution: string | null;
+};
+
+function toAiGuide(row: AiGuideRow): AiGuide {
+  return {
+    slug: row.slug,
+    title: row.title,
+    tool: row.tool ?? "",
+    summary: row.summary ?? "",
+    whatItDoes: row.what_it_does ?? "",
+    howToUse: row.how_to_use ?? [],
+    samplePrompt: row.sample_prompt ?? "",
+    caution: row.caution ?? "",
+  };
+}
+
+/** 公開中のAI活用ガイドを、管理画面で決めた並び順で返す。 */
+export async function getAiGuides(): Promise<AiGuide[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("ai_guides")
+      .select("slug,title,tool,summary,what_it_does,how_to_use,sample_prompt,caution")
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length > 0) {
+      return (data as AiGuideRow[]).map(toAiGuide);
+    }
+  }
+  return staticAiGuides;
+}
+
+/* ---------------------------------------------------------------------------
+   忙しい先生のためのページ
+   006_life_terms.sql を実行するとデータベースが正になる。
+   グループ（life_groups）と用語（life_terms）を組み立て直して返す。
+   ページ下部の公式窓口は official_links の「忙しい先生のためのページ」カテゴリー。
+   --------------------------------------------------------------------------- */
+
+export type LifeLink = { linkName: string; url: string; note: string };
+
+type LifeGroupRow = { title: string; icon: string | null; note: string | null };
+type LifeTermRow = {
+  group_title: string;
+  name: string;
+  description: string | null;
+  sub_items: SubItem[] | null;
+};
+
+export async function getLifeContent(): Promise<{
+  termGroups: TermGroup[];
+  officialLinksForLife: LifeLink[];
+}> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const [groups, terms, links] = await Promise.all([
+      supabase
+        .from("life_groups")
+        .select("title,icon,note")
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("life_terms")
+        .select("group_title,name,description,sub_items")
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("official_links")
+        .select("name,url,description,sort_order")
+        .eq("category", "忙しい先生のためのページ")
+        .order("sort_order", { ascending: true }),
+    ]);
+
+    if (!groups.error && groups.data && groups.data.length > 0 && !terms.error) {
+      const termRows = (terms.data ?? []) as LifeTermRow[];
+      const built: TermGroup[] = (groups.data as LifeGroupRow[]).map((g) => ({
+        icon: g.icon ?? "",
+        groupTitle: g.title,
+        groupNote: g.note ?? undefined,
+        terms: termRows
+          .filter((t) => t.group_title === g.title)
+          .map((t) => ({
+            name: t.name,
+            description: t.description ?? "",
+            subItems: t.sub_items ?? undefined,
+          })),
+      }));
+
+      // 公式窓口はDBに無ければ、ひかえの3件をそのまま使う
+      const linkRows = links.error ? [] : (links.data ?? []);
+      const builtLinks: LifeLink[] =
+        linkRows.length > 0
+          ? (linkRows as { name: string; url: string; description: string | null }[]).map(
+              (l) => ({ linkName: l.name, url: l.url, note: l.description ?? "" }),
+            )
+          : staticLifeLinks;
+
+      return { termGroups: built, officialLinksForLife: builtLinks };
+    }
+  }
+  return {
+    termGroups: staticTermGroups,
+    officialLinksForLife: staticLifeLinks,
+  };
+}
+
+/* ---------------------------------------------------------------------------
+   トップページのカテゴリー
+   007_site_categories.sql を実行するとデータベースが正になる。
+   --------------------------------------------------------------------------- */
+
+type CategoryRow = {
+  slug: string;
+  label: string;
+  icon: string | null;
+  description: string | null;
+  href: string;
+  status: string | null;
+};
+
+/** 表示するカテゴリーを、管理画面で決めた並び順で返す。 */
+export async function getCategories(): Promise<Category[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("site_categories")
+      .select("slug,label,icon,description,href,status")
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length > 0) {
+      return (data as CategoryRow[]).map((row) => ({
+        slug: row.slug,
+        label: row.label,
+        icon: row.icon ?? "",
+        description: row.description ?? "",
+        href: row.href,
+        status: (row.status === "coming-soon" ? "coming-soon" : "live") as Category["status"],
+      }));
+    }
+  }
+  return staticCategories;
+}
+
+/* ---------------------------------------------------------------------------
+   アイスブレイク・学級レク
+   008_activities.sql を実行するとデータベースが正になる。
+   --------------------------------------------------------------------------- */
+
+type IcebreakerRow = {
+  slug: string;
+  title: string;
+  emoji: string | null;
+  scene: string;
+  category: string;
+  duration: string | null;
+  place: string | null;
+  group_size: string | null;
+  materials: string | null;
+  steps: string[] | null;
+  tip: string | null;
+  variation: string | null;
+};
+
+type RecreationRow = {
+  slug: string;
+  title: string;
+  emoji: string | null;
+  scene: string;
+  category: string;
+  grades: string[] | null;
+  occasions: string[] | null;
+  duration: string | null;
+  prep: string | null;
+  place: string | null;
+  places: string[] | null;
+  group_size: string | null;
+  materials: string | null;
+  steps: string[] | null;
+  tip: string | null;
+  variation: string | null;
+  safety: string | null;
+  inclusion: string | null;
+  icebreaker_slug: string | null;
+};
+
+/** 公開中のアイスブレイクを、管理画面で決めた並び順で返す。 */
+export async function getIcebreakers(): Promise<Icebreaker[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("icebreakers")
+      .select(
+        "slug,title,emoji,scene,category,duration,place,group_size,materials,steps,tip,variation",
+      )
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length > 0) {
+      return (data as IcebreakerRow[]).map((row) => ({
+        slug: row.slug,
+        title: row.title,
+        emoji: row.emoji ?? "",
+        scene: row.scene as Icebreaker["scene"],
+        category: row.category as Icebreaker["category"],
+        duration: row.duration ?? "",
+        place: row.place ?? "",
+        groupSize: row.group_size ?? "",
+        materials: row.materials ?? "",
+        steps: row.steps ?? [],
+        tip: row.tip ?? undefined,
+        variation: row.variation ?? undefined,
+      }));
+    }
+  }
+  return staticIcebreakers;
+}
+
+/** 公開中の学級レクを、管理画面で決めた並び順で返す。 */
+export async function getRecreations(): Promise<Recreation[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("recreations")
+      .select(
+        "slug,title,emoji,scene,category,grades,occasions,duration,prep,place,places,group_size,materials,steps,tip,variation,safety,inclusion,icebreaker_slug",
+      )
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length > 0) {
+      return (data as RecreationRow[]).map((row) => ({
+        slug: row.slug,
+        title: row.title,
+        emoji: row.emoji ?? "",
+        scene: row.scene as Recreation["scene"],
+        category: row.category as Recreation["category"],
+        grades: (row.grades ?? []) as Recreation["grades"],
+        occasions: (row.occasions ?? []) as Recreation["occasions"],
+        duration: row.duration ?? "",
+        prep: row.prep ?? "",
+        place: row.place ?? "",
+        places: (row.places ?? []) as Recreation["places"],
+        groupSize: row.group_size ?? "",
+        materials: row.materials ?? "",
+        steps: row.steps ?? [],
+        tip: row.tip ?? undefined,
+        variation: row.variation ?? undefined,
+        safety: row.safety ?? undefined,
+        inclusion: row.inclusion ?? undefined,
+        icebreakerSlug: row.icebreaker_slug ?? undefined,
+      }));
+    }
+  }
+  return staticRecreations;
 }

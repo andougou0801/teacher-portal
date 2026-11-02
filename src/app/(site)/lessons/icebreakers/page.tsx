@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import IcebreakerScene from "@/components/IcebreakerScene";
-import { icebreakers, icebreakerCategories, sortIcebreakers } from "@/lib/icebreakers";
+import { icebreakerCategories, sortIcebreakers } from "@/lib/icebreakers";
+import { getIcebreakers } from "@/lib/content";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
-export const metadata: Metadata = {
-  title: "アイスブレイク大特集 | 全国教員支援ポータル",
-  description: `時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集（全${icebreakers.length}種類）。`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const list = await getIcebreakers();
+  return {
+    title: "アイスブレイク大特集 | 全国教員支援ポータル",
+    description: `時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集（全${list.length}種類）。`,
+  };
+}
 
-export default function IcebreakersPage() {
+export const revalidate = 60;
+
+export default async function IcebreakersPage() {
+  const icebreakers = await getIcebreakers();
   return (
     <section className="mx-auto max-w-4xl px-8 py-14">
       <div className="mb-8 text-center">

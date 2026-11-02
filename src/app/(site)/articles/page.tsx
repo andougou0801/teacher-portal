@@ -5,6 +5,8 @@ import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
   title: "記事・コラム | 全国教員支援ポータル",
+  description:
+    "学級開き、保護者対応、作文や計算のつまずきなど、現場で迷いやすい場面ごとの記事をまとめています。現役の小学校教員が書いています。",
 };
 
 export const revalidate = 60;

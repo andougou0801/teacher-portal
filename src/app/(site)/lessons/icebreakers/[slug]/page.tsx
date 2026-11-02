@@ -2,21 +2,28 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import IcebreakerScene from "@/components/IcebreakerScene";
-import { icebreakers, getIcebreakerBySlug } from "@/lib/icebreakers";
-import { getRecreationByIcebreakerSlug } from "@/lib/recreations";
+import { getIcebreakers, getRecreations } from "@/lib/content";
 import FavoriteButton from "@/components/FavoriteButton";
 
-export function generateStaticParams() {
-  return icebreakers.map((ib) => ({ slug: ib.slug }));
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const list = await getIcebreakers();
+  return list.map((ib) => ({ slug: ib.slug }));
 }
 
 export async function generateMetadata(
   props: PageProps<"/lessons/icebreakers/[slug]">,
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  const ib = getIcebreakerBySlug(slug);
+  const list = await getIcebreakers();
+  const ib = list.find((item) => item.slug === slug);
   return {
     title: ib ? `${ib.title} | 全国教員支援ポータル` : "アイスブレイク",
+    // 所要時間・場所・人数・準備物は、検索した人がいちばん知りたい情報
+    description: ib
+      ? `${ib.title}の進め方。所要${ib.duration}・${ib.place}・${ib.groupSize}。準備するもの：${ib.materials}。`
+      : undefined,
   };
 }
 
@@ -24,13 +31,19 @@ export default async function IcebreakerDetailPage(
   props: PageProps<"/lessons/icebreakers/[slug]">,
 ) {
   const { slug } = await props.params;
-  const ib = getIcebreakerBySlug(slug);
+  const [icebreakers, recreations] = await Promise.all([
+    getIcebreakers(),
+    getRecreations(),
+  ]);
+  const ib = icebreakers.find((item) => item.slug === slug);
 
   if (!ib) {
     notFound();
   }
 
-  const relatedRecreation = getRecreationByIcebreakerSlug(ib.slug);
+  const relatedRecreation = recreations.find(
+    (rec) => rec.icebreakerSlug === ib.slug,
+  );
 
   return (
     <section className="mx-auto max-w-2xl px-8 py-14">

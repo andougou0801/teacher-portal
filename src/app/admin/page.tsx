@@ -18,6 +18,41 @@ const menu = [
       "ツールをサイトに表示するかどうかと、並び順を変更できます。ツール本体の追加は開発者へご依頼ください。",
   },
   {
+    href: "/admin/links",
+    icon: "🔗",
+    title: "便利な公式サイト集",
+    description:
+      "サイト集に出すリンクの追加・編集・削除、並べかえ、表示/非表示ができます。",
+  },
+  {
+    href: "/admin/ai",
+    icon: "🤖",
+    title: "先生のAI活用ガイド",
+    description:
+      "AI活用ガイドの追加・編集・削除、並べかえ、表示/非表示ができます。",
+  },
+  {
+    href: "/admin/life",
+    icon: "💼",
+    title: "忙しい先生のためのページ",
+    description:
+      "休暇や育児・介護の制度の説明を、まとまりごとに追加・編集・削除できます。",
+  },
+  {
+    href: "/admin/categories",
+    icon: "🗂",
+    title: "トップのカテゴリー",
+    description:
+      "トップページのカテゴリーの名前・絵文字・説明・並び順を変えられます。",
+  },
+  {
+    href: "/admin/activities",
+    icon: "🎲",
+    title: "アイスブレイク・学級レク",
+    description:
+      "遊びの中身の追加・編集・削除、並べかえ、表示/非表示ができます。",
+  },
+  {
     href: "/admin/qa",
     icon: "💬",
     title: "Q&Aの管理",
