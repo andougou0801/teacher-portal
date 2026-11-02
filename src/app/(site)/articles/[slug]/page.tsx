@@ -3,8 +3,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { articles } from "@/lib/articles";
 import { getToolBySlug } from "@/lib/tools";
-import { getIcebreakerBySlug } from "@/lib/icebreakers";
-import { getPublishedArticleBySlug } from "@/lib/content";
+import { getIcebreakers, getPublishedArticleBySlug } from "@/lib/content";
+import { pageMetadata } from "@/lib/siteMeta";
 import FavoriteButton from "@/components/FavoriteButton";
 
 export const revalidate = 60;
@@ -18,13 +18,16 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const article = await getPublishedArticleBySlug(slug);
-  return {
-    title: article
-      ? `${article.title} | 全国教員支援ポータル`
-      : "記事",
-    // 記事ごとの要約を検索結果の説明文に使う（全ページ同じ説明になるのを防ぐ）
-    description: article?.summary,
-  };
+  if (!article) {
+    return { title: "記事" };
+  }
+  // 記事ごとの要約を、検索結果の説明文とSNSのカードの両方に使う
+  // （全ページ同じ説明になるのを防ぐ）。
+  return pageMetadata({
+    title: article.title,
+    description: article.summary,
+    path: `/articles/${slug}`,
+  });
 }
 
 export default async function ArticlePage(
@@ -40,8 +43,9 @@ export default async function ArticlePage(
   const relatedTools = (article.relatedTools ?? [])
     .map((slug) => getToolBySlug(slug))
     .filter((tool) => tool !== undefined);
+  const allIcebreakers = await getIcebreakers();
   const relatedIcebreakers = (article.relatedIcebreakers ?? [])
-    .map((slug) => getIcebreakerBySlug(slug))
+    .map((slug) => allIcebreakers.find((ib) => ib.slug === slug))
     .filter((ib) => ib !== undefined);
 
   return (

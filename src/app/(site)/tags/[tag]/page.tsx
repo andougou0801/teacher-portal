@@ -1,8 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getPublishedArticles, getVisibleTools } from "@/lib/content";
-import { icebreakers } from "@/lib/icebreakers";
-import { recreations } from "@/lib/recreations";
+import { getIcebreakers, getRecreations } from "@/lib/content";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const revalidate = 60;
@@ -30,6 +29,10 @@ export default async function TagPage(props: PageProps<"/tags/[tag]">) {
       article.subject === decoded ||
       article.situation === decoded,
   );
+  const [icebreakers, recreations] = await Promise.all([
+    getIcebreakers(),
+    getRecreations(),
+  ]);
   const matchedIcebreakers = icebreakers.filter((ib) => ib.category === decoded);
   const matchedRecreations = recreations.filter((rec) => rec.category === decoded);
   const total =

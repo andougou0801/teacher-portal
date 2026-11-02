@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPublishedArticles, getVisibleTools } from "@/lib/content";
-import { icebreakers } from "@/lib/icebreakers";
-import { recreations } from "@/lib/recreations";
+import { getIcebreakers, getRecreations } from "@/lib/content";
 
 /**
  * 検索エンジンに「どんなページがあるか」を伝える一覧。
@@ -18,9 +17,11 @@ const BASE = "https://teacher-portal-puce.vercel.app";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [articles, tools] = await Promise.all([
+  const [articles, tools, icebreakers, recreations] = await Promise.all([
     getPublishedArticles(),
     getVisibleTools(),
+    getIcebreakers(),
+    getRecreations(),
   ]);
 
   const now = new Date();

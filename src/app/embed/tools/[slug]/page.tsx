@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { tools, getToolBySlug } from "@/lib/tools";
 import { getVisibleToolBySlug } from "@/lib/content";
+import { pageMetadata } from "@/lib/siteMeta";
 
 export function generateStaticParams() {
   return tools
@@ -15,7 +16,18 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const tool = getToolBySlug(slug);
-  return { title: tool ? tool.name : "ツール" };
+  if (!tool) {
+    return { title: "ツール" };
+  }
+  // 宣伝で貼るのはこのURLなので、カードは個別ページと同じものを出す。
+  // ただし中身はツールの個別ページと重なるため、検索エンジンにはそちらを正式なURLとして伝える。
+  return pageMetadata({
+    title: tool.name,
+    description: tool.description,
+    path: `/embed/tools/${slug}`,
+    type: "website",
+    canonicalPath: `/tools/${slug}`,
+  });
 }
 
 export const revalidate = 60;

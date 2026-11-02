@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import {
-  officialLinks,
-  officialLinksNote,
-  type OfficialLink,
-} from "@/lib/officialLinks";
+import { officialLinksNote, type OfficialLink } from "@/lib/officialLinks";
+import { getOfficialLinks } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "便利な公式サイト集 | 全国教員支援ポータル",
@@ -21,7 +18,10 @@ const categories: OfficialLink["category"][] = [
   "めいろ・なぞなぞ",
 ];
 
-export default function LinksPage() {
+export const revalidate = 60;
+
+export default async function LinksPage() {
+  const officialLinks = await getOfficialLinks();
   return (
     <section className="mx-auto max-w-3xl px-8 py-14">
       <div className="mb-8 text-center">

@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { categories } from "@/lib/categories";
-import { getPublishedArticles, getVisibleTools } from "@/lib/content";
+
+import {
+  getCategories,
+  getPublishedArticles,
+  getVisibleTools,
+} from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "全国教員支援ポータル｜先生の仕事が軽くなる無料ツールと記事",
@@ -12,6 +16,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function Home() {
+  const categories = await getCategories();
   const [tools, articles] = await Promise.all([
     getVisibleTools(),
     getPublishedArticles(),
