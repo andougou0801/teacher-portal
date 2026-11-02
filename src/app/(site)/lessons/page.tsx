@@ -1,8 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getPublishedArticles } from "@/lib/content";
-import { icebreakers } from "@/lib/icebreakers";
-import { recreations } from "@/lib/recreations";
+import {
+  getIcebreakers,
+  getPublishedArticles,
+  getRecreations,
+} from "@/lib/content";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
@@ -18,6 +20,10 @@ const upcomingTopics = [
 export const revalidate = 60;
 
 export default async function LessonsPage() {
+  const [icebreakers, recreations] = await Promise.all([
+    getIcebreakers(),
+    getRecreations(),
+  ]);
   const articles = await getPublishedArticles();
   const lessons = articles.filter((article) => article.section === "lesson");
 

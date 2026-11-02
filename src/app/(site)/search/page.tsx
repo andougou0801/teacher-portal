@@ -1,11 +1,16 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getPublishedArticles, getVisibleTools } from "@/lib/content";
+import {
+  getCategories,
+  getIcebreakers,
+  getPublishedArticles,
+  getRecreations,
+  getVisibleTools,
+} from "@/lib/content";
 import { officialLinks } from "@/lib/officialLinks";
 import { aiGuides } from "@/lib/aiGuides";
-import { icebreakers } from "@/lib/icebreakers";
-import { recreations } from "@/lib/recreations";
-import { categories } from "@/lib/categories";
+
+
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
 export const metadata: Metadata = {
@@ -23,6 +28,11 @@ function matches(query: string, ...fields: string[]) {
 export default async function SearchPage(props: PageProps<"/search">) {
   const { q } = await props.searchParams;
   const query = typeof q === "string" ? q : "";
+  const [categories, icebreakers, recreations] = await Promise.all([
+    getCategories(),
+    getIcebreakers(),
+    getRecreations(),
+  ]);
   const [tools, articles] = await Promise.all([
     getVisibleTools(),
     getPublishedArticles(),

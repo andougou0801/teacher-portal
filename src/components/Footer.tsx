@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { categories } from "@/lib/categories";
+import { getCategories } from "@/lib/content";
 
 const aboutLinks = [
   { href: "/about", label: "サイトについて" },
@@ -9,7 +9,8 @@ const aboutLinks = [
   { href: "/about#privacy", label: "プライバシーポリシー" },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const categories = await getCategories();
   return (
     <footer className="mt-auto bg-navy-dark px-8 py-9 text-xs text-[#B9CEDD]">
       <div className="mx-auto mb-8 grid max-w-5xl grid-cols-2 gap-x-6 gap-y-2.5 text-sm sm:grid-cols-3 md:grid-cols-5">
