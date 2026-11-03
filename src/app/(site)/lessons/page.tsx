@@ -79,7 +79,8 @@ export default async function LessonsPage() {
               <span className="text-[13px] font-extrabold tracking-wide text-accent">
                 {lesson.category}
               </span>
-              {lesson.subject && (
+              {/* カテゴリーと教科に同じ言葉が入っているときは、2回出さない */}
+              {lesson.subject && lesson.subject !== lesson.category && (
                 <span className="rounded-full bg-[#EAF2FA] px-2 py-0.5 text-[13px] font-bold text-navy">
                   {lesson.subject}
                 </span>

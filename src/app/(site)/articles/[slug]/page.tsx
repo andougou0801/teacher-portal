@@ -62,7 +62,8 @@ export default async function ArticlePage(
         >
           {article.category}
         </Link>
-        {article.subject && (
+        {/* カテゴリーと教科に同じ言葉が入っているときは、2回出さない */}
+        {article.subject && article.subject !== article.category && (
           <Link
             href={`/tags/${encodeURIComponent(article.subject)}`}
             className="rounded-full bg-[#EAF2FA] px-2 py-0.5 text-[13px] font-bold text-navy hover:bg-accent hover:text-white"
