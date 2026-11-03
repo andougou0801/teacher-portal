@@ -93,6 +93,9 @@ button{font-family:inherit}
 .slider input[type=range]{flex:1 1 12rem;min-height:2.75rem;accent-color:var(--blue)}
 .countout{margin-top:.5rem;font-size:1.05rem;color:var(--ink)}
 .countout b{color:var(--green)}
+.dock{position:relative}
+html.proj .dock{position:sticky;bottom:0;z-index:5;background:var(--card);padding:.2rem 0 .4rem;box-shadow:0 -8px 14px -8px rgba(0,0,0,.18)}
+html.proj .scene svg{max-height:46vh}
 .foot{margin-top:1.6rem;font-size:.85rem;color:var(--muted);text-align:center}
 .toast{
   position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%);background:#1f2937;color:#fff;
@@ -271,7 +274,7 @@ function loadProgress(){
     var o=JSON.parse(raw);
     if(!o||typeof o!=='object'||Array.isArray(o)) return fresh;
     var out=Object.assign({},o);           // 知らない項目（将来の部屋）もそのまま残す
-    out.v=1;
+    out.v=(Number.isInteger(o.v)&&o.v>1)?o.v:1;   // 将来の版の印は書きかえない
     out.frac=(Number.isInteger(o.frac)&&o.frac>=0&&o.frac<=5)?o.frac:0;
     var ar=(o.area&&typeof o.area==='object'&&!Array.isArray(o.area))?o.area:{};
     out.area=Object.assign({},ar,{para:ar.para===true,tri:ar.tri===true});
@@ -301,9 +304,11 @@ function drawFrac(g,cx,cy,n,d,fs,col,op){
   sv('line',{x1:cx-fs*0.6,x2:cx+fs*0.6,y1:cy,y2:cy,stroke:col,'stroke-width':fs*0.09},gg);
   sv('text',{x:cx,y:cy+fs*0.9,'text-anchor':'middle','font-size':fs,'font-weight':800,fill:col,text:d},gg);
 }
+var NUMSCALE=1;   // 画面でのえがかれる大きさ（SVGの1あたりのピクセル）。小さい画面では読めない数字を出さない
+function benchScale(svg){ var w=0; try{ w=svg.getBoundingClientRect().width; }catch(e){} return w>0?w/VW:1; }
 function drawNums(g,x,y,h,count,cw,start){
-  if(cw<19) return;
-  var fs=Math.min(20,cw*0.62);
+  var fs=Math.min(22,cw*0.62);
+  if(fs*NUMSCALE<9.5) return;
   for(var i=0;i<count;i++){
     sv('text',{x:x+(i+0.5)*cw,y:y+h/2+fs*0.36,'text-anchor':'middle','font-size':fs,'font-weight':800,fill:'#fff',text:start+i},g);
   }
@@ -313,7 +318,7 @@ function drawOutline(g,x,y,w,h,wholes,ticks){
   for(var i=1;i<wholes;i++) sv('line',{x1:x+i*w/wholes,x2:x+i*w/wholes,y1:y,y2:y+h,stroke:'#0f172a','stroke-width':3.4},g);
   sv('rect',{x:x,y:y,width:w,height:h,fill:'none',stroke:'#0f172a','stroke-width':2.6},g);
   if(ticks){
-    for(var j=0;j<=wholes;j++) sv('text',{x:x+j*w/wholes,y:y+h+17,'text-anchor':'middle','font-size':16,fill:'#475569',text:j},g);
+    for(var j=0;j<=wholes;j++) sv('text',{x:x+j*w/wholes,y:y+h+19,'text-anchor':'middle','font-size':20,fill:'#475569',text:j},g);
   }
 }
 /* 帯。o:{x,y,w,h,wholes,per,oldEvery,newT,parts[{v0,v1,color,opacity}]} */
@@ -372,7 +377,7 @@ function drawNaive(svg,M){
     var by=YR+BH+22;
     function bracket(x,w,label,dy,col){
       sv('path',{d:'M'+x+','+(by-6)+' v6 h'+w+' v-6',fill:'none',stroke:col,'stroke-width':2.4},svg);
-      sv('text',{x:x+w/2,y:by+18+dy,'text-anchor':'middle','font-size':15,'font-weight':800,fill:col,text:label},svg);
+      sv('text',{x:x+w/2,y:by+18+dy,'text-anchor':'middle','font-size':18,'font-weight':800,fill:col,text:label},svg);
     }
     if(same) bracket(X0,cwA,'1ます＝1/'+M.b+'（同じ大きさ）',0,'#0f5132');
     else{
@@ -387,11 +392,12 @@ function drawNaive(svg,M){
     drawOutline(svg,X0,YN,BW,BH,M.wholes,false);
     drawFrac(svg,50,YN+BH/2,nn,dd,30,SLATE,g2);
     sv('line',{x1:xe,x2:xe,y1:YR-6,y2:YN+BH+8,stroke:ROSE,'stroke-width':3,'stroke-dasharray':'7 5',opacity:g2},svg);
-    sv('text',{x:clamp(xe,170,490),y:YN+BH+30,'text-anchor':'middle','font-size':20,'font-weight':800,fill:ROSE,opacity:g2,
+    sv('text',{x:clamp(xe,170,490),y:YN+BH+30,'text-anchor':'middle','font-size':22,'font-weight':800,fill:ROSE,opacity:g2,
       text:'ながさが ちがう！'},svg);
   }
 }
 function drawBench(svg,M){
+  NUMSCALE=benchScale(svg);
   clear(svg); svg.setAttribute('viewBox','0 0 '+VW+' '+M.H);
   fracRow(svg,M,YA,M.a,M.b,BLUE);
   fracRow(svg,M,YB,M.c,M.d,ORANGE);
@@ -399,6 +405,7 @@ function drawBench(svg,M){
   else if(M.mode==='naive') drawNaive(svg,M);
 }
 function drawSame(svg,S,over){
+  NUMSCALE=benchScale(svg);
   clear(svg); svg.setAttribute('viewBox','0 0 '+VW+' 168');
   var D=S.d*S.k, yB=lerp(84,14,over);
   drawBar(svg,{x:X0,y:14,w:BW,h:BH,wholes:1,per:S.d,oldEvery:1,newT:1,parts:[{v0:0,v1:S.n/S.d,color:BLUE}]});
@@ -461,7 +468,8 @@ function stageShell(card,leadHtml){
     scene:el('div',{class:'scene'}), actions:el('div',{class:'actions'}),
     cap:el('div',{class:'caption','aria-live':'polite'}), eq:el('div',{class:'eq'})
   };
-  card.append(o.lead,o.editor,o.scene,o.actions,o.cap,o.eq);
+  o.dock=el('div',{class:'dock'},[o.actions,o.cap]);   // 投影モードでは画面の下に張りつく
+  card.append(o.lead,o.editor,o.scene,o.dock,o.eq);
   return o;
 }
 function fracStageDef(){ return [
@@ -512,11 +520,21 @@ function makeFracEditors(U,B,onChange,keys){
   var sts=[];
   function sync(){ sts.forEach(function(s){ s.sync(); }); }
   function setPair(key,v){
+    var cur=fracPair[key], dir=v>cur?1:-1, skipped=false;
+    var isDen=(key==='b'||key==='d');
+    // 分母は、ますが細かくなりすぎる組み合わせ（最小公倍数が大きすぎる）をとばして次の値へ進む
+    while(isDen&&v>=2&&v<=9){
+      var other=key==='b'?fracPair.d:fracPair.b;
+      if(lcm(v,other)<=LCM_MAX) break;
+      v+=dir; skipped=true;
+    }
+    if(isDen&&(v<2||v>9)) return false;
     var t=Object.assign({},fracPair); t[key]=v;
     if(key==='b'&&t.a>=v) t.a=v-1;
     if(key==='d'&&t.c>=v) t.c=v-1;
-    if(lcm(t.b,t.d)>LCM_MAX) return false;
-    fracPair=t; onChange(); sync(); return true;
+    fracPair=t; onChange(); sync();
+    if(skipped) toast('ますが こまかくなりすぎる 分母は とばしたよ');
+    return true;
   }
   var defs={
     a:{label:'分子（青）',min:function(){return 1;},max:function(){return fracPair.b-1;}},
@@ -547,9 +565,9 @@ function buildStage1(card){
   }
   function capText(){
     if(over===1&&S.k>1){
-      U.cap.innerHTML='ぴったり かさなった！ '+S.n+'/'+S.d+' も '+S.n*S.k+'/'+(S.d*S.k)+' も、帯の 長さは 同じだね。<b>分母と分子に 同じ数（'+S.k+'）を かけても、大きさは かわらない</b>。（同じ数で わっても 同じだよ）';
+      U.cap.innerHTML='ぴったり かさなった！ '+S.n+'/'+S.d+' も '+S.n*S.k+'/'+(S.d*S.k)+' も、帯の 長さは 同じだね。<b>分母と分子に 同じ数（'+S.k+'）を かけても、大きさは かわらない</b>。（同じ数で わりきれるときは、わっても 同じ大きさだよ）';
     }else if(S.k===1){
-      U.cap.textContent='いまは 分け方が そのままだよ。「分け方」の ＋を おして、1こを いくつかに 分けてみよう。';
+      U.cap.textContent='いまは 分け方が そのままだよ。いちばん右の ＋を おして、1こを いくつかに 分けてみよう。';
     }else{
       U.cap.textContent='1こを '+S.k+'こに 分けたよ。帯の 名前は '+S.n*S.k+'/'+(S.d*S.k)+'。大きさは どうかな？「かさねる」で たしかめよう。';
     }
@@ -559,7 +577,7 @@ function buildStage1(card){
   var stN=stepper({label:'分子',get:function(){return S.n;},min:function(){return 1;},max:function(){return S.d-1;},set:function(v){S.n=v;changed();}});
   var stD=stepper({label:'分母',get:function(){return S.d;},min:function(){return 2;},max:function(){return 6;},
     set:function(v){S.d=v;if(S.n>=v)S.n=v-1;if(S.k>maxK())S.k=maxK();changed();}});
-  var stK=stepper({label:'分け方',unit:'倍',get:function(){return S.k;},min:function(){return 1;},max:maxK,set:function(v){S.k=v;changed();}});
+  var stK=stepper({label:'1こを',unit:'こに分ける',get:function(){return S.k;},min:function(){return 1;},max:maxK,set:function(v){S.k=v;changed();}});
   sts.push(stN,stD,stK);
   U.editor.append(stN,stD,stK);
   var btn=el('button',{class:'btn primary',type:'button',text:'かさねる',onclick:async function(){
@@ -612,14 +630,14 @@ function benchStageText(no,B){
       eq='<span class="ln">'+fr(B.a,B.b)+' ＝ '+fr(B.a+'×'+k1,B.b+'×'+k1)+' ＝ '+fr(B.a*k1,D)+'</span>'+
          '<span class="ln">'+fr(B.c,B.d)+' ＝ '+fr(B.c+'×'+k2,B.d+'×'+k2)+' ＝ '+fr(B.c*k2,D)+'</span>';
     }else{
-      cap='分母が ちがうと ますの 大きさが ばらばら。「そろえる」を おして、帯を 細かく 割りなおそう。';
+      cap='分母が ちがうと ますの 大きさが ばらばら。「そろえる」を おして、帯を こまかく わりなおそう。';
       eq='<span class="ln">'+orig+'</span>';
     }
   }else{
     var nA=B.a*k1, nB=B.c*k2, S=nA+nB;
     if(B.mode==='added'&&B.modeT===1){
       var w=Math.floor(S/D), r=S-w*D, g=gcd(r||D,D);
-      cap=nA+'こと '+nB+'こで '+S+'こ。1ますは '+D+'分の1 のまま。だから 答えは '+(w>0?w+'と ':'')+(r>0?r+'/'+D:'')+'。<b>分母は そのまま、分子だけ たす</b>んだね。';
+      cap=nA+'こと '+nB+'こで '+S+'こ。1ますは '+D+'分の1 のまま。だから 答えは '+(w>0?w+(r>0?'と ':''):'')+(r>0?r+'/'+D:'')+'。<b>分母は そのまま、分子だけ たす</b>んだね。';
       eq='<span class="ln">'+fr(nA,D)+' ＋ '+fr(nB,D)+' ＝ '+fr(S,D)+(w>0?' ＝ '+mixed(w,r,D):'')+'</span>';
       if(r>0&&g>1) eq+='<span class="ln c-green">'+fr(r,D)+' は '+g+'で われるので '+fr(r/g,D/g)+' に 約分できるよ。</span>';
     }else{
@@ -632,7 +650,7 @@ function benchStageText(no,B){
 function buildBenchStage(card,no){
   var leads={
     2:'<span class="c-blue">青</span>と<span class="c-orange">だいだい</span>の 分数を たしたいな。<b>分母どうし、分子どうしを そのまま たして いいのかな？</b>',
-    3:'分母が ちがうと、ますの 大きさが ちがうよ。<b>「そろえる」</b>を おして、帯が 割りなおされる ところを 見よう。',
+    3:'分母が ちがうと、ますの 大きさが ちがうよ。<b>「そろえる」</b>を おして、帯が わりなおされる ところを 見よう。',
     4:'分母が そろったよ。<b>「たす」</b>を おして、2本の 帯を つなげて、答えを 見つけよう。'
   };
   var U=stageShell(card,leads[no]);
@@ -686,6 +704,7 @@ function genProblem(){
     var a=1+Math.floor(Math.random()*(p[0]-1)), c=1+Math.floor(Math.random()*(p[1]-1));
     var s=a*p[1]+c*p[0], den=p[0]*p[1];
     if(s%den===0) continue;                          // 答えが整数になる問題は出さない
+    if(gcd(a,p[0])!==1||gcd(c,p[1])!==1) continue;   // 約分できる分数（2/6など）は出さない
     if(prob&&prob.a===a&&prob.b===p[0]&&prob.c===c&&prob.d===p[1]) continue;
     return {a:a,b:p[0],c:c,d:p[1]};
   }
@@ -732,7 +751,7 @@ function buildStage5(card){
   var chk=el('button',{class:'btn primary',type:'button',text:'こたえあわせ'});
   var nxt=el('button',{class:'btn go',type:'button',text:'つぎの もんだい ▶',hidden:true});
   var box=el('div',{class:'answer'},[el('span',{text:'答え：'}),ansW,el('span',{text:'と'}),frBox,chk,nxt]);
-  card.insertBefore(box,U.cap);
+  U.dock.insertBefore(box,U.cap);
   var hint=el('div',{class:'eq'}); card.appendChild(hint);
 
   function say(t){ U.cap.innerHTML=t; }
@@ -819,11 +838,23 @@ function countCells(polys){
   Object.keys(cells).forEach(function(k){ if(cells[k]>0.99999) full++; else part+=cells[k]; });
   return {cells:cells,full:full,part:part,total:full+part};
 }
+/* 図をかく範囲。回っている途中の三角形も、はみ出さないように動きの全体から決める */
 function areaLayout(M){
-  var worldW=Math.max(M.kind==='tri'?2*M.b+2.7:M.b+M.o+2,12);
-  var worldH=M.h+2.8;
+  var xmin=0, xmax=M.kind==='tri'?2*M.b+0.7:M.b+M.o, ymin=0, ymax=M.h;
+  if(M.kind==='tri'){
+    for(var i=0;i<=20;i++){
+      triCopyPoly({kind:'tri',b:M.b,h:M.h,p:M.p,u:i/20}).forEach(function(q){
+        xmin=Math.min(xmin,q[0]); xmax=Math.max(xmax,q[0]); ymin=Math.min(ymin,q[1]); ymax=Math.max(ymax,q[1]);
+      });
+    }
+  }
+  var worldW=Math.max(xmax-xmin+2,12);
   var U=AVW/worldW;
-  return {U:U,VH:U*worldH,OX:U,OY:U*(worldH-1.4),worldW:worldW,worldH:worldH};
+  var fs=Math.max(28,U*0.5);
+  var below=Math.max(0.58+(1.25*fs+8)/U,0.3-ymin);   // 底辺のものさし＋文字の分
+  var above=ymax+1.4;
+  var worldH=above+below;
+  return {U:U,VH:U*worldH,OX:U*(1-xmin),OY:U*above,worldW:worldW,worldH:worldH,fs:fs};
 }
 /* ドラッグする部分の動く道すじ（世界の座標） */
 function areaPath(M){
@@ -859,8 +890,8 @@ function drawArea(svg,M){
   sv('rect',{x:0,y:0,width:AVW,height:L.VH,fill:'#fbfdff'},svg);
   function drawGrid(){
     if(!(M.grid||M.count)) return;
-    for(var gx=-1;gx<=Math.floor(L.worldW-1);gx++) sv('line',{x1:X(gx),x2:X(gx),y1:0,y2:L.VH,stroke:'#5b7299','stroke-opacity':.38,'stroke-width':1,'pointer-events':'none'},svg);
-    for(var gy=-1;gy<=Math.floor(L.worldH-1.4);gy++) sv('line',{x1:0,x2:AVW,y1:Y(gy),y2:Y(gy),stroke:'#5b7299','stroke-opacity':.38,'stroke-width':1,'pointer-events':'none'},svg);
+    for(var gx=Math.ceil(-L.OX/L.U);gx<=Math.floor((AVW-L.OX)/L.U);gx++) sv('line',{x1:X(gx),x2:X(gx),y1:0,y2:L.VH,stroke:'#5b7299','stroke-opacity':.38,'stroke-width':1,'pointer-events':'none'},svg);
+    for(var gy=Math.ceil(-(L.VH-L.OY)/L.U);gy<=Math.floor(L.OY/L.U);gy++) sv('line',{x1:0,x2:AVW,y1:Y(gy),y2:Y(gy),stroke:'#5b7299','stroke-opacity':.38,'stroke-width':1,'pointer-events':'none'},svg);
   }
   sv('line',{x1:0,x2:AVW,y1:Y(0),y2:Y(0),stroke:'#94a3b8','stroke-width':2},svg);
   function drawCount(){
@@ -875,7 +906,7 @@ function drawArea(svg,M){
       if(M.countFresh) r.style.animationDelay=(idx*18)+'ms';
     });
   }
-  var fs=Math.max(25,L.U*0.5);
+  var fs=L.fs;
   function label(x,y,txt,anchor,col){
     var t=sv('text',{x:X(x),y:Y(y),'text-anchor':anchor||'middle','font-size':fs,'font-weight':800,fill:col||'#0f172a',
       stroke:'#fbfdff','stroke-width':5,'paint-order':'stroke',text:txt},svg);
@@ -887,7 +918,8 @@ function drawArea(svg,M){
   }
   function baseLabel(x0,x1,txt){
     sv('path',{d:'M'+X(x0)+','+Y(-0.4)+' v'+L.U*0.18+' H'+X(x1)+' v-'+L.U*0.18,fill:'none',stroke:'#0f172a','stroke-width':2.4},svg);
-    label((x0+x1)/2,-1.05,txt,'middle');
+    sv('text',{x:X((x0+x1)/2),y:Y(-0.4)+L.U*0.18+fs+6,'text-anchor':'middle','font-size':fs,'font-weight':800,fill:'#0f172a',
+      stroke:'#fbfdff','stroke-width':5,'paint-order':'stroke',text:txt},svg);
   }
   if(M.kind==='para'){
     sv('polygon',{points:P(SH.R),fill:'#cfe0ff',stroke:BLUE,'stroke-width':3,'stroke-linejoin':'round'},svg);
@@ -1112,7 +1144,7 @@ function buildMemoSheet(room){
     sheet.appendChild(el('h2',{text:'わかったことメモ　〜ぶんすうのおび〜'}));
     sheet.appendChild(el('p',{class:'sub',text:'帯を 見て わかったことを、じぶんの ことばで 書いてみよう。'}));
     sheet.appendChild(el('div',{class:'sec'},[
-      el('h3',{text:'① はじめの 2本の 帯（分母が ちがう）'}),
+      el('h3',{text:f.b===f.d?'① はじめの 2本の 帯（分母が 同じ）':'① はじめの 2本の 帯（分母が ちがう）'}),
       memoFigure(function(svg){ drawBench(svg,Bp); })
     ]));
     var D=Ba.D, nA=Ba.a*(D/Ba.b), nB=Ba.c*(D/Ba.d), S=nA+nB;
