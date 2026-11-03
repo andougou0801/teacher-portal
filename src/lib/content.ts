@@ -14,6 +14,11 @@ import {
 import { categories as staticCategories, type Category } from "./categories";
 import { icebreakers as staticIcebreakers, type Icebreaker } from "./icebreakers";
 import { recreations as staticRecreations, type Recreation } from "./recreations";
+import {
+  getStaticPageText,
+  type PageCard,
+  type PageText,
+} from "./pageTexts";
 import { getSupabaseClient } from "./supabaseClient";
 
 /**
@@ -452,4 +457,46 @@ export async function getRecreations(): Promise<Recreation[]> {
     }
   }
   return staticRecreations;
+}
+
+/* ---------------------------------------------------------------------------
+   一覧ページの見出し・紹介文・今後扱っていくテーマ
+   009_page_texts.sql を実行するとデータベースが正になる。
+   --------------------------------------------------------------------------- */
+
+type PageTextRow = {
+  slug: string;
+  eyebrow: string | null;
+  emoji: string | null;
+  heading: string | null;
+  lead: string | null;
+  topics_title: string | null;
+  topics: string[] | null;
+  cards: PageCard[] | null;
+};
+
+export async function getPageText(slug: string): Promise<PageText> {
+  const fallback = getStaticPageText(slug);
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("page_texts")
+      .select("slug,eyebrow,emoji,heading,lead,topics_title,topics,cards")
+      .eq("slug", slug)
+      .maybeSingle();
+    if (!error && data) {
+      const row = data as PageTextRow;
+      return {
+        ...fallback,
+        eyebrow: row.eyebrow ?? fallback.eyebrow,
+        emoji: row.emoji ?? fallback.emoji,
+        heading: row.heading ?? fallback.heading,
+        lead: row.lead ?? fallback.lead,
+        topicsTitle: row.topics_title ?? fallback.topicsTitle,
+        topics: row.topics ?? fallback.topics,
+        cards: row.cards ?? fallback.cards,
+      };
+    }
+  }
+  return fallback;
 }

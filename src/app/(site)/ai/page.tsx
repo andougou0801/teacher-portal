@@ -1,30 +1,28 @@
 import type { Metadata } from "next";
-import { getAiGuides } from "@/lib/content";
-
-export const metadata: Metadata = {
-  title: "先生のAI活用 | 全国教員支援ポータル",
-  description: "生成AIを授業準備や校務に活かすための入門ガイド。",
-};
-
-const upcomingTopics = [
-  "Claude Code", "Canva", "AIによるアイデア出し", "AIを使った学級経営",
-  "教育現場でのAI活用事例",
-];
+import { getAiGuides, getPageText } from "@/lib/content";
 
 export const revalidate = 60;
 
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageText("ai");
+  return {
+    title: `${page.heading} | 全国教員支援ポータル`,
+    description: page.lead,
+  };
+}
+
 export default async function AiPage() {
-  const aiGuides = await getAiGuides();
+  const [page, aiGuides] = await Promise.all([getPageText("ai"), getAiGuides()]);
   return (
     <section className="mx-auto max-w-3xl px-8 py-14">
       <div className="mb-8 text-center">
         <div className="text-xs font-bold tracking-widest text-accent uppercase">
-          AI for Teachers
+          {page.eyebrow}
         </div>
-        <h1 className="mt-2 mb-2 text-2xl font-bold">🤖 先生のAI活用</h1>
-        <p className="mx-auto max-w-lg text-sm text-muted">
-          「何ができる？」「どう使う？」「実際のプロンプト」まで、初心者にも分かる形で紹介します。
-        </p>
+        <h1 className="mt-2 mb-2 text-2xl font-bold">
+          {page.emoji} {page.heading}
+        </h1>
+        <p className="mx-auto max-w-lg text-sm text-muted">{page.lead}</p>
       </div>
 
       <div className="flex flex-col gap-5">
@@ -64,19 +62,21 @@ export default async function AiPage() {
         ))}
       </div>
 
-      <div className="mt-8">
-        <h2 className="mb-3 text-sm font-bold text-navy">今後扱っていくテーマ（例）</h2>
-        <div className="flex flex-wrap gap-2">
-          {upcomingTopics.map((topic) => (
-            <span
-              key={topic}
-              className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
-            >
-              {topic}
-            </span>
-          ))}
+      {page.topics.length > 0 && (
+        <div className="mt-8">
+          <h2 className="mb-3 text-sm font-bold text-navy">{page.topicsTitle}</h2>
+          <div className="flex flex-wrap gap-2">
+            {page.topics.map((topic) => (
+              <span
+                key={topic}
+                className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
+              >
+                {topic}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

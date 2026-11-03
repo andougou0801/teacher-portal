@@ -1,34 +1,35 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getPublishedArticles } from "@/lib/content";
+import { getPageText, getPublishedArticles } from "@/lib/content";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
-
-export const metadata: Metadata = {
-  title: "学級経営・子ども対応 | 全国教員支援ポータル",
-  description: "教員が日々困りやすい学級経営・子ども対応の場面別ページ。",
-};
-
-const upcomingTopics = [
-  "班活動", "係活動", "掃除", "給食", "褒め方", "叱り方",
-  "子ども同士のトラブル", "授業中の私語", "個人懇談",
-];
 
 export const revalidate = 60;
 
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageText("classroom");
+  return {
+    title: `${page.heading} | 全国教員支援ポータル`,
+    description: page.lead,
+  };
+}
+
 export default async function ClassroomPage() {
-  const articles = await getPublishedArticles();
+  const [page, articles] = await Promise.all([
+    getPageText("classroom"),
+    getPublishedArticles(),
+  ]);
   const posts = articles.filter((article) => article.section === "classroom");
 
   return (
     <section className="mx-auto max-w-3xl px-8 py-14">
       <div className="mb-8 text-center">
         <div className="text-xs font-bold tracking-widest text-accent uppercase">
-          Classroom
+          {page.eyebrow}
         </div>
-        <h1 className="mt-2 mb-2 text-2xl font-bold">🏫 学級経営・子ども対応</h1>
-        <p className="mx-auto max-w-lg text-sm text-muted">
-          教員が日々困りやすい場面から探せるページを目指しています。
-        </p>
+        <h1 className="mt-2 mb-2 text-2xl font-bold">
+          {page.emoji} {page.heading}
+        </h1>
+        <p className="mx-auto max-w-lg text-sm text-muted">{page.lead}</p>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -50,19 +51,21 @@ export default async function ClassroomPage() {
         ))}
       </div>
 
-      <div className="mt-8">
-        <h2 className="mb-3 text-sm font-bold text-navy">今後扱っていくテーマ（例）</h2>
-        <div className="flex flex-wrap gap-2">
-          {upcomingTopics.map((topic) => (
-            <span
-              key={topic}
-              className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
-            >
-              {topic}
-            </span>
-          ))}
+      {page.topics.length > 0 && (
+        <div className="mt-8">
+          <h2 className="mb-3 text-sm font-bold text-navy">{page.topicsTitle}</h2>
+          <div className="flex flex-wrap gap-2">
+            {page.topics.map((topic) => (
+              <span
+                key={topic}
+                className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
+              >
+                {topic}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }
