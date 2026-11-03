@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import AdminShell from "@/components/admin/AdminShell";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { tools } from "@/lib/tools";
@@ -36,6 +38,49 @@ const MONTHS = [
   "10月", "11月", "12月", "1月", "2月", "3月",
 ];
 
+/**
+ * 掲載先ごとの入り口。/admin/articles?area=classroom のように開くと、
+ * その掲載先の記事だけが並び、新しく書くときも掲載先が先に入っている。
+ * 取りちがえを減らすため（2026-11-03、運営者の指示）。
+ */
+const AREAS = {
+  lesson: {
+    title: "授業・教材アイデアの記事",
+    section: "lesson" as const,
+    note: "/lessons に並びます。",
+  },
+  classroom: {
+    title: "学級経営の記事",
+    section: "classroom" as const,
+    note: "/classroom に並びます。行事の記事は「時期」も入れてください。",
+  },
+  column: {
+    title: "先生のコラム",
+    section: "column" as const,
+    note: "/column に並びます。",
+  },
+  other: {
+    title: "そのほかの記事",
+    section: null,
+    note: "どのページにも並べず、記事一覧（/articles）にだけ出ます。",
+  },
+  all: {
+    title: "すべての記事",
+    section: undefined,
+    note: "掲載先にかかわらず、ぜんぶの記事が並びます。",
+  },
+} as const;
+
+type AreaKey = keyof typeof AREAS;
+const AREA_ORDER: AreaKey[] = ["lesson", "classroom", "column", "other", "all"];
+const AREA_TAB_LABEL: Record<AreaKey, string> = {
+  lesson: "授業・教材",
+  classroom: "学級経営",
+  column: "コラム",
+  other: "そのほか",
+  all: "すべて",
+};
+
 const emptyForm = (): ArticleRow => ({
   id: "",
   slug: "",
@@ -63,6 +108,21 @@ function generateSlug(): string {
 }
 
 export default function AdminArticlesPage() {
+  return (
+    <Suspense fallback={<AdminShell title="記事の管理">読み込み中です…</AdminShell>}>
+      <AdminArticlesContent />
+    </Suspense>
+  );
+}
+
+function AdminArticlesContent() {
+  const searchParams = useSearchParams();
+  const areaParam = searchParams.get("area") ?? "all";
+  const area: AreaKey = (AREA_ORDER as string[]).includes(areaParam)
+    ? (areaParam as AreaKey)
+    : "all";
+  const areaInfo = AREAS[area];
+
   const [rows, setRows] = useState<ArticleRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<ArticleRow | null>(null);
@@ -92,9 +152,22 @@ export default function AdminArticlesPage() {
     load();
   }, [load]);
 
+  /** いま開いている入り口の記事だけにしぼる */
+  const visibleRows = rows.filter((row) => {
+    if (areaInfo.section === undefined) return true;
+    if (areaInfo.section === null) return !row.section;
+    // 古い "event" は「学級経営」にまとめた（2026-11-03）
+    if (areaInfo.section === "classroom") {
+      return row.section === "classroom" || row.section === "event";
+    }
+    return row.section === areaInfo.section;
+  });
+
   function startNew() {
     const draft = emptyForm();
     draft.slug = generateSlug();
+    // 入り口から開いたときは、掲載先を先に入れておく（選び忘れを防ぐ）
+    if (areaInfo.section !== undefined) draft.section = areaInfo.section;
     setForm(draft);
     setBodyText("");
     setMessage(null);
@@ -179,7 +252,28 @@ export default function AdminArticlesPage() {
     "w-full rounded-xl border border-line px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none";
 
   return (
-    <AdminShell title="記事・コラムの管理">
+    <AdminShell title={areaInfo.title}>
+      {!form && (
+        <>
+          <div className="mb-3 flex flex-wrap gap-2">
+            {AREA_ORDER.map((key) => (
+              <Link
+                key={key}
+                href={`/admin/articles?area=${key}`}
+                className={`rounded-full border px-3.5 py-1.5 text-[13px] font-bold ${
+                  key === area
+                    ? "border-accent bg-accent text-white"
+                    : "border-line bg-white text-navy hover:bg-background"
+                }`}
+              >
+                {AREA_TAB_LABEL[key]}
+              </Link>
+            ))}
+          </div>
+          <p className="mb-4 text-sm text-muted">{areaInfo.note}</p>
+        </>
+      )}
+
       {message && (
         <p className="mb-4 rounded-xl bg-warn-bg px-4 py-2.5 text-sm text-warn">
           {message}
@@ -411,18 +505,18 @@ export default function AdminArticlesPage() {
             onClick={startNew}
             className="mb-4 rounded-full bg-cta px-6 py-2.5 text-sm font-bold text-white hover:bg-cta-dark"
           >
-            ＋ 新しい記事を書く
+            ＋ {area === "all" ? "新しい記事を書く" : `${areaInfo.title}を書く`}
           </button>
 
           {loading ? (
             <p className="text-sm text-muted">読み込み中です…</p>
-          ) : rows.length === 0 ? (
+          ) : visibleRows.length === 0 ? (
             <p className="text-sm text-muted">
-              まだ記事がありません。「新しい記事を書く」から追加してください。
+              ここにはまだ記事がありません。上のボタンから追加してください。
             </p>
           ) : (
             <div className="flex flex-col gap-2">
-              {rows.map((row) => (
+              {visibleRows.map((row) => (
                 <div
                   key={row.id}
                   className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-line bg-white p-4"
