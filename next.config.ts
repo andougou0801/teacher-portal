@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
         destination: "/classroom",
         permanent: true,
       },
+      // 管理画面の「ページの見出し・紹介文」は「カテゴリーとページ」にまとめた（2026-11-03）。
+      {
+        source: "/admin/pages",
+        destination: "/admin/categories",
+        permanent: true,
+      },
     ];
   },
 };

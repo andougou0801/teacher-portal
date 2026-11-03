@@ -478,6 +478,8 @@ type PageTextRow = {
 export async function getPageText(slug: string): Promise<PageText> {
   const fallback = getStaticPageText(slug);
   const supabase = getSupabaseClient();
+  let page = fallback;
+
   if (supabase) {
     const { data, error } = await supabase
       .from("page_texts")
@@ -486,7 +488,7 @@ export async function getPageText(slug: string): Promise<PageText> {
       .maybeSingle();
     if (!error && data) {
       const row = data as PageTextRow;
-      return {
+      page = {
         ...fallback,
         eyebrow: row.eyebrow ?? fallback.eyebrow,
         emoji: row.emoji ?? fallback.emoji,
@@ -498,5 +500,15 @@ export async function getPageText(slug: string): Promise<PageText> {
       };
     }
   }
-  return fallback;
+
+  /**
+   * 名前と絵文字は「トップのカテゴリー」を正とする。
+   * 同じものを2か所で持つと、片方だけ直したときに食いちがうため
+   * （2026-11-03、管理画面を1つにまとめたときの決まり）。
+   */
+  const category = (await getCategories()).find((c) => c.slug === slug);
+  if (category) {
+    return { ...page, heading: category.label, emoji: category.icon || page.emoji };
+  }
+  return page;
 }
