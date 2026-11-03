@@ -34,18 +34,12 @@ export const categories: Category[] = [
   },
   {
     slug: "classroom",
-    label: "学級経営・子ども対応",
+    label: "学級経営",
     icon: "🏫",
-    description: "学級開き・トラブル対応・保護者対応など、困った場面から探せるページ。",
+    // 2026-11-03、「学校行事・年間行事」をこのカテゴリーにまとめた。
+    description:
+      "学級開き・トラブル対応・保護者対応から、運動会や学習発表会などの行事まで。困った場面と時期から探せるページ。",
     href: "/classroom",
-    status: "live",
-  },
-  {
-    slug: "events",
-    label: "学校行事・年間行事",
-    icon: "📅",
-    description: "時期ごとに必要な情報を探せる、年間行事の準備ガイド。",
-    href: "/events",
     status: "live",
   },
   {

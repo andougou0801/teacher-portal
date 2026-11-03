@@ -18,7 +18,11 @@ export default async function ClassroomPage() {
     getPageText("classroom"),
     getPublishedArticles(),
   ]);
-  const posts = articles.filter((article) => article.section === "classroom");
+  // 「学校行事・年間行事」は2026-11-03にこのページへまとめた。
+  // 古い section: "event" の記事も、ここに出す。
+  const posts = articles.filter(
+    (article) => article.section === "classroom" || article.section === "event",
+  );
 
   return (
     <section className="mx-auto max-w-3xl px-8 py-14">
@@ -40,6 +44,11 @@ export default async function ClassroomPage() {
             className={`rounded-2xl border border-line border-l-4 bg-white p-5 ${getCategoryBorderColor(post.category)}`}
           >
             <div className="flex flex-wrap items-center gap-2">
+              {post.month && (
+                <span className="rounded-full bg-navy px-2.5 py-0.5 text-[13px] font-bold text-white">
+                  {post.month}
+                </span>
+              )}
               <span className="text-[13px] font-extrabold tracking-wide text-accent">
                 {post.category}
               </span>

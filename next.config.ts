@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
         destination: "/lessons/recreations/paper-plane",
         permanent: true,
       },
+      // 「学校行事・年間行事」は「学級経営」にまとめた（2026-11-03）。
+      {
+        source: "/events",
+        destination: "/classroom",
+        permanent: true,
+      },
     ];
   },
 };

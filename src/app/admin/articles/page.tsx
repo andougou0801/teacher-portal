@@ -28,8 +28,7 @@ const SECTIONS = [
   { value: "", label: "記事一覧のみ" },
   { value: "column", label: "コラム" },
   { value: "lesson", label: "授業・教材アイデア" },
-  { value: "classroom", label: "学級経営・子ども対応" },
-  { value: "event", label: "学校行事・年間行事" },
+  { value: "classroom", label: "学級経営（行事もふくむ）" },
 ] as const;
 
 const MONTHS = [
@@ -130,7 +129,7 @@ export default function AdminArticlesPage() {
       published_at: form.published_at,
       section: form.section,
       subject: form.section === "lesson" ? form.subject : null,
-      month: form.section === "event" ? form.month : null,
+      month: form.section === "classroom" ? (form.month || null) : null,
       situation: form.section === "classroom" ? form.situation : null,
       related_tools: form.related_tools ?? [],
       related_icebreakers: form.related_icebreakers ?? [],
@@ -272,33 +271,32 @@ export default function AdminArticlesPage() {
             </label>
           )}
 
-          {form.section === "event" && (
-            <label className="flex flex-col gap-1 text-sm font-bold">
-              時期
-              <select
-                className={inputClass}
-                value={form.month ?? ""}
-                onChange={(e) => setForm({ ...form, month: e.target.value })}
-              >
-                <option value="">選んでください</option>
-                {MONTHS.map((month) => (
-                  <option key={month} value={month}>
-                    {month}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-
           {form.section === "classroom" && (
-            <label className="flex flex-col gap-1 text-sm font-bold">
-              場面（例：学級開き、保護者対応）
-              <input
-                className={inputClass}
-                value={form.situation ?? ""}
-                onChange={(e) => setForm({ ...form, situation: e.target.value })}
-              />
-            </label>
+            <>
+              <label className="flex flex-col gap-1 text-sm font-bold">
+                場面（例：学級開き、保護者対応）
+                <input
+                  className={inputClass}
+                  value={form.situation ?? ""}
+                  onChange={(e) => setForm({ ...form, situation: e.target.value })}
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-sm font-bold">
+                時期（行事の記事のときだけ選びます。選ぶとカードに月が出ます）
+                <select
+                  className={inputClass}
+                  value={form.month ?? ""}
+                  onChange={(e) => setForm({ ...form, month: e.target.value })}
+                >
+                  <option value="">選ばない</option>
+                  {MONTHS.map((month) => (
+                    <option key={month} value={month}>
+                      {month}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </>
           )}
 
           <fieldset className="flex flex-col gap-2">

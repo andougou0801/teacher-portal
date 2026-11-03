@@ -10,12 +10,16 @@ export type Article = {
   /**
    * 省略時は /articles のみに表示される通常記事。
    * "column" → /column にも表示。"lesson" → /lessons（subject推奨）。
-   * "classroom" → /classroom（situation推奨）。"event" → /events（month必須）。
+   * "classroom" → /classroom（situation推奨。行事の記事は month も入れる）。
+   *
+   * "event" は、2026-11-03 に「学校行事・年間行事」を「学級経営」へ
+   * まとめるまで使っていた古い値。データベースに残っていても /classroom に
+   * 出るようにしてあるが、新しい記事には使わない。
    */
   section?: "column" | "lesson" | "classroom" | "event";
   /** section: "lesson" 用。教科タグ（例: "国語"） */
   subject?: string;
-  /** section: "event" 用。時期タグ（例: "4月"） */
+  /** 行事の記事の時期タグ（例: "4月"）。カードの先頭に出る */
   month?: string;
   /** section: "classroom" 用。場面タグ（例: "学級開き"） */
   situation?: string;
@@ -132,7 +136,7 @@ export const articles: Article[] = [
     publishedAt: "2026-08-15",
     summary:
       "長い休み明けは生活リズムも子ども同士の関係も揺らぎがち。最初の1週間で確認しておきたいことをまとめました。",
-    section: "event",
+    section: "classroom",
     month: "8月",
     relatedTools: ["written-calc-master"],
     body: [
@@ -152,7 +156,7 @@ export const articles: Article[] = [
     publishedAt: "2026-08-15",
     summary:
       "新しいクラスがスタートする4月最初の1週間。何を優先すればいいか、時期ごとに整理しました。",
-    section: "event",
+    section: "classroom",
     month: "4月",
     body: [
       "新年度の最初の1週間は、やることが多く優先順位に迷いがちです。ここでは「まず何から手をつけるか」を時期ごとに整理しました。",

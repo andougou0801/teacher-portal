@@ -28,7 +28,7 @@ type Row = {
 /** 管理画面での呼び名と、実際のページのアドレス */
 const PAGE_INFO: Record<string, { name: string; path: string }> = {
   lessons: { name: "授業・教材アイデア", path: "/lessons" },
-  classroom: { name: "学級経営・子ども対応", path: "/classroom" },
+  classroom: { name: "学級経営", path: "/classroom" },
   ai: { name: "先生のAI活用", path: "/ai" },
 };
 
