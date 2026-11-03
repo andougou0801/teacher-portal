@@ -2,75 +2,71 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import {
   getIcebreakers,
+  getPageText,
   getPublishedArticles,
   getRecreations,
 } from "@/lib/content";
 import { getCategoryBorderColor } from "@/lib/categoryColor";
 
-export const metadata: Metadata = {
-  title: "授業・教材アイデア | 全国教員支援ポータル",
-  description: "「明日の授業に使える」教科別・場面別のアイデア集。",
-};
-
-const upcomingTopics = [
-  "国語", "算数", "理科", "社会", "体育", "音楽", "図工", "道徳",
-  "授業開き", "授業終わり",
-];
-
 export const revalidate = 60;
 
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageText("lessons");
+  return {
+    title: `${page.heading} | 全国教員支援ポータル`,
+    description: page.lead,
+  };
+}
+
 export default async function LessonsPage() {
-  const [icebreakers, recreations] = await Promise.all([
+  const [page, icebreakers, recreations] = await Promise.all([
+    getPageText("lessons"),
     getIcebreakers(),
     getRecreations(),
   ]);
   const articles = await getPublishedArticles();
   const lessons = articles.filter((article) => article.section === "lesson");
+  // カードの「NEW・66個掲載」は、実際に載っている数をその場で数える
+  const counts = {
+    icebreakers: icebreakers.length,
+    recreations: recreations.length,
+    "": 0,
+  };
 
   return (
     <section className="mx-auto max-w-3xl px-8 py-14">
       <div className="mb-8 text-center">
         <div className="text-xs font-bold tracking-widest text-accent uppercase">
-          Lessons
+          {page.eyebrow}
         </div>
-        <h1 className="mt-2 mb-2 text-2xl font-bold">📚 授業・教材アイデア</h1>
-        <p className="mx-auto max-w-lg text-sm text-muted">
-          「明日の授業に使える」を合言葉に、教科別・場面別のアイデアを紹介していきます。
-        </p>
+        <h1 className="mt-2 mb-2 text-2xl font-bold">
+          {page.emoji} {page.heading}
+        </h1>
+        <p className="mx-auto max-w-lg text-sm text-muted">{page.lead}</p>
       </div>
 
-      <Link
-        href="/lessons/icebreakers"
-        className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-accent bg-[#EAF2FA] p-5"
-      >
-        <div>
-          <div className="text-[13px] font-extrabold tracking-wide text-accent">
-            NEW・{icebreakers.length}個掲載
+      {page.cards.map((card, i) => (
+        <Link
+          key={card.href}
+          href={card.href}
+          className={`flex items-center justify-between gap-3 rounded-2xl border border-accent bg-[#EAF2FA] p-5 ${
+            i === page.cards.length - 1 ? "mb-6" : "mb-4"
+          }`}
+        >
+          <div>
+            {counts[card.countFrom] > 0 && (
+              <div className="text-[13px] font-extrabold tracking-wide text-accent">
+                NEW・{counts[card.countFrom]}個掲載
+              </div>
+            )}
+            <h2 className="mt-1 text-base font-bold">
+              {card.emoji} {card.title}
+            </h2>
+            <p className="mt-1 text-sm text-muted">{card.description}</p>
           </div>
-          <h2 className="mt-1 text-base font-bold">🎉 アイスブレイク大特集</h2>
-          <p className="mt-1 text-sm text-muted">
-            時間・場所・人数・やり方が一目でわかる、すぐ使えるアイスブレイク集
-          </p>
-        </div>
-        <span className="shrink-0 text-accent">→</span>
-      </Link>
-
-      <Link
-        href="/lessons/recreations"
-        className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-accent bg-[#EAF2FA] p-5"
-      >
-        <div>
-          <div className="text-[13px] font-extrabold tracking-wide text-accent">
-            NEW・{recreations.length}個掲載
-          </div>
-          <h2 className="mt-1 text-base font-bold">🏃 学級レク特集</h2>
-          <p className="mt-1 text-sm text-muted">
-            〇〇鬼などのそとあそびから、ハンカチ落としのような室内レクまで。
-            「お楽しみ会」「雨の日」など場面・場所・学年で絞り込めます
-          </p>
-        </div>
-        <span className="shrink-0 text-accent">→</span>
-      </Link>
+          <span className="shrink-0 text-accent">→</span>
+        </Link>
+      ))}
 
       <div className="flex flex-col gap-4">
         {lessons.map((lesson) => (
@@ -96,19 +92,21 @@ export default async function LessonsPage() {
         ))}
       </div>
 
-      <div className="mt-8">
-        <h2 className="mb-3 text-sm font-bold text-navy">今後扱っていくテーマ（例）</h2>
-        <div className="flex flex-wrap gap-2">
-          {upcomingTopics.map((topic) => (
-            <span
-              key={topic}
-              className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
-            >
-              {topic}
-            </span>
-          ))}
+      {page.topics.length > 0 && (
+        <div className="mt-8">
+          <h2 className="mb-3 text-sm font-bold text-navy">{page.topicsTitle}</h2>
+          <div className="flex flex-wrap gap-2">
+            {page.topics.map((topic) => (
+              <span
+                key={topic}
+                className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-muted"
+              >
+                {topic}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }
