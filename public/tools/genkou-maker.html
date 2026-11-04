@@ -12,21 +12,18 @@
     --line:#dfe4ee;
     --bg:#eef2f9;
     --masu-line:#4a5a74;
-    --masu:10mm;
-    --ji:20;
+    --masu:8.5mm;
+    --ruby:4.5mm;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
     font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
-    background:var(--bg);
-    color:#2a2a2a;
-    line-height:1.7;
+    background:var(--bg);color:#2a2a2a;line-height:1.7;
   }
   button{
-    font-family:inherit;font-size:14px;font-weight:700;
-    border:none;border-radius:10px;padding:9px 16px;
-    background:var(--accent);color:#fff;cursor:pointer;
+    font-family:inherit;font-size:14px;font-weight:700;border:none;border-radius:10px;
+    padding:9px 16px;background:var(--accent);color:#fff;cursor:pointer;
   }
   button:hover{background:var(--accent-dark);}
   button.sub{background:#fff;color:var(--accent-dark);border:1px solid var(--line);}
@@ -39,7 +36,6 @@
   }
   textarea{width:100%;resize:vertical;line-height:1.9;}
 
-  /* ===== 画面の枠組み ===== */
   .topbar{background:#fff;border-bottom:1px solid var(--line);padding:10px 18px;}
   .topbar-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   .topbar h1{margin:0;font-size:19px;color:var(--accent-dark);}
@@ -59,8 +55,10 @@
   }
   .panel{display:none;}
   .panel.on{display:block;}
-  h2.sec{font-size:15px;color:var(--accent-dark);margin:22px 0 10px;
-    border-bottom:1px solid var(--line);padding-bottom:6px;}
+  h2.sec{
+    font-size:15px;color:var(--accent-dark);margin:22px 0 10px;
+    border-bottom:1px solid var(--line);padding-bottom:6px;
+  }
   h2.sec:first-child{margin-top:0;}
   .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:12px;}
   .row label{font-size:13px;font-weight:700;color:#555;}
@@ -75,96 +73,111 @@
     background:#2b3344;color:#fff;padding:10px 20px;border-radius:999px;
     font-size:14px;z-index:9999;box-shadow:0 6px 20px rgba(0,0,0,.25);
   }
+  details.kuwashiku{margin:0 0 12px;}
+  details.kuwashiku summary{
+    cursor:pointer;font-size:13px;font-weight:700;color:var(--accent-dark);
+    padding:6px 0;
+  }
+  details.kuwashiku .inner{
+    border-left:3px solid var(--line);padding:4px 0 4px 14px;margin-top:4px;
+  }
 
   /* ===== 原稿用紙 ===== */
   .sheet-wrap{
     overflow:auto;background:#f7f9fd;border:1px solid var(--line);
     border-radius:12px;padding:16px;margin:12px 0;
   }
-  .sheet{display:inline-block;background:#fff;padding:0;}
-  .sheet-head{margin-bottom:4mm;}
-  table.genkou{
-    border-collapse:collapse;
-    table-layout:fixed;
-    background:#fff;
+  .sheet{display:inline-block;background:#fff;}
+  .sheet-head{margin-bottom:3mm;font-size:12px;}
+  /* 外わく。マスの線より太くする（市販の原稿用紙と同じ） */
+  .genkou-frame{
+    display:inline-block;border:1.6px solid var(--masu-line);background:#fff;
   }
+  table.genkou{border-collapse:collapse;table-layout:fixed;}
   /* 縦書きは「行」が右から左に並ぶので、表の列順を逆にする */
   table.genkou.tate{direction:rtl;}
-  table.genkou td{
+  /* マス */
+  table.genkou td.masu{
     width:var(--masu);height:var(--masu);
     border:1px solid var(--masu-line);
-    padding:0;text-align:center;vertical-align:middle;
-    direction:ltr;
+    padding:0;text-align:center;vertical-align:middle;direction:ltr;
   }
-  table.genkou td.sp{
-    border:none;width:calc(var(--masu) * 0.5);height:auto;
+  /* ルビ欄（添削けい）＝行と行の間の余白。ふりがなや直しを書くところ */
+  table.genkou td.ruby{border:none;padding:0;}
+  table.genkou.tate td.ruby{width:var(--ruby);}
+  table.genkou.yoko td.ruby{height:var(--ruby);}
+  /* 柱（真ん中のマスを切らない1行）。中央に魚尾の飾りが入る */
+  table.genkou td.hashira{
+    border:none;padding:0;text-align:center;vertical-align:middle;
+    direction:ltr;color:var(--masu-line);
   }
-  table.genkou tr.sp td{border:none;height:calc(var(--masu) * 0.5);}
+  /* 柱は「1行分」なので、マス＋ルビ欄の幅をとる */
+  table.genkou.tate td.hashira{width:calc(var(--masu) + var(--ruby));}
+  table.genkou.yoko td.hashira{height:calc(var(--masu) + var(--ruby));}
+  .gyobi{
+    font-size:calc(var(--masu) * 0.95);line-height:1;
+    font-family:"Hiragino Mincho ProN","Yu Mincho","MS Mincho",serif;
+  }
+  .tate .gyobi{writing-mode:vertical-rl;}
+
   .ch{
     display:inline-block;
-    font-size:calc(var(--masu) * 0.76);
+    font-size:calc(var(--masu) * 0.78);
     line-height:1;
     font-family:"Hiragino Mincho ProN","Yu Mincho","MS Mincho",serif;
   }
-  /* 縦書きでは「」や、。が自動で縦書き用の形・位置になる */
+  /* 縦書きでは「」や、。が自動で縦書き用の字形・位置になる */
   .tate .ch{writing-mode:vertical-rl;}
   /* ぶら下げ（前の行の最後のマスに、文字と句読点を一緒に入れる） */
-  .ch.two{font-size:calc(var(--masu) * 0.44);letter-spacing:0;}
-  .ch.three{font-size:calc(var(--masu) * 0.32);letter-spacing:0;}
-  .ch.thin{color:#b9c2d2;}
+  .ch.two{font-size:calc(var(--masu) * 0.46);}
+  .ch.three{font-size:calc(var(--masu) * 0.33);}
+  /* 横書きの欧文・数字は1マスに2文字入れる */
+  .ch.pair{font-size:calc(var(--masu) * 0.52);letter-spacing:-0.02em;}
+  .ch.thin{color:#bcc5d4;}
   td.mark-hang{background:#fff7e8;}
   td.mark-jisage{background:#eef6ff;}
   td.mark-ng{background:#ffecec;}
   td.mark-ok{background:#f0fbf3;}
+  td.mark-aki{background:#f5f1fb;}
 
-  /* 用紙の下に印刷する「きまり」 */
-  .rules-foot{margin-top:4mm;font-size:9.5pt;line-height:1.75;}
-  .rules-foot:empty{display:none;}
-  .rules-foot b{display:block;margin-bottom:1mm;font-size:10pt;}
-  .rules-foot ul{margin:0;padding-left:1.4em;}
-
-  /* 1枚に収まらないときの注意 */
-  .fitbox{
-    border-radius:10px;padding:9px 14px;font-size:13px;margin:10px 0;line-height:1.9;
-  }
+  /* 用紙に収まるかの知らせ */
+  .fitbox{border-radius:10px;padding:9px 14px;font-size:13px;margin:10px 0;line-height:1.9;}
   .fit-ok{background:#f2fbf4;border:1px solid #bfe4c8;color:#2f7d45;}
   .fit-ng{background:#fff6f6;border:1px solid #f3c7c7;color:#b4453f;}
 
-  /* ===== 直したところの説明 ===== */
+  /* 直したところの説明 */
   .notelist{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0;}
   .noterow{
     display:flex;gap:10px;align-items:flex-start;
     padding:9px 13px;border-bottom:1px solid var(--line);font-size:13.5px;
   }
   .noterow:last-child{border-bottom:none;}
-  .noterow .tag{
-    flex:none;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;
-  }
+  .noterow .tag{flex:none;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;}
   .tag-jisage{background:#eef6ff;color:#28509e;}
   .tag-hang{background:#fff7e8;color:#8a6212;}
   .tag-kaigyou{background:#f3effb;color:#5b3fa0;}
+  .tag-aki{background:#f5f1fb;color:#5b3fa0;}
   .tag-ng{background:#ffecec;color:#b4453f;}
   .tag-ok{background:#f0fbf3;color:#2f7d45;}
 
-  /* ===== 使い方を学ぶ ===== */
-  .rule{
-    border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px;
-    background:#fff;
-  }
+  /* 書き方を学ぶ */
+  .rule{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px;background:#fff;}
   .rule h3{margin:0 0 6px;font-size:15px;color:var(--accent-dark);}
-  .rule .num{
-    display:inline-block;background:var(--accent);color:#fff;
-    border-radius:8px;padding:1px 9px;font-size:13px;margin-right:8px;
-  }
+  .rule .num{display:inline-block;background:var(--accent);color:#fff;border-radius:8px;padding:1px 9px;font-size:13px;margin-right:8px;}
   .rule p{margin:4px 0 10px;font-size:13.5px;line-height:1.9;}
+  .rule .src{font-size:12px;color:#7d879b;margin-top:8px;}
   .examples{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;}
   .example{text-align:center;}
   .example .cap{font-size:13px;font-weight:700;margin-bottom:6px;}
   .cap-ok{color:#2f7d45;}
   .cap-ng{color:#b4453f;}
-  .example .why{font-size:12px;color:#7d879b;margin-top:6px;max-width:260px;line-height:1.8;}
+  .example .why{font-size:12px;color:#7d879b;margin-top:6px;max-width:250px;line-height:1.8;}
+  .warnbox{
+    background:#fffaf0;border:1px solid #f0dcb4;border-radius:10px;
+    padding:10px 14px;font-size:13px;line-height:1.9;margin:10px 0;
+  }
 
-  /* ===== クイズ ===== */
+  /* クイズ */
   .quiz-q{font-size:16px;font-weight:700;margin:10px 0 4px;}
   .quiz-sentence{
     background:#f7f9fd;border:1px solid var(--line);border-radius:10px;
@@ -179,27 +192,26 @@
   .choice:hover{background:#f3f7ff;}
   .choice.correct{background:#f0fbf3;border-color:#bfe4c8;color:#2f7d45;}
   .choice.wrong{background:#ffecec;border-color:#f3c7c7;color:#b4453f;}
-  .answerbox{
-    border-radius:12px;padding:14px 16px;margin:12px 0;font-size:14px;line-height:1.95;
-  }
+  .answerbox{border-radius:12px;padding:14px 16px;margin:12px 0;font-size:14px;line-height:1.95;}
   .ans-ok{background:#f2fbf4;border:1px solid #bfe4c8;}
   .ans-ng{background:#fff6f6;border:1px solid #f3c7c7;}
   .scorebar{font-size:14px;font-weight:700;color:var(--accent-dark);}
 
-  /* ===== 印刷 ===== */
-  .print-title{display:none;}
+  /* 用紙の下に印刷するきまり */
+  .rules-foot{margin-top:4mm;font-size:9.5pt;line-height:1.75;}
+  .rules-foot:empty{display:none;}
+  .rules-foot b{display:block;margin-bottom:1mm;font-size:10pt;}
+  .rules-foot ul{margin:0;padding-left:1.4em;}
+
   @media print{
     body{background:#fff;}
     .topbar,.tabs,.no-print{display:none !important;}
     .main{padding:0;}
     .card{box-shadow:none;border:none;border-radius:0;padding:0;}
-    .sheet-wrap{
-      overflow:visible;background:#fff;border:none;border-radius:0;padding:0;margin:0;
-    }
-    .print-title{display:block;font-size:11pt;margin:0 0 3mm;}
+    .sheet-wrap{overflow:visible;background:#fff;border:none;border-radius:0;padding:0;margin:0;}
     .fitbox,.notelist{display:none !important;}
-    table.genkou td.mark-hang,table.genkou td.mark-jisage,
-    table.genkou td.mark-ng,table.genkou td.mark-ok{background:#fff;}
+    table.genkou td.mark-hang,table.genkou td.mark-jisage,table.genkou td.mark-ng,
+    table.genkou td.mark-ok,table.genkou td.mark-aki{background:#fff;}
     .panel{display:none !important;}
     .panel.printing{display:block !important;}
   }
@@ -210,34 +222,36 @@
 <div class="topbar no-print">
   <div class="topbar-row">
     <h1>原稿用紙メーカー</h1>
-    <span class="lead">マスの数と大きさを決めて印刷／打った文章をそのまま原稿用紙に入れられます</span>
+    <span class="lead">JIS規格の様式で原稿用紙を作れます／打った文章をきまりどおりに入れられます</span>
     <span class="spacer"></span>
     <button class="sub mini" id="btn-help">使い方</button>
   </div>
 </div>
 
 <div class="tabs no-print">
-  <div class="tab on" data-panel="p-blank">白紙を作る</div>
-  <div class="tab" data-panel="p-text">文字を入れる</div>
-  <div class="tab" data-panel="p-learn">使い方を学ぶ</div>
+  <div class="tab on" data-panel="p-blank">原稿用紙を作る</div>
+  <div class="tab" data-panel="p-text">文章を入れる</div>
+  <div class="tab" data-panel="p-learn">書き方を学ぶ</div>
   <div class="tab" data-panel="p-quiz">たしかめクイズ</div>
 </div>
 
 <div class="main">
 <div class="card">
 
-<!-- ===================== 白紙を作る ===================== -->
+<!-- ===================== 原稿用紙を作る ===================== -->
 <div class="panel on" id="p-blank">
-  <h2 class="sec no-print">かたちを決める</h2>
+  <h2 class="sec no-print">よく使う様式</h2>
   <div class="row no-print">
-    <label>よく使うかたち</label>
-    <button class="sub mini" data-preset="400">400字づめ（20字×20行）</button>
-    <button class="sub mini" data-preset="200">200字づめ（20字×10行）</button>
-    <button class="sub mini" data-preset="600">600字づめ（20字×30行）</button>
-    <button class="sub mini" data-preset="mid">中学年用（15字×15行）</button>
+    <button class="sub mini" data-preset="jis400">400字づめ（JIS・A4よこ）</button>
+    <button class="sub mini" data-preset="big400">400字づめ 大きめ（B4よこ）</button>
+    <button class="sub mini" data-preset="jis200">200字づめ（A4たて）</button>
     <button class="sub mini" data-preset="low">低学年用（10字×10行・大きいマス）</button>
-    <button class="sub mini" data-preset="mini">ミニ（10字×6行）</button>
+    <button class="sub mini" data-preset="mid">中学年用（15字×15行）</button>
+    <button class="sub mini" data-preset="beta">ベタ組み（ルビ欄なし）</button>
   </div>
+  <div class="note no-print" id="b-preset-note"></div>
+
+  <h2 class="sec no-print">マスの数と大きさ</h2>
   <div class="row no-print">
     <label>1行のマスの数（字数）</label>
     <input type="number" id="b-ji" min="4" max="40" value="20" style="width:80px;">
@@ -248,20 +262,61 @@
   <div class="row no-print">
     <label>マスの大きさ</label>
     <select id="b-size">
-      <option value="6">とても小さい（6mm）</option>
-      <option value="8">小さい（8mm）</option>
-      <option value="9" selected>ふつう（9mm・市販の400字づめと同じ）</option>
-      <option value="10">やや大きい（10mm）</option>
-      <option value="12">大きい（12mm）</option>
-      <option value="15">とても大きい（15mm）</option>
-      <option value="18">特大（18mm）</option>
+      <option value="10">10.0mm（JIS）</option>
+      <option value="8.5" selected>8.5mm（JIS）</option>
+      <option value="8">8.0mm（JIS）</option>
+      <option value="7">7.0mm</option>
+      <option value="6">6.0mm</option>
+      <option value="12">12.0mm</option>
+      <option value="15">15.0mm</option>
+      <option value="18">18.0mm</option>
     </select>
-    <button class="sub mini" id="btn-b-fit">A4にぴったり合わせる</button>
+    <label>ルビ欄（行と行の間）</label>
+    <select id="b-ruby">
+      <option value="4.5" selected>4.5mm（JIS）</option>
+      <option value="4">4.0mm（JIS）</option>
+      <option value="3.5">3.5mm（JIS）</option>
+      <option value="3">3.0mm</option>
+      <option value="2.5">2.5mm</option>
+      <option value="0">なし（ベタ組み）</option>
+    </select>
+  </div>
+  <div class="note no-print">
+    JIS S 5508 では、マスとルビ欄の組み合わせが
+    「10.0＋4.5」「8.5＋4.5」「8.5＋3.5」「8.0＋4.0」と決められています。<br>
+    ルビ欄は、行と行のあいだにある細長い余白のことです。ふりがなや、先生の直しを書き入れるためのものです。
+  </div>
+
+  <h2 class="sec no-print">用紙と向き</h2>
+  <div class="row no-print">
+    <label>用紙</label>
+    <select id="b-paper">
+      <option value="A4">A4（210×297mm）</option>
+      <option value="B4">B4（257×364mm）</option>
+      <option value="B5">B5（182×257mm）</option>
+      <option value="A3">A3（297×420mm）</option>
+    </select>
+    <select id="b-orient">
+      <option value="landscape" selected>よこ長</option>
+      <option value="portrait">たて長</option>
+    </select>
+    <label>余白</label>
+    <select id="b-margin">
+      <option value="10" selected>10mm</option>
+      <option value="15">15mm</option>
+      <option value="20">20mm</option>
+      <option value="25">25mm</option>
+    </select>
     <label>書く向き</label>
     <select id="b-dir">
       <option value="tate" selected>縦書き</option>
       <option value="yoko">横書き</option>
     </select>
+  </div>
+  <div class="row no-print">
+    <label class="toggle"><input type="checkbox" id="b-hashira" checked> 真ん中に柱（魚尾の飾り）を入れる</label>
+    <label class="toggle"><input type="checkbox" id="b-head"> 題名・名前のらんの案内をつける</label>
+    <label class="toggle"><input type="checkbox" id="b-rules"> 用紙の下に「原稿用紙のきまり」を印刷する</label>
   </div>
   <div class="row no-print">
     <label>マスの線の色</label>
@@ -272,22 +327,15 @@
       <option value="#3f7a4a">緑</option>
       <option value="#8a5a2b">茶</option>
     </select>
-  </div>
-  <div class="row no-print">
-    <label class="toggle"><input type="checkbox" id="b-split" checked> 10行ごとにすき間を空ける</label>
-    <label class="toggle"><input type="checkbox" id="b-head"> 題名・名前のらんをつける</label>
-    <label class="toggle"><input type="checkbox" id="b-rules"> 用紙の下に「原稿用紙のきまり」を印刷する</label>
-  </div>
-  <div class="row no-print">
     <label>用紙に入れる文字</label>
-    <input type="text" id="b-label" placeholder="例：５年１組　なまえ" style="width:260px;">
-    <span class="note" style="margin:0;">空欄なら何も入りません</span>
+    <input type="text" id="b-label" placeholder="例：５年１組　なまえ（　　　　）" style="width:250px;">
   </div>
 
   <div id="b-fit" class="fitbox no-print"></div>
   <div class="row no-print">
     <button id="btn-blank-print">印刷する</button>
-    <span class="note" style="margin:0;">印刷の設定で「背景のグラフィック」をオンにしなくても、マスの線は出ます</span>
+    <button class="sub" id="btn-b-fit">用紙にぴったり合わせる</button>
+    <span class="note" style="margin:0;">マスの線は罫線で引いているので、「背景のグラフィック」をオフにしていても印刷されます</span>
   </div>
 
   <div class="sheet-wrap">
@@ -296,7 +344,7 @@
   <div class="rules-foot" id="b-rules-foot"></div>
 </div>
 
-<!-- ===================== 文字を入れる ===================== -->
+<!-- ===================== 文章を入れる ===================== -->
 <div class="panel" id="p-text">
   <h2 class="sec no-print">文章を打つ</h2>
   <div class="row no-print">
@@ -305,38 +353,82 @@
   </div>
   <div class="row no-print">
     <label style="width:60px;">名前</label>
-    <input type="text" id="t-name" placeholder="例：あんどう　たろう" style="width:280px;">
+    <input type="text" id="t-name" placeholder="例：五年一組　安藤　太郎" style="width:280px;">
     <span class="note" style="margin:0;">どちらも空欄でかまいません</span>
   </div>
   <textarea id="t-body" rows="7" class="no-print"
-    placeholder="ここに文章を打ってください。&#10;改行すると段落が変わります。&#10;&#10;例）&#10;ぼくは、運動会でリレーの選手になりました。&#10;「がんばれ。」&#10;おうえんの声が聞こえました。"></textarea>
+    placeholder="ここに文章を打ってください。改行すると段落が変わります。&#10;&#10;例）&#10;ぼくは、運動会でリレーの選手になりました。&#10;「がんばれ。」&#10;おうえんの声が聞こえました。"></textarea>
 
   <h2 class="sec no-print">入れ方</h2>
   <div class="row no-print">
     <label class="toggle"><input type="radio" name="tmode" value="tehon" checked>
-      お手本（原稿用紙のルールどおりに直して入れる）</label>
-  </div>
-  <div class="row no-print">
+      お手本（原稿用紙のきまりどおりに直して入れる）</label>
     <label class="toggle"><input type="radio" name="tmode" value="jibun">
       じぶんで（打ったとおりに入れて、まちがいを教えてもらう）</label>
   </div>
   <div class="note no-print" id="t-mode-note"></div>
+
+  <details class="kuwashiku no-print">
+    <summary>きまりの細かい設定（学校や教科書で分かれるところ）</summary>
+    <div class="inner">
+      <p class="note" style="margin-top:0;">
+        原稿用紙の書き方は、全国で1つに決まっているわけではありません。
+        資料によって分かれるところは、ここで学校の指導に合わせられます。
+      </p>
+      <div class="row">
+        <label>題名の上を空けるマス</label>
+        <select id="t-title-aki">
+          <option value="3" selected>3マス（多い）</option>
+          <option value="2">2マス</option>
+          <option value="0">空けない</option>
+        </select>
+        <label>名前の下を空けるマス</label>
+        <select id="t-name-aki">
+          <option value="1" selected>1マス</option>
+          <option value="2">2マス</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>本文のはじまり</label>
+        <select id="t-body-start">
+          <option value="next" selected>名前のつぎの行から（3行目）</option>
+          <option value="blank">1行空けてから（4行目）</option>
+        </select>
+      </div>
+      <div class="row">
+        <label class="toggle"><input type="checkbox" id="t-kaiwa-indent">
+          会話文が2行以上になるとき、2行目から1マス下げる</label>
+      </div>
+      <div class="row">
+        <label class="toggle"><input type="checkbox" id="t-bang-aki">
+          ！ や ？ のうしろを1マス空ける</label>
+      </div>
+      <div class="note" style="margin-bottom:0;">
+        下の2つは、出版の世界では一般的なきまりですが、小学校の教材では扱わないことも多いので、
+        はじめはオフにしてあります。
+      </div>
+    </div>
+  </details>
 
   <div class="row no-print">
     <label>1行のマスの数</label>
     <input type="number" id="t-ji" min="4" max="40" value="20" style="width:80px;">
     <label>行の数</label>
     <input type="number" id="t-gyou" min="1" max="40" value="20" style="width:80px;">
-    <label>マスの大きさ</label>
+    <label>マス</label>
     <select id="t-size">
-      <option value="6">6mm</option>
-      <option value="8">8mm</option>
-      <option value="9" selected>9mm</option>
-      <option value="10">10mm</option>
-      <option value="12">12mm</option>
-      <option value="15">15mm</option>
+      <option value="10">10.0mm</option>
+      <option value="8.5" selected>8.5mm</option>
+      <option value="8">8.0mm</option>
+      <option value="12">12.0mm</option>
+      <option value="15">15.0mm</option>
     </select>
-    <button class="sub mini" id="btn-t-fit">A4にぴったり合わせる</button>
+    <label>ルビ欄</label>
+    <select id="t-ruby">
+      <option value="4.5" selected>4.5mm</option>
+      <option value="3.5">3.5mm</option>
+      <option value="0">なし</option>
+    </select>
     <label>向き</label>
     <select id="t-dir">
       <option value="tate" selected>縦書き</option>
@@ -344,7 +436,7 @@
     </select>
   </div>
   <div class="row no-print">
-    <label class="toggle"><input type="checkbox" id="t-split" checked> 10行ごとにすき間</label>
+    <label class="toggle"><input type="checkbox" id="t-hashira" checked> 柱を入れる</label>
     <label class="toggle"><input type="checkbox" id="t-mark" checked> 直したところに色をつける</label>
     <label class="toggle"><input type="checkbox" id="t-thin"> うすい字にする（なぞり書き用）</label>
   </div>
@@ -363,12 +455,19 @@
   </div>
 </div>
 
-<!-- ===================== 使い方を学ぶ ===================== -->
+<!-- ===================== 書き方を学ぶ ===================== -->
 <div class="panel" id="p-learn">
-  <h2 class="sec">原稿用紙の使い方</h2>
-  <p class="note">それぞれのきまりを、じっさいの原稿用紙の形で見くらべられます。<br>
-    「文字を入れる」のタブで自分の文章を打つと、ここのきまりどおりに入ります。</p>
+  <h2 class="sec">原稿用紙の書き方</h2>
+  <div class="warnbox">
+    <b>はじめに：書き方は1つに決まっていません。</b><br>
+    題名を何マス空けるか、会話文の終わりを「。」」と並べるかなど、
+    教科書や資料によって書き方が分かれるところがあります。
+    このツールでは、分かれるところには「資料によって分かれます」と書き添えています。
+    <b>学校で配られた資料や、先生の指示があるときは、そちらを優先してください。</b>
+  </div>
   <div id="learn-list"></div>
+  <h2 class="sec">様式（原稿用紙そのもののつくり）</h2>
+  <div id="format-list"></div>
 </div>
 
 <!-- ===================== たしかめクイズ ===================== -->
@@ -385,33 +484,30 @@
 </div>
 </div>
 
-<!-- ===================== 使い方ダイアログ ===================== -->
 <dialog id="dlg-help" style="border:none;border-radius:18px;padding:0;width:min(720px,94vw);">
   <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);">
     <h2 style="margin:0;font-size:17px;color:var(--accent-dark);flex:1;">このツールの使い方</h2>
     <button class="sub mini" id="btn-help-close">閉じる</button>
   </div>
   <div style="padding:16px 18px 22px;max-height:70vh;overflow:auto;">
-    <h2 class="sec">1. 白紙を作る</h2>
+    <h2 class="sec">1. 原稿用紙を作る</h2>
     <ul style="font-size:13.5px;line-height:2;">
-      <li>字数・行数・マスの大きさを決めて「印刷する」を押すだけです。</li>
-      <li>よく使うかたちはボタン1つで切り替えられます（400字づめなど）。</li>
-      <li>1枚に収まるかどうかを画面で知らせます。はみ出すときはマスを小さくしてください。</li>
+      <li>「よく使う様式」のボタンで、市販の原稿用紙と同じ形がすぐに出せます。</li>
+      <li><b>ルビ欄</b>は、行と行のあいだの細長い余白です。ふりがなや先生の直しを書くためのもので、
+        市販の原稿用紙にはたいてい付いています。JIS規格でマスとの組み合わせが決まっています。</li>
+      <li><b>柱</b>は、400字づめの真ん中にある、マスを切らない1行です。
+        中央の飾りを<b>魚尾（ぎょび）</b>といい、もともと二つ折りにして綴じるための目印でした。</li>
+      <li>用紙からはみ出すときは画面で知らせます。「用紙にぴったり合わせる」で自動調整もできます。</li>
     </ul>
-    <h2 class="sec">2. 文字を入れる</h2>
+    <h2 class="sec">2. 文章を入れる</h2>
     <ul style="font-size:13.5px;line-height:2;">
-      <li><b>お手本</b>…打った文章を、原稿用紙のきまりどおりに直して入れます。
-        何をどう直したかが下に出るので、そのまま指導に使えます。</li>
+      <li><b>お手本</b>…打った文章を、きまりどおりに直して入れます。何をどう直したかが下に出ます。</li>
       <li><b>じぶんで</b>…打ったとおりに入れます。空白も1マスとして入るので、
         児童が自分でマスを数えて打ち、まちがいを見つける練習ができます。</li>
-      <li>「うすい字にする」にチェックを入れて印刷すると、なぞり書きのプリントになります。</li>
+      <li>「きまりの細かい設定」で、学校の指導に合わせられます。</li>
+      <li>「うすい字にする」で印刷すると、なぞり書きのプリントになります。</li>
     </ul>
-    <h2 class="sec">3. 使い方を学ぶ・クイズ</h2>
-    <ul style="font-size:13.5px;line-height:2;">
-      <li>きまりごとに「よい例」と「わるい例」を原稿用紙の形で見くらべられます。</li>
-      <li>クイズは、マスの数を数える問題ときまりの○×問題です。</li>
-    </ul>
-    <h2 class="sec">4. 個人情報について</h2>
+    <h2 class="sec">3. 個人情報について</h2>
     <ul style="font-size:13.5px;line-height:2;">
       <li>打った文章や名前は、このパソコンの外へは送られません（通信を技術的に遮断しています）。</li>
       <li>保存もしていないので、ページを閉じると消えます。続きを書くときは文章を控えておいてください。</li>
@@ -422,29 +518,27 @@
 <script>
 /* =========================================================
    原稿用紙メーカー
-   - 外部通信なし／保存なし（1ファイルで完結）
+   様式は JIS S 5508（マス 10.0／8.5／8.0mm、ルビ欄 4.5／4.0／3.5mm）に合わせている。
+   外部通信なし・保存なし。
    ========================================================= */
 
-/* ===== きまりに使う文字 ===== */
-/** 行のいちばん上に来てはいけない文字（句読点・閉じかっこなど） */
-var KINSOKU_START = "、。，．！？」』）〉》】〕｝”’";
-/** 行のいちばん下に来てはいけない文字（開きかっこなど） */
+/** 行のいちばん上に来てはいけない文字（句読点・閉じかっこ） */
+var KINSOKU_START = "、。，．！？」』）〉》】〕｝”’ゝゞ々ー";
+/** 行のいちばん下に来てはいけない文字（開きかっこ） */
 var KINSOKU_END = "「『（〈《【〔｛“‘";
-/** 2マス使う文字 */
+/** 2マス続けて使う文字 */
 var TWO_MASU = "…―";
+/** うしろを1マス空ける文字 */
+var BANG = "！？!?";
 
 function $(id) { return document.getElementById(id); }
 function esc(s) {
   return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
-/** サロゲートペア（𠮟など）も1文字として数える */
-function chars(s) {
-  return Array.from(String(s == null ? "" : s));
-}
-function isSpace(c) {
-  return c === " " || c === "　" || c === "\t";
-}
+function chars(s) { return Array.from(String(s == null ? "" : s)); }
+function isSpace(c) { return c === " " || c === "　" || c === "\t"; }
+function isAscii(c) { return /^[0-9A-Za-z]$/.test(c); }
 function toast(msg) {
   var el = document.createElement("div");
   el.className = "toast";
@@ -454,19 +548,17 @@ function toast(msg) {
 }
 
 /* =========================================================
-   文章を原稿用紙のマスに並べる
+   文章をマスに並べる
    ========================================================= */
 function newLine(para) { return { cells: [], para: !!para }; }
 
-/**
- * @param o {title,name,body,ji,mode}
- *   mode "tehon" = きまりどおりに直して入れる
- *   mode "jibun" = 打ったとおりに入れて、あとでまちがいを探す
- */
 function layoutText(o) {
   var per = Math.max(1, o.ji);
   var lines = [];
   var notes = [];
+  var titleAki = o.titleAki == null ? 3 : Number(o.titleAki);
+  var nameAki = o.nameAki == null ? 1 : Number(o.nameAki);
+
   function note(kind, text) {
     for (var i = 0; i < notes.length; i++) {
       if (notes[i].kind === kind && notes[i].text === text) { notes[i].n++; return; }
@@ -474,65 +566,76 @@ function layoutText(o) {
     notes.push({ kind: kind, text: text, n: 1 });
   }
 
-  /* --- 題名（上を2マス空ける） --- */
+  /* --- 題名（上を2〜3マス空ける） --- */
   if (o.title) {
     var t = chars(o.title);
     var ln = newLine(false);
-    var pad = Math.min(2, Math.max(0, per - t.length));
+    var pad = Math.min(titleAki, Math.max(0, per - t.length));
     for (var i = 0; i < pad; i++) ln.cells.push({ ch: "", mark: "jisage" });
     t.forEach(function (c) { ln.cells.push({ ch: c }); });
-    ln.cells = ln.cells.slice(0, per);
-    lines.push(ln);
-    if (pad > 0) note("jisage", "題名は上を2マス空けて書きます");
+    lines.push({ cells: ln.cells.slice(0, per), para: false });
+    if (pad > 0) note("jisage", "題名は上を" + pad + "マス空けて書きます");
   }
-  /* --- 名前（下を1マス空ける） --- */
+  /* --- 名前（下を1〜2マス空ける） --- */
   if (o.name) {
     var nm = chars(o.name);
     var ln2 = newLine(false);
-    var pad2 = Math.max(0, per - nm.length - 1);
+    var pad2 = Math.max(0, per - nm.length - nameAki);
     for (var j = 0; j < pad2; j++) ln2.cells.push({ ch: "" });
-    nm.forEach(function (c) { ln2.cells.push({ ch: c }); });
-    if (ln2.cells.length < per) ln2.cells.push({ ch: "", mark: "jisage" });
-    ln2.cells = ln2.cells.slice(0, per);
-    lines.push(ln2);
-    note("jisage", "名前は下を1マス空けて書きます");
+    nm.forEach(function (c) { ln2.cells.push({ ch: isSpace(c) ? "" : c }); });
+    for (var j2 = 0; j2 < nameAki && ln2.cells.length < per; j2++) {
+      ln2.cells.push({ ch: "", mark: "jisage" });
+    }
+    lines.push({ cells: ln2.cells.slice(0, per), para: false });
+    note("jisage", "名前は下を" + nameAki + "マス空けて書きます");
   }
-  /* --- 題名・名前のあとは1行空ける --- */
-  if ((o.title || o.name) && String(o.body || "").replace(/\s/g, "") !== "") {
+  /* --- 本文のはじまり（名前の次の行から／1行空けてから） --- */
+  var hasBody = String(o.body == null ? "" : o.body).replace(/[\s　]/g, "") !== "";
+  if ((o.title || o.name) && hasBody && o.bodyStart === "blank") {
     lines.push(newLine(false));
+    note("jisage", "名前と本文のあいだを1行空けます");
   }
 
   /* --- 本文 --- */
   var paras = String(o.body == null ? "" : o.body).replace(/\r\n?/g, "\n").split("\n");
   paras.forEach(function (para, pi) {
     if (para.replace(/[\s　]/g, "") === "") {
-      // 空行はそのまま1行あける（最後の空行はのぞく）
       if (pi < paras.length - 1) lines.push(newLine(false));
       return;
     }
     var cs = chars(para);
     var cur = newLine(true);
+    var isKaiwa = false;
 
     if (o.mode === "jibun") {
-      /* 打ったとおりに入れる（空白も1マスとして入る） */
+      /* 打ったとおりに入れる（空白も1マス） */
       for (var k = 0; k < cs.length; k++) {
         if (cur.cells.length >= per) { lines.push(cur); cur = newLine(false); }
-        var c0 = cs[k];
-        cur.cells.push(isSpace(c0) ? { ch: "" } : { ch: c0 });
+        cur.cells.push(isSpace(cs[k]) ? { ch: "" } : { ch: cs[k] });
       }
       if (cur.cells.length) lines.push(cur);
       return;
     }
 
     /* --- お手本モード --- */
-    // 先頭の空白はいったん取りのぞいて、きまりどおりに入れ直す
     while (cs.length && isSpace(cs[0])) cs.shift();
     if (cs.length === 0) return;
-    if (cs[0] === "「") {
-      note("kaigyou", "会話文（「 ではじまる文）は、行をかえて1マス目から書きます");
+    isKaiwa = (cs[0] === "「");
+    if (isKaiwa) {
+      note("kaigyou", "会話文（「 ではじまる文）は行をかえて、1マス空けずに1マス目から書きます");
     } else {
       cur.cells.push({ ch: "", mark: "jisage" });
-      note("jisage", "段落のはじめは1マス空けます");
+      note("jisage", "書き出しと段落のはじめは1マス空けます");
+    }
+
+    /** 行をかえる。会話文の2行目以降を1マス下げる設定なら、そのぶんを入れる */
+    function wrap() {
+      lines.push(cur);
+      cur = newLine(false);
+      if (isKaiwa && o.kaiwaIndent) {
+        cur.cells.push({ ch: "", mark: "jisage" });
+        note("jisage", "会話文が2行以上になるので、2行目から1マス下げました");
+      }
     }
 
     for (var i2 = 0; i2 < cs.length; i2++) {
@@ -540,32 +643,48 @@ function layoutText(o) {
 
       if (cur.cells.length >= per) {
         var lastCell = cur.cells[cur.cells.length - 1];
-        // 行のいちばん上に来てはいけない文字は、前の行の最後のマスに入れる
+        // 句読点・閉じかっこは行の上に来られないので、前の行の最後のマスに入れる
         if (KINSOKU_START.indexOf(ch) >= 0 && lastCell && lastCell.ch &&
           (lastCell.sub || "").length < 2) {
           lastCell.sub = (lastCell.sub || "") + ch;
           lastCell.mark = "hang";
-          note("hang", ch + " が行のいちばん上に来るので、" +
-            "前の行の最後のマスに文字といっしょに入れました");
+          note("hang", ch + " が行のいちばん上に来るので、前の行の最後のマスに文字といっしょに入れました");
           continue;
         }
-        lines.push(cur); cur = newLine(false);
+        wrap();
       }
 
       // 開きかっこが行のいちばん下に来ないよう、次の行に送る
-      if (cur.cells.length === per - 1 && KINSOKU_END.indexOf(ch) >= 0 &&
-        i2 < cs.length - 1) {
-        lines.push(cur); cur = newLine(false);
+      if (cur.cells.length === per - 1 && KINSOKU_END.indexOf(ch) >= 0 && i2 < cs.length - 1) {
+        wrap();
         note("hang", ch + " が行のいちばん下に来るので、次の行のはじめに送りました");
+      }
+
+      // 横書きの欧文・数字は1マスに2文字入れる
+      if (o.dir === "yoko" && isAscii(ch) && isAscii(cs[i2 + 1] || "")) {
+        cur.cells.push({ ch: ch, pair: cs[i2 + 1] });
+        note("ok", "横書きなので、数字やアルファベットは1マスに2文字入れました");
+        i2++;
+        continue;
       }
 
       cur.cells.push({ ch: ch });
 
-      // …や― は2マスつづけて使う
+      // … や ― は2マス続けて使う
       if (TWO_MASU.indexOf(ch) >= 0 && cs[i2 + 1] !== ch) {
-        if (cur.cells.length >= per) { lines.push(cur); cur = newLine(false); }
+        if (cur.cells.length >= per) wrap();
         cur.cells.push({ ch: ch });
-        note("ok", ch + " は2マスつづけて使います");
+        note("ok", ch + " は2マス続けて使います");
+      }
+
+      // ！ や ？ のうしろを1マス空ける
+      if (o.bangAki && BANG.indexOf(ch) >= 0) {
+        var nx = cs[i2 + 1];
+        if (nx && !isSpace(nx) && KINSOKU_START.indexOf(nx) < 0) {
+          if (cur.cells.length >= per) wrap();
+          cur.cells.push({ ch: "", mark: "aki" });
+          note("aki", ch + " のうしろを1マス空けました");
+        }
       }
     }
     if (cur.cells.length) lines.push(cur);
@@ -631,12 +750,15 @@ function checkJibun(layout, o) {
     }
   });
 
-  // かぎかっこの数が合っているか
   var body = String(o.body || "");
   var open = (body.match(/「/g) || []).length;
   var close = (body.match(/」/g) || []).length;
   if (open !== close) {
     add("かぎかっこの数が合っていません（「が" + open + "こ、」が" + close + "こ）");
+  }
+  // 縦書きで算用数字を使っていないか
+  if (o.dir === "tate" && /[0-9]/.test(body)) {
+    add("縦書きなので、数字は一・二・三のように漢数字で書きましょう");
   }
   return ng;
 }
@@ -646,28 +768,35 @@ function checkJibun(layout, o) {
    ========================================================= */
 function cellTd(cell, o) {
   var td = document.createElement("td");
-  if (cell && cell.mark && o.mark) td.className = "mark-" + cell.mark;
+  td.className = "masu" + (cell && cell.mark && o.mark ? " mark-" + cell.mark : "");
   if (!cell || !cell.ch) return td;
-  var txt = cell.ch + (cell.sub || "");
   var sp = document.createElement("span");
-  var n = chars(txt).length;
-  sp.className = "ch" + (n === 2 ? " two" : (n > 2 ? " three" : "")) + (o.thin ? " thin" : "");
-  sp.textContent = txt;
+  if (cell.pair) {
+    // 横書きの1マス2文字
+    sp.className = "ch pair" + (o.thin ? " thin" : "");
+    sp.textContent = cell.ch + cell.pair;
+  } else {
+    var txt = cell.ch + (cell.sub || "");
+    var n = chars(txt).length;
+    sp.className = "ch" + (n === 2 ? " two" : (n > 2 ? " three" : "")) + (o.thin ? " thin" : "");
+    sp.textContent = txt;
+  }
   td.appendChild(sp);
   return td;
 }
-function spacerTd() {
-  var td = document.createElement("td");
-  td.className = "sp";
-  return td;
+/** 柱（魚尾）の位置。行数が偶数のときだけ、真ん中に入れる */
+function hashiraAt(o) {
+  var g = Math.max(1, o.gyou);
+  if (!o.hashira || g % 2 !== 0 || g < 4) return -1;
+  return g / 2 - 1;   // この行のあとに柱を入れる
 }
-/**
- * @param lines  layoutText の結果（足りない行は空マスで埋める）
- * @param o {ji,gyou,dir,split,mark,thin}
- */
 function renderSheet(host, lines, o) {
   var gyou = Math.max(1, o.gyou);
   var ji = Math.max(1, o.ji);
+  var ruby = Number(o.ruby) || 0;
+  var hAt = hashiraAt(o);
+  var gyobiAt = Math.floor((ji - 1) / 2);   // 魚尾を置く字の位置
+
   var all = [];
   for (var i = 0; i < gyou; i++) all.push(lines[i] ? lines[i].cells : []);
 
@@ -675,108 +804,171 @@ function renderSheet(host, lines, o) {
   tbl.className = "genkou " + (o.dir === "tate" ? "tate" : "yoko");
 
   if (o.dir === "tate") {
-    // 縦書き：1つの「行」が1つの列になる（右から左へ）
+    // 縦書き：1つの「行」が1つの列になる（右から左へ）。ルビ欄は各行の右がわ
     for (var r = 0; r < ji; r++) {
       var tr = document.createElement("tr");
       for (var c = 0; c < gyou; c++) {
-        if (o.split && c > 0 && c % 10 === 0) tr.appendChild(spacerTd());
+        if (ruby > 0) {
+          var rt = document.createElement("td");
+          rt.className = "ruby";
+          tr.appendChild(rt);
+        }
         tr.appendChild(cellTd(all[c][r], o));
+        if (c === hAt) {
+          var ht = document.createElement("td");
+          ht.className = "hashira";
+          if (r === gyobiAt) {
+            var g1 = document.createElement("span");
+            g1.className = "gyobi";
+            g1.textContent = "【";
+            ht.appendChild(g1);
+          }
+          tr.appendChild(ht);
+        }
       }
       tbl.appendChild(tr);
     }
   } else {
-    // 横書き：1つの「行」が1つの横の列
+    // 横書き：1つの「行」が1つの横の列。ルビ欄は行の上
     for (var c2 = 0; c2 < gyou; c2++) {
-      if (o.split && c2 > 0 && c2 % 10 === 0) {
-        var trs = document.createElement("tr");
-        trs.className = "sp";
-        for (var z = 0; z < ji; z++) trs.appendChild(document.createElement("td"));
-        tbl.appendChild(trs);
+      if (ruby > 0) {
+        var trr = document.createElement("tr");
+        for (var z = 0; z < ji; z++) {
+          var rt2 = document.createElement("td");
+          rt2.className = "ruby";
+          trr.appendChild(rt2);
+        }
+        tbl.appendChild(trr);
       }
       var tr2 = document.createElement("tr");
       for (var r2 = 0; r2 < ji; r2++) tr2.appendChild(cellTd(all[c2][r2], o));
       tbl.appendChild(tr2);
+      if (c2 === hAt) {
+        var trh = document.createElement("tr");
+        var th2 = document.createElement("td");
+        th2.className = "hashira";
+        th2.colSpan = ji;
+        var g2 = document.createElement("span");
+        g2.className = "gyobi";
+        g2.textContent = "【";
+        th2.appendChild(g2);
+        trh.appendChild(th2);
+        tbl.appendChild(trh);
+      }
     }
   }
 
+  // 表の幅を実寸で決めておく。これをしないと、画面の幅に合わせてマスが縮んでしまう
+  var m = Number(o.size);
+  var hasH = hAt >= 0;
+  tbl.style.width = (o.dir === "tate"
+    ? gyou * (m + ruby) + (hasH ? m + ruby : 0)
+    : ji * m) + "mm";
+
+  var frame = document.createElement("div");
+  frame.className = "genkou-frame";
+  frame.appendChild(tbl);
+
   host.innerHTML = "";
   host.style.setProperty("--masu", o.size + "mm");
-  host.style.setProperty("--ji", ji);
+  host.style.setProperty("--ruby", ruby + "mm");
   if (o.color) host.style.setProperty("--masu-line", o.color);
-  host.appendChild(tbl);
+  host.appendChild(frame);
 }
 
 /* =========================================================
    用紙に収まるかを調べる
    ========================================================= */
+var PAPERS = {
+  A4: { w: 210, h: 297, name: "A4" },
+  B4: { w: 257, h: 364, name: "B4" },
+  B5: { w: 182, h: 257, name: "B5" },
+  A3: { w: 297, h: 420, name: "A3" }
+};
+function usableMm(o) {
+  var p = PAPERS[o.paper] || PAPERS.A4;
+  var w = o.orient === "landscape" ? p.h : p.w;
+  var h = o.orient === "landscape" ? p.w : p.h;
+  var m = Number(o.margin) || 10;
+  return { w: w - m * 2, h: h - m * 2 };
+}
 function sheetSizeMm(o) {
   var m = Number(o.size);
-  var gaps = o.split ? Math.floor((Math.max(1, o.gyou) - 1) / 10) : 0;
-  var gapMm = gaps * m * 0.5;
-  // 用紙の上の見出しと、下に印刷するきまりの分の高さ
+  var ruby = Number(o.ruby) || 0;
+  var g = Math.max(1, o.gyou);
+  var hasHashira = hashiraAt(o) >= 0;
+  var perGyou = m + ruby;
+  var acrossGyou = g * perGyou + (hasHashira ? perGyou : 0);
+  var alongJi = o.ji * m;
   var extra = (o.headMm || 0) + (o.footMm || 0);
-  if (o.dir === "tate") {
-    return { w: o.gyou * m + gapMm, h: o.ji * m + extra };
-  }
-  return { w: o.ji * m, h: o.gyou * m + gapMm + extra };
+  if (o.dir === "tate") return { w: acrossGyou, h: alongJi + extra };
+  return { w: alongJi, h: acrossGyou + extra };
 }
 function fitCheck(o) {
   var s = sheetSizeMm(o);
-  // A4（210×297mm）から余白10mm×2を引いた大きさ
-  var p = { w: 190, h: 277 }, l = { w: 277, h: 190 };
+  var u = usableMm(o);
   return {
-    w: Math.round(s.w), h: Math.round(s.h),
-    portrait: s.w <= p.w && s.h <= p.h,
-    landscape: s.w <= l.w && s.h <= l.h
+    w: Math.round(s.w * 10) / 10, h: Math.round(s.h * 10) / 10,
+    uw: Math.round(u.w), uh: Math.round(u.h),
+    fits: s.w <= u.w && s.h <= u.h
   };
 }
-/** A4に収まる、いちばん大きいマスの大きさを選ぶ */
-function bestSize(o, sel) {
-  var opts = Array.prototype.map.call(sel.options, function (x) { return Number(x.value); });
-  opts.sort(function (a, b) { return b - a; });   // 大きい順にためす
-  for (var i = 0; i < opts.length; i++) {
-    var f = fitCheck({
-      ji: o.ji, gyou: o.gyou, dir: o.dir, split: o.split, size: opts[i],
-      headMm: o.headMm, footMm: o.footMm
-    });
-    if (f.portrait || f.landscape) return opts[i];
-  }
-  return opts[opts.length - 1];
-}
-/** 印刷の用紙向きを、入りそうなほうに合わせる */
-function applyPageSize(fit) {
+/** 印刷の用紙と向きを設定に合わせる */
+function applyPageSize(o) {
   var st = $("page-style");
   if (!st) {
     st = document.createElement("style");
     st.id = "page-style";
     document.head.appendChild(st);
   }
-  var orient = fit.portrait ? "portrait" : (fit.landscape ? "landscape" : "portrait");
-  st.textContent = "@page{size:A4 " + orient + ";margin:10mm;}";
-  return orient;
+  st.textContent = "@page{size:" + (o.paper || "A4") + " " +
+    (o.orient || "portrait") + ";margin:" + (Number(o.margin) || 10) + "mm;}";
 }
 function renderFit(host, o) {
-  var fit = fitCheck(o);
-  var orient = applyPageSize(fit);
-  var size = "よこ " + fit.w + "mm × たて " + fit.h + "mm";
-  if (fit.portrait) {
+  var f = fitCheck(o);
+  applyPageSize(o);
+  var paper = (PAPERS[o.paper] || PAPERS.A4).name +
+    (o.orient === "landscape" ? "よこ" : "たて");
+  var size = "よこ " + f.w + "mm × たて " + f.h + "mm";
+  if (f.fits) {
     host.className = "fitbox fit-ok no-print";
-    host.textContent = "A4たて 1枚に収まります（" + size + "）";
-  } else if (fit.landscape) {
-    host.className = "fitbox fit-ok no-print";
-    host.textContent = "A4よこ 1枚に収まります（" + size + "）。印刷の向きは自動でよこになります。";
+    host.textContent = paper + " 1枚に収まります（原稿用紙 " + size +
+      "／印刷できる範囲 よこ " + f.uw + "mm × たて " + f.uh + "mm）";
   } else {
     host.className = "fitbox fit-ng no-print";
-    host.textContent = "A4 1枚に収まりません（" + size + "）。" +
-      "マスを小さくするか、字数・行数を減らしてください。";
+    host.textContent = paper + " に収まりません（原稿用紙 " + size +
+      "／印刷できる範囲 よこ " + f.uw + "mm × たて " + f.uh + "mm）。" +
+      "用紙や向きを変えるか、「用紙にぴったり合わせる」を押してください。";
   }
-  return orient;
+  return f;
+}
+/** 用紙に収まる、いちばん大きいマスとルビ欄の組み合わせを選ぶ */
+function bestFit(o) {
+  // JISの組み合わせを大きい順に。入らなければ規格外も試す
+  var combos = [
+    { size: 10, ruby: 4.5 }, { size: 8.5, ruby: 4.5 }, { size: 8.5, ruby: 3.5 },
+    { size: 8, ruby: 4 }, { size: 8, ruby: 3 }, { size: 7, ruby: 3 },
+    { size: 7, ruby: 2.5 }, { size: 6, ruby: 2.5 }, { size: 6, ruby: 0 }
+  ];
+  // ルビ欄なしを選んでいるなら、なしのまま大きさだけ探す
+  if (Number(o.ruby) === 0) {
+    combos = [18, 15, 12, 10, 8.5, 8, 7, 6].map(function (s) {
+      return { size: s, ruby: 0 };
+    });
+  }
+  for (var i = 0; i < combos.length; i++) {
+    var t = {};
+    for (var k in o) t[k] = o[k];
+    t.size = combos[i].size; t.ruby = combos[i].ruby;
+    if (fitCheck(t).fits) return combos[i];
+  }
+  return combos[combos.length - 1];
 }
 
 /* =========================================================
-   見本用のかんたんな書き方
+   見本の書き方
      _  空マス    |  行がわり
-     !X まちがいの色   =X ここに注目の色   *X ぶら下げの色
+     !X まちがいの色   =X ここに注目   *X ぶら下げ
      +X 直前のマスに X をいっしょに入れる
    ========================================================= */
 function miniLines(spec) {
@@ -804,88 +996,185 @@ function miniLines(spec) {
     return out;
   });
 }
-function miniSheet(spec, ji, gyou) {
+function miniOpts(ji, gyou, extra) {
+  var o = {
+    ji: ji, gyou: gyou, dir: "tate", size: 8, ruby: 3,
+    hashira: false, mark: true, thin: false
+  };
+  for (var k in (extra || {})) o[k] = extra[k];
+  return o;
+}
+function miniSheetFromSpec(spec, ji, gyou, extra) {
   var host = document.createElement("div");
   host.className = "sheet";
-  renderSheet(host, miniLines(spec), {
-    ji: ji, gyou: gyou, dir: "tate", split: false, mark: true, thin: false, size: 8
-  });
+  renderSheet(host, miniLines(spec), miniOpts(ji, gyou, extra));
+  return host;
+}
+/** ○の見本は、ツール本体の並べ方でそのまま作る（見本と動きが食いちがわないように） */
+function miniSheetFromText(cfg, ji, gyou, extra) {
+  var o = {
+    title: cfg.title || "", name: cfg.name || "", body: cfg.body || "",
+    ji: ji, dir: "tate", mode: "tehon",
+    titleAki: cfg.titleAki == null ? 3 : cfg.titleAki,
+    nameAki: cfg.nameAki == null ? 1 : cfg.nameAki,
+    bodyStart: cfg.bodyStart || "next",
+    kaiwaIndent: !!cfg.kaiwaIndent,
+    bangAki: !!cfg.bangAki
+  };
+  var lay = layoutText(o);
+  var host = document.createElement("div");
+  host.className = "sheet";
+  renderSheet(host, lay.lines, miniOpts(ji, gyou, extra));
   return host;
 }
 
 /* =========================================================
-   使い方を学ぶ
+   書き方を学ぶ
    ========================================================= */
 var RULES = [
   {
-    t: "書き出しは1マス空ける",
-    p: "文章のいちばんはじめは、1マス空けてから書きはじめます。",
-    ji: 8, gyou: 2,
-    ok: { spec: "=_ぼくは、音楽|がすきです。", why: "はじめの1マスが空いています" },
-    ng: { spec: "!ぼくは、音楽が|すきです。", why: "1マス目から書きはじめてしまっています" }
-  },
-  {
-    t: "段落が変わるときも1マス空ける",
-    p: "話の中身が変わって行をかえるときも、やはり1マス空けてから書きます。",
+    t: "書き出しと、段落のはじめは1マス空ける",
+    p: "文章のいちばんはじめと、話が変わって行をかえたときは、1マス空けてから書きます。",
     ji: 8, gyou: 3,
-    ok: { spec: "_朝おきた。|=_それからごは|んを食べた。", why: "新しい段落も1マス空いています" },
-    ng: { spec: "_朝おきた。|!それからごは|んを食べた。", why: "段落が変わったのに1マス目から書いています" }
+    ok: { cfg: { body: "朝おきた。\nそれからごはんを食べた。" }, why: "どちらの段落も1マス空いています" },
+    ng: { spec: "!朝おきた。|!それからごは|んを食べた。", why: "1マス目から書きはじめています" }
   },
   {
-    t: "題名は上を2マス、名前は下を1マス空ける",
-    p: "1行目に題名、2行目に名前を書きます。題名は上を2〜3マス空け、名前は下に1マスのこします。",
-    ji: 8, gyou: 2,
-    ok: { spec: "=_=_うんどう会|___あんどう=_", why: "題名は上を2マス、名前は下を1マス空けています" },
-    ng: { spec: "!うんどう会|!あんどう", why: "どちらも1マス目から書いてしまっています" }
+    t: "題名は上を2〜3マス空ける",
+    p: "1行目に題名を書きます。上を3マス空けることが多いですが、2マスとする資料もあります。",
+    diff: "何マス空けるかは資料によって分かれます（3マスが多い）。学校の指示があればそちらに合わせてください。",
+    ji: 8, gyou: 1,
+    ok: { cfg: { title: "うんどう会", titleAki: 3 }, why: "上を3マス空けています" },
+    ng: { spec: "!うんどう会", why: "1マス目から書いています" }
+  },
+  {
+    t: "名前は題名の次の行に、下を1マス空けて書く",
+    p: "2行目に名前を書きます。下に1マス空けます（2マスとする資料もあります）。" +
+      "学年・組を書くときは、組と名前のあいだを1マス空けます。姓と名のあいだも1マス空けてかまいません。",
+    diff: "下を1マスにするか2マスにするかは資料によって分かれます。",
+    ji: 12, gyou: 2,
+    ok: { cfg: { title: "うんどう会", name: "五年一組　安藤　太郎", titleAki: 3, nameAki: 1 },
+      why: "組と名前、姓と名のあいだを1マス空け、下を1マス空けています" },
+    ng: { spec: "!うんどう会|!安藤太郎", why: "上から書きはじめ、間も空けていません" }
+  },
+  {
+    t: "本文は名前の次の行（3行目）から書く",
+    p: "1行目が題名、2行目が名前、3行目から本文です。あいだに空の行は入れないのがふつうです。",
+    diff: "名前と本文のあいだを1行空けると教える資料もあります。",
+    ji: 10, gyou: 4,
+    ok: { cfg: { title: "はるの日", name: "安藤　太郎", body: "きょうは晴れた。", titleAki: 3 },
+      why: "3行目から本文がはじまっています" },
+    ng: { spec: "=_=_=_はるの日|___安藤太郎_|__________|!きょうは晴れた", why: "あいだに空の行が入っています" }
   },
   {
     t: "、と。は1マスずつ使う",
-    p: "点（、）とまる（。）は、それだけで1マスを使います。前の文字といっしょのマスには入れません。",
+    p: "点（、）とまる（。）は、それだけで1マスを使います。前の文字と同じマスには入れません。",
     ji: 8, gyou: 2,
-    ok: { spec: "_きょうは、雨|がふった。", why: "、も。も、それぞれ1マスを使っています" },
-    ng: { spec: "_きょう!は+、雨がふ|った。", why: "、を前の文字と同じマスに入れてしまっています" }
+    ok: { cfg: { body: "きょうは、雨がふった。" }, why: "、も。も1マスずつ使っています" },
+    ng: { spec: "_きょう!は+、雨がふ|った。", why: "、を前の文字と同じマスに入れています" }
   },
   {
     t: "「 と 」 もそれぞれ1マス使う",
     p: "かぎかっこは、開くほうも閉じるほうも1マスずつ使います。",
-    ji: 8, gyou: 2,
-    ok: { spec: "_父が「おはよ|う。」と言った。", why: "「 」 も 。 も、それぞれ1マスです" },
-    ng: { spec: "_父が「おはよ|う!。+」と言った", why: "。と」を同じマスに入れてしまっています" }
-  },
-  {
-    t: "会話文は行をかえて、1マス目の「から書く",
-    p: "会話（「 」）が出てくるときは行をかえます。このときだけは1マス空けずに、1マス目に「を書きます。",
-    ji: 8, gyou: 3,
-    ok: { spec: "_父は言った。|=「おはよう。」|_そして歩いた", why: "行をかえて、1マス目から「を書いています" },
-    ng: { spec: "_父は言った。!「|おはよう。」", why: "行をかえずに、同じ行に続けてしまっています" }
+    ji: 10, gyou: 2,
+    ok: { cfg: { body: "父が「おはよう。」と言った。" }, why: "「 」 も 。 も1マスずつです" },
+    ng: { spec: "_父が「おはよう!。+」|と言った。", why: "。と」を同じマスに入れています" }
   },
   {
     t: "、。」が行のいちばん上に来るときは、前の行の最後のマスに入れる",
     p: "点・まる・閉じかっこは、行のいちばん上に来てはいけません。前の行のいちばん下のマスに、文字といっしょに入れます。",
+    diff: "前の行の最後のマスに入れるほかに、用紙のわく外に書く方法を示す資料もあります。",
     ji: 8, gyou: 2,
-    ok: { spec: "_あしたは晴れ*る+。|だといいな。", why: "最後のマスに「る」と「。」をいっしょに入れています" },
-    ng: { spec: "_あしたは晴れる|!。だといいな", why: "。が行のいちばん上に来てしまっています" }
+    ok: { cfg: { body: "あしたは晴れるだといいな。" }, why: "最後のマスに「る」と「。」をいっしょに入れています" },
+    ng: { spec: "_あしたは晴れる|!。だといいな", why: "。が行のいちばん上に来ています" }
+  },
+  {
+    t: "会話文は行をかえて、1マス目の「から書く",
+    p: "会話（「 」）が出てくるときは行をかえます。このときだけは1マス空けず、1マス目に「を書きます。" +
+      "心の中で思ったことにかぎかっこを使うときは、行をかえないことが多いです。",
+    ji: 8, gyou: 3,
+    ok: { cfg: { body: "父は言った。\n「おはよう。」\nそして歩いた。" },
+      why: "行をかえて、1マス目から「を書いています" },
+    ng: { spec: "_父は言った。!「|おはよう。」", why: "行をかえずに同じ行に続けています" }
   },
   {
     t: "小さい字（っ ゃ ゅ ょ）も1マス使う",
-    p: "small な字も、ふつうの字と同じように1マスを使います。マスの右上のほうに書きます。",
+    p: "小さく書く字も、ふつうの字と同じように1マスを使います。縦書きでは、マスの右上のほうに書きます。",
     ji: 8, gyou: 2,
-    ok: { spec: "_がっこうへ行|った。", why: "小さい「っ」も1マス使っています" },
+    ok: { cfg: { body: "がっこうへ行った。" }, why: "小さい「っ」も1マス使っています" },
     ng: { spec: "_!が+っこうへ行っ|た。", why: "小さい字を前の文字と同じマスに入れています" }
   },
   {
     t: "…… と ―― は2マス使う",
-    p: "点々（…）や線（―）は、2つつづけて2マス使うのがきまりです。",
+    p: "三点リーダー（…）やダッシュ（―）は、2つつづけて2マス使います。" +
+      "…は言葉を止めたり、だまったりしたときに使います。",
     ji: 8, gyou: 2,
-    ok: { spec: "_そのとき=…=…|音がした。", why: "…を2マスつづけて使っています" },
+    ok: { cfg: { body: "そのとき…音がした。" }, why: "…が2マスつづいています" },
     ng: { spec: "_そのとき!…音|がした。", why: "1マスだけになっています" }
   },
   {
     t: "縦書きの数字は漢数字で書く",
-    p: "縦書きのときは、1・2・3ではなく一・二・三と漢数字で書きます。",
+    p: "縦書きのときは、1・2・3ではなく一・二・三と漢数字で書きます。" +
+      "横書きのときは算用数字を使い、1マスに2文字入れます（縦書きで欧文を使うときは1マスに1文字）。",
     ji: 8, gyou: 2,
-    ok: { spec: "_五月三日に出|かけた。", why: "漢数字で書いています" },
+    ok: { cfg: { body: "五月三日に出かけた。" }, why: "漢数字で書いています" },
     ng: { spec: "_!5月!3日に出か|けた。", why: "縦書きなのに算用数字を使っています" }
+  },
+  {
+    t: "！ や ？ のうしろは1マス空ける",
+    p: "感嘆符（！）や疑問符（？）のうしろは、1マス空けるのが一般的なきまりです。" +
+      "ただし、行のいちばん下に来るときや、うしろに 」 が続くときは空けません。",
+    diff: "小学校の教材では、このきまりを扱わないことも多いところです。" +
+      "「文章を入れる」タブの細かい設定で、入／切を選べます。",
+    ji: 8, gyou: 2,
+    ok: { cfg: { body: "すごい！それから走った。", bangAki: true },
+      why: "！のうしろが1マス空いています" },
+    ng: { spec: "_すごい！!それか|ら走った。", why: "うしろを空けずに続けています" }
+  },
+  {
+    t: "『 』 は、かぎかっこの中でさらにかぎかっこを使うとき",
+    p: "二重かぎかっこ（『 』）は、会話の中で本の題名を言うときなど、" +
+      "かぎかっこの中でもう一度かぎかっこが必要なときに使います。",
+    ji: 10, gyou: 3,
+    ok: { cfg: { body: "「『走れメロス』を読んだ。」" },
+      why: "かぎかっこの中で『 』を使っています" },
+    ng: { spec: "=「!「走れメロス!」|を読んだ。」", why: "中も「 」になっていて、どこまでが会話か分かりません" }
+  }
+];
+
+/** 様式（原稿用紙そのもののつくり）の説明 */
+var FORMATS = [
+  {
+    t: "ルビ欄（添削けい）＝行と行のあいだの細長い余白",
+    p: "市販の原稿用紙をよく見ると、マスの列と列のあいだに細い余白があります。" +
+      "これは「ルビ欄」「添削けい」と呼ばれ、ふりがなや傍点、先生の直しを書き入れるためのものです。" +
+      "縦書きでは各行の右がわ、横書きでは各行の上に入ります。" +
+      "この余白をとらないとき（ベタ組み）は、マスを横長にすることが多いとされています。",
+    demo: { ji: 6, gyou: 4, size: 10, ruby: 4.5 }
+  },
+  {
+    t: "柱と魚尾（ぎょび）＝真ん中にある、マスを切らない1行",
+    p: "400字づめでは、10行目と11行目のあいだに、マスのない1行分の空きがあります。" +
+      "その中央にある「【」のような飾りを魚尾といいます。" +
+      "もともと紙を二つ折りにして綴じるための折り目の目印で、和本の版心の飾りを受けついだものです。" +
+      "柱にはページ数や題名を書き入れることもありました。",
+    demo: { ji: 6, gyou: 4, size: 10, ruby: 4.5, hashira: true }
+  },
+  {
+    t: "JIS規格（JIS S 5508）で決まっている寸法",
+    p: "原稿用紙には日本産業規格があり、マスの大きさは 10.0mm・8.5mm・8.0mm の3種類です。" +
+      "マスとルビ欄の組み合わせも「10.0＋4.5」「8.5＋4.5」「8.5＋3.5」「8.0＋4.0」と決められています。" +
+      "10.0mmのマスで400字づめを作るとB4の大きさが必要になるため、" +
+      "A4で規格どおりに作るときは 8.5mm か 8.0mm を選びます。",
+    demo: null
+  },
+  {
+    t: "字詰めの種類",
+    p: "いちばん基本なのが400字づめ（20字×20行）です。" +
+      "200字づめ（20字×10行）は「ペラ」とも呼ばれ、脚本など持ち歩く用途で使われます。" +
+      "それぞれに縦書き用と横書き用があります。" +
+      "ほかに、新聞記者用やテレビのテロップ用など、紙面や画面の字数に合わせた特殊なものもあります。",
+    demo: null
   }
 ];
 
@@ -900,33 +1189,58 @@ function renderLearn() {
       "<p>" + esc(r.p) + "</p>";
     var ex = document.createElement("div");
     ex.className = "examples";
-    [["ok", "○ よい例", "cap-ok"], ["ng", "× わるい例", "cap-ng"]].forEach(function (k) {
-      var d = r[k[0]];
-      if (!d) return;
-      var wrap = document.createElement("div");
-      wrap.className = "example";
-      var cap = document.createElement("div");
-      cap.className = "cap " + k[2];
-      cap.textContent = k[1];
-      wrap.appendChild(cap);
-      wrap.appendChild(miniSheet(d.spec, r.ji, r.gyou));
-      var why = document.createElement("div");
-      why.className = "why";
-      why.textContent = d.why;
-      wrap.appendChild(why);
-      ex.appendChild(wrap);
-    });
+
+    var okWrap = document.createElement("div");
+    okWrap.className = "example";
+    okWrap.innerHTML = '<div class="cap cap-ok">○ よい例</div>';
+    okWrap.appendChild(miniSheetFromText(r.ok.cfg, r.ji, r.gyou));
+    okWrap.insertAdjacentHTML("beforeend", '<div class="why">' + esc(r.ok.why) + "</div>");
+    ex.appendChild(okWrap);
+
+    var ngWrap = document.createElement("div");
+    ngWrap.className = "example";
+    ngWrap.innerHTML = '<div class="cap cap-ng">× わるい例</div>';
+    ngWrap.appendChild(miniSheetFromSpec(r.ng.spec, r.ji, r.gyou));
+    ngWrap.insertAdjacentHTML("beforeend", '<div class="why">' + esc(r.ng.why) + "</div>");
+    ex.appendChild(ngWrap);
+
     box.appendChild(ex);
+    if (r.diff) {
+      box.insertAdjacentHTML("beforeend",
+        '<div class="warnbox" style="margin-bottom:0;"><b>資料によって分かれます：</b>' +
+        esc(r.diff) + "</div>");
+    }
     host.appendChild(box);
+  });
+
+  var fhost = $("format-list");
+  fhost.innerHTML = "";
+  FORMATS.forEach(function (f, i) {
+    var box = document.createElement("div");
+    box.className = "rule";
+    box.innerHTML =
+      '<h3><span class="num">' + (i + 1) + "</span>" + esc(f.t) + "</h3>" +
+      "<p>" + esc(f.p) + "</p>";
+    if (f.demo) {
+      var host2 = document.createElement("div");
+      host2.className = "sheet";
+      var d = f.demo;
+      renderSheet(host2, [], {
+        ji: d.ji, gyou: d.gyou, dir: "tate", size: d.size, ruby: d.ruby,
+        hashira: !!d.hashira, mark: false, thin: false
+      });
+      box.appendChild(host2);
+    }
+    fhost.appendChild(box);
   });
 }
 
 /* =========================================================
    たしかめクイズ
    ========================================================= */
-/** その文章が原稿用紙で何マス使うかを数える（行の折り返しは考えない） */
 function countMasu(text) {
-  var lay = layoutText({ title: "", name: "", body: text, ji: 400, mode: "tehon" });
+  var lay = layoutText({ title: "", name: "", body: text, ji: 400, mode: "tehon",
+    bodyStart: "next", titleAki: 3, nameAki: 1 });
   var n = 0;
   lay.lines.forEach(function (l) { n += l.cells.length; });
   return n;
@@ -946,17 +1260,20 @@ var QUIZ = [
   { type: "ox", q: "段落が変わって行をかえるときは、1マス目から書きはじめる。", a: false,
     why: "段落のはじめも、書き出しと同じように1マス空けます。" },
   { type: "ox", q: "縦書きのときの数字は、一・二・三のように漢数字で書く。", a: true,
-    why: "縦書きでは漢数字を使います。" }
+    why: "縦書きでは漢数字を使います。横書きのときは算用数字で、1マスに2文字入れます。" },
+  { type: "ox", q: "原稿用紙の行と行のあいだにある細長い余白は、ふりがなや直しを書くためのものである。", a: true,
+    why: "「ルビ欄（添削けい）」といいます。JIS規格でマスとの組み合わせが決められています。" },
+  { type: "ox", q: "400字づめの真ん中にある「【」のような飾りを、魚尾（ぎょび）という。", a: true,
+    why: "紙を二つ折りにして綴じるための折り目の目印でした。" }
 ];
 var quizState = { i: 0, ok: 0, done: 0, answered: false };
 
 function renderQuiz() {
   var host = $("quiz-area");
-  var list = QUIZ.filter(function (q) { return !q.skip; });
-  var q = list[quizState.i];
+  var q = QUIZ[quizState.i];
   $("q-score").textContent =
-    "第" + (quizState.i + 1) + "問 / 全" + list.length + "問　　正解 " +
-    quizState.ok + " / " + quizState.done;
+    "第" + Math.min(quizState.i + 1, QUIZ.length) + "問 / 全" + QUIZ.length +
+    "問　　正解 " + quizState.ok + " / " + quizState.done;
 
   if (!q) {
     host.innerHTML =
@@ -981,7 +1298,6 @@ function renderQuiz() {
     host.appendChild(sv);
     var nums = [ans].concat(q.offs.map(function (d) { return ans + d; }))
       .filter(function (n) { return n > 0; });
-    // 毎回おなじ順番になるように、数の小さい順にならべる
     nums.sort(function (a, b) { return a - b; });
     correctIdx = nums.indexOf(ans);
     choices = nums.map(function (n) { return n + " マス"; });
@@ -1023,16 +1339,16 @@ function answerQuiz(idx, correctIdx, q, cbox, host) {
   box.className = "answerbox " + (right ? "ans-ok" : "ans-ng");
   var head = right ? "<b>せいかい。</b><br>" : "<b>ざんねん。</b><br>";
   if (q.type === "count") {
-    box.innerHTML = head + "答えは <b>" + q._ans + "マス</b>です。" +
-      "下のように入ります（色のついたマスが書き出しの1マスです）。";
+    box.innerHTML = head + "答えは <b>" + q._ans + "マス</b>です。下のように入ります。";
     host.appendChild(box);
     var per = Math.min(10, q._ans);
+    var lay = layoutText({ title: "", name: "", body: q.s, ji: per, mode: "tehon",
+      bodyStart: "next", titleAki: 3, nameAki: 1 });
     var sheet = document.createElement("div");
     sheet.className = "sheet";
-    var lay = layoutText({ title: "", name: "", body: q.s, ji: per, mode: "tehon" });
     renderSheet(sheet, lay.lines, {
-      ji: per, gyou: lay.lines.length, dir: "tate", split: false,
-      mark: true, thin: false, size: 9
+      ji: per, gyou: lay.lines.length, dir: "tate", size: 9, ruby: 3,
+      hashira: false, mark: true, thin: false
     });
     var wrap = document.createElement("div");
     wrap.className = "sheet-wrap";
@@ -1052,9 +1368,8 @@ function answerQuiz(idx, correctIdx, q, cbox, host) {
 }
 
 /* =========================================================
-   白紙を作る
+   原稿用紙を作る
    ========================================================= */
-/** 用紙の下に印刷する、みじかいきまりの一覧 */
 var FOOT_RULES = [
   "書き出しと、段落のはじめは1マス空ける。",
   "、。「」はそれぞれ1マス使う。小さい「っ」「ゃ」も1マス使う。",
@@ -1067,11 +1382,14 @@ function blankOpts() {
   return {
     ji: Math.max(4, Math.min(40, Number($("b-ji").value) || 20)),
     gyou: Math.max(1, Math.min(40, Number($("b-gyou").value) || 20)),
-    size: Number($("b-size").value) || 10,
+    size: Number($("b-size").value) || 8.5,
+    ruby: Number($("b-ruby").value),
     dir: $("b-dir").value,
-    split: $("b-split").checked,
+    paper: $("b-paper").value,
+    orient: $("b-orient").value,
+    margin: Number($("b-margin").value) || 10,
+    hashira: $("b-hashira").checked,
     color: $("b-color").value,
-    // 見出し1行ぶん・きまり7行ぶんの高さを見こんでおく
     headMm: ($("b-label").value.trim() || $("b-head").checked) ? 7 : 0,
     footMm: $("b-rules").checked ? 30 : 0,
     mark: false, thin: false
@@ -1081,46 +1399,54 @@ function renderBlank() {
   var o = blankOpts();
   $("b-total").textContent = (o.ji * o.gyou) + "字づめ（" + o.ji + "字×" + o.gyou + "行）";
   renderFit($("b-fit"), o);
+  renderSheet($("b-sheet"), [], o);
 
-  var empty = [];
-  renderSheet($("b-sheet"), empty, o);
-
-  // 用紙の上に入れる文字・題名らんの案内
   var heads = [];
   if ($("b-label").value.trim()) heads.push(esc($("b-label").value.trim()));
-  if ($("b-head").checked) heads.push("1行目に題名、2行目に名前を書きましょう");
+  if ($("b-head").checked) heads.push("1行目に題名、2行目に名前、3行目から本文を書きましょう");
   var title = heads.join("　／　");
   if (title) {
     var head = document.createElement("div");
     head.className = "sheet-head";
-    head.style.fontSize = "12px";
     head.innerHTML = title;
     $("b-sheet").insertBefore(head, $("b-sheet").firstChild);
   }
-
-  // 用紙の下のきまり
   $("b-rules-foot").innerHTML = $("b-rules").checked
     ? "<b>原稿用紙のきまり</b><ul>" +
       FOOT_RULES.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>"
     : "";
+  if (hashiraAt(o) < 0 && $("b-hashira").checked) {
+    $("b-preset-note").textContent = "柱は、行の数が偶数（4行以上）のときだけ入ります。";
+  } else {
+    $("b-preset-note").textContent = "";
+  }
 }
 
 /* =========================================================
-   文字を入れる
+   文章を入れる
    ========================================================= */
 function textOpts() {
   return {
     ji: Math.max(4, Math.min(40, Number($("t-ji").value) || 20)),
     gyou: Math.max(1, Math.min(40, Number($("t-gyou").value) || 20)),
-    size: Number($("t-size").value) || 10,
+    size: Number($("t-size").value) || 8.5,
+    ruby: Number($("t-ruby").value),
     dir: $("t-dir").value,
-    split: $("t-split").checked,
+    paper: $("b-paper").value,
+    orient: $("b-orient").value,
+    margin: Number($("b-margin").value) || 10,
+    hashira: $("t-hashira").checked,
     mark: $("t-mark").checked,
     thin: $("t-thin").checked,
     mode: document.querySelector('input[name="tmode"]:checked').value,
     title: $("t-title").value.trim(),
     name: $("t-name").value.trim(),
-    body: $("t-body").value
+    body: $("t-body").value,
+    titleAki: Number($("t-title-aki").value),
+    nameAki: Number($("t-name-aki").value),
+    bodyStart: $("t-body-start").value,
+    kaiwaIndent: $("t-kaiwa-indent").checked,
+    bangAki: $("t-bang-aki").checked
   };
 }
 function renderText() {
@@ -1131,21 +1457,20 @@ function renderText() {
 
   renderFit($("t-fit"), o);
   var lay = layoutText(o);
-  var notes = lay.notes;
-  if (o.mode === "jibun") notes = checkJibun(lay, o);
-
+  var notes = (o.mode === "jibun") ? checkJibun(lay, o) : lay.notes;
   renderSheet($("t-sheet"), lay.lines, o);
 
-  // 使ったマスの数と、何行になったか
   var used = 0;
-  lay.lines.forEach(function (l) { l.cells.forEach(function (c) { if (c.ch) used++; }); });
+  lay.lines.forEach(function (l) {
+    l.cells.forEach(function (c) { if (c.ch) used += c.pair ? 2 : 1; });
+  });
   var over = lay.lines.length > o.gyou;
 
   var host = $("t-notes");
   host.innerHTML = "";
   var info = document.createElement("div");
   info.className = "fitbox " + (over ? "fit-ng" : "fit-ok");
-  info.textContent = "文字の入ったマス " + used + "／ぜんぶで " + lay.lines.length + "行" +
+  info.textContent = "入った文字 " + used + "字／ぜんぶで " + lay.lines.length + "行" +
     (over ? "　※用紙の行数（" + o.gyou + "行）を超えています。行数を増やすか、文章を短くしてください。" : "");
   host.appendChild(info);
 
@@ -1160,12 +1485,14 @@ function renderText() {
   }
   var list = document.createElement("div");
   list.className = "notelist";
+  var TAG = { jisage: "1マス空け", hang: "行のはし", kaigyou: "会話文",
+    aki: "あとを空ける", ng: "なおそう", ok: "マスの使い方" };
   notes.forEach(function (n) {
     var row = document.createElement("div");
     row.className = "noterow";
     var tag = document.createElement("span");
     tag.className = "tag tag-" + n.kind;
-    tag.textContent = { jisage: "1マス空け", hang: "行のはし", kaigyou: "会話文", ng: "なおそう", ok: "マスの数" }[n.kind] || "メモ";
+    tag.textContent = TAG[n.kind] || "メモ";
     row.appendChild(tag);
     var tx = document.createElement("span");
     tx.textContent = n.text + (n.n > 1 ? "（" + n.n + "か所）" : "");
@@ -1181,7 +1508,7 @@ var SAMPLE = "ぼくは、運動会でリレーの選手になりました。\n"
   "おうえんの声が聞こえて、力がわいてきました。";
 
 /* =========================================================
-   印刷
+   印刷・イベント
    ========================================================= */
 function printPanel(id) {
   var p = $(id);
@@ -1190,20 +1517,29 @@ function printPanel(id) {
   setTimeout(function () { p.classList.remove("printing"); }, 1200);
 }
 
-/* =========================================================
-   画面のイベント
-   ========================================================= */
 var PRESETS = {
-  "400": { ji: 20, gyou: 20, size: 9, split: true },
-  "200": { ji: 20, gyou: 10, size: 9, split: true },
-  "600": { ji: 20, gyou: 30, size: 6, split: true },
-  "mid": { ji: 15, gyou: 15, size: 12, split: false },
-  "low": { ji: 10, gyou: 10, size: 15, split: false },
-  "mini": { ji: 10, gyou: 6, size: 15, split: false }
+  jis400: { ji: 20, gyou: 20, size: 8.5, ruby: 4.5, paper: "A4", orient: "landscape",
+    dir: "tate", hashira: true,
+    note: "市販のA4原稿用紙と同じ様式です（JISのマス8.5mm＋ルビ欄4.5mm）。" },
+  big400: { ji: 20, gyou: 20, size: 10, ruby: 4.5, paper: "B4", orient: "landscape",
+    dir: "tate", hashira: true,
+    note: "JISでいちばん大きい10.0mmのマスです。400字づめではB4が必要になります。" },
+  jis200: { ji: 20, gyou: 10, size: 8.5, ruby: 4.5, paper: "A4", orient: "portrait",
+    dir: "tate", hashira: true,
+    note: "200字づめ（ペラ）です。行数が10行なので、柱は5行目と6行目のあいだに入ります。" },
+  low: { ji: 10, gyou: 10, size: 15, ruby: 4.5, paper: "A4", orient: "landscape",
+    dir: "tate", hashira: true,
+    note: "低学年向けに大きなマス（15mm）にしています。用紙はA4よこです。" },
+  mid: { ji: 15, gyou: 15, size: 10, ruby: 3.5, paper: "A4", orient: "landscape",
+    dir: "tate", hashira: false,
+    note: "行数が奇数（15行）なので、柱は入りません。" },
+  beta: { ji: 20, gyou: 20, size: 8.5, ruby: 0, paper: "A4", orient: "portrait",
+    dir: "tate", hashira: true,
+    note: "ルビ欄のないベタ組みです。ふりがなを書く余白はありませんが、" +
+      "その分せまく収まるのでA4たてに入ります。" }
 };
 
 function wire() {
-  // タブ
   document.querySelectorAll(".tab").forEach(function (t) {
     t.onclick = function () {
       document.querySelectorAll(".tab").forEach(function (x) { x.classList.remove("on"); });
@@ -1215,50 +1551,45 @@ function wire() {
     };
   });
 
-  // 白紙を作る
-  ["b-ji", "b-gyou", "b-size", "b-dir", "b-split", "b-head", "b-label",
-    "b-color", "b-rules"].forEach(function (id) {
-    $(id).addEventListener("input", renderBlank);
-    $(id).addEventListener("change", renderBlank);
-  });
+  ["b-ji", "b-gyou", "b-size", "b-ruby", "b-dir", "b-paper", "b-orient", "b-margin",
+    "b-hashira", "b-head", "b-rules", "b-color", "b-label"].forEach(function (id) {
+      $(id).addEventListener("input", renderBlank);
+      $(id).addEventListener("change", renderBlank);
+    });
   document.querySelectorAll("[data-preset]").forEach(function (b) {
     b.onclick = function () {
       var p = PRESETS[b.dataset.preset];
       $("b-ji").value = p.ji; $("b-gyou").value = p.gyou;
-      $("b-size").value = String(p.size); $("b-split").checked = p.split;
+      $("b-size").value = String(p.size); $("b-ruby").value = String(p.ruby);
+      $("b-paper").value = p.paper; $("b-orient").value = p.orient;
+      $("b-dir").value = p.dir; $("b-hashira").checked = p.hashira;
       renderBlank();
+      $("b-preset-note").textContent = p.note;
     };
   });
   $("btn-b-fit").onclick = function () {
-    var s = bestSize(blankOpts(), $("b-size"));
-    $("b-size").value = String(s);
+    var o = blankOpts();
+    var best = bestFit(o);
+    $("b-size").value = String(best.size);
+    $("b-ruby").value = String(best.ruby);
     renderBlank();
-    toast("マスの大きさを " + s + "mm にしました");
+    toast("マス " + best.size + "mm／ルビ欄 " + best.ruby + "mm にしました");
   };
   $("btn-blank-print").onclick = function () { renderBlank(); printPanel("p-blank"); };
 
-  // 文字を入れる
-  ["t-title", "t-name", "t-body", "t-ji", "t-gyou", "t-size", "t-dir",
-    "t-split", "t-mark", "t-thin"].forEach(function (id) {
+  ["t-title", "t-name", "t-body", "t-ji", "t-gyou", "t-size", "t-ruby", "t-dir",
+    "t-hashira", "t-mark", "t-thin", "t-title-aki", "t-name-aki", "t-body-start",
+    "t-kaiwa-indent", "t-bang-aki"].forEach(function (id) {
       $(id).addEventListener("input", renderText);
       $(id).addEventListener("change", renderText);
     });
   document.querySelectorAll('input[name="tmode"]').forEach(function (r) {
     r.addEventListener("change", renderText);
   });
-  $("btn-t-fit").onclick = function () {
-    var s = bestSize(textOpts(), $("t-size"));
-    $("t-size").value = String(s);
-    renderText();
-    toast("マスの大きさを " + s + "mm にしました");
-  };
-  $("btn-text-print").onclick = function () {
-    renderText();
-    printPanel("p-text");
-  };
+  $("btn-text-print").onclick = function () { renderText(); printPanel("p-text"); };
   $("btn-text-sample").onclick = function () {
     $("t-title").value = "運動会の思い出";
-    $("t-name").value = "あんどう　たろう";
+    $("t-name").value = "五年一組　安藤　太郎";
     $("t-body").value = SAMPLE;
     renderText();
   };
@@ -1267,13 +1598,10 @@ function wire() {
     renderText();
   };
 
-  // クイズ
   $("btn-quiz-reset").onclick = function () {
     quizState = { i: 0, ok: 0, done: 0, answered: false };
     renderQuiz();
   };
-
-  // 使い方
   $("btn-help").onclick = function () { $("dlg-help").showModal(); };
   $("btn-help-close").onclick = function () { $("dlg-help").close(); };
 }
