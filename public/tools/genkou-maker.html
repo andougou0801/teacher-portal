@@ -205,6 +205,30 @@
   .legend i.mark-ok{background:#d6f0de;border:2px solid #2f7d45;color:#1d5a2e;}
   .legend i.mark-aki{background:#e6dff7;border:2px solid #6b4bb0;color:#45307a;}
 
+  /* ===== ノートのマス目 ===== */
+  table.note{border-collapse:collapse;table-layout:fixed;}
+  table.note td{
+    width:var(--nmasu);height:var(--nmasu);
+    border:1px solid var(--masu-line);
+    padding:0;position:relative;
+  }
+  /* 十字リーダー。背景ではなく罫線で描くので、印刷設定に関係なく出る */
+  table.note.leader td::before{
+    content:"";position:absolute;left:0;right:0;top:50%;
+    border-top:1px dotted var(--leader-color);
+  }
+  table.note.leader td::after{
+    content:"";position:absolute;top:0;bottom:0;left:50%;
+    border-left:1px dotted var(--leader-color);
+  }
+  /* 罫線だけの行ノート */
+  table.note.gyo td{height:var(--nmasu);border:none;border-bottom:1px solid var(--masu-line);}
+  table.note.gyo td::before,table.note.gyo td::after{display:none;}
+  .note-head{
+    display:flex;gap:6mm;margin-bottom:3mm;font-size:11pt;line-height:1.6;
+  }
+  .note-head span{border-bottom:1px solid var(--masu-line);flex:1;}
+
   /* 用紙に収まるかの知らせ */
   .fitbox{border-radius:10px;padding:9px 14px;font-size:13px;margin:10px 0;line-height:1.9;}
   .fit-ok{background:#f2fbf4;border:1px solid #bfe4c8;color:#2f7d45;}
@@ -300,6 +324,7 @@
 
 <div class="tabs no-print">
   <div class="tab on" data-panel="p-blank">原稿用紙を作る</div>
+  <div class="tab" data-panel="p-note">ノートのマス目を作る</div>
   <div class="tab" data-panel="p-text">文章を入れる</div>
   <div class="tab" data-panel="p-learn">書き方を学ぶ</div>
   <div class="tab" data-panel="p-quiz">たしかめクイズ</div>
@@ -428,6 +453,83 @@
     <div class="sheet" id="b-sheet"></div>
   </div>
   <div class="rules-foot" id="b-rules-foot"></div>
+</div>
+
+<!-- ===================== ノートのマス目を作る ===================== -->
+<div class="panel" id="p-note">
+  <h2 class="sec no-print">学年と教科で選ぶ</h2>
+  <p class="note no-print" style="margin-top:0;">
+    小学校で使われているノートのマス目を、同じ大きさで印刷できます。
+    ノートを忘れた子のかわりの紙や、練習プリントの下地に使えます。
+  </p>
+  <div class="row no-print" id="note-presets"></div>
+  <div class="note no-print" id="n-preset-note"></div>
+
+  <h2 class="sec no-print">マス目の設定</h2>
+  <div class="row no-print">
+    <label>種類</label>
+    <select id="n-kind">
+      <option value="masu" selected>マス目（国語・算数）</option>
+      <option value="gyo">罫線だけ（行ノート）</option>
+    </select>
+    <label>1マスの大きさ</label>
+    <select id="n-size">
+      <option value="26">26mm（国語8マス）</option>
+      <option value="22">22mm（算数6マス）</option>
+      <option value="21">21mm（国語10マス）</option>
+      <option value="18">18mm（国語12マス・算数7マス）</option>
+      <option value="15" selected>15mm（国語15マス・算数14マス）</option>
+      <option value="12">12mm（国語18マス・算数17マス）</option>
+      <option value="10">10mm（算数10mm方眼）</option>
+      <option value="8">8mm（17行）</option>
+    </select>
+  </div>
+  <div class="row no-print">
+    <label class="toggle"><input type="checkbox" id="n-leader" checked>
+      十字リーダー（マスの中の点線）を入れる</label>
+    <label class="toggle"><input type="checkbox" id="n-name" checked>
+      上に名前・日づけのらんをつける</label>
+  </div>
+
+  <h2 class="sec no-print">用紙</h2>
+  <div class="row no-print">
+    <label>用紙</label>
+    <select id="n-paper">
+      <option value="B5" selected>B5（182×257mm・ノートと同じ）</option>
+      <option value="A4">A4（210×297mm）</option>
+      <option value="B4">B4（257×364mm）</option>
+      <option value="A3">A3（297×420mm）</option>
+    </select>
+    <label>用紙の向き</label>
+    <select id="n-orient">
+      <option value="portrait" selected>たて長</option>
+      <option value="landscape">よこ長</option>
+    </select>
+    <label>余白</label>
+    <select id="n-margin">
+      <option value="10" selected>10mm</option>
+      <option value="15">15mm</option>
+      <option value="20">20mm</option>
+    </select>
+    <label>線の色</label>
+    <select id="n-color">
+      <option value="#4a5a74" selected>こん色（ふつう）</option>
+      <option value="#111111">黒（コピーするとき）</option>
+      <option value="#9aa6ba">うすい灰色（インクの節約）</option>
+      <option value="#3f7a4a">緑</option>
+      <option value="#8a5a2b">茶</option>
+    </select>
+  </div>
+
+  <div id="n-fit" class="fitbox no-print"></div>
+  <div class="row no-print">
+    <button id="btn-note-print">印刷する</button>
+    <span class="note" style="margin:0;">用紙に入るだけマス目を並べ、紙の真ん中に印刷します</span>
+  </div>
+
+  <div class="sheet-wrap">
+    <div class="sheet" id="n-sheet"></div>
+  </div>
 </div>
 
 <!-- ===================== 文章を入れる ===================== -->
@@ -1695,6 +1797,111 @@ function markChosenPreset(o) {
 }
 
 /* =========================================================
+   ノートのマス目を作る
+   小学校で使われているノートの規格に合わせている。
+   「○マス」は1マスの大きさの呼び名で、マスの数は用紙に入るだけ並べる。
+   ========================================================= */
+var NOTE_PRESETS = [
+  { k: "国語", g: "1年（はじめ）", label: "国語 8マス", size: 26, leader: true, kind: "masu",
+    note: "1年生のはじめに使う、いちばん大きいマスです（1マス26mm・十字リーダーつき）。" },
+  { k: "国語", g: "1年", label: "国語 10マス", size: 21, leader: true, kind: "masu",
+    note: "1年生でよく使う国語ノートです（1マス21mm・十字リーダーつき）。" },
+  { k: "国語", g: "2年", label: "国語 12マス", size: 18, leader: true, kind: "masu",
+    note: "2年生でよく使う国語ノートです（1マス18mm・十字リーダーつき）。" },
+  { k: "国語", g: "2〜3年", label: "国語 15マス", size: 15, leader: true, kind: "masu",
+    note: "2年生の後半から3年生で使います（1マス15mm・十字リーダーつき）。" },
+  { k: "国語", g: "3〜5年", label: "国語 18マス", size: 12, leader: false, kind: "masu",
+    note: "3年生から5年生で使います（1マス12mm）。" },
+  { k: "算数", g: "1年", label: "算数 6マス", size: 22, leader: false, kind: "masu",
+    note: "1年生のはじめに使う横型ノートのマスです（1マス22mm）。" },
+  { k: "算数", g: "1年", label: "算数 7マス", size: 18, leader: false, kind: "masu",
+    note: "1年生の横型ノートです（1マス18mm）。" },
+  { k: "算数", g: "1〜2年", label: "算数 14マス", size: 15, leader: false, kind: "masu",
+    note: "1年生の後半から2年生で使います（1マス15mm）。" },
+  { k: "算数", g: "2〜3年", label: "算数 17マス", size: 12, leader: false, kind: "masu",
+    note: "2年生から3年生で使います（1マス12mm）。12mm方眼も同じ大きさです。" },
+  { k: "算数", g: "3〜6年", label: "算数 10mm方眼", size: 10, leader: true, kind: "masu",
+    note: "3年生から6年生で使う方眼ノートです（1マス10mm・5mmの補助線つき）。" },
+  { k: "行", g: "3年", label: "17行", size: 12, leader: false, kind: "gyo",
+    note: "罫線だけのノートです（1行12mm）。" },
+  { k: "行", g: "4〜6年", label: "22行", size: 10, leader: false, kind: "gyo",
+    note: "罫線だけのノートです（1行10mm）。" }
+];
+function noteOpts() {
+  return {
+    kind: $("n-kind").value,
+    size: Number($("n-size").value) || 15,
+    leader: $("n-leader").checked,
+    nameRow: $("n-name").checked,
+    paper: $("n-paper").value,
+    orient: $("n-orient").value,
+    margin: Number($("n-margin").value) || 10,
+    color: $("n-color").value
+  };
+}
+/** 用紙に入るマスの数を数える */
+function noteCount(o) {
+  var u = usableMm({ paper: o.paper, orient: o.orient, margin: o.margin });
+  var headMm = o.nameRow ? 12 : 0;
+  var cols = Math.max(1, Math.floor(u.w / o.size));
+  var rows = Math.max(1, Math.floor((u.h - headMm) / o.size));
+  return { cols: cols, rows: rows, uw: u.w, uh: u.h };
+}
+function renderNote() {
+  var o = noteOpts();
+  var c = noteCount(o);
+  var host = $("n-sheet");
+  host.innerHTML = "";
+  host.style.setProperty("--nmasu", o.size + "mm");
+  host.style.setProperty("--masu-line", o.color);
+  // 十字リーダーは、マスの線よりうすくする
+  host.style.setProperty("--leader-color", o.color === "#9aa6ba" ? "#c3cbd9" : "#9aa6ba");
+
+  if (o.nameRow) {
+    var head = document.createElement("div");
+    head.className = "note-head";
+    head.innerHTML = "なまえ <span></span> 日づけ <span></span>";
+    host.appendChild(head);
+  }
+
+  var tbl = document.createElement("table");
+  tbl.className = "note" + (o.kind === "gyo" ? " gyo" : "") +
+    (o.leader && o.kind === "masu" ? " leader" : "");
+  // 罫線だけのときは、1行を1つのセルにして、横はばいっぱいに引く
+  var cols = (o.kind === "gyo") ? 1 : c.cols;
+  tbl.style.width = (c.cols * o.size) + "mm";
+  for (var r = 0; r < c.rows; r++) {
+    var tr = document.createElement("tr");
+    for (var x = 0; x < cols; x++) tr.appendChild(document.createElement("td"));
+    tbl.appendChild(tr);
+  }
+  var frame = document.createElement("div");
+  frame.className = "genkou-frame";
+  if (o.kind === "gyo") frame.style.border = "none";
+  frame.appendChild(tbl);
+  host.appendChild(frame);
+
+  // 実寸をはかって、用紙の真ん中に来るよう余白を決める
+  o.measured = measuredMm(host, null);
+  var f = fitCheck(o);
+  var m = applyPageSize(o);
+  var paper = (PAPERS[o.paper] || PAPERS.A4).name +
+    (o.orient === "landscape" ? "よこ" : "たて");
+  var box = $("n-fit");
+  var nokosu = (o.kind === "gyo")
+    ? c.rows + "行"
+    : c.cols + "マス × " + c.rows + "行（ぜんぶで " + (c.cols * c.rows) + "マス）";
+  if (f.fits) {
+    box.className = "fitbox fit-ok no-print";
+    box.textContent = paper + " に " + nokosu + " 入ります（1マス " + o.size +
+      "mm／紙の真ん中に印刷されます。上下の余白 " + m.top + "mm・左右の余白 " + m.side + "mm）";
+  } else {
+    box.className = "fitbox fit-ng no-print";
+    box.textContent = paper + " に収まりません。余白を小さくするか、用紙を大きくしてください。";
+  }
+}
+
+/* =========================================================
    文章を入れる
    ========================================================= */
 function textOpts() {
@@ -1860,6 +2067,7 @@ function wire() {
       $(t.dataset.panel).classList.add("on");
       if (t.dataset.panel === "p-blank") renderBlank();
       if (t.dataset.panel === "p-text") renderText();
+      if (t.dataset.panel === "p-note") renderNote();
     };
     t.onclick = go;
     t.addEventListener("keydown", function (e) {
@@ -1884,6 +2092,35 @@ function wire() {
       $("b-preset-note").textContent = p.note;
     };
   });
+  // ノートのマス目
+  var np = $("note-presets");
+  NOTE_PRESETS.forEach(function (p, i) {
+    var b = document.createElement("button");
+    b.className = "sub mini";
+    b.dataset.note = String(i);
+    b.textContent = p.g + "　" + p.label;
+    np.appendChild(b);
+  });
+  np.addEventListener("click", function (e) {
+    var i = e.target.dataset && e.target.dataset.note;
+    if (i == null) return;
+    var p = NOTE_PRESETS[Number(i)];
+    $("n-kind").value = p.kind;
+    $("n-size").value = String(p.size);
+    $("n-leader").checked = p.leader;
+    renderNote();
+    $("n-preset-note").textContent = p.note;
+    np.querySelectorAll("button").forEach(function (x) {
+      x.classList.toggle("chosen", x === e.target);
+    });
+  });
+  ["n-kind", "n-size", "n-leader", "n-name", "n-paper", "n-orient",
+    "n-margin", "n-color"].forEach(function (id) {
+      $(id).addEventListener("input", renderNote);
+      $(id).addEventListener("change", renderNote);
+    });
+  $("btn-note-print").onclick = function () { renderNote(); printPanel("p-note"); };
+
   $("btn-b-fit").onclick = function () {
     var o = blankOpts();
     var best = bestFit(o);
@@ -1945,6 +2182,7 @@ function boot() {
   wire();
   renderBlank();
   renderText();
+  renderNote();
   renderLearn();
   renderQuiz();
 }
