@@ -128,9 +128,11 @@
   }
   /* 縦書きでは「」や、。が自動で縦書き用の字形・位置になる */
   .tate .ch{writing-mode:vertical-rl;}
+  /* 会話文の終わりの 。」 は同じマスに入れる。どちらも小さい記号なので大きめに出せる */
+  .ch.kuten{font-size:calc(var(--masu) * 0.62);}
   /* ぶら下げ（前の行の最後のマスに、文字と句読点を一緒に入れる） */
-  .ch.two{font-size:calc(var(--masu) * 0.46);}
-  .ch.three{font-size:calc(var(--masu) * 0.33);}
+  .ch.two{font-size:calc(var(--masu) * 0.5);}
+  .ch.three{font-size:calc(var(--masu) * 0.38);}
   /* 横書きの欧文・数字は1マスに2文字入れる */
   .ch.pair{font-size:calc(var(--masu) * 0.52);letter-spacing:-0.02em;}
   .ch.thin{color:#bcc5d4;}
@@ -396,6 +398,20 @@
         </select>
       </div>
       <div class="row">
+        <label>会話文の終わりの 。 と 」</label>
+        <select id="t-kuten-close">
+          <option value="1" selected>同じマスに入れる（ふつう）</option>
+          <option value="0">べつべつのマスに入れる</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>会話文ではじまる段落</label>
+        <select id="t-kaiwa-head">
+          <option value="0" selected>1マス目の 「 から書く</option>
+          <option value="1">1マス空けてから 「 を書く</option>
+        </select>
+      </div>
+      <div class="row">
         <label class="toggle"><input type="checkbox" id="t-kaiwa-indent">
           会話文が2行以上になるとき、2行目から1マス下げる</label>
       </div>
@@ -622,7 +638,12 @@ function layoutText(o) {
     if (cs.length === 0) return;
     isKaiwa = (cs[0] === "「");
     if (isKaiwa) {
-      note("kaigyou", "会話文（「 ではじまる文）は行をかえて、1マス空けずに1マス目から書きます");
+      if (o.kaiwaHead) {
+        cur.cells.push({ ch: "", mark: "jisage" });
+        note("kaigyou", "会話文ではじまる段落なので、1マス空けてから 「 を書きました");
+      } else {
+        note("kaigyou", "会話文（「 ではじまる文）は行をかえて、1マス空けずに1マス目から書きます");
+      }
     } else {
       cur.cells.push({ ch: "", mark: "jisage" });
       note("jisage", "書き出しと段落のはじめは1マス空けます");
@@ -658,6 +679,15 @@ function layoutText(o) {
       if (cur.cells.length === per - 1 && KINSOKU_END.indexOf(ch) >= 0 && i2 < cs.length - 1) {
         wrap();
         note("hang", ch + " が行のいちばん下に来るので、次の行のはじめに送りました");
+      }
+
+      // 会話文の終わりの 。 と 」 は、同じマスに入れる
+      if (o.kutenClose !== false && (ch === "。" || ch === "．") &&
+        "」』）〉》】".indexOf(cs[i2 + 1] || "") >= 0) {
+        cur.cells.push({ ch: ch, close: cs[i2 + 1] });
+        note("ok", "会話文の終わりの 。 と " + cs[i2 + 1] + " は、同じマスに入れます");
+        i2++;
+        continue;
       }
 
       // 横書きの欧文・数字は1マスに2文字入れる
@@ -776,9 +806,13 @@ function cellTd(cell, o) {
     sp.className = "ch pair" + (o.thin ? " thin" : "");
     sp.textContent = cell.ch + cell.pair;
   } else {
-    var txt = cell.ch + (cell.sub || "");
+    var txt = cell.ch + (cell.close || "") + (cell.sub || "");
     var n = chars(txt).length;
-    sp.className = "ch" + (n === 2 ? " two" : (n > 2 ? " three" : "")) + (o.thin ? " thin" : "");
+    var cls = "ch";
+    if (cell.close && !cell.sub) cls += " kuten";      // 。」 の組み合わせ
+    else if (n === 2) cls += " two";
+    else if (n > 2) cls += " three";
+    sp.className = cls + (o.thin ? " thin" : "");
     sp.textContent = txt;
   }
   td.appendChild(sp);
@@ -1074,11 +1108,16 @@ var RULES = [
     ng: { spec: "_きょう!は+、雨がふ|った。", why: "、を前の文字と同じマスに入れています" }
   },
   {
-    t: "「 と 」 もそれぞれ1マス使う",
-    p: "かぎかっこは、開くほうも閉じるほうも1マスずつ使います。",
+    t: "「 は1マス。会話文の終わりの 。 と 」 は同じマスに入れる",
+    p: "開きかっこ（「）は1マス使います。" +
+      "閉じるときは、句点（。）と閉じかっこ（」）を同じ1マスに入れるのがふつうです。" +
+      "行のとちゅうでも、行のいちばん下でも同じように入れます。",
+    diff: "新聞や書籍では、句点を省いて 」 だけにする流儀もあります。" +
+      "「文章を入れる」タブの細かい設定で、べつべつのマスに入れる形にも変えられます。",
     ji: 10, gyou: 2,
-    ok: { cfg: { body: "父が「おはよう。」と言った。" }, why: "「 」 も 。 も1マスずつです" },
-    ng: { spec: "_父が「おはよう!。+」|と言った。", why: "。と」を同じマスに入れています" }
+    ok: { cfg: { body: "父が「おはよう。」と言った。" },
+      why: "。 と 」 が同じマスに入っています" },
+    ng: { spec: "_父が「おはよう!。!」|と言った。", why: "。と」をべつべつのマスに書いています" }
   },
   {
     t: "、。」が行のいちばん上に来るときは、前の行の最後のマスに入れる",
@@ -1372,7 +1411,8 @@ function answerQuiz(idx, correctIdx, q, cbox, host) {
    ========================================================= */
 var FOOT_RULES = [
   "書き出しと、段落のはじめは1マス空ける。",
-  "、。「」はそれぞれ1マス使う。小さい「っ」「ゃ」も1マス使う。",
+  "、。「はそれぞれ1マス使う。小さい「っ」「ゃ」も1マス使う。",
+  "会話文の終わりの 。 と 」 は、同じ1マスに入れる。",
   "、。」が行のいちばん上に来るときは、前の行のいちばん下のマスに文字といっしょに入れる。",
   "会話文（「 」）は行をかえて、1マス目の「から書く。",
   "題名は1行目の上を2〜3マス空け、名前は2行目の下を1マス空ける。",
@@ -1446,7 +1486,9 @@ function textOpts() {
     nameAki: Number($("t-name-aki").value),
     bodyStart: $("t-body-start").value,
     kaiwaIndent: $("t-kaiwa-indent").checked,
-    bangAki: $("t-bang-aki").checked
+    bangAki: $("t-bang-aki").checked,
+    kutenClose: $("t-kuten-close").value === "1",
+    kaiwaHead: $("t-kaiwa-head").value === "1"
   };
 }
 function renderText() {
@@ -1579,7 +1621,7 @@ function wire() {
 
   ["t-title", "t-name", "t-body", "t-ji", "t-gyou", "t-size", "t-ruby", "t-dir",
     "t-hashira", "t-mark", "t-thin", "t-title-aki", "t-name-aki", "t-body-start",
-    "t-kaiwa-indent", "t-bang-aki"].forEach(function (id) {
+    "t-kaiwa-indent", "t-bang-aki", "t-kuten-close", "t-kaiwa-head"].forEach(function (id) {
       $(id).addEventListener("input", renderText);
       $(id).addEventListener("change", renderText);
     });
