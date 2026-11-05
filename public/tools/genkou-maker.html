@@ -130,11 +130,21 @@
   /* 柱は「1行分」なので、マス＋ルビ欄の幅をとる */
   table.genkou.tate td.hashira{width:calc(var(--masu) + var(--ruby));}
   table.genkou.yoko td.hashira{height:calc(var(--masu) + var(--ruby));}
+  /* 魚尾。文字（【）で描くと字形が箱の中で片寄るため、罫線で描いて確実に中央に置く */
   .gyobi{
-    font-size:calc(var(--masu) * 0.95);line-height:1;
-    font-family:"Hiragino Mincho ProN","Yu Mincho","MS Mincho",serif;
+    display:block;margin:0 auto;
+    width:calc(var(--masu) * 0.6);
+    height:calc(var(--masu) * 0.28);
+    border:1.4px solid var(--masu-line);
+    border-bottom:none;
   }
-  .tate .gyobi{writing-mode:vertical-rl;}
+  /* 横書きのときは下向きではなく右向きにする */
+  .yoko .gyobi{
+    width:calc(var(--masu) * 0.28);
+    height:calc(var(--masu) * 0.6);
+    border:1.4px solid var(--masu-line);
+    border-right:none;
+  }
 
   .ch{
     display:inline-block;
@@ -945,7 +955,6 @@ function renderSheet(host, lines, o) {
           ht.rowSpan = ji;
           var g1 = document.createElement("span");
           g1.className = "gyobi";
-          g1.textContent = "【";
           ht.appendChild(g1);
           tr.appendChild(ht);
         }
@@ -974,7 +983,6 @@ function renderSheet(host, lines, o) {
         th2.colSpan = ji;
         var g2 = document.createElement("span");
         g2.className = "gyobi";
-        g2.textContent = "【";
         th2.appendChild(g2);
         trh.appendChild(th2);
         tbl.appendChild(trh);
