@@ -135,22 +135,29 @@
     白く見える帯は「柱＋となりの行のルビ欄」なので、柱の中央ではなく
     帯の中央に来るよう、ルビ欄の半分だけずらしている。
   */
+  table.genkou td.hashira{position:relative;}
   .gyobi{
-    display:block;margin:0 auto;
-    width:calc(var(--masu) * 0.6);
-    height:calc(var(--masu) * 0.28);
-    border:1.4px solid var(--masu-line);
-    border-bottom:none;
-    transform:translateX(calc(var(--ruby) / -2));
+    position:absolute;
+    background:var(--masu-line);
   }
-  /* 横書きのときは下向きではなく右向きにし、ずらす向きも下にする */
+  /* 縦書き：柱の中に、魚のしっぽの形を上下ひとつずつ（双魚尾）。向かい合わせに置く */
+  .tate .gyobi{
+    left:50%;
+    width:calc(var(--masu) * 0.56);
+    height:calc(var(--masu) * 0.3);
+    transform:translate(-50%, -50%) translateX(calc(var(--ruby) / -2));
+  }
+  .tate .gyobi.down{ clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 40%, 0 100%); }
+  .tate .gyobi.up{ clip-path:polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%); }
+  /* 横書き：柱の中に、左右ひとつずつ */
   .yoko .gyobi{
-    width:calc(var(--masu) * 0.28);
-    height:calc(var(--masu) * 0.6);
-    border:1.4px solid var(--masu-line);
-    border-right:none;
-    transform:translateY(calc(var(--ruby) / 2));
+    top:50%;
+    width:calc(var(--masu) * 0.3);
+    height:calc(var(--masu) * 0.56);
+    transform:translate(-50%, -50%) translateY(calc(var(--ruby) / 2));
   }
+  .yoko .gyobi.down{ clip-path:polygon(0 0, 0 100%, 100% 100%, 40% 50%, 100% 0); }
+  .yoko .gyobi.up{ clip-path:polygon(0 0, 60% 50%, 0 100%, 100% 100%, 100% 0); }
 
   .ch{
     display:inline-block;
@@ -387,7 +394,13 @@
     </select>
   </div>
   <div class="row no-print">
-    <label class="toggle"><input type="checkbox" id="b-hashira" checked> 真ん中に柱（魚尾の飾り）を入れる</label>
+    <label class="toggle"><input type="checkbox" id="b-hashira" checked> 真ん中に柱を入れる</label>
+    <label>魚尾（柱の飾り）</label>
+    <select id="b-gyobi">
+      <option value="2" selected>上下に2つ（市販品に多い形）</option>
+      <option value="1">真ん中に1つ</option>
+      <option value="0">入れない</option>
+    </select>
     <label class="toggle"><input type="checkbox" id="b-head"> 題名・名前のらんの案内をつける</label>
     <label class="toggle"><input type="checkbox" id="b-rules"> 用紙の下に「原稿用紙のきまり」を印刷する</label>
   </div>
@@ -930,6 +943,22 @@ function hashiraAt(o) {
   if (!o.hashira || g % 2 !== 0 || g < 4) return -1;
   return g / 2 - 1;   // この行のあとに柱を入れる
 }
+/**
+ * 柱の中に魚尾を置く。
+ * 和本の版心にならい、上下（横書きなら左右）に1つずつ向かい合わせに置くのが本来の形。
+ * 真ん中に1つだけの原稿用紙もあるので、設定で選べるようにしている。
+ */
+function addGyobi(td, o, yoko) {
+  var n = o.gyobi == null ? 2 : Number(o.gyobi);
+  if (n === 0) return;
+  var spots = (n === 1) ? [[50, "down"]] : [[25, "down"], [75, "up"]];
+  spots.forEach(function (sp) {
+    var g = document.createElement("span");
+    g.className = "gyobi " + sp[1];
+    g.style[yoko ? "left" : "top"] = sp[0] + "%";
+    td.appendChild(g);
+  });
+}
 function renderSheet(host, lines, o) {
   var gyou = Math.max(1, o.gyou);
   var ji = Math.max(1, o.ji);
@@ -959,9 +988,7 @@ function renderSheet(host, lines, o) {
           var ht = document.createElement("td");
           ht.className = "hashira";
           ht.rowSpan = ji;
-          var g1 = document.createElement("span");
-          g1.className = "gyobi";
-          ht.appendChild(g1);
+          addGyobi(ht, o, false);
           tr.appendChild(ht);
         }
       }
@@ -987,9 +1014,7 @@ function renderSheet(host, lines, o) {
         var th2 = document.createElement("td");
         th2.className = "hashira";
         th2.colSpan = ji;
-        var g2 = document.createElement("span");
-        g2.className = "gyobi";
-        th2.appendChild(g2);
+        addGyobi(th2, o, true);
         trh.appendChild(th2);
         tbl.appendChild(trh);
       }
@@ -1609,6 +1634,7 @@ function blankOpts() {
     orient: $("b-orient").value,
     margin: Number($("b-margin").value) || 10,
     hashira: $("b-hashira").checked,
+    gyobi: Number($("b-gyobi").value),
     color: $("b-color").value,
     headMm: ($("b-label").value.trim() || $("b-head").checked) ? 7 : 0,
     footMm: $("b-rules").checked ? 18 : 0,
@@ -1682,6 +1708,7 @@ function textOpts() {
     orient: $("t-orient").value,
     margin: Number($("t-margin").value) || 10,
     hashira: $("t-hashira").checked,
+    gyobi: Number($("b-gyobi").value),
     mark: $("t-mark").checked,
     thin: $("t-thin").checked,
     mode: document.querySelector('input[name="tmode"]:checked').value,
@@ -1841,7 +1868,7 @@ function wire() {
   });
 
   ["b-ji", "b-gyou", "b-size", "b-ruby", "b-dir", "b-paper", "b-orient", "b-margin",
-    "b-hashira", "b-head", "b-rules", "b-color", "b-label"].forEach(function (id) {
+    "b-hashira", "b-head", "b-rules", "b-color", "b-label", "b-gyobi"].forEach(function (id) {
       $(id).addEventListener("input", renderBlank);
       $(id).addEventListener("change", renderBlank);
     });
