@@ -281,16 +281,25 @@
 
 <!-- ===================== 原稿用紙を作る ===================== -->
 <div class="panel on" id="p-blank">
-  <h2 class="sec no-print">よく使う様式</h2>
+  <h2 class="sec no-print">学年で選ぶ</h2>
+  <p class="note no-print" style="margin-top:0;">
+    どれか1つ押すだけで、その学年でいちばんよく使う原稿用紙になります。迷ったらここから選んでください。
+  </p>
+  <div class="row no-print">
+    <button data-preset="g12">1・2年生</button>
+    <button data-preset="g34">3・4年生</button>
+    <button data-preset="g56">5・6年生</button>
+  </div>
+  <div class="note no-print" id="b-preset-note"></div>
+
+  <h2 class="sec no-print">そのほかの様式</h2>
   <div class="row no-print">
     <button class="sub mini" data-preset="jis400">400字づめ（JIS・A4よこ）</button>
     <button class="sub mini" data-preset="big400">400字づめ 大きめ（B4よこ）</button>
     <button class="sub mini" data-preset="jis200">200字づめ（A4たて）</button>
-    <button class="sub mini" data-preset="low">低学年用（10字×10行・大きいマス）</button>
-    <button class="sub mini" data-preset="mid">中学年用（15字×15行）</button>
     <button class="sub mini" data-preset="beta">ベタ組み（ルビ欄なし）</button>
+    <button class="sub mini" data-preset="masu">マスの練習用（10字×10行・特大）</button>
   </div>
-  <div class="note no-print" id="b-preset-note"></div>
 
   <h2 class="sec no-print">マスの数と大きさ</h2>
   <div class="row no-print">
@@ -1551,21 +1560,27 @@ function renderBlank() {
   }
   markChosenPreset(o);
 }
-/** いまの設定と一致する様式のボタンを、選ばれている見た目にする */
+/**
+ * いまの設定と一致する様式のボタンを、選ばれている見た目にする。
+ * 中身が同じボタンが複数あることもある（5・6年生＝400字づめ）ので、合うものは全部光らせる。
+ */
+var lastPreset = null;
 function markChosenPreset(o) {
-  var hit = null;
-  Object.keys(PRESETS).forEach(function (k) {
+  var hits = Object.keys(PRESETS).filter(function (k) {
     var p = PRESETS[k];
-    if (p.ji === o.ji && p.gyou === o.gyou && Number(p.size) === Number(o.size) &&
+    return p.ji === o.ji && p.gyou === o.gyou && Number(p.size) === Number(o.size) &&
       Number(p.ruby) === Number(o.ruby) && p.paper === o.paper &&
-      p.orient === o.orient && p.dir === o.dir) hit = k;
+      p.orient === o.orient && p.dir === o.dir;
   });
   document.querySelectorAll("[data-preset]").forEach(function (b) {
-    b.classList.toggle("chosen", b.dataset.preset === hit);
-    b.setAttribute("aria-pressed", b.dataset.preset === hit ? "true" : "false");
+    var on = hits.indexOf(b.dataset.preset) >= 0;
+    b.classList.toggle("chosen", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
   });
-  if (hit && !$("b-preset-note").textContent) {
-    $("b-preset-note").textContent = PRESETS[hit].note;
+  if (hits.length && !$("b-preset-note").textContent) {
+    // 押したボタンの説明を優先する
+    var k = hits.indexOf(lastPreset) >= 0 ? lastPreset : hits[0];
+    $("b-preset-note").textContent = PRESETS[k].note;
   }
 }
 
@@ -1679,6 +1694,23 @@ function printPanel(id) {
 }
 
 var PRESETS = {
+  // 学年で選ぶ。読書感想文コンクールの字数（低学年800字＝400字づめ2枚、
+  // 中・高学年1200字＝3枚）と、低学年ほどマスを大きくする一般的な考え方に合わせている。
+  g12: { ji: 20, gyou: 10, size: 12, ruby: 4.5, paper: "A4", orient: "portrait",
+    dir: "tate", hashira: true,
+    note: "1・2年生：200字づめ（20字×10行）を、マス12mmと大きめにしています。" +
+      "鉛筆の運びがまだ大きい時期なので、1マスを大きくとります。" +
+      "読書感想文（低学年は800字以内）なら、この用紙4枚ぶんです。" },
+  g34: { ji: 20, gyou: 10, size: 10, ruby: 4.5, paper: "A4", orient: "portrait",
+    dir: "tate", hashira: true,
+    note: "3・4年生：200字づめ（20字×10行）、マス10mmです。" +
+      "400字づめに移る前の、ちょうどよい大きさです。" +
+      "読書感想文（中学年は1200字以内）なら、この用紙6枚ぶんです。" },
+  g56: { ji: 20, gyou: 20, size: 8.5, ruby: 4.5, paper: "A4", orient: "landscape",
+    dir: "tate", hashira: true,
+    note: "5・6年生：400字づめ（20字×20行）。市販のA4原稿用紙と同じ様式です" +
+      "（JISのマス8.5mm＋ルビ欄4.5mm）。" +
+      "読書感想文（高学年は1200字以内）なら、この用紙3枚ぶんです。" },
   jis400: { ji: 20, gyou: 20, size: 8.5, ruby: 4.5, paper: "A4", orient: "landscape",
     dir: "tate", hashira: true,
     note: "市販のA4原稿用紙と同じ様式です（JISのマス8.5mm＋ルビ欄4.5mm）。" },
@@ -1688,12 +1720,11 @@ var PRESETS = {
   jis200: { ji: 20, gyou: 10, size: 8.5, ruby: 4.5, paper: "A4", orient: "portrait",
     dir: "tate", hashira: true,
     note: "200字づめ（ペラ）です。行数が10行なので、柱は5行目と6行目のあいだに入ります。" },
-  low: { ji: 10, gyou: 10, size: 15, ruby: 4.5, paper: "A4", orient: "landscape",
+  masu: { ji: 10, gyou: 10, size: 15, ruby: 4.5, paper: "A4", orient: "landscape",
     dir: "tate", hashira: true,
-    note: "低学年向けに大きなマス（15mm）にしています。用紙はA4よこです。" },
-  mid: { ji: 15, gyou: 15, size: 10, ruby: 3.5, paper: "A4", orient: "landscape",
-    dir: "tate", hashira: false,
-    note: "行数が奇数（15行）なので、柱は入りません。" },
+    note: "マスの使い方そのものを練習するための用紙です（10字×10行・マス15mm）。" +
+      "これは原稿用紙の決まった様式ではなく、このツールで用意している練習用の形です。" +
+      "作文を書くときは、上の「学年で選ぶ」から選んでください。" },
   beta: { ji: 20, gyou: 20, size: 8.5, ruby: 0, paper: "A4", orient: "portrait",
     dir: "tate", hashira: true,
     note: "ルビ欄のないベタ組みです。ふりがなを書く余白はありませんが、" +
@@ -1735,6 +1766,7 @@ function wire() {
       $("b-size").value = String(p.size); $("b-ruby").value = String(p.ruby);
       $("b-paper").value = p.paper; $("b-orient").value = p.orient;
       $("b-dir").value = p.dir; $("b-hashira").checked = p.hashira;
+      lastPreset = b.dataset.preset;
       renderBlank();
       $("b-preset-note").textContent = p.note;
     };
