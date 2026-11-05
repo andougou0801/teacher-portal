@@ -12,6 +12,8 @@
     --line:#dfe4ee;
     --bg:#eef2f9;
     --masu-line:#4a5a74;
+    /* 説明文のグレー。白地で5.2:1・薄青地で4.93:1（必要4.5:1）を満たす濃さにしている */
+    --muted:#626d84;
     --masu:8.5mm;
     --ruby:4.5mm;
   }
@@ -38,8 +40,8 @@
 
   .topbar{background:#fff;border-bottom:1px solid var(--line);padding:10px 18px;}
   .topbar-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .topbar h1{margin:0;font-size:19px;color:var(--accent-dark);}
-  .topbar .lead{font-size:12px;color:#7d879b;}
+  .topbar h1{margin:0;font-size:22px;color:var(--accent-dark);}
+  .topbar .lead{font-size:13px;color:var(--muted);}
   .spacer{flex:1;}
   .tabs{display:flex;gap:6px;padding:10px 18px 0;flex-wrap:wrap;}
   .tab{
@@ -48,6 +50,19 @@
     border:1px solid transparent;border-bottom:none;
   }
   .tab.on{background:#fff;color:var(--accent-dark);border-color:var(--line);}
+  /* いま選ばれている様式のボタンを目立たせる */
+  button.sub.chosen{background:var(--accent);color:#fff;border-color:var(--accent);}
+  button.sub.chosen:hover{background:var(--accent-dark);}
+  /* キーボードで操作したときに、どこにいるか分かるようにする */
+  :focus-visible{outline:3px solid var(--accent-dark);outline-offset:2px;}
+  /* せまい画面では、見出しと入力欄がはなればなれにならないよう縦に積む */
+  @media (max-width:560px){
+    .row{flex-direction:column;align-items:stretch;gap:6px;}
+    .row > label{margin-top:4px;}
+    .row select,.row input[type="text"],.row input[type="number"]{width:100% !important;}
+    .row button{width:100%;}
+    .examples{gap:14px;}
+  }
   .main{padding:0 18px 40px;}
   .card{
     background:#fff;border:1px solid var(--line);border-radius:0 14px 14px 14px;
@@ -56,13 +71,13 @@
   .panel{display:none;}
   .panel.on{display:block;}
   h2.sec{
-    font-size:15px;color:var(--accent-dark);margin:22px 0 10px;
+    font-size:18px;color:var(--accent-dark);margin:22px 0 10px;
     border-bottom:1px solid var(--line);padding-bottom:6px;
   }
   h2.sec:first-child{margin-top:0;}
   .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:12px;}
   .row label{font-size:13px;font-weight:700;color:#555;}
-  .note{font-size:12.5px;color:#7d879b;line-height:1.9;margin:6px 0 12px;}
+  .note{font-size:13.5px;color:var(--muted);line-height:1.9;margin:6px 0 12px;}
   .toggle{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#555;cursor:pointer;}
   .pill{
     display:inline-block;background:#eef3fb;color:var(--accent-dark);
@@ -136,11 +151,35 @@
   /* 横書きの欧文・数字は1マスに2文字入れる */
   .ch.pair{font-size:calc(var(--masu) * 0.52);letter-spacing:-0.02em;}
   .ch.thin{color:#bcc5d4;}
-  td.mark-hang{background:#fff7e8;}
-  td.mark-jisage{background:#eef6ff;}
-  td.mark-ng{background:#ffecec;}
-  td.mark-ok{background:#f0fbf3;}
-  td.mark-aki{background:#f5f1fb;}
+  /* 直したところの印。色が見分けにくい人にも分かるよう、色＋記号＋太い枠の3つで示す */
+  td.masu[class*="mark-"]{position:relative;}
+  td.masu[class*="mark-"]::after{
+    position:absolute;top:0;right:1px;
+    font-size:calc(var(--masu) * 0.3);line-height:1;font-weight:700;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  }
+  td.mark-jisage{background:#dbeafe;box-shadow:inset 0 0 0 2px #2d6cc0;}
+  td.mark-jisage::after{content:"▢";color:#1f4d8f;}
+  td.mark-hang{background:#fde8c4;box-shadow:inset 0 0 0 2px #b4791a;}
+  td.mark-hang::after{content:"↓";color:#7d520c;}
+  td.mark-ng{background:#fcd9d9;box-shadow:inset 0 0 0 2px #c0392b;}
+  td.mark-ng::after{content:"×";color:#8e2018;}
+  td.mark-ok{background:#d6f0de;box-shadow:inset 0 0 0 2px #2f7d45;}
+  td.mark-ok::after{content:"○";color:#1d5a2e;}
+  td.mark-aki{background:#e6dff7;box-shadow:inset 0 0 0 2px #6b4bb0;}
+  td.mark-aki::after{content:"␣";color:#45307a;}
+  /* 印の意味を並べた凡例 */
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0 0;font-size:13px;}
+  .legend span{display:inline-flex;align-items:center;gap:5px;color:#39404f;}
+  .legend i{
+    width:20px;height:20px;border-radius:4px;display:inline-flex;
+    align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:700;
+  }
+  .legend i.mark-jisage{background:#dbeafe;border:2px solid #2d6cc0;color:#1f4d8f;}
+  .legend i.mark-hang{background:#fde8c4;border:2px solid #b4791a;color:#7d520c;}
+  .legend i.mark-ng{background:#fcd9d9;border:2px solid #c0392b;color:#8e2018;}
+  .legend i.mark-ok{background:#d6f0de;border:2px solid #2f7d45;color:#1d5a2e;}
+  .legend i.mark-aki{background:#e6dff7;border:2px solid #6b4bb0;color:#45307a;}
 
   /* 用紙に収まるかの知らせ */
   .fitbox{border-radius:10px;padding:9px 14px;font-size:13px;margin:10px 0;line-height:1.9;}
@@ -164,16 +203,16 @@
 
   /* 書き方を学ぶ */
   .rule{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px;background:#fff;}
-  .rule h3{margin:0 0 6px;font-size:15px;color:var(--accent-dark);}
+  .rule h3{margin:0 0 8px;font-size:17px;color:var(--accent-dark);}
   .rule .num{display:inline-block;background:var(--accent);color:#fff;border-radius:8px;padding:1px 9px;font-size:13px;margin-right:8px;}
   .rule p{margin:4px 0 10px;font-size:13.5px;line-height:1.9;}
-  .rule .src{font-size:12px;color:#7d879b;margin-top:8px;}
+  .rule .src{font-size:13px;color:var(--muted);margin-top:8px;}
   .examples{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;}
   .example{text-align:center;}
   .example .cap{font-size:13px;font-weight:700;margin-bottom:6px;}
   .cap-ok{color:#2f7d45;}
   .cap-ng{color:#b4453f;}
-  .example .why{font-size:12px;color:#7d879b;margin-top:6px;max-width:250px;line-height:1.8;}
+  .example .why{font-size:14px;color:var(--muted);margin-top:6px;max-width:300px;line-height:1.8;}
   .warnbox{
     background:#fffaf0;border:1px solid #f0dcb4;border-radius:10px;
     padding:10px 14px;font-size:13px;line-height:1.9;margin:10px 0;
@@ -187,7 +226,7 @@
     font-family:"Hiragino Mincho ProN","Yu Mincho","MS Mincho",serif;
   }
   .choices{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
-  .choice{
+  .choice{max-width:460px;
     text-align:left;background:#fff;color:#2a2a2a;border:1px solid var(--line);
     border-radius:10px;padding:11px 16px;font-size:14px;font-weight:700;cursor:pointer;
   }
@@ -298,6 +337,7 @@
       <option value="B5">B5（182×257mm）</option>
       <option value="A3">A3（297×420mm）</option>
     </select>
+    <label>用紙の向き</label>
     <select id="b-orient">
       <option value="landscape" selected>よこ長</option>
       <option value="portrait">たて長</option>
@@ -420,7 +460,8 @@
           ！ や ？ のうしろを1マス空ける</label>
       </div>
       <div class="note" style="margin-bottom:0;">
-        下の2つは、出版の世界では一般的なきまりですが、小学校の教材では扱わないことも多いので、
+        上の2つ（会話文の2行目を下げる／！？のうしろを空ける）は、
+        出版の世界では一般的なきまりですが、小学校の教材では扱わないことも多いので、
         はじめはオフにしてあります。
       </div>
     </div>
@@ -433,16 +474,22 @@
     <input type="number" id="t-gyou" min="1" max="40" value="20" style="width:80px;">
     <label>マス</label>
     <select id="t-size">
-      <option value="10">10.0mm</option>
-      <option value="8.5" selected>8.5mm</option>
-      <option value="8">8.0mm</option>
+      <option value="10">10.0mm（JIS）</option>
+      <option value="8.5" selected>8.5mm（JIS）</option>
+      <option value="8">8.0mm（JIS）</option>
+      <option value="7">7.0mm</option>
+      <option value="6">6.0mm</option>
       <option value="12">12.0mm</option>
       <option value="15">15.0mm</option>
+      <option value="18">18.0mm</option>
     </select>
     <label>ルビ欄</label>
     <select id="t-ruby">
-      <option value="4.5" selected>4.5mm</option>
-      <option value="3.5">3.5mm</option>
+      <option value="4.5" selected>4.5mm（JIS）</option>
+      <option value="4">4.0mm（JIS）</option>
+      <option value="3.5">3.5mm（JIS）</option>
+      <option value="3">3.0mm</option>
+      <option value="2.5">2.5mm</option>
       <option value="0">なし</option>
     </select>
     <label>向き</label>
@@ -456,6 +503,28 @@
     <label class="toggle"><input type="checkbox" id="t-mark" checked> 直したところに色をつける</label>
     <label class="toggle"><input type="checkbox" id="t-thin"> うすい字にする（なぞり書き用）</label>
   </div>
+  <div class="row no-print">
+    <label>用紙</label>
+    <select id="t-paper">
+      <option value="A4">A4（210×297mm）</option>
+      <option value="B4">B4（257×364mm）</option>
+      <option value="B5">B5（182×257mm）</option>
+      <option value="A3">A3（297×420mm）</option>
+    </select>
+    <label>用紙の向き</label>
+    <select id="t-orient">
+      <option value="landscape" selected>よこ長</option>
+      <option value="portrait">たて長</option>
+    </select>
+    <label>余白</label>
+    <select id="t-margin">
+      <option value="10" selected>10mm</option>
+      <option value="15">15mm</option>
+      <option value="20">20mm</option>
+      <option value="25">25mm</option>
+    </select>
+    <button class="sub mini" id="btn-t-fit">用紙にぴったり合わせる</button>
+  </div>
 
   <div id="t-fit" class="fitbox no-print"></div>
   <div class="row no-print">
@@ -468,6 +537,10 @@
 
   <div class="sheet-wrap">
     <div class="sheet" id="t-sheet"></div>
+  </div>
+  <div class="row no-print">
+    <button id="btn-text-print2">この内容で印刷する</button>
+    <span class="note" style="margin:0;">上のできあがりを確かめてから押せます</span>
   </div>
 </div>
 
@@ -682,10 +755,12 @@ function layoutText(o) {
       }
 
       // 会話文の終わりの 。 と 」 は、同じマスに入れる
+      // （次の文字があるときだけ。indexOf("") は 0 を返すので、空の判定を先に行う）
+      var nxt = cs[i2 + 1];
       if (o.kutenClose !== false && (ch === "。" || ch === "．") &&
-        "」』）〉》】".indexOf(cs[i2 + 1] || "") >= 0) {
-        cur.cells.push({ ch: ch, close: cs[i2 + 1] });
-        note("ok", "会話文の終わりの 。 と " + cs[i2 + 1] + " は、同じマスに入れます");
+        nxt && "」』）〉》】".indexOf(nxt) >= 0) {
+        cur.cells.push({ ch: ch, close: nxt });
+        note("ok", "会話文の終わりの 。 と " + nxt + " は、同じマスに入れます");
         i2++;
         continue;
       }
@@ -976,27 +1051,28 @@ function renderFit(host, o) {
   }
   return f;
 }
-/** 用紙に収まる、いちばん大きいマスとルビ欄の組み合わせを選ぶ */
+/**
+ * 用紙に収まる、いちばん大きいマスとルビ欄の組み合わせを選ぶ。
+ * 大きい順に試すので、いま小さすぎる設定なら大きくなる（縮むだけにならないように）。
+ */
 function bestFit(o) {
-  // JISの組み合わせを大きい順に。入らなければ規格外も試す
-  var combos = [
-    { size: 10, ruby: 4.5 }, { size: 8.5, ruby: 4.5 }, { size: 8.5, ruby: 3.5 },
-    { size: 8, ruby: 4 }, { size: 8, ruby: 3 }, { size: 7, ruby: 3 },
-    { size: 7, ruby: 2.5 }, { size: 6, ruby: 2.5 }, { size: 6, ruby: 0 }
-  ];
-  // ルビ欄なしを選んでいるなら、なしのまま大きさだけ探す
-  if (Number(o.ruby) === 0) {
-    combos = [18, 15, 12, 10, 8.5, 8, 7, 6].map(function (s) {
-      return { size: s, ruby: 0 };
-    });
+  var sizes = [18, 15, 12, 10, 8.5, 8, 7, 6];
+  // JIS（10.0＋4.5／8.5＋4.5／8.5＋3.5／8.0＋4.0）を優先し、規格外の大きさには近いものを当てる
+  var rubyFor = {
+    18: [4.5], 15: [4.5], 12: [4.5], 10: [4.5],
+    8.5: [4.5, 3.5], 8: [4, 3], 7: [3, 2.5], 6: [2.5]
+  };
+  var keepNone = Number(o.ruby) === 0;   // ルビ欄なしを選んでいるなら、なしのまま
+  for (var i = 0; i < sizes.length; i++) {
+    var rubies = keepNone ? [0] : (rubyFor[sizes[i]] || [3]);
+    for (var j = 0; j < rubies.length; j++) {
+      var t = {};
+      for (var k in o) t[k] = o[k];
+      t.size = sizes[i]; t.ruby = rubies[j];
+      if (fitCheck(t).fits) return { size: sizes[i], ruby: rubies[j] };
+    }
   }
-  for (var i = 0; i < combos.length; i++) {
-    var t = {};
-    for (var k in o) t[k] = o[k];
-    t.size = combos[i].size; t.ruby = combos[i].ruby;
-    if (fitCheck(t).fits) return combos[i];
-  }
-  return combos[combos.length - 1];
+  return { size: 6, ruby: keepNone ? 0 : 2.5 };
 }
 
 /* =========================================================
@@ -1455,10 +1531,27 @@ function renderBlank() {
     ? "<b>原稿用紙のきまり</b><ul>" +
       FOOT_RULES.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>"
     : "";
+  $("b-preset-note").textContent = "";
   if (hashiraAt(o) < 0 && $("b-hashira").checked) {
     $("b-preset-note").textContent = "柱は、行の数が偶数（4行以上）のときだけ入ります。";
-  } else {
-    $("b-preset-note").textContent = "";
+  }
+  markChosenPreset(o);
+}
+/** いまの設定と一致する様式のボタンを、選ばれている見た目にする */
+function markChosenPreset(o) {
+  var hit = null;
+  Object.keys(PRESETS).forEach(function (k) {
+    var p = PRESETS[k];
+    if (p.ji === o.ji && p.gyou === o.gyou && Number(p.size) === Number(o.size) &&
+      Number(p.ruby) === Number(o.ruby) && p.paper === o.paper &&
+      p.orient === o.orient && p.dir === o.dir) hit = k;
+  });
+  document.querySelectorAll("[data-preset]").forEach(function (b) {
+    b.classList.toggle("chosen", b.dataset.preset === hit);
+    b.setAttribute("aria-pressed", b.dataset.preset === hit ? "true" : "false");
+  });
+  if (hit && !$("b-preset-note").textContent) {
+    $("b-preset-note").textContent = PRESETS[hit].note;
   }
 }
 
@@ -1472,9 +1565,9 @@ function textOpts() {
     size: Number($("t-size").value) || 8.5,
     ruby: Number($("t-ruby").value),
     dir: $("t-dir").value,
-    paper: $("b-paper").value,
-    orient: $("b-orient").value,
-    margin: Number($("b-margin").value) || 10,
+    paper: $("t-paper").value,
+    orient: $("t-orient").value,
+    margin: Number($("t-margin").value) || 10,
     hashira: $("t-hashira").checked,
     mark: $("t-mark").checked,
     thin: $("t-thin").checked,
@@ -1510,6 +1603,18 @@ function renderText() {
 
   var host = $("t-notes");
   host.innerHTML = "";
+  if (o.mark) {
+    var LEG = o.mode === "jibun"
+      ? [["ng", "×", "なおすところ"], ["ok", "○", "正しく書けているところ"]]
+      : [["jisage", "▢", "1マス空けた"], ["hang", "↓", "前の行の最後に入れた"],
+         ["aki", "␣", "あとを1マス空けた"]];
+    var leg = document.createElement("div");
+    leg.className = "legend";
+    leg.innerHTML = LEG.map(function (l) {
+      return '<span><i class="mark-' + l[0] + '">' + l[1] + "</i>" + esc(l[2]) + "</span>";
+    }).join("");
+    host.appendChild(leg);
+  }
   var info = document.createElement("div");
   info.className = "fitbox " + (over ? "fit-ng" : "fit-ok");
   info.textContent = "入った文字 " + used + "字／ぜんぶで " + lay.lines.length + "行" +
@@ -1583,14 +1688,25 @@ var PRESETS = {
 
 function wire() {
   document.querySelectorAll(".tab").forEach(function (t) {
-    t.onclick = function () {
-      document.querySelectorAll(".tab").forEach(function (x) { x.classList.remove("on"); });
+    // マウスが使えなくても切り替えられるようにする
+    t.setAttribute("role", "tab");
+    t.setAttribute("tabindex", "0");
+    var go = function () {
+      document.querySelectorAll(".tab").forEach(function (x) {
+        x.classList.remove("on");
+        x.setAttribute("aria-selected", "false");
+      });
       document.querySelectorAll(".panel").forEach(function (x) { x.classList.remove("on"); });
       t.classList.add("on");
+      t.setAttribute("aria-selected", "true");
       $(t.dataset.panel).classList.add("on");
       if (t.dataset.panel === "p-blank") renderBlank();
       if (t.dataset.panel === "p-text") renderText();
     };
+    t.onclick = go;
+    t.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+    });
   });
 
   ["b-ji", "b-gyou", "b-size", "b-ruby", "b-dir", "b-paper", "b-orient", "b-margin",
@@ -1621,14 +1737,32 @@ function wire() {
 
   ["t-title", "t-name", "t-body", "t-ji", "t-gyou", "t-size", "t-ruby", "t-dir",
     "t-hashira", "t-mark", "t-thin", "t-title-aki", "t-name-aki", "t-body-start",
-    "t-kaiwa-indent", "t-bang-aki", "t-kuten-close", "t-kaiwa-head"].forEach(function (id) {
+    "t-kaiwa-indent", "t-bang-aki", "t-kuten-close", "t-kaiwa-head",
+    "t-paper", "t-orient", "t-margin"].forEach(function (id) {
       $(id).addEventListener("input", renderText);
       $(id).addEventListener("change", renderText);
     });
   document.querySelectorAll('input[name="tmode"]').forEach(function (r) {
     r.addEventListener("change", renderText);
   });
-  $("btn-text-print").onclick = function () { renderText(); printPanel("p-text"); };
+  // なぞり書き用にしたら、直したところの色は自動で外す（そのまま印刷すると色がのるため）
+  $("t-thin").addEventListener("change", function () {
+    if ($("t-thin").checked && $("t-mark").checked) {
+      $("t-mark").checked = false;
+      toast("なぞり書き用にしたので、直したところの色を外しました");
+      renderText();
+    }
+  });
+  $("btn-t-fit").onclick = function () {
+    var best = bestFit(textOpts());
+    $("t-size").value = String(best.size);
+    $("t-ruby").value = String(best.ruby);
+    renderText();
+    toast("マス " + best.size + "mm／ルビ欄 " + best.ruby + "mm にしました");
+  };
+  var textPrint = function () { renderText(); printPanel("p-text"); };
+  $("btn-text-print").onclick = textPrint;
+  $("btn-text-print2").onclick = textPrint;
   $("btn-text-sample").onclick = function () {
     $("t-title").value = "運動会の思い出";
     $("t-name").value = "五年一組　安藤　太郎";
