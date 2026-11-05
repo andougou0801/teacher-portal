@@ -919,7 +919,6 @@ function renderSheet(host, lines, o) {
   var ji = Math.max(1, o.ji);
   var ruby = Number(o.ruby) || 0;
   var hAt = hashiraAt(o);
-  var gyobiAt = Math.floor((ji - 1) / 2);   // 魚尾を置く字の位置
 
   var all = [];
   for (var i = 0; i < gyou; i++) all.push(lines[i] ? lines[i].cells : []);
@@ -938,15 +937,16 @@ function renderSheet(host, lines, o) {
           tr.appendChild(rt);
         }
         tr.appendChild(cellTd(all[c][r], o));
-        if (c === hAt) {
+        // 柱は、マスで区切らず上から下までひと続き。
+        // そうしないと魚尾が半マスぶん上にずれてしまう
+        if (c === hAt && r === 0) {
           var ht = document.createElement("td");
           ht.className = "hashira";
-          if (r === gyobiAt) {
-            var g1 = document.createElement("span");
-            g1.className = "gyobi";
-            g1.textContent = "【";
-            ht.appendChild(g1);
-          }
+          ht.rowSpan = ji;
+          var g1 = document.createElement("span");
+          g1.className = "gyobi";
+          g1.textContent = "【";
+          ht.appendChild(g1);
           tr.appendChild(ht);
         }
       }
