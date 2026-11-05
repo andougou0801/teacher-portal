@@ -102,8 +102,9 @@
     overflow:auto;background:#f7f9fd;border:1px solid var(--line);
     border-radius:12px;padding:16px;margin:12px 0;
   }
-  .sheet{display:inline-block;background:#fff;}
-  .sheet-head{margin-bottom:3mm;font-size:12px;}
+  /* line-height を 0 にしないと、inline-block の下に行間ぶんの余白ができて用紙からはみ出す */
+  .sheet{display:inline-block;background:#fff;line-height:0;}
+  .sheet-head{margin-bottom:3mm;font-size:12px;line-height:1.5;}
   /* 外わく。マスの線より太くする（市販の原稿用紙と同じ） */
   .genkou-frame{
     display:inline-block;border:1.6px solid var(--masu-line);background:#fff;
@@ -239,10 +240,15 @@
   .scorebar{font-size:14px;font-weight:700;color:var(--accent-dark);}
 
   /* 用紙の下に印刷するきまり */
-  .rules-foot{margin-top:4mm;font-size:9.5pt;line-height:1.75;}
+  /* 用紙の下に入れるきまり。2段組にして、用紙からはみ出さない高さに収める */
+  .rules-foot{margin-top:3mm;font-size:8pt;line-height:1.45;}
   .rules-foot:empty{display:none;}
-  .rules-foot b{display:block;margin-bottom:1mm;font-size:10pt;}
-  .rules-foot ul{margin:0;padding-left:1.4em;}
+  .rules-foot b{display:block;margin-bottom:0.8mm;font-size:8.5pt;}
+  .rules-foot ul{
+    margin:0;padding-left:1.2em;
+    columns:3;column-gap:5mm;
+  }
+  .rules-foot li{break-inside:avoid;margin-bottom:0.4mm;}
 
   @media print{
     body{background:#fff;}
@@ -1022,8 +1028,23 @@ function sheetSizeMm(o) {
   if (o.dir === "tate") return { w: acrossGyou, h: alongJi + extra };
   return { w: alongJi, h: acrossGyou + extra };
 }
+/**
+ * 実際に画面に描かれた大きさをmmで測る。
+ * 罫線のはばや表の丸めで、計算より数mm大きくなることがあるため、
+ * 用紙に収まるかの判定と余白の計算にはこちらを使う。
+ * （縮小表示の影響を受けない offsetWidth / offsetHeight で測る）
+ */
+var MM = 96 / 25.4;
+function measuredMm(sheetEl, footEl) {
+  if (!sheetEl || !sheetEl.offsetWidth) return null;
+  var h = sheetEl.offsetHeight;
+  if (footEl && footEl.offsetHeight) {
+    h += footEl.offsetHeight + parseFloat(getComputedStyle(footEl).marginTop || 0);
+  }
+  return { w: sheetEl.offsetWidth / MM, h: h / MM };
+}
 function fitCheck(o) {
-  var s = sheetSizeMm(o);
+  var s = (o.measured && o.measured.w) ? o.measured : sheetSizeMm(o);
   var u = usableMm(o);
   return {
     w: Math.round(s.w * 10) / 10, h: Math.round(s.h * 10) / 10,
@@ -1046,10 +1067,12 @@ function applyPageSize(o) {
   var p = PAPERS[o.paper] || PAPERS.A4;
   var pw = o.orient === "landscape" ? p.h : p.w;
   var ph = o.orient === "landscape" ? p.w : p.h;
-  var s = sheetSizeMm(o);
+  var s = (o.measured && o.measured.w) ? o.measured : sheetSizeMm(o);
   var minM = Number(o.margin) || 10;
-  var mx = Math.max(minM, (pw - s.w) / 2);
-  var my = Math.max(minM, (ph - s.h) / 2);
+  // 印刷できる範囲を原稿用紙より2mm広くとる。ぴったりだと丸めで2ページ目に送られてしまう
+  var slack = 2;
+  var mx = Math.max(minM, (pw - s.w - slack * 2) / 2);
+  var my = Math.max(minM, (ph - s.h - slack * 2) / 2);
   var r1 = Math.round(my * 10) / 10, r2 = Math.round(mx * 10) / 10;
   st.textContent = "@page{size:" + (o.paper || "A4") + " " +
     (o.orient || "portrait") + ";margin:" + r1 + "mm " + r2 + "mm;}";
@@ -1070,15 +1093,55 @@ function renderFit(host, o) {
     host.className = "fitbox fit-ng no-print";
     host.textContent = paper + " に収まりません（原稿用紙 " + size +
       "／印刷できる範囲 よこ " + f.uw + "mm × たて " + f.uh + "mm）。" +
-      "用紙や向きを変えるか、「用紙にぴったり合わせる」を押してください。";
+      suggestFix(o);
   }
   return f;
 }
+/** 収まらないとき、どう直せばよいかを具体的に出す */
+function suggestFix(o) {
+  var base = sheetSizeMm(o);
+  var over = (o.measured && o.measured.w)
+    ? { w: Math.max(0, o.measured.w - base.w), h: Math.max(0, o.measured.h - base.h) }
+    : { w: 1, h: 3 };
+  function ok(t) {
+    var s = sheetSizeMm(t), u = usableMm(t);
+    return s.w + over.w <= u.w && s.h + over.h <= u.h;
+  }
+  function kae(k, v) {
+    var t = {};
+    for (var x in o) t[x] = o[x];
+    delete t.measured;
+    t[k] = v;
+    return t;
+  }
+  var tries = [
+    { t: kae("margin", 5), msg: "「余白」を5mmにすると収まります。" },
+    {
+      t: kae("orient", o.orient === "landscape" ? "portrait" : "landscape"),
+      msg: "用紙の向きを" + (o.orient === "landscape" ? "たて長" : "よこ長") + "にすると収まります。"
+    },
+    { t: kae("paper", "B4"), msg: "用紙をB4にすると収まります。" },
+    { t: kae("paper", "A3"), msg: "用紙をA3にすると収まります。" }
+  ];
+  for (var i = 0; i < tries.length; i++) {
+    if (ok(tries[i].t)) return tries[i].msg;
+  }
+  if (o.footMm > 0) {
+    return "「用紙の下に『原稿用紙のきまり』を印刷する」を外すか、用紙を大きくしてください。";
+  }
+  return "「用紙にぴったり合わせる」を押すか、字数・行数を減らしてください。";
+}
+
 /**
  * 用紙に収まる、いちばん大きいマスとルビ欄の組み合わせを選ぶ。
  * 大きい順に試すので、いま小さすぎる設定なら大きくなる（縮むだけにならないように）。
  */
 function bestFit(o) {
+  // 罫線などで実寸が計算より大きくなるぶんを見こんでおく
+  var base = sheetSizeMm(o);
+  var over = (o.measured && o.measured.w)
+    ? { w: Math.max(0, o.measured.w - base.w), h: Math.max(0, o.measured.h - base.h) }
+    : { w: 1, h: 3 };
   var sizes = [18, 15, 12, 10, 8.5, 8, 7, 6];
   // JIS（10.0＋4.5／8.5＋4.5／8.5＋3.5／8.0＋4.0）を優先し、規格外の大きさには近いものを当てる
   var rubyFor = {
@@ -1092,7 +1155,11 @@ function bestFit(o) {
       var t = {};
       for (var k in o) t[k] = o[k];
       t.size = sizes[i]; t.ruby = rubies[j];
-      if (fitCheck(t).fits) return { size: sizes[i], ruby: rubies[j] };
+      delete t.measured;   // いまの実寸は、ためす大きさには当てはまらない
+      var s = sheetSizeMm(t), u = usableMm(t);
+      if (s.w + over.w <= u.w && s.h + over.h <= u.h) {
+        return { size: sizes[i], ruby: rubies[j] };
+      }
     }
   }
   return { size: 6, ruby: keepNone ? 0 : 2.5 };
@@ -1509,13 +1576,13 @@ function answerQuiz(idx, correctIdx, q, cbox, host) {
    原稿用紙を作る
    ========================================================= */
 var FOOT_RULES = [
-  "書き出しと、段落のはじめは1マス空ける。",
-  "、。「はそれぞれ1マス使う。小さい「っ」「ゃ」も1マス使う。",
-  "会話文の終わりの 。 と 」 は、同じ1マスに入れる。",
-  "、。」が行のいちばん上に来るときは、前の行のいちばん下のマスに文字といっしょに入れる。",
-  "会話文（「 」）は行をかえて、1マス目の「から書く。",
-  "題名は1行目の上を2〜3マス空け、名前は2行目の下を1マス空ける。",
-  "たて書きの数字は、一・二・三のように漢数字で書く。"
+  "書き出しと段落のはじめは1マス空ける。",
+  "、。「はそれぞれ1マス。小さい「っ」「ゃ」も1マス。",
+  "会話文の終わりの 。 と 」 は同じ1マスに入れる。",
+  "、。」が行のいちばん上に来るときは、前の行の最後のマスに文字といっしょに入れる。",
+  "会話文は行をかえて1マス目の「から書く。",
+  "題名は上を2〜3マス、名前は下を1マス空ける。",
+  "たて書きの数字は漢数字で書く。"
 ];
 function blankOpts() {
   return {
@@ -1530,14 +1597,13 @@ function blankOpts() {
     hashira: $("b-hashira").checked,
     color: $("b-color").value,
     headMm: ($("b-label").value.trim() || $("b-head").checked) ? 7 : 0,
-    footMm: $("b-rules").checked ? 30 : 0,
+    footMm: $("b-rules").checked ? 18 : 0,
     mark: false, thin: false
   };
 }
 function renderBlank() {
   var o = blankOpts();
   $("b-total").textContent = (o.ji * o.gyou) + "字づめ（" + o.ji + "字×" + o.gyou + "行）";
-  renderFit($("b-fit"), o);
   renderSheet($("b-sheet"), [], o);
 
   var heads = [];
@@ -1554,6 +1620,10 @@ function renderBlank() {
     ? "<b>原稿用紙のきまり</b><ul>" +
       FOOT_RULES.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>"
     : "";
+  // 描いたあとに実寸を測り、それで用紙の判定と余白を決める
+  o.measured = measuredMm($("b-sheet"), $("b-rules-foot"));
+  renderFit($("b-fit"), o);
+
   $("b-preset-note").textContent = "";
   if (hashiraAt(o) < 0 && $("b-hashira").checked) {
     $("b-preset-note").textContent = "柱は、行の数が偶数（4行以上）のときだけ入ります。";
@@ -1619,10 +1689,12 @@ function renderText() {
     ? "打った文章を、原稿用紙のきまりどおりに直して入れます。どこを直したかは下に出ます。"
     : "打ったとおりに入れます。空白（スペース）も1マスとして入ります。きまりに合わないところを下で知らせます。";
 
-  renderFit($("t-fit"), o);
   var lay = layoutText(o);
   var notes = (o.mode === "jibun") ? checkJibun(lay, o) : lay.notes;
   renderSheet($("t-sheet"), lay.lines, o);
+  // 描いたあとに実寸を測り、それで用紙の判定と余白を決める
+  o.measured = measuredMm($("t-sheet"), null);
+  renderFit($("t-fit"), o);
 
   var used = 0;
   lay.lines.forEach(function (l) {
