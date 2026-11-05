@@ -395,7 +395,7 @@
   </div>
   <div class="row no-print">
     <label style="width:60px;">名前</label>
-    <input type="text" id="t-name" placeholder="例：五年一組　安藤　太郎" style="width:280px;">
+    <input type="text" id="t-name" placeholder="例：五年一組　山田　太郎" style="width:280px;">
     <span class="note" style="margin:0;">どちらも空欄でかまいません</span>
   </div>
   <textarea id="t-body" rows="7" class="no-print"
@@ -1022,7 +1022,11 @@ function fitCheck(o) {
     fits: s.w <= u.w && s.h <= u.h
   };
 }
-/** 印刷の用紙と向きを設定に合わせる */
+/**
+ * 印刷の用紙と向きを設定に合わせる。
+ * あまった余白を上下・左右で半分ずつに分け、紙の真ん中に来るようにする。
+ * 「余白」の設定は、これ以上はせまくしない下限として使う。
+ */
 function applyPageSize(o) {
   var st = $("page-style");
   if (!st) {
@@ -1030,19 +1034,29 @@ function applyPageSize(o) {
     st.id = "page-style";
     document.head.appendChild(st);
   }
+  var p = PAPERS[o.paper] || PAPERS.A4;
+  var pw = o.orient === "landscape" ? p.h : p.w;
+  var ph = o.orient === "landscape" ? p.w : p.h;
+  var s = sheetSizeMm(o);
+  var minM = Number(o.margin) || 10;
+  var mx = Math.max(minM, (pw - s.w) / 2);
+  var my = Math.max(minM, (ph - s.h) / 2);
+  var r1 = Math.round(my * 10) / 10, r2 = Math.round(mx * 10) / 10;
   st.textContent = "@page{size:" + (o.paper || "A4") + " " +
-    (o.orient || "portrait") + ";margin:" + (Number(o.margin) || 10) + "mm;}";
+    (o.orient || "portrait") + ";margin:" + r1 + "mm " + r2 + "mm;}";
+  return { top: r1, side: r2 };
 }
 function renderFit(host, o) {
   var f = fitCheck(o);
-  applyPageSize(o);
+  var m = applyPageSize(o);
   var paper = (PAPERS[o.paper] || PAPERS.A4).name +
     (o.orient === "landscape" ? "よこ" : "たて");
   var size = "よこ " + f.w + "mm × たて " + f.h + "mm";
   if (f.fits) {
     host.className = "fitbox fit-ok no-print";
     host.textContent = paper + " 1枚に収まります（原稿用紙 " + size +
-      "／印刷できる範囲 よこ " + f.uw + "mm × たて " + f.uh + "mm）";
+      "）。紙の真ん中に印刷されます（上下の余白 " + m.top +
+      "mm・左右の余白 " + m.side + "mm）。";
   } else {
     host.className = "fitbox fit-ng no-print";
     host.textContent = paper + " に収まりません（原稿用紙 " + size +
@@ -1146,8 +1160,8 @@ var RULES = [
     t: "書き出しと、段落のはじめは1マス空ける",
     p: "文章のいちばんはじめと、話が変わって行をかえたときは、1マス空けてから書きます。",
     ji: 8, gyou: 3,
-    ok: { cfg: { body: "朝おきた。\nそれからごはんを食べた。" }, why: "どちらの段落も1マス空いています" },
-    ng: { spec: "!朝おきた。|!それからごは|んを食べた。", why: "1マス目から書きはじめています" }
+    ok: { cfg: { body: "きのう、公園へ行った。\n友だちに会った。" }, why: "どちらの段落も1マス空いています" },
+    ng: { spec: "!きのう、公園へ行|った。|!友だちに会った。", why: "1マス目から書きはじめています" }
   },
   {
     t: "題名は上を2〜3マス空ける",
@@ -1163,18 +1177,18 @@ var RULES = [
       "学年・組を書くときは、組と名前のあいだを1マス空けます。姓と名のあいだも1マス空けてかまいません。",
     diff: "下を1マスにするか2マスにするかは資料によって分かれます。",
     ji: 12, gyou: 2,
-    ok: { cfg: { title: "うんどう会", name: "五年一組　安藤　太郎", titleAki: 3, nameAki: 1 },
+    ok: { cfg: { title: "うんどう会", name: "五年一組　山田　太郎", titleAki: 3, nameAki: 1 },
       why: "組と名前、姓と名のあいだを1マス空け、下を1マス空けています" },
-    ng: { spec: "!うんどう会|!安藤太郎", why: "上から書きはじめ、間も空けていません" }
+    ng: { spec: "!うんどう会|!山田太郎", why: "上から書きはじめ、間も空けていません" }
   },
   {
     t: "本文は名前の次の行（3行目）から書く",
     p: "1行目が題名、2行目が名前、3行目から本文です。あいだに空の行は入れないのがふつうです。",
     diff: "名前と本文のあいだを1行空けると教える資料もあります。",
     ji: 10, gyou: 4,
-    ok: { cfg: { title: "はるの日", name: "安藤　太郎", body: "きょうは晴れた。", titleAki: 3 },
+    ok: { cfg: { title: "はるの日", name: "山田　太郎", body: "きょうは晴れた。", titleAki: 3 },
       why: "3行目から本文がはじまっています" },
-    ng: { spec: "=_=_=_はるの日|___安藤太郎_|__________|!きょうは晴れた", why: "あいだに空の行が入っています" }
+    ng: { spec: "=_=_=_はるの日|___山田太郎_|__________|!きょうは晴れた", why: "あいだに空の行が入っています" }
   },
   {
     t: "、と。は1マスずつ使う",
@@ -1191,17 +1205,17 @@ var RULES = [
     diff: "新聞や書籍では、句点を省いて 」 だけにする流儀もあります。" +
       "「文章を入れる」タブの細かい設定で、べつべつのマスに入れる形にも変えられます。",
     ji: 10, gyou: 2,
-    ok: { cfg: { body: "父が「おはよう。」と言った。" },
+    ok: { cfg: { body: "父は「おはよう。」と言った。" },
       why: "。 と 」 が同じマスに入っています" },
-    ng: { spec: "_父が「おはよう!。!」|と言った。", why: "。と」をべつべつのマスに書いています" }
+    ng: { spec: "_父は「おはよう!。!」|と言った。", why: "。と」をべつべつのマスに書いています" }
   },
   {
     t: "、。」が行のいちばん上に来るときは、前の行の最後のマスに入れる",
     p: "点・まる・閉じかっこは、行のいちばん上に来てはいけません。前の行のいちばん下のマスに、文字といっしょに入れます。",
     diff: "前の行の最後のマスに入れるほかに、用紙のわく外に書く方法を示す資料もあります。",
     ji: 8, gyou: 2,
-    ok: { cfg: { body: "あしたは晴れるだといいな。" }, why: "最後のマスに「る」と「。」をいっしょに入れています" },
-    ng: { spec: "_あしたは晴れる|!。だといいな", why: "。が行のいちばん上に来ています" }
+    ok: { cfg: { body: "あしたも晴れた。うれしい。" }, why: "最後のマスに「た」と「。」をいっしょに入れています" },
+    ng: { spec: "_あしたも晴れた|!。うれしい。", why: "。が行のいちばん上に来ています" }
   },
   {
     t: "会話文は行をかえて、1マス目の「から書く",
@@ -1216,8 +1230,8 @@ var RULES = [
     t: "小さい字（っ ゃ ゅ ょ）も1マス使う",
     p: "小さく書く字も、ふつうの字と同じように1マスを使います。縦書きでは、マスの右上のほうに書きます。",
     ji: 8, gyou: 2,
-    ok: { cfg: { body: "がっこうへ行った。" }, why: "小さい「っ」も1マス使っています" },
-    ng: { spec: "_!が+っこうへ行っ|た。", why: "小さい字を前の文字と同じマスに入れています" }
+    ok: { cfg: { body: "がっこうへいった。" }, why: "小さい「っ」も1マス使っています" },
+    ng: { spec: "_!が+っこうへいっ|た。", why: "小さい字を前の文字と同じマスに入れています" }
   },
   {
     t: "…… と ―― は2マス使う",
@@ -1242,18 +1256,18 @@ var RULES = [
     diff: "小学校の教材では、このきまりを扱わないことも多いところです。" +
       "「文章を入れる」タブの細かい設定で、入／切を選べます。",
     ji: 8, gyou: 2,
-    ok: { cfg: { body: "すごい！それから走った。", bangAki: true },
+    ok: { cfg: { body: "やった！ゴールが決まった。", bangAki: true },
       why: "！のうしろが1マス空いています" },
-    ng: { spec: "_すごい！!それか|ら走った。", why: "うしろを空けずに続けています" }
+    ng: { spec: "_やった！!ゴール|が決まった。", why: "うしろを空けずに続けています" }
   },
   {
     t: "『 』 は、かぎかっこの中でさらにかぎかっこを使うとき",
     p: "二重かぎかっこ（『 』）は、会話の中で本の題名を言うときなど、" +
       "かぎかっこの中でもう一度かぎかっこが必要なときに使います。",
     ji: 10, gyou: 3,
-    ok: { cfg: { body: "「『走れメロス』を読んだ。」" },
+    ok: { cfg: { body: "「『ごんぎつね』を読んだ。」" },
       why: "かぎかっこの中で『 』を使っています" },
-    ng: { spec: "=「!「走れメロス!」|を読んだ。」", why: "中も「 」になっていて、どこまでが会話か分かりません" }
+    ng: { spec: "=「!「ごんぎつね!」|を読んだ。」", why: "中も「 」になっていて、どこまでが会話か分かりません" }
   }
 ];
 
@@ -1765,7 +1779,7 @@ function wire() {
   $("btn-text-print2").onclick = textPrint;
   $("btn-text-sample").onclick = function () {
     $("t-title").value = "運動会の思い出";
-    $("t-name").value = "五年一組　安藤　太郎";
+    $("t-name").value = "五年一組　山田　太郎";
     $("t-body").value = SAMPLE;
     renderText();
   };
