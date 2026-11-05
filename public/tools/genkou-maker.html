@@ -130,20 +130,26 @@
   /* 柱は「1行分」なので、マス＋ルビ欄の幅をとる */
   table.genkou.tate td.hashira{width:calc(var(--masu) + var(--ruby));}
   table.genkou.yoko td.hashira{height:calc(var(--masu) + var(--ruby));}
-  /* 魚尾。文字（【）で描くと字形が箱の中で片寄るため、罫線で描いて確実に中央に置く */
+  /*
+    魚尾。文字（【）で描くと字形が箱の中で片寄るため、罫線で描く。
+    白く見える帯は「柱＋となりの行のルビ欄」なので、柱の中央ではなく
+    帯の中央に来るよう、ルビ欄の半分だけずらしている。
+  */
   .gyobi{
     display:block;margin:0 auto;
     width:calc(var(--masu) * 0.6);
     height:calc(var(--masu) * 0.28);
     border:1.4px solid var(--masu-line);
     border-bottom:none;
+    transform:translateX(calc(var(--ruby) / -2));
   }
-  /* 横書きのときは下向きではなく右向きにする */
+  /* 横書きのときは下向きではなく右向きにし、ずらす向きも下にする */
   .yoko .gyobi{
     width:calc(var(--masu) * 0.28);
     height:calc(var(--masu) * 0.6);
     border:1.4px solid var(--masu-line);
     border-right:none;
+    transform:translateY(calc(var(--ruby) / 2));
   }
 
   .ch{
