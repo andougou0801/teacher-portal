@@ -206,9 +206,14 @@
   .legend i.mark-aki{background:#e6dff7;border:2px solid #6b4bb0;color:#45307a;}
 
   /* ===== ノートのマス目 ===== */
-  table.note{border-collapse:collapse;table-layout:fixed;}
+  /* 説明文の .note と同じ名前なので、文字や余白の指定を打ち消しておく。
+     打ち消さないと表の上下に6px・12pxの余白が付き、実寸が4mmほど大きくなる */
+  table.note{
+    border-collapse:collapse;table-layout:fixed;
+    margin:0;font-size:inherit;color:inherit;line-height:0;
+  }
   table.note td{
-    width:var(--nmasu);height:var(--nmasu);
+    width:var(--nmasu);height:var(--nmasu-h,var(--nmasu));
     border:1px solid var(--masu-line);
     padding:0;position:relative;
   }
@@ -221,9 +226,22 @@
     content:"";position:absolute;top:0;bottom:0;left:50%;
     border-left:1px dotted var(--leader-color);
   }
-  /* 罫線だけの行ノート */
+  /* 罫線だけの行ノート（算数などの横罫） */
   table.note.gyo td{height:var(--nmasu);border:none;border-bottom:1px solid var(--masu-line);}
   table.note.gyo td::before,table.note.gyo td::after{display:none;}
+  /* 国語の行ノート（縦罫）。1行ずつがたての帯になり、
+     「縦リーダー」はその帯の中心に引く点線 */
+  table.note.tate td{
+    width:var(--nmasu);height:var(--nline);
+    border:none;border-left:1px solid var(--masu-line);
+  }
+  table.note.tate td:last-child{border-right:1px solid var(--masu-line);}
+  table.note.tate td::before{display:none;}
+  table.note.tate td::after{display:none;}
+  table.note.tate.leader td::after{
+    content:"";display:block;position:absolute;top:0;bottom:0;left:50%;
+    border-left:1px dotted var(--leader-color);
+  }
   .note-head{
     display:flex;gap:6mm;margin-bottom:3mm;font-size:11pt;line-height:1.6;
   }
@@ -287,8 +305,9 @@
   .scorebar{font-size:14px;font-weight:700;color:var(--accent-dark);}
 
   /* 用紙の下に印刷するきまり */
-  /* 用紙の下に入れるきまり。2段組にして、用紙からはみ出さない高さに収める */
-  .rules-foot{margin-top:3mm;font-size:8pt;line-height:1.45;}
+  /* 用紙の下に入れるきまり。段組みにして、用紙からはみ出さない高さに収める。
+     段の数は紙のはばに合わせて renderBlank が入れかえる */
+  .rules-foot{margin-top:3mm;font-size:8pt;line-height:1.45;max-width:100%;}
   .rules-foot:empty{display:none;}
   .rules-foot b{display:block;margin-bottom:0.8mm;font-size:8.5pt;}
   .rules-foot ul{
@@ -306,8 +325,11 @@
     .fitbox,.notelist{display:none !important;}
     table.genkou td.mark-hang,table.genkou td.mark-jisage,table.genkou td.mark-ng,
     table.genkou td.mark-ok,table.genkou td.mark-aki{background:#fff;}
+    /* いま開いているタブだけを印刷する。
+       ブラウザのメニュー（Ctrl+P）から印刷しても白紙にならないよう、
+       .printing（印刷ボタン経由）だけでなく .on（開いているタブ）も残す */
     .panel{display:none !important;}
-    .panel.printing{display:block !important;}
+    .panel.on,.panel.printing{display:block !important;}
   }
 </style>
 </head>
@@ -457,36 +479,61 @@
 
 <!-- ===================== ノートのマス目を作る ===================== -->
 <div class="panel" id="p-note">
-  <h2 class="sec no-print">学年と教科で選ぶ</h2>
+  <h2 class="sec no-print">教科と学年で選ぶ</h2>
   <p class="note no-print" style="margin-top:0;">
-    小学校で使われているノートのマス目を、同じ大きさで印刷できます。
+    小学校で使われているノートのマス目を、市販品と同じ大きさ・同じマスの数で印刷できます。
     ノートを忘れた子のかわりの紙や、練習プリントの下地に使えます。
+    （ショウワノート「ジャポニカ学習帳」「ジャポニカフレンド」「ジャポニカセクション」の
+    罫内容に合わせています。）
   </p>
-  <div class="row no-print" id="note-presets"></div>
+  <div class="no-print" id="note-presets"></div>
   <div class="note no-print" id="n-preset-note"></div>
 
   <h2 class="sec no-print">マス目の設定</h2>
   <div class="row no-print">
     <label>種類</label>
     <select id="n-kind">
-      <option value="masu" selected>マス目（国語・算数）</option>
-      <option value="gyo">罫線だけ（行ノート）</option>
+      <option value="masu" selected>マス目（国語・算数・漢字）</option>
+      <option value="gyo">横の罫線だけ（算数の行ノート）</option>
+      <option value="tate">たての罫線だけ（国語の行ノート）</option>
     </select>
     <label>1マスの大きさ</label>
     <select id="n-size">
-      <option value="26">26mm（国語8マス）</option>
-      <option value="22">22mm（算数6マス）</option>
+      <option value="25">25mm（国語8マス）</option>
+      <option value="22">22mm（算数6マス・漢字50字）</option>
       <option value="21">21mm（国語10マス）</option>
       <option value="18">18mm（国語12マス・算数7マス）</option>
+      <option value="17">17mm（漢字91字）</option>
       <option value="15" selected>15mm（国語15マス・算数14マス）</option>
+      <option value="14">14mm（漢字120字）</option>
       <option value="12">12mm（国語18マス・算数17マス）</option>
       <option value="10">10mm（算数10mm方眼）</option>
-      <option value="8">8mm（17行）</option>
+      <option value="8">8mm</option>
+      <option value="5">5mm（5mm方眼）</option>
+    </select>
+    <label>たての長さ</label>
+    <select id="n-sizeh">
+      <option value="0" selected>正方形（よこと同じ）</option>
+      <option value="17">17mm（漢字84字）</option>
+      <option value="15">15mm（漢字104字）</option>
+      <option value="11">11mm</option>
     </select>
   </div>
   <div class="row no-print">
+    <label>マスの数</label>
+    <select id="n-count-mode">
+      <option value="note" selected>ノートと同じ数にする</option>
+      <option value="fill">用紙に入るだけ並べる</option>
+    </select>
+    <label>よこ</label>
+    <input type="number" id="n-cols" min="1" max="60" step="1" value="10" style="width:70px;">
+    <label>たて</label>
+    <input type="number" id="n-rows" min="1" max="60" step="1" value="14" style="width:70px;">
+    <span class="note" style="margin:0;">いま使わない欄は、うすく表示されます</span>
+  </div>
+  <div class="row no-print">
     <label class="toggle"><input type="checkbox" id="n-leader" checked>
-      十字リーダー（マスの中の点線）を入れる</label>
+      リーダー（マスの中の点線）を入れる</label>
     <label class="toggle"><input type="checkbox" id="n-name" checked>
       上に名前・日づけのらんをつける</label>
   </div>
@@ -524,7 +571,8 @@
   <div id="n-fit" class="fitbox no-print"></div>
   <div class="row no-print">
     <button id="btn-note-print">印刷する</button>
-    <span class="note" style="margin:0;">用紙に入るだけマス目を並べ、紙の真ん中に印刷します</span>
+    <button class="sub mini" id="btn-note-fill">用紙に入るだけ並べる</button>
+    <span class="note" style="margin:0;">マス目は紙の真ん中に印刷します</span>
   </div>
 
   <div class="sheet-wrap">
@@ -646,6 +694,12 @@
   </div>
   <div class="row no-print">
     <label class="toggle"><input type="checkbox" id="t-hashira" checked> 柱を入れる</label>
+    <label>魚尾（柱の飾り）</label>
+    <select id="t-gyobi">
+      <option value="2" selected>上下に2つ（市販品に多い形）</option>
+      <option value="1">真ん中に1つ</option>
+      <option value="0">入れない</option>
+    </select>
     <label class="toggle"><input type="checkbox" id="t-mark" checked> 直したところに色をつける</label>
     <label class="toggle"><input type="checkbox" id="t-thin"> うすい字にする（なぞり書き用）</label>
   </div>
@@ -734,7 +788,20 @@
         中央の飾りを<b>魚尾（ぎょび）</b>といい、もともと二つ折りにして綴じるための目印でした。</li>
       <li>用紙からはみ出すときは画面で知らせます。「用紙にぴったり合わせる」で自動調整もできます。</li>
     </ul>
-    <h2 class="sec">2. 文章を入れる</h2>
+    <h2 class="sec">2. ノートのマス目を作る</h2>
+    <ul style="font-size:13.5px;line-height:2;">
+      <li>市販の学習帳と<b>同じマスの大きさ・同じマスの数</b>で印刷できます。
+        ノートを忘れた子のかわりの紙や、練習プリントの下地に使えます。</li>
+      <li>品名の「○マス」は、マスの大きさではなく<b>たてに並ぶマスの数</b>です。
+        1マスの大きさは品番ごとに決まっています
+        （例：こくご15マス＝15mmマスをよこ10×たて15／さんすう14マス＝15mmマスをよこ10×たて14）。</li>
+      <li>方眼は「5mm方眼（リーダー罫入り）」のように、
+        10mmの実線の中に5mmの点線が入る形です。用紙に入るだけ並べます。</li>
+      <li>漢字れんしゅうの「○字」は、1ページぶんのマスの数です（50字＝よこ5×たて10）。</li>
+      <li>市販品と同じ数ではなく用紙いっぱいに並べたいときは、
+        「用紙に入るだけ並べる」を押してください。</li>
+    </ul>
+    <h2 class="sec">3. 文章を入れる</h2>
     <ul style="font-size:13.5px;line-height:2;">
       <li><b>お手本</b>…打った文章を、きまりどおりに直して入れます。何をどう直したかが下に出ます。</li>
       <li><b>じぶんで</b>…打ったとおりに入れます。空白も1マスとして入るので、
@@ -742,7 +809,7 @@
       <li>「きまりの細かい設定」で、学校の指導に合わせられます。</li>
       <li>「うすい字にする」で印刷すると、なぞり書きのプリントになります。</li>
     </ul>
-    <h2 class="sec">3. 個人情報について</h2>
+    <h2 class="sec">4. 個人情報について</h2>
     <ul style="font-size:13.5px;line-height:2;">
       <li>打った文章や名前は、このパソコンの外へは送られません（通信を技術的に遮断しています）。</li>
       <li>保存もしていないので、ページを閉じると消えます。続きを書くときは文章を控えておいてください。</li>
@@ -767,6 +834,14 @@ var TWO_MASU = "…―";
 var BANG = "！？!?";
 
 function $(id) { return document.getElementById(id); }
+/** 選択肢に実際にある数字を取り出す（案内で、ない数字をすすめないため） */
+function optionNums(id) {
+  var el = $(id);
+  if (!el) return [];
+  return Array.prototype.map.call(el.options, function (o) { return Number(o.value); })
+    .filter(function (n) { return isFinite(n); })
+    .sort(function (a, b) { return a - b; });
+}
 function esc(s) {
   return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -919,14 +994,23 @@ function layoutText(o) {
         continue;
       }
 
-      cur.cells.push({ ch: ch });
-
-      // … や ― は2マス続けて使う
-      if (TWO_MASU.indexOf(ch) >= 0 && cs[i2 + 1] !== ch) {
-        if (cur.cells.length >= per) wrap();
-        cur.cells.push({ ch: ch });
-        note("ok", ch + " は2マス続けて使います");
+      // … や ― は2マス続けて使う。
+      // 「……」のように2つ打たれているときも2マスにする（3マスにならないように）
+      if (TWO_MASU.indexOf(ch) >= 0) {
+        var run = 1;
+        while (cs[i2 + run] === ch) run++;
+        var want = Math.max(2, Math.ceil(run / 2) * 2);
+        for (var w2 = 0; w2 < want; w2++) {
+          if (cur.cells.length >= per) wrap();
+          cur.cells.push({ ch: ch });
+        }
+        if (run === 1) note("ok", ch + " は2マス続けて使います");
+        else if (run !== want) note("ok", ch + " は2マスで1組なので、" + want + "マスにそろえました");
+        i2 += run - 1;
+        continue;
       }
+
+      cur.cells.push({ ch: ch });
 
       // ！ や ？ のうしろを1マス空ける
       if (o.bangAki && BANG.indexOf(ch) >= 0) {
@@ -1198,13 +1282,28 @@ function fitCheck(o) {
  * あまった余白を上下・左右で半分ずつに分け、紙の真ん中に来るようにする。
  * 「余白」の設定は、これ以上はせまくしない下限として使う。
  */
-function applyPageSize(o) {
+function pageStyleEl() {
   var st = $("page-style");
   if (!st) {
     st = document.createElement("style");
     st.id = "page-style";
     document.head.appendChild(st);
   }
+  return st;
+}
+/**
+ * 印刷できる範囲の「よこはば」をmmで返す。
+ * 用紙の下に入れる「きまり」は段組みなので、はばが変わると高さが変わる。
+ * 画面の広いはばで測ると低く出てしまい、実際には2ページになるため、
+ * 印刷したときのはばを先に求めてから測る。
+ */
+function printWidthMm(o, sheetWmm) {
+  var p = PAPERS[o.paper] || PAPERS.A4;
+  var pw = o.orient === "landscape" ? p.h : p.w;
+  var minM = Number(o.margin) || 10;
+  return Math.min(pw - minM * 2, sheetWmm + 4);
+}
+function applyPageSize(o, panelId) {
   var p = PAPERS[o.paper] || PAPERS.A4;
   var pw = o.orient === "landscape" ? p.h : p.w;
   var ph = o.orient === "landscape" ? p.w : p.h;
@@ -1214,14 +1313,32 @@ function applyPageSize(o) {
   var slack = 2;
   var mx = Math.max(minM, (pw - s.w - slack * 2) / 2);
   var my = Math.max(minM, (ph - s.h - slack * 2) / 2);
+  if (!isFinite(mx)) mx = minM;
+  if (!isFinite(my)) my = minM;
   var r1 = Math.round(my * 10) / 10, r2 = Math.round(mx * 10) / 10;
-  st.textContent = "@page{size:" + (o.paper || "A4") + " " +
-    (o.orient || "portrait") + ";margin:" + r1 + "mm " + r2 + "mm;}";
+  // 開いていないタブの設定で@pageを書きかえると、
+  // 読み込み直後などに見ている用紙と違う設定になってしまう
+  if (!panelId || ($(panelId) && $(panelId).classList.contains("on"))) {
+    pageStyleEl().textContent = "@page{size:" + (o.paper || "A4") + " " +
+      (o.orient || "portrait") + ";margin:" + r1 + "mm " + r2 + "mm;}";
+  }
   return { top: r1, side: r2 };
 }
-function renderFit(host, o) {
+/**
+ * 印刷する直前に、いま開いているタブの設定で用紙を決めなおす。
+ * ブラウザのメニュー（Ctrl+P）から印刷したときにも正しい用紙になる。
+ */
+function syncPrintPage() {
+  var on = document.querySelector(".panel.on");
+  var id = on ? on.id : "";
+  if (id === "p-blank") renderBlank();
+  else if (id === "p-note") renderNote();
+  else if (id === "p-text") renderText();
+  else pageStyleEl().textContent = "@page{size:A4 portrait;margin:15mm;}";
+}
+function renderFit(host, o, panelId) {
   var f = fitCheck(o);
-  var m = applyPageSize(o);
+  var m = applyPageSize(o, panelId);
   var paper = (PAPERS[o.paper] || PAPERS.A4).name +
     (o.orient === "landscape" ? "よこ" : "たて");
   var size = "よこ " + f.w + "mm × たて " + f.h + "mm";
@@ -1255,15 +1372,21 @@ function suggestFix(o) {
     t[k] = v;
     return t;
   }
-  var tries = [
-    { t: kae("margin", 5), msg: "「余白」を5mmにすると収まります。" },
+  // 「余白」は、その選択肢に実際にある数字しかすすめない
+  var tries = [];
+  (o.marginOptions || []).forEach(function (v) {
+    if (v < Number(o.margin)) {
+      tries.push({ t: kae("margin", v), msg: "「余白」を" + v + "mmにすると収まります。" });
+    }
+  });
+  tries = tries.concat([
     {
       t: kae("orient", o.orient === "landscape" ? "portrait" : "landscape"),
       msg: "用紙の向きを" + (o.orient === "landscape" ? "たて長" : "よこ長") + "にすると収まります。"
     },
     { t: kae("paper", "B4"), msg: "用紙をB4にすると収まります。" },
     { t: kae("paper", "A3"), msg: "用紙をA3にすると収まります。" }
-  ];
+  ]);
   for (var i = 0; i < tries.length; i++) {
     if (ok(tries[i].t)) return tries[i].msg;
   }
@@ -1455,7 +1578,7 @@ var RULES = [
     p: "三点リーダー（…）やダッシュ（―）は、2つつづけて2マス使います。" +
       "…は言葉を止めたり、だまったりしたときに使います。",
     ji: 8, gyou: 2,
-    ok: { cfg: { body: "そのとき…音がした。" }, why: "…が2マスつづいています" },
+    ok: { cfg: { body: "そのとき……音がした。" }, why: "…が2マスつづいています" },
     ng: { spec: "_そのとき!…音|がした。", why: "1マスだけになっています" }
   },
   {
@@ -1586,7 +1709,7 @@ function renderLearn() {
    ========================================================= */
 function countMasu(text) {
   var lay = layoutText({ title: "", name: "", body: text, ji: 400, mode: "tehon",
-    bodyStart: "next", titleAki: 3, nameAki: 1 });
+    bodyStart: "next", titleAki: 3, nameAki: 1, dir: "yoko" });
   var n = 0;
   lay.lines.forEach(function (l) { n += l.cells.length; });
   return n;
@@ -1685,15 +1808,18 @@ function answerQuiz(idx, correctIdx, q, cbox, host) {
   box.className = "answerbox " + (right ? "ans-ok" : "ans-ng");
   var head = right ? "<b>せいかい。</b><br>" : "<b>ざんねん。</b><br>";
   if (q.type === "count") {
-    box.innerHTML = head + "答えは <b>" + q._ans + "マス</b>です。下のように入ります。";
+    box.innerHTML = head + "答えは <b>" + q._ans +
+      "マス</b>です。下のように入ります（数えやすいように、横1行に並べました）。";
     host.appendChild(box);
-    var per = Math.min(10, q._ans);
+    // 見本のマスの数が答えと合うように、答えの数だけ1行に並べる。
+    // 行をかえると「。」のぶら下げでマスの数が変わってしまう
+    var per = q._ans;
     var lay = layoutText({ title: "", name: "", body: q.s, ji: per, mode: "tehon",
-      bodyStart: "next", titleAki: 3, nameAki: 1 });
+      bodyStart: "next", titleAki: 3, nameAki: 1, dir: "yoko" });
     var sheet = document.createElement("div");
     sheet.className = "sheet";
     renderSheet(sheet, lay.lines, {
-      ji: per, gyou: lay.lines.length, dir: "tate", size: 9, ruby: 3,
+      ji: per, gyou: lay.lines.length, dir: "yoko", size: 9, ruby: 3,
       hashira: false, mark: true, thin: false
     });
     var wrap = document.createElement("div");
@@ -1735,6 +1861,7 @@ function blankOpts() {
     paper: $("b-paper").value,
     orient: $("b-orient").value,
     margin: Number($("b-margin").value) || 10,
+    marginOptions: optionNums("b-margin"),
     hashira: $("b-hashira").checked,
     gyobi: Number($("b-gyobi").value),
     color: $("b-color").value,
@@ -1762,9 +1889,24 @@ function renderBlank() {
     ? "<b>原稿用紙のきまり</b><ul>" +
       FOOT_RULES.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>"
     : "";
-  // 描いたあとに実寸を測り、それで用紙の判定と余白を決める
-  o.measured = measuredMm($("b-sheet"), $("b-rules-foot"));
-  renderFit($("b-fit"), o);
+  // 描いたあとに実寸を測り、それで用紙の判定と余白を決める。
+  // 「きまり」欄は段組みなので、先に印刷したときのはばに合わせてから測る
+  var foot = $("b-rules-foot");
+  var sheetW = $("b-sheet").offsetWidth / MM;
+  var fw = printWidthMm(o, sheetW);
+  foot.style.width = fw + "mm";
+  // 紙が広いほど段を増やして、きまり欄の高さをおさえる
+  var ul = foot.querySelector("ul");
+  if (ul) ul.style.columns = (fw >= 250 ? 4 : fw >= 170 ? 3 : 2);
+  // それでも数mmだけはみ出すときは、きまりの字を少しだけ小さくして収める
+  var scales = [1, 0.92, 0.85];
+  for (var si = 0; si < scales.length; si++) {
+    foot.style.fontSize = (8 * scales[si]) + "pt";
+    foot.style.marginTop = (3 * scales[si]) + "mm";
+    o.measured = measuredMm($("b-sheet"), foot);
+    if (!foot.offsetHeight || fitCheck(o).fits) break;
+  }
+  renderFit($("b-fit"), o, "p-blank");
 
   $("b-preset-note").textContent = "";
   if (hashiraAt(o) < 0 && $("b-hashira").checked) {
@@ -1798,68 +1940,154 @@ function markChosenPreset(o) {
 
 /* =========================================================
    ノートのマス目を作る
-   小学校で使われているノートの規格に合わせている。
-   「○マス」は1マスの大きさの呼び名で、マスの数は用紙に入るだけ並べる。
+
+   小学校で使われているノートの罫内容に合わせている。
+   ショウワノートが公開している品番ごとの罫内容を調べた結果、
+   品名の「○マス」は 1マスの大きさの呼び名ではなく、
+   たてに並ぶマスの数だった（1マスの大きさは品番ごとに決まっている）。
+     こくご 15マス … 15mmマス 15×10   → たて15マス・よこ10マス
+     さんすう14マス … 15mmマス 10×14  → よこ10マス・たて14マス
+   そのため、マスの数も大きさも品番どおりに出し、
+   用紙に入るだけ並べたいときは別に選べるようにしている。
    ========================================================= */
 var NOTE_PRESETS = [
-  { k: "国語", g: "1年（はじめ）", label: "国語 8マス", size: 26, leader: true, kind: "masu",
-    note: "1年生のはじめに使う、いちばん大きいマスです（1マス26mm・十字リーダーつき）。" },
-  { k: "国語", g: "1年", label: "国語 10マス", size: 21, leader: true, kind: "masu",
-    note: "1年生でよく使う国語ノートです（1マス21mm・十字リーダーつき）。" },
-  { k: "国語", g: "2年", label: "国語 12マス", size: 18, leader: true, kind: "masu",
-    note: "2年生でよく使う国語ノートです（1マス18mm・十字リーダーつき）。" },
-  { k: "国語", g: "2〜3年", label: "国語 15マス", size: 15, leader: true, kind: "masu",
-    note: "2年生の後半から3年生で使います（1マス15mm・十字リーダーつき）。" },
-  { k: "国語", g: "3〜5年", label: "国語 18マス", size: 12, leader: false, kind: "masu",
-    note: "3年生から5年生で使います（1マス12mm）。" },
-  { k: "算数", g: "1年", label: "算数 6マス", size: 22, leader: false, kind: "masu",
-    note: "1年生のはじめに使う横型ノートのマスです（1マス22mm）。" },
-  { k: "算数", g: "1年", label: "算数 7マス", size: 18, leader: false, kind: "masu",
-    note: "1年生の横型ノートです（1マス18mm）。" },
-  { k: "算数", g: "1〜2年", label: "算数 14マス", size: 15, leader: false, kind: "masu",
-    note: "1年生の後半から2年生で使います（1マス15mm）。" },
-  { k: "算数", g: "2〜3年", label: "算数 17マス", size: 12, leader: false, kind: "masu",
-    note: "2年生から3年生で使います（1マス12mm）。12mm方眼も同じ大きさです。" },
-  { k: "算数", g: "3〜6年", label: "算数 10mm方眼", size: 10, leader: true, kind: "masu",
-    note: "3年生から6年生で使う方眼ノートです（1マス10mm・5mmの補助線つき）。" },
-  { k: "算数", g: "3〜6年", label: "算数 10mm方眼（点線なし）", size: 10, leader: false, kind: "masu",
-    note: "10mm方眼から、マスの中の点線（5mmの補助線）を外したものです。" +
-      "グラフや図形をかくときなど、点線がじゃまになる場面で使えます。" },
-  { k: "算数", g: "2〜3年", label: "算数 12mm方眼（点線なし）", size: 12, leader: false, kind: "masu",
-    note: "12mm方眼です（1マス12mm）。17マスのノートと同じ大きさです。" },
-  { k: "行", g: "3年", label: "17行", size: 12, leader: false, kind: "gyo",
-    note: "罫線だけのノートです（1行12mm）。" },
-  { k: "行", g: "4〜6年", label: "22行", size: 10, leader: false, kind: "gyo",
-    note: "罫線だけのノートです（1行10mm）。" }
+  /* ---- 国語（マス・縦書き）。8〜18マスはすべて十字リーダー入り ---- */
+  { k: "国語", g: "1年のはじめ", label: "8マス", kind: "masu",
+    size: 25, cols: 6, rows: 8, paper: "B5", orient: "portrait", leader: true,
+    note: "「こくご 8マス 十字リーダー入り」と同じです（25mmマス・よこ6×たて8）。" +
+      "小学校で使ういちばん大きいマスです。" },
+  { k: "国語", g: "1年", label: "10マス", kind: "masu",
+    size: 21, cols: 7, rows: 10, paper: "B5", orient: "portrait", leader: true,
+    note: "「こくご 10マス 十字リーダー入り」と同じです（21mmマス・よこ7×たて10）。" },
+  { k: "国語", g: "2年", label: "12マス", kind: "masu",
+    size: 18, cols: 8, rows: 12, paper: "B5", orient: "portrait", leader: true,
+    note: "「こくご 12マス 十字リーダー入り」と同じです（18mmマス・よこ8×たて12）。" },
+  { k: "国語", g: "2〜3年", label: "15マス", kind: "masu",
+    size: 15, cols: 10, rows: 15, paper: "B5", orient: "portrait", leader: true,
+    note: "「こくご 15マス 十字リーダー入り」と同じです（15mmマス・よこ10×たて15）。" },
+  { k: "国語", g: "3〜5年", label: "18マス", kind: "masu",
+    size: 12, cols: 12, rows: 18, paper: "B5", orient: "portrait", leader: true,
+    note: "「こくご 18マス 十字リーダー入り」と同じです（12mmマス・よこ12×たて18）。" },
+
+  /* ---- 算数（マス）。6・7マスは横長、14・17マスは縦長 ---- */
+  { k: "算数", g: "1年のはじめ", label: "6マス", kind: "masu",
+    size: 22, cols: 10, rows: 6, paper: "B5", orient: "landscape", leader: true,
+    note: "「さんすう 6マス 十字リーダー入り」と同じです（22mmマス・よこ10×たて6）。" +
+      "横長のノートなので、用紙もよこ長にしています。" },
+  { k: "算数", g: "1年", label: "7マス", kind: "masu",
+    size: 18, cols: 12, rows: 7, paper: "B5", orient: "landscape", leader: true,
+    note: "「さんすう 7マス 十字リーダー入り」と同じです（18mmマス・よこ12×たて7）。" +
+      "横長のノートなので、用紙もよこ長にしています。" },
+  { k: "算数", g: "1〜2年", label: "14マス", kind: "masu",
+    size: 15, cols: 10, rows: 14, paper: "B5", orient: "portrait", leader: true,
+    note: "「さんすう 14マス」と同じです（15mmマス・よこ10×たて14）。" +
+      "市販品には十字リーダー入りと、入っていないものの両方があります。" +
+      "いらないときは下の「リーダーを入れる」を外してください。" },
+  { k: "算数", g: "2〜3年", label: "17マス", kind: "masu",
+    size: 12, cols: 12, rows: 17, paper: "B5", orient: "portrait", leader: true,
+    note: "「さんすう 17マス」と同じです（12mmマス・よこ12×たて17）。" +
+      "市販品にはよこ13マスの版（13×17）や、十字リーダーのない版もあります。" },
+
+  /* ---- 方眼（ジャポニカセクション）。用紙いっぱいに並べる ---- */
+  { k: "方眼", g: "3〜6年", label: "5mm方眼（リーダー罫入り）", kind: "masu",
+    size: 10, fill: true, paper: "B5", orient: "portrait", leader: true,
+    note: "市販品の「5mm方眼罫（リーダー罫入り）」と同じです。" +
+      "10mmの実線のマスの中に、5mmの点線が入っています。" +
+      "3年生から6年生の算数でいちばんよく使う方眼です。" },
+  { k: "方眼", g: "3〜6年", label: "10mm方眼（点線なし）", kind: "masu",
+    size: 10, fill: true, paper: "B5", orient: "portrait", leader: false,
+    note: "10mmの実線だけの方眼です。グラフや図形をかくとき、" +
+      "中の点線がじゃまになる場面で使えます。" },
+  { k: "方眼", g: "2〜3年", label: "6mm方眼（リーダー罫入り）", kind: "masu",
+    size: 12, fill: true, paper: "B5", orient: "portrait", leader: true,
+    note: "市販品の「6mm方眼罫（リーダー罫入り）」と同じです。" +
+      "12mmの実線のマスの中に、6mmの点線が入っています。" },
+  { k: "方眼", g: "2〜3年", label: "12mm方眼（点線なし）", kind: "masu",
+    size: 12, fill: true, paper: "B5", orient: "portrait", leader: false,
+    note: "12mmの実線だけの方眼です。17マスのノートと同じ大きさです。" },
+
+  /* ---- 漢字れんしゅう。すべて十字リーダー入り。字数＝マスの数 ---- */
+  { k: "漢字", g: "1〜2年", label: "50字", kind: "masu",
+    size: 22, cols: 5, rows: 10, paper: "B5", orient: "portrait", leader: true,
+    note: "「かんじれんしゅう 50字 十字リーダー入り」と同じです（22mmマス・よこ5×たて10）。" +
+      "字数の50は、1ページのマスの数（5×10）です。" },
+  { k: "漢字", g: "2〜3年", label: "84字", kind: "masu",
+    size: 18, sizeH: 17, cols: 7, rows: 12, paper: "B5", orient: "portrait", leader: true,
+    note: "「かんじれんしゅう 84字 十字リーダー入り」と同じです" +
+      "（よこ18mm×たて17mmのマス・よこ7×たて12）。マスは正方形ではありません。" },
+  { k: "漢字", g: "3〜4年", label: "91字", kind: "masu",
+    size: 17, cols: 7, rows: 13, paper: "B5", orient: "portrait", leader: true,
+    note: "「かんじれんしゅう 91字 十字リーダー入り」と同じです（17mmマス・よこ7×たて13）。" },
+  { k: "漢字", g: "4〜5年", label: "104字", kind: "masu",
+    size: 17, sizeH: 15, cols: 8, rows: 13, paper: "B5", orient: "portrait", leader: true,
+    note: "「漢字ドリル 104字 十字リーダー入り」と同じです" +
+      "（よこ17mm×たて15mmのマス・よこ8×たて13）。マスは正方形ではありません。" },
+  { k: "漢字", g: "5〜6年", label: "120字", kind: "masu",
+    size: 14, cols: 8, rows: 15, paper: "B5", orient: "portrait", leader: true,
+    note: "「漢字ドリル 120字 十字リーダー入り」と同じです（14mmマス・よこ8×たて15）。" },
+
+  /* ---- 行ノート。国語はたての罫線、算数は横の罫線 ---- */
+  { k: "行ノート", g: "国語 3年〜", label: "国語 12行（縦リーダー入り）", kind: "tate",
+    size: 12, cols: 12, paper: "B5", orient: "portrait", leader: true,
+    note: "「国語 12行 縦リーダー入り」と同じです（12mmのたて罫・12行）。" +
+      "1行の真ん中に点線（縦リーダー）が入り、字の中心をそろえやすくなっています。" },
+  { k: "行ノート", g: "国語 4年〜", label: "国語 15行（縦リーダー入り）", kind: "tate",
+    size: 10, cols: 15, paper: "B5", orient: "portrait", leader: true,
+    note: "「国語 15行 縦リーダー入り」と同じです（10mmのたて罫・15行）。" },
+  { k: "行ノート", g: "算数 2〜3年", label: "算数 17行", kind: "gyo",
+    size: 12, rows: 17, paper: "B5", orient: "portrait", leader: false,
+    note: "横の罫線だけのノートです（1行12mm・17行）。" },
+  { k: "行ノート", g: "算数 3〜6年", label: "算数 22行", kind: "gyo",
+    size: 10, rows: 22, paper: "B5", orient: "portrait", leader: false,
+    note: "横の罫線だけのノートです（1行10mm・22行）。10mm方眼と行の高さが同じです。" }
 ];
+/** 名前・日づけのらんが使うたての長さ（おおよそ） */
+var NOTE_HEAD_MM = 10;
+function noteCellH(o) { return Number(o.sizeH) > 0 ? Number(o.sizeH) : Number(o.size); }
 function noteOpts() {
   return {
     kind: $("n-kind").value,
     size: Number($("n-size").value) || 15,
+    sizeH: Number($("n-sizeh").value) || 0,
+    countMode: $("n-count-mode").value,
+    cols: Math.max(1, Math.min(60, Number($("n-cols").value) || 10)),
+    rows: Math.max(1, Math.min(60, Number($("n-rows").value) || 14)),
     leader: $("n-leader").checked,
     nameRow: $("n-name").checked,
     paper: $("n-paper").value,
     orient: $("n-orient").value,
     margin: Number($("n-margin").value) || 10,
+    marginOptions: optionNums("n-margin"),
     color: $("n-color").value
   };
 }
-/** 用紙に入るマスの数を数える */
+/**
+ * 並べるマスの数を決める。
+ * 「ノートと同じ数」なら入力した数をそのまま使い、
+ * 「用紙に入るだけ」なら使える範囲から数える。
+ * 罫線のはばで計算より数mm大きくなるので、
+ * 入るだけのときは描いたあとに実寸で詰めなおす（renderNote）。
+ */
 function noteCount(o) {
-  var u = usableMm({ paper: o.paper, orient: o.orient, margin: o.margin });
-  var headMm = o.nameRow ? 12 : 0;
-  var cols = Math.max(1, Math.floor(u.w / o.size));
-  var rows = Math.max(1, Math.floor((u.h - headMm) / o.size));
-  return { cols: cols, rows: rows, uw: u.w, uh: u.h };
+  var u = usableMm(o);
+  var cw = Number(o.size), chh = noteCellH(o);
+  var availH = u.h - (o.nameRow ? NOTE_HEAD_MM : 0);
+  if (o.countMode === "note") {
+    return { cols: o.cols, rows: o.rows };
+  }
+  return {
+    cols: Math.max(1, Math.floor(u.w / cw)),
+    rows: Math.max(1, Math.floor(availH / chh))
+  };
 }
-function renderNote() {
-  var o = noteOpts();
-  var c = noteCount(o);
-  var host = $("n-sheet");
+/** マス目を実際に描く */
+function drawNote(host, o, c, geo) {
   host.innerHTML = "";
   host.style.setProperty("--nmasu", o.size + "mm");
+  host.style.setProperty("--nmasu-h", noteCellH(o) + "mm");
+  host.style.setProperty("--nline", geo.lineLen + "mm");
   host.style.setProperty("--masu-line", o.color);
-  // 十字リーダーは、マスの線よりうすくする
+  // リーダーは、マスの線よりうすくする
   host.style.setProperty("--leader-color", o.color === "#9aa6ba" ? "#c3cbd9" : "#9aa6ba");
 
   if (o.nameRow) {
@@ -1870,12 +2098,15 @@ function renderNote() {
   }
 
   var tbl = document.createElement("table");
-  tbl.className = "note" + (o.kind === "gyo" ? " gyo" : "") +
-    (o.leader && o.kind === "masu" ? " leader" : "");
-  // 罫線だけのときは、1行を1つのセルにして、横はばいっぱいに引く
+  tbl.className = "note" +
+    (o.kind === "gyo" ? " gyo" : "") +
+    (o.kind === "tate" ? " tate" : "") +
+    (o.leader && o.kind !== "gyo" ? " leader" : "");
+  // 横の罫線だけのときは、1行を1つのセルにして横はばいっぱいに引く
   var cols = (o.kind === "gyo") ? 1 : c.cols;
-  tbl.style.width = (c.cols * o.size) + "mm";
-  for (var r = 0; r < c.rows; r++) {
+  var rows = (o.kind === "tate") ? 1 : c.rows;
+  tbl.style.width = geo.widthMm + "mm";
+  for (var r = 0; r < rows; r++) {
     var tr = document.createElement("tr");
     for (var x = 0; x < cols; x++) tr.appendChild(document.createElement("td"));
     tbl.appendChild(tr);
@@ -1885,24 +2116,112 @@ function renderNote() {
   if (o.kind === "gyo") frame.style.border = "none";
   frame.appendChild(tbl);
   host.appendChild(frame);
+}
+/** 収まらないとき、どの用紙・向き・余白なら収まるかを探して伝える */
+function noteSuggest(o, c) {
+  var cw = Number(o.size), chh = noteCellH(o);
+  var needW = c.cols * cw + 1.5;
+  var needH = (o.kind === "tate" ? 40 : c.rows * chh) +
+    (o.nameRow ? NOTE_HEAD_MM : 0) + 1.5;
+  function fits(t) {
+    var u = usableMm(t);
+    return needW <= u.w && needH <= u.h;
+  }
+  function kae(k, v) {
+    var t = {}; for (var x in o) t[x] = o[x];
+    t[k] = v; return t;
+  }
+  var tries = [];
+  (o.marginOptions || []).forEach(function (v) {
+    if (v < Number(o.margin)) tries.push({ t: kae("margin", v), msg: "「余白」を" + v + "mmにすると収まります。" });
+  });
+  tries.push({
+    t: kae("orient", o.orient === "landscape" ? "portrait" : "landscape"),
+    msg: "用紙の向きを" + (o.orient === "landscape" ? "たて長" : "よこ長") + "にすると収まります。"
+  });
+  ["A4", "B4", "A3"].forEach(function (p) {
+    if (p !== o.paper) tries.push({ t: kae("paper", p), msg: "用紙を" + p + "にすると収まります。" });
+  });
+  for (var i = 0; i < tries.length; i++) {
+    if (fits(tries[i].t)) return tries[i].msg;
+  }
+  return "「用紙に入るだけ並べる」を押すか、マスの数を減らしてください。";
+}
+function renderNote() {
+  var o = noteOpts();
+  var host = $("n-sheet");
+  var u = usableMm(o);
+  var c = noteCount(o);
+  var geo = {
+    // たての罫線だけのときは、使える高さいっぱいを1行の長さにする
+    lineLen: Math.max(20, u.h - (o.nameRow ? NOTE_HEAD_MM : 0) - 1),
+    // 横の罫線だけのときは、横はばいっぱいに引く
+    widthMm: (o.kind === "gyo") ? Math.max(20, u.w - 1) : c.cols * Number(o.size)
+  };
+  // 実寸をはかって判定する。「用紙に入るだけ」のときは、
+  // はみ出していたら1つずつ減らして必ず1枚に収める
+  var f;
+  var limit = (o.countMode === "fill") ? 8 : 1;
+  for (var attempt = 0; attempt < limit; attempt++) {
+    geo.widthMm = (o.kind === "gyo") ? Math.max(20, u.w - 1) : c.cols * Number(o.size);
+    drawNote(host, o, c, geo);
+    o.measured = measuredMm(host, null);
+    // タブを開いていないあいだは実寸が測れない（はば0）。
+    // そのときは計算した大きさを使い、詰めなおしはしない
+    var noMeasure = !o.measured;
+    if (noMeasure) {
+      o.measured = {
+        w: (o.kind === "gyo") ? geo.widthMm : c.cols * Number(o.size),
+        h: (o.kind === "tate" ? geo.lineLen : c.rows * noteCellH(o)) +
+          (o.nameRow ? NOTE_HEAD_MM : 0)
+      };
+    }
+    f = fitCheck(o);
+    if (f.fits || noMeasure) break;
+    var changed = false;
+    if (o.measured.w > u.w && o.kind !== "gyo" && c.cols > 1) { c.cols--; changed = true; }
+    if (o.measured.h > u.h) {
+      if (o.kind === "tate") { geo.lineLen -= 3; changed = true; }
+      else if (c.rows > 1) { c.rows--; changed = true; }
+    }
+    if (!changed) break;
+  }
+  // 数が変わったときは、入力欄も合わせる（画面と数字が食いちがわないように）
+  if (o.countMode === "fill") {
+    if (o.kind !== "gyo") $("n-cols").value = String(c.cols);
+    if (o.kind !== "tate") $("n-rows").value = String(c.rows);
+  }
 
-  // 実寸をはかって、用紙の真ん中に来るよう余白を決める
-  o.measured = measuredMm(host, null);
-  var f = fitCheck(o);
-  var m = applyPageSize(o);
+  // いま使わない設定は選べないようにして、見ただけで分かるようにする
+  var fill = (o.countMode === "fill");
+  $("n-sizeh").disabled = (o.kind !== "masu");
+  $("n-cols").disabled = fill || (o.kind === "gyo");
+  $("n-rows").disabled = fill || (o.kind === "tate");
+  $("n-cols").previousElementSibling.textContent = (o.kind === "tate") ? "行の数" : "よこ";
+
+  var m = applyPageSize(o, "p-note");
   var paper = (PAPERS[o.paper] || PAPERS.A4).name +
     (o.orient === "landscape" ? "よこ" : "たて");
+  var nokosu;
+  if (o.kind === "gyo") {
+    nokosu = c.rows + "行（1行 " + o.size + "mm）";
+  } else if (o.kind === "tate") {
+    nokosu = c.cols + "行（1行 " + o.size + "mm・たての長さ " +
+      Math.round(geo.lineLen) + "mm）";
+  } else {
+    nokosu = "よこ" + c.cols + "マス × たて" + c.rows + "マス（ぜんぶで " +
+      (c.cols * c.rows) + "マス／1マス よこ" + o.size + "mm×たて" + noteCellH(o) + "mm）";
+  }
   var box = $("n-fit");
-  var nokosu = (o.kind === "gyo")
-    ? c.rows + "行"
-    : c.cols + "マス × " + c.rows + "行（ぜんぶで " + (c.cols * c.rows) + "マス）";
   if (f.fits) {
     box.className = "fitbox fit-ok no-print";
-    box.textContent = paper + " に " + nokosu + " 入ります（1マス " + o.size +
-      "mm／紙の真ん中に印刷されます。上下の余白 " + m.top + "mm・左右の余白 " + m.side + "mm）";
+    box.textContent = paper + " に " + nokosu +
+      " 入ります。紙の真ん中に印刷されます（上下の余白 " + m.top +
+      "mm・左右の余白 " + m.side + "mm）。";
   } else {
     box.className = "fitbox fit-ng no-print";
-    box.textContent = paper + " に収まりません。余白を小さくするか、用紙を大きくしてください。";
+    box.textContent = paper + " に収まりません（" + nokosu +
+      "／印刷できる範囲 よこ " + f.uw + "mm × たて " + f.uh + "mm）。" + noteSuggest(o, c);
   }
 }
 
@@ -1919,8 +2238,9 @@ function textOpts() {
     paper: $("t-paper").value,
     orient: $("t-orient").value,
     margin: Number($("t-margin").value) || 10,
+    marginOptions: optionNums("t-margin"),
     hashira: $("t-hashira").checked,
-    gyobi: Number($("b-gyobi").value),
+    gyobi: Number($("t-gyobi").value),
     mark: $("t-mark").checked,
     thin: $("t-thin").checked,
     mode: document.querySelector('input[name="tmode"]:checked').value,
@@ -1947,7 +2267,7 @@ function renderText() {
   renderSheet($("t-sheet"), lay.lines, o);
   // 描いたあとに実寸を測り、それで用紙の判定と余白を決める
   o.measured = measuredMm($("t-sheet"), null);
-  renderFit($("t-fit"), o);
+  renderFit($("t-fit"), o, "p-text");
 
   var used = 0;
   lay.lines.forEach(function (l) {
@@ -2070,9 +2390,8 @@ function wire() {
       t.classList.add("on");
       t.setAttribute("aria-selected", "true");
       $(t.dataset.panel).classList.add("on");
-      if (t.dataset.panel === "p-blank") renderBlank();
-      if (t.dataset.panel === "p-text") renderText();
-      if (t.dataset.panel === "p-note") renderNote();
+      // 開いたタブの設定で用紙を決めなおす（ここで印刷しても正しい用紙になる）
+      syncPrintPage();
     };
     t.onclick = go;
     t.addEventListener("keydown", function (e) {
@@ -2097,14 +2416,28 @@ function wire() {
       $("b-preset-note").textContent = p.note;
     };
   });
-  // ノートのマス目
+  // ノートのマス目。教科ごとに行を分けて並べる
   var np = $("note-presets");
+  var groups = [];
   NOTE_PRESETS.forEach(function (p, i) {
-    var b = document.createElement("button");
-    b.className = "sub mini";
-    b.dataset.note = String(i);
-    b.textContent = p.g + "　" + p.label;
-    np.appendChild(b);
+    var g = groups.filter(function (x) { return x.k === p.k; })[0];
+    if (!g) { g = { k: p.k, items: [] }; groups.push(g); }
+    g.items.push({ p: p, i: i });
+  });
+  groups.forEach(function (g) {
+    var row = document.createElement("div");
+    row.className = "row";
+    var lb = document.createElement("label");
+    lb.textContent = g.k;
+    row.appendChild(lb);
+    g.items.forEach(function (it) {
+      var b = document.createElement("button");
+      b.className = "sub mini";
+      b.dataset.note = String(it.i);
+      b.textContent = it.p.label + "（" + it.p.g + "）";
+      row.appendChild(b);
+    });
+    np.appendChild(row);
   });
   np.addEventListener("click", function (e) {
     var i = e.target.dataset && e.target.dataset.note;
@@ -2112,18 +2445,30 @@ function wire() {
     var p = NOTE_PRESETS[Number(i)];
     $("n-kind").value = p.kind;
     $("n-size").value = String(p.size);
-    $("n-leader").checked = p.leader;
+    $("n-sizeh").value = String(p.sizeH || 0);
+    $("n-count-mode").value = p.fill ? "fill" : "note";
+    if (p.cols) $("n-cols").value = String(p.cols);
+    if (p.rows) $("n-rows").value = String(p.rows);
+    $("n-paper").value = p.paper || "B5";
+    $("n-orient").value = p.orient || "portrait";
+    $("n-leader").checked = !!p.leader;
     renderNote();
     $("n-preset-note").textContent = p.note;
     np.querySelectorAll("button").forEach(function (x) {
       x.classList.toggle("chosen", x === e.target);
     });
   });
-  ["n-kind", "n-size", "n-leader", "n-name", "n-paper", "n-orient",
+  ["n-kind", "n-size", "n-sizeh", "n-count-mode", "n-cols", "n-rows",
+    "n-leader", "n-name", "n-paper", "n-orient",
     "n-margin", "n-color"].forEach(function (id) {
       $(id).addEventListener("input", renderNote);
       $(id).addEventListener("change", renderNote);
     });
+  $("btn-note-fill").onclick = function () {
+    $("n-count-mode").value = "fill";
+    renderNote();
+    toast("用紙に入るだけ並べました");
+  };
   $("btn-note-print").onclick = function () { renderNote(); printPanel("p-note"); };
 
   $("btn-b-fit").onclick = function () {
@@ -2137,7 +2482,7 @@ function wire() {
   $("btn-blank-print").onclick = function () { renderBlank(); printPanel("p-blank"); };
 
   ["t-title", "t-name", "t-body", "t-ji", "t-gyou", "t-size", "t-ruby", "t-dir",
-    "t-hashira", "t-mark", "t-thin", "t-title-aki", "t-name-aki", "t-body-start",
+    "t-hashira", "t-gyobi", "t-mark", "t-thin", "t-title-aki", "t-name-aki", "t-body-start",
     "t-kaiwa-indent", "t-bang-aki", "t-kuten-close", "t-kaiwa-head",
     "t-paper", "t-orient", "t-margin"].forEach(function (id) {
       $(id).addEventListener("input", renderText);
@@ -2185,11 +2530,14 @@ function wire() {
 
 function boot() {
   wire();
-  renderBlank();
   renderText();
   renderNote();
   renderLearn();
   renderQuiz();
+  // 最後に、はじめに開いているタブを描く（用紙の設定がこのタブのものになる）
+  renderBlank();
+  // ブラウザのメニューから印刷したときも、開いているタブの用紙にそろえる
+  window.addEventListener("beforeprint", syncPrintPage);
 }
 boot();
 </script>
