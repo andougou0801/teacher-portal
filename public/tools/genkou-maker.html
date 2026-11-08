@@ -152,9 +152,14 @@
     帯の中央に来るよう、ルビ欄の半分だけずらしている。
   */
   table.genkou td.hashira{position:relative;}
+  /* 魚尾は、塗りつぶした背景ではなく図形（SVG）で描く。
+     背景色は、印刷設定の「背景のグラフィック」をオフにすると印刷されず、
+     画面では見えているのに紙から消えてしまうため。
+     形そのものは addGyobi の座標で決めている */
   .gyobi{
-    position:absolute;
-    background:var(--masu-line);
+    position:absolute;display:block;
+    color:var(--masu-line);
+    print-color-adjust:exact;-webkit-print-color-adjust:exact;
   }
   /* 縦書き：柱の中に、魚のしっぽの形を上下ひとつずつ（双魚尾）。向かい合わせに置く */
   .tate .gyobi{
@@ -163,8 +168,6 @@
     height:calc(var(--masu) * 0.3);
     transform:translate(-50%, -50%) translateX(calc(var(--ruby) / -2));
   }
-  .tate .gyobi.down{ clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 40%, 0 100%); }
-  .tate .gyobi.up{ clip-path:polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%); }
   /* 横書き：柱の中に、左右ひとつずつ */
   .yoko .gyobi{
     top:50%;
@@ -172,8 +175,6 @@
     height:calc(var(--masu) * 0.56);
     transform:translate(-50%, -50%) translateY(calc(var(--ruby) / 2));
   }
-  .yoko .gyobi.down{ clip-path:polygon(0 0, 0 100%, 100% 100%, 40% 50%, 100% 0); }
-  .yoko .gyobi.up{ clip-path:polygon(0 0, 60% 50%, 0 100%, 100% 100%, 100% 0); }
 
   .ch{
     display:inline-block;
@@ -1159,13 +1160,30 @@ function hashiraAt(o) {
  * 和本の版心にならい、上下（横書きなら左右）に1つずつ向かい合わせに置くのが本来の形。
  * 真ん中に1つだけの原稿用紙もあるので、設定で選べるようにしている。
  */
+/* 魚尾の形。四すみを順にたどった点で、内側にVの切りこみが入る */
+var GYOBI_PTS = {
+  "tate-down": "0,0 100,0 100,100 50,40 0,100",
+  "tate-up": "0,0 50,60 100,0 100,100 0,100",
+  "yoko-down": "0,0 0,100 100,100 40,50 100,0",
+  "yoko-up": "0,0 60,50 0,100 100,100 100,0"
+};
+var SVGNS = "http://www.w3.org/2000/svg";
 function addGyobi(td, o, yoko) {
   var n = o.gyobi == null ? 2 : Number(o.gyobi);
   if (n === 0) return;
   var spots = (n === 1) ? [[50, "down"]] : [[25, "down"], [75, "up"]];
   spots.forEach(function (sp) {
-    var g = document.createElement("span");
-    g.className = "gyobi " + sp[1];
+    // 背景色で塗ると「背景のグラフィック」をオフにしたとき印刷されないので、
+    // 図形（SVG）として描く
+    var g = document.createElementNS(SVGNS, "svg");
+    g.setAttribute("class", "gyobi " + sp[1]);
+    g.setAttribute("viewBox", "0 0 100 100");
+    g.setAttribute("preserveAspectRatio", "none");
+    g.setAttribute("aria-hidden", "true");
+    var poly = document.createElementNS(SVGNS, "polygon");
+    poly.setAttribute("points", GYOBI_PTS[(yoko ? "yoko-" : "tate-") + sp[1]]);
+    poly.setAttribute("fill", "currentColor");
+    g.appendChild(poly);
     g.style[yoko ? "left" : "top"] = sp[0] + "%";
     td.appendChild(g);
   });
