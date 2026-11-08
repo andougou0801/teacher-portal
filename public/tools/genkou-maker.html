@@ -88,6 +88,22 @@
     background:#2b3344;color:#fff;padding:10px 20px;border-radius:999px;
     font-size:14px;z-index:9999;box-shadow:0 6px 20px rgba(0,0,0,.25);
   }
+  /* いつでも手の届くところに置く操作バー。
+     印刷ボタンを探してスクロールしなくてよいよう、画面の上にはりつける */
+  .actionbar{
+    position:sticky;top:0;z-index:20;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    padding:10px 18px;background:#fff;border-bottom:1px solid var(--line);
+    box-shadow:0 2px 6px rgba(20,34,61,.06);
+  }
+  .actionbar .ab-fit{
+    flex:1;min-width:220px;font-size:12.5px;line-height:1.6;
+    border-radius:8px;padding:6px 10px;
+  }
+  .actionbar .ab-fit.fit-ok{background:#f2fbf4;border:1px solid #bfe4c8;color:#2f7d45;}
+  .actionbar .ab-fit.fit-ng{background:#fff6f6;border:1px solid #f3c7c7;color:#b4453f;}
+  @media (max-width:700px){ .actionbar{position:static;} }
+
   details.kuwashiku{margin:0 0 12px;}
   details.kuwashiku summary{
     cursor:pointer;font-size:13px;font-weight:700;color:var(--accent-dark);
@@ -352,6 +368,12 @@
   <div class="tab" data-panel="p-quiz">たしかめクイズ</div>
 </div>
 
+<div class="actionbar no-print" id="actionbar">
+  <button id="ab-print">印刷する</button>
+  <button class="sub mini" id="ab-extra"></button>
+  <span class="ab-fit" id="ab-fit"></span>
+</div>
+
 <div class="main">
 <div class="card">
 
@@ -377,6 +399,9 @@
     <button class="sub mini" data-preset="masu">マスの練習用（10字×10行・特大）</button>
   </div>
 
+  <details class="kuwashiku no-print" id="b-more">
+    <summary>こまかい設定（マスの数と大きさ・用紙・色）</summary>
+    <div class="inner">
   <h2 class="sec no-print">マスの数と大きさ</h2>
   <div class="row no-print">
     <label>1行のマスの数（字数）</label>
@@ -463,14 +488,12 @@
     <label>用紙に入れる文字</label>
     <input type="text" id="b-label" placeholder="例：５年１組　なまえ（　　　　）" style="width:250px;">
   </div>
+    </div>
+  </details>
 
-  <div id="b-fit" class="fitbox no-print"></div>
-  <div class="row no-print">
-    <button id="btn-blank-print">印刷する</button>
-    <button class="sub" id="btn-b-fit">用紙にぴったり合わせる</button>
-    <span class="note" style="margin:0;">マスの線は罫線で引いているので、「背景のグラフィック」をオフにしていても印刷されます</span>
-  </div>
-
+  <p class="note no-print" style="margin-bottom:4px;">
+    マスの線は罫線で引いているので、「背景のグラフィック」をオフにしていても印刷されます。
+  </p>
   <div class="sheet-wrap">
     <div class="sheet" id="b-sheet"></div>
   </div>
@@ -489,6 +512,9 @@
   <div class="no-print" id="note-presets"></div>
   <div class="note no-print" id="n-preset-note"></div>
 
+  <details class="kuwashiku no-print" id="n-more">
+    <summary>こまかい設定（マス目・用紙・色）</summary>
+    <div class="inner">
   <h2 class="sec no-print">マス目の設定</h2>
   <div class="row no-print">
     <label>種類</label>
@@ -567,13 +593,8 @@
       <option value="#8a5a2b">茶</option>
     </select>
   </div>
-
-  <div id="n-fit" class="fitbox no-print"></div>
-  <div class="row no-print">
-    <button id="btn-note-print">印刷する</button>
-    <button class="sub mini" id="btn-note-fill">用紙に入るだけ並べる</button>
-    <span class="note" style="margin:0;">マス目は紙の真ん中に印刷します</span>
-  </div>
+    </div>
+  </details>
 
   <div class="sheet-wrap">
     <div class="sheet" id="n-sheet"></div>
@@ -594,6 +615,10 @@
   </div>
   <textarea id="t-body" rows="7" class="no-print"
     placeholder="ここに文章を打ってください。改行すると段落が変わります。&#10;&#10;例）&#10;ぼくは、運動会でリレーの選手になりました。&#10;「がんばれ。」&#10;おうえんの声が聞こえました。"></textarea>
+  <div class="row no-print">
+    <button class="sub mini" id="btn-text-sample">例文を入れてみる</button>
+    <button class="sub mini" id="btn-text-clear">消す</button>
+  </div>
 
   <h2 class="sec no-print">入れ方</h2>
   <div class="row no-print">
@@ -601,6 +626,11 @@
       お手本（原稿用紙のきまりどおりに直して入れる）</label>
     <label class="toggle"><input type="radio" name="tmode" value="jibun">
       じぶんで（打ったとおりに入れて、まちがいを教えてもらう）</label>
+  </div>
+  <div class="row no-print">
+    <label class="toggle"><input type="checkbox" id="t-thin">
+      うすい字にする（なぞり書きのプリントになります）</label>
+    <label class="toggle"><input type="checkbox" id="t-mark" checked> 直したところに色をつける</label>
   </div>
   <div class="note no-print" id="t-mode-note"></div>
 
@@ -661,6 +691,9 @@
     </div>
   </details>
 
+  <details class="kuwashiku no-print" id="t-more">
+    <summary>こまかい設定（マスの数と大きさ・用紙）</summary>
+    <div class="inner">
   <div class="row no-print">
     <label>1行のマスの数</label>
     <input type="number" id="t-ji" min="4" max="40" value="20" style="width:80px;">
@@ -700,8 +733,6 @@
       <option value="1">真ん中に1つ</option>
       <option value="0">入れない</option>
     </select>
-    <label class="toggle"><input type="checkbox" id="t-mark" checked> 直したところに色をつける</label>
-    <label class="toggle"><input type="checkbox" id="t-thin"> うすい字にする（なぞり書き用）</label>
   </div>
   <div class="row no-print">
     <label>用紙</label>
@@ -723,24 +754,14 @@
       <option value="20">20mm</option>
       <option value="25">25mm</option>
     </select>
-    <button class="sub mini" id="btn-t-fit">用紙にぴったり合わせる</button>
   </div>
-
-  <div id="t-fit" class="fitbox no-print"></div>
-  <div class="row no-print">
-    <button id="btn-text-print">印刷する</button>
-    <button class="sub" id="btn-text-sample">例文を入れてみる</button>
-    <button class="sub" id="btn-text-clear">消す</button>
-  </div>
+    </div>
+  </details>
 
   <div id="t-notes" class="no-print"></div>
 
   <div class="sheet-wrap">
     <div class="sheet" id="t-sheet"></div>
-  </div>
-  <div class="row no-print">
-    <button id="btn-text-print2">この内容で印刷する</button>
-    <span class="note" style="margin:0;">上のできあがりを確かめてから押せます</span>
   </div>
 </div>
 
@@ -776,6 +797,7 @@
 <dialog id="dlg-help" style="border:none;border-radius:18px;padding:0;width:min(720px,94vw);">
   <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);">
     <h2 style="margin:0;font-size:17px;color:var(--accent-dark);flex:1;">このツールの使い方</h2>
+    <button class="sub mini" id="btn-reset">設定をはじめにもどす</button>
     <button class="sub mini" id="btn-help-close">閉じる</button>
   </div>
   <div style="padding:16px 18px 22px;max-height:70vh;overflow:auto;">
@@ -812,7 +834,10 @@
     <h2 class="sec">4. 個人情報について</h2>
     <ul style="font-size:13.5px;line-height:2;">
       <li>打った文章や名前は、このパソコンの外へは送られません（通信を技術的に遮断しています）。</li>
-      <li>保存もしていないので、ページを閉じると消えます。続きを書くときは文章を控えておいてください。</li>
+      <li><b>打った文章・題名・名前は保存しません。</b>ページを閉じると消えます。
+        続きを書くときは文章を控えておいてください。</li>
+      <li>次に開いたときにすぐ印刷できるよう、<b>用紙やマスの設定だけ</b>をこのパソコンの中に残しています。
+        消したいときは下の「設定をはじめにもどす」を押してください。</li>
     </ul>
   </div>
 </dialog>
@@ -1336,6 +1361,18 @@ function syncPrintPage() {
   else if (id === "p-text") renderText();
   else pageStyleEl().textContent = "@page{size:A4 portrait;margin:15mm;}";
 }
+/**
+ * 収まりぐあいの知らせを、画面の上の操作バーに出す。
+ * そのタブを開いているときだけ出す（開いていないタブの判定は見せない）。
+ */
+function fitHost(panelId) {
+  return ($(panelId) && $(panelId).classList.contains("on")) ? $("ab-fit") : null;
+}
+function showFit(host, ok, text) {
+  if (!host) return;
+  host.className = "ab-fit " + (ok ? "fit-ok" : "fit-ng");
+  host.textContent = text;
+}
 function renderFit(host, o, panelId) {
   var f = fitCheck(o);
   var m = applyPageSize(o, panelId);
@@ -1343,15 +1380,13 @@ function renderFit(host, o, panelId) {
     (o.orient === "landscape" ? "よこ" : "たて");
   var size = "よこ " + f.w + "mm × たて " + f.h + "mm";
   if (f.fits) {
-    host.className = "fitbox fit-ok no-print";
-    host.textContent = paper + " 1枚に収まります（原稿用紙 " + size +
+    showFit(host, true, paper + " 1枚に収まります（原稿用紙 " + size +
       "）。紙の真ん中に印刷されます（上下の余白 " + m.top +
-      "mm・左右の余白 " + m.side + "mm）。";
+      "mm・左右の余白 " + m.side + "mm）。");
   } else {
-    host.className = "fitbox fit-ng no-print";
-    host.textContent = paper + " に収まりません（原稿用紙 " + size +
+    showFit(host, false, paper + " に収まりません（原稿用紙 " + size +
       "／印刷できる範囲 よこ " + f.uw + "mm × たて " + f.uh + "mm）。" +
-      suggestFix(o);
+      suggestFix(o));
   }
   return f;
 }
@@ -1714,12 +1749,13 @@ function countMasu(text) {
   lay.lines.forEach(function (l) { n += l.cells.length; });
   return n;
 }
+// やさしい○×から始めて、数える問題はあとに置く
 var QUIZ = [
-  { type: "count", s: "ぼくは、「おはよう。」と言った。", offs: [-2, -1, 1] },
   { type: "ox", q: "点（、）やまる（。）は、前の文字といっしょのマスに書く。", a: false,
     why: "、も。も、それだけで1マスを使います。" },
   { type: "ox", q: "会話文の「は、行をかえて1マス目に書く。", a: true,
     why: "会話文のときだけは1マス空けず、1マス目に「を書きます。" },
+  { type: "count", s: "ぼくは、「おはよう。」と言った。", offs: [-2, -1, 1] },
   { type: "count", s: "小さな犬が「わん。」とほえた。", offs: [-1, 1, 2] },
   { type: "ox", q: "小さい「っ」は、前の文字と同じマスに書く。", a: false,
     why: "小さい字もふつうの字と同じで、1マス使います。" },
@@ -1906,7 +1942,7 @@ function renderBlank() {
     o.measured = measuredMm($("b-sheet"), foot);
     if (!foot.offsetHeight || fitCheck(o).fits) break;
   }
-  renderFit($("b-fit"), o, "p-blank");
+  renderFit(fitHost("p-blank"), o, "p-blank");
 
   $("b-preset-note").textContent = "";
   if (hashiraAt(o) < 0 && $("b-hashira").checked) {
@@ -2147,6 +2183,33 @@ function noteSuggest(o, c) {
   }
   return "「用紙に入るだけ並べる」を押すか、マスの数を減らしてください。";
 }
+/**
+ * いまの設定と同じプリセットのボタンを、選ばれている見た目にして説明を出す。
+ * 次に開いたときにも、どれを選んでいたかが一目で分かるようにするため。
+ */
+function markChosenNote(o, c) {
+  var hit = -1;
+  NOTE_PRESETS.forEach(function (p, i) {
+    if (hit >= 0) return;
+    if (p.kind !== o.kind || Number(p.size) !== Number(o.size)) return;
+    if (Number(p.sizeH || 0) !== Number(o.sizeH || 0)) return;
+    if ((p.paper || "B5") !== o.paper || (p.orient || "portrait") !== o.orient) return;
+    if (!!p.leader !== !!o.leader) return;
+    if (p.fill ? o.countMode !== "fill" : o.countMode !== "note") return;
+    if (!p.fill) {
+      if (p.cols && p.cols !== c.cols) return;
+      if (p.rows && p.rows !== c.rows) return;
+    }
+    hit = i;
+  });
+  document.querySelectorAll("[data-note]").forEach(function (b) {
+    b.classList.toggle("chosen", Number(b.dataset.note) === hit);
+  });
+  if (hit >= 0) $("n-preset-note").textContent = NOTE_PRESETS[hit].note;
+  else if (o.countMode === "fill") $("n-preset-note").textContent =
+    "用紙に入るだけ並べています。市販のノートと同じ数にもどすときは、上のボタンを押してください。";
+  else $("n-preset-note").textContent = "";
+}
 function renderNote() {
   var o = noteOpts();
   var host = $("n-sheet");
@@ -2212,16 +2275,15 @@ function renderNote() {
     nokosu = "よこ" + c.cols + "マス × たて" + c.rows + "マス（ぜんぶで " +
       (c.cols * c.rows) + "マス／1マス よこ" + o.size + "mm×たて" + noteCellH(o) + "mm）";
   }
-  var box = $("n-fit");
+  markChosenNote(o, c);
+  var box = fitHost("p-note");
   if (f.fits) {
-    box.className = "fitbox fit-ok no-print";
-    box.textContent = paper + " に " + nokosu +
+    showFit(box, true, paper + " に " + nokosu +
       " 入ります。紙の真ん中に印刷されます（上下の余白 " + m.top +
-      "mm・左右の余白 " + m.side + "mm）。";
+      "mm・左右の余白 " + m.side + "mm）。");
   } else {
-    box.className = "fitbox fit-ng no-print";
-    box.textContent = paper + " に収まりません（" + nokosu +
-      "／印刷できる範囲 よこ " + f.uw + "mm × たて " + f.uh + "mm）。" + noteSuggest(o, c);
+    showFit(box, false, paper + " に収まりません（" + nokosu +
+      "／印刷できる範囲 よこ " + f.uw + "mm × たて " + f.uh + "mm）。" + noteSuggest(o, c));
   }
 }
 
@@ -2267,7 +2329,7 @@ function renderText() {
   renderSheet($("t-sheet"), lay.lines, o);
   // 描いたあとに実寸を測り、それで用紙の判定と余白を決める
   o.measured = measuredMm($("t-sheet"), null);
-  renderFit($("t-fit"), o, "p-text");
+  renderFit(fitHost("p-text"), o, "p-text");
 
   var used = 0;
   lay.lines.forEach(function (l) {
@@ -2338,6 +2400,50 @@ function printPanel(id) {
   setTimeout(function () { p.classList.remove("printing"); }, 1200);
 }
 
+/* =========================================================
+   画面の上の操作バー
+   印刷ボタンを探してスクロールしなくてすむように、
+   いま開いているタブに合わせて中身を入れかえる。
+   ========================================================= */
+var AB = {
+  "p-blank": { print: function () { renderBlank(); printPanel("p-blank"); },
+    extra: "用紙にぴったり合わせる", run: function () { fitBlankToPaper(); } },
+  "p-note": { print: function () { renderNote(); printPanel("p-note"); },
+    extra: "用紙に入るだけ並べる", run: function () {
+      $("n-count-mode").value = "fill"; renderNote(); toast("用紙に入るだけ並べました");
+    } },
+  "p-text": { print: function () { renderText(); printPanel("p-text"); },
+    extra: "用紙にぴったり合わせる", run: function () { fitTextToPaper(); } },
+  "p-learn": { print: function () { printPanel("p-learn"); }, extra: "", run: null },
+  "p-quiz": { print: function () { printPanel("p-quiz"); }, extra: "", run: null }
+};
+function fitBlankToPaper() {
+  var best = bestFit(blankOpts());
+  $("b-size").value = String(best.size);
+  $("b-ruby").value = String(best.ruby);
+  renderBlank();
+  toast("マス " + best.size + "mm／ルビ欄 " + best.ruby + "mm にしました");
+}
+function fitTextToPaper() {
+  var best = bestFit(textOpts());
+  $("t-size").value = String(best.size);
+  $("t-ruby").value = String(best.ruby);
+  renderText();
+  toast("マス " + best.size + "mm／ルビ欄 " + best.ruby + "mm にしました");
+}
+function currentPanelId() {
+  var on = document.querySelector(".panel.on");
+  return on ? on.id : "p-blank";
+}
+function updateActionBar() {
+  var id = currentPanelId(), a = AB[id] || AB["p-blank"];
+  $("ab-extra").textContent = a.extra;
+  $("ab-extra").style.display = a.extra ? "" : "none";
+  if (id === "p-learn" || id === "p-quiz") {
+    showFit($("ab-fit"), true, "このページをそのまま印刷できます。");
+  }
+}
+
 var PRESETS = {
   // 学年で選ぶ。読書感想文コンクールの字数（低学年800字＝400字づめ2枚、
   // 中・高学年1200字＝3枚）と、低学年ほどマスを大きくする一般的な考え方に合わせている。
@@ -2392,6 +2498,8 @@ function wire() {
       $(t.dataset.panel).classList.add("on");
       // 開いたタブの設定で用紙を決めなおす（ここで印刷しても正しい用紙になる）
       syncPrintPage();
+      updateActionBar();
+      saveSettings();
     };
     t.onclick = go;
     t.addEventListener("keydown", function (e) {
@@ -2453,10 +2561,6 @@ function wire() {
     $("n-orient").value = p.orient || "portrait";
     $("n-leader").checked = !!p.leader;
     renderNote();
-    $("n-preset-note").textContent = p.note;
-    np.querySelectorAll("button").forEach(function (x) {
-      x.classList.toggle("chosen", x === e.target);
-    });
   });
   ["n-kind", "n-size", "n-sizeh", "n-count-mode", "n-cols", "n-rows",
     "n-leader", "n-name", "n-paper", "n-orient",
@@ -2464,23 +2568,6 @@ function wire() {
       $(id).addEventListener("input", renderNote);
       $(id).addEventListener("change", renderNote);
     });
-  $("btn-note-fill").onclick = function () {
-    $("n-count-mode").value = "fill";
-    renderNote();
-    toast("用紙に入るだけ並べました");
-  };
-  $("btn-note-print").onclick = function () { renderNote(); printPanel("p-note"); };
-
-  $("btn-b-fit").onclick = function () {
-    var o = blankOpts();
-    var best = bestFit(o);
-    $("b-size").value = String(best.size);
-    $("b-ruby").value = String(best.ruby);
-    renderBlank();
-    toast("マス " + best.size + "mm／ルビ欄 " + best.ruby + "mm にしました");
-  };
-  $("btn-blank-print").onclick = function () { renderBlank(); printPanel("p-blank"); };
-
   ["t-title", "t-name", "t-body", "t-ji", "t-gyou", "t-size", "t-ruby", "t-dir",
     "t-hashira", "t-gyobi", "t-mark", "t-thin", "t-title-aki", "t-name-aki", "t-body-start",
     "t-kaiwa-indent", "t-bang-aki", "t-kuten-close", "t-kaiwa-head",
@@ -2499,16 +2586,6 @@ function wire() {
       renderText();
     }
   });
-  $("btn-t-fit").onclick = function () {
-    var best = bestFit(textOpts());
-    $("t-size").value = String(best.size);
-    $("t-ruby").value = String(best.ruby);
-    renderText();
-    toast("マス " + best.size + "mm／ルビ欄 " + best.ruby + "mm にしました");
-  };
-  var textPrint = function () { renderText(); printPanel("p-text"); };
-  $("btn-text-print").onclick = textPrint;
-  $("btn-text-print2").onclick = textPrint;
   $("btn-text-sample").onclick = function () {
     $("t-title").value = "運動会の思い出";
     $("t-name").value = "五年一組　山田　太郎";
@@ -2526,16 +2603,92 @@ function wire() {
   };
   $("btn-help").onclick = function () { $("dlg-help").showModal(); };
   $("btn-help-close").onclick = function () { $("dlg-help").close(); };
+  $("btn-reset").onclick = function () {
+    try { localStorage.removeItem(SAVE_KEY); } catch (e) { }
+    location.reload();
+  };
+
+  // 画面の上の操作バー
+  $("ab-print").onclick = function () { (AB[currentPanelId()] || AB["p-blank"]).print(); };
+  $("ab-extra").onclick = function () {
+    var a = AB[currentPanelId()];
+    if (a && a.run) a.run();
+  };
+  // どの設定を変えても、次に開いたときに続きから使えるようにおぼえておく
+  document.addEventListener("change", saveSettings);
+  document.addEventListener("click", function (e) {
+    if (e.target.dataset && (e.target.dataset.preset || e.target.dataset.note)) saveSettings();
+  });
+}
+
+/* =========================================================
+   設定をおぼえる
+   次に開いたときに、同じ用紙・同じマスからすぐ印刷できるようにする。
+   おぼえるのは設定だけで、打った文章・題名・名前はおぼえない。
+   ========================================================= */
+var SAVE_KEY = "genkou-maker-settings-v1";
+var SAVE_IDS = [
+  "b-ji", "b-gyou", "b-size", "b-ruby", "b-dir", "b-paper", "b-orient", "b-margin",
+  "b-hashira", "b-gyobi", "b-head", "b-rules", "b-color",
+  "n-kind", "n-size", "n-sizeh", "n-count-mode", "n-cols", "n-rows",
+  "n-leader", "n-name", "n-paper", "n-orient", "n-margin", "n-color",
+  "t-ji", "t-gyou", "t-size", "t-ruby", "t-dir", "t-paper", "t-orient", "t-margin",
+  "t-hashira", "t-gyobi", "t-mark", "t-thin",
+  "t-title-aki", "t-name-aki", "t-body-start", "t-kaiwa-indent", "t-bang-aki",
+  "t-kuten-close", "t-kaiwa-head"
+];
+var restoring = false;
+function saveSettings() {
+  if (restoring) return;
+  var d = { tab: currentPanelId(), v: {} };
+  SAVE_IDS.forEach(function (id) {
+    var el = $(id);
+    if (el) d.v[id] = (el.type === "checkbox") ? el.checked : el.value;
+  });
+  var mode = document.querySelector('input[name="tmode"]:checked');
+  if (mode) d.tmode = mode.value;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(d)); } catch (e) { }
+}
+/** おぼえた設定を戻す。戻せたら true */
+function loadSettings() {
+  var raw = null;
+  try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { }
+  if (!raw) return false;
+  var d;
+  try { d = JSON.parse(raw); } catch (e) { return false; }
+  if (!d || !d.v) return false;
+  restoring = true;
+  SAVE_IDS.forEach(function (id) {
+    var el = $(id);
+    if (!el || !(id in d.v)) return;
+    if (el.type === "checkbox") el.checked = !!d.v[id];
+    else el.value = d.v[id];
+  });
+  if (d.tmode) {
+    var r = document.querySelector('input[name="tmode"][value="' + d.tmode + '"]');
+    if (r) r.checked = true;
+  }
+  if (d.tab) {
+    var tab = document.querySelector('.tab[data-panel="' + d.tab + '"]');
+    if (tab) tab.click();
+  }
+  restoring = false;
+  return true;
 }
 
 function boot() {
   wire();
-  renderText();
-  renderNote();
   renderLearn();
   renderQuiz();
-  // 最後に、はじめに開いているタブを描く（用紙の設定がこのタブのものになる）
+  // 前に使った設定があれば戻す（打った文章はおぼえていない）
+  var restored = loadSettings();
+  renderText();
+  renderNote();
   renderBlank();
+  // 最後に、いま開いているタブをもう一度描く（用紙の設定をこのタブのものにそろえる）
+  syncPrintPage();
+  updateActionBar();
+  if (restored) toast("前に使った設定で開きました");
   // ブラウザのメニューから印刷したときも、開いているタブの用紙にそろえる
   window.addEventListener("beforeprint", syncPrintPage);
 }
