@@ -520,6 +520,7 @@
     <button onclick="tsukuru()">問題を作る</button>
     <button onclick="insatsuJikkou()">印刷する</button>
     <button onclick="hozonJikkou()">保存する</button>
+    <p class="setsumei overflow-warning" id="kasanari-warning" style="display:none;">⚠ この設定で作れる問題の種類が、問題数より少ないため、同じ問題が入っています。数の範囲を広げる、計算の種類を増やす、問題数を減らす、のいずれかで調整してください。</p>
     <p class="setsumei overflow-warning" id="overflow-warning" style="display:none;">⚠ 1ページに収まっていません。問題数を減らす、列数を減らす、文字の大きさを小さくする、のいずれかで調整してください（このままでは印刷時に欄が重なったり、右側が切れたりします）。</p>
 
     <hr>
@@ -1205,6 +1206,29 @@
       return { a: a, b: b, kotae: kotaeHyouji };
     }
 
+    // 1枚の中に同じ問題が出ないようにするための「見分け札」。
+    // 整数・小数・分数・あまりのどれでも、同じ見た目なら同じ札になる。
+    function ataiFuda(v) {
+      if (typeof v === "object" && v !== null) {
+        if ("remainder" in v) {
+          return v.quotient + "r" + v.remainder;
+        }
+        if ("den" in v) {
+          return (v.whole || 0) + "_" + v.num + "/" + v.den;
+        }
+      }
+      return String(v);
+    }
+    function mondaiFuda(a, op, b) {
+      return ataiFuda(a) + op + ataiFuda(b);
+    }
+    function kasanariShirase(hyouji) {
+      let el = document.getElementById("kasanari-warning");
+      if (el) {
+        el.style.display = hyouji ? "block" : "none";
+      }
+    }
+
     function tsukuru() {
       let setteiMode = document.getElementById("settei-mode").value;
       let title = document.getElementById("title").value;
@@ -1213,11 +1237,16 @@
       let keisanList = erabareteiruKeisan();
 
       akakuKesu();
+      kasanariShirase(false);
 
       if (keisanList.length === 0) {
         alert("計算の種類を1つ以上選んでください");
         return;
       }
+
+      // 同じプリントの中で、すでに出した問題をおぼえておく
+      let dasitaFuda = new Set();
+      let kasanariAri = false;
 
       if (setteiMode === "kantan") {
         genzaiNoMondai = [];
@@ -1225,9 +1254,26 @@
         let hissanModeKantan = hissanCheckboxKantan ? hissanCheckboxKantan.checked : false;
 
         for (let i = 0; i < kaisu; i++) {
-          let shurui = keisanList[Math.floor(Math.random() * keisanList.length)];
-
-          let mondai = kantanMondaiTsukuru(shurui, hissanModeKantan);
+          // まだ出していない問題が見つかるまで作りなおす。
+          // 作れる問題の種類そのものが足りないときだけ、同じ問題を入れて下に知らせる
+          let mondai = null;
+          let yobi = null;
+          for (let t = 0; t < 400; t++) {
+            let shurui = keisanList[Math.floor(Math.random() * keisanList.length)];
+            let kouho = kantanMondaiTsukuru(shurui, hissanModeKantan);
+            if (yobi === null) {
+              yobi = kouho;
+            }
+            if (!dasitaFuda.has(mondaiFuda(kouho.a, kouho.op, kouho.b))) {
+              mondai = kouho;
+              break;
+            }
+          }
+          if (mondai === null) {
+            mondai = yobi;
+            kasanariAri = true;
+          }
+          dasitaFuda.add(mondaiFuda(mondai.a, mondai.op, mondai.b));
 
           let anaBasho = anaBashoSentaku;
           if (anaBashoSentaku === "random") {
@@ -1239,6 +1285,7 @@
         }
 
         document.getElementById("title-hyouji").textContent = title;
+        kasanariShirase(kasanariAri);
         fontSizeUpdate();
         hyouji();
         return;
@@ -1270,19 +1317,38 @@
         let aTaipu = zenTaipuKettei(aShuTaipu, aBunsuuTaipu);
         let bTaipu = zenTaipuKettei(bShuTaipu, bBunsuuTaipu);
 
+        // 条件に合う問題のうち、まだ出していないものを探す。
+        // 条件には合うが同じ問題しか出てこないときは、yobi を使って1問だけ重ねる。
+        // 条件に合う問題が1つも作れなかったときだけ、設定の矛盾として知らせる
         let kekka = null;
+        let yobi = null;
         let tries = 0;
-        do {
-          kekka = ichikaiMondaiTsukokoromi(shurui, aTaipu, bTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, amariSettei, danSettei, warizanKotaeTaipu, bunboShurui, bunboSaidai, bunshiSaidai);
+        while (tries < 400) {
+          let kouho = ichikaiMondaiTsukokoromi(shurui, aTaipu, bTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, amariSettei, danSettei, warizanKotaeTaipu, bunboShurui, bunboSaidai, bunshiSaidai);
           tries++;
-        } while ((kekka === null || !kotaeHanIHantei(kekka.kotae, kotaeSaishou, kotaeSaidai)) && tries < 150);
+          if (kouho === null || !kotaeHanIHantei(kouho.kotae, kotaeSaishou, kotaeSaidai)) {
+            continue;
+          }
+          if (yobi === null) {
+            yobi = kouho;
+          }
+          if (!dasitaFuda.has(mondaiFuda(kouho.a, op, kouho.b))) {
+            kekka = kouho;
+            break;
+          }
+        }
 
-        if (kekka === null || !kotaeHanIHantei(kekka.kotae, kotaeSaishou, kotaeSaidai)) {
+        if (yobi === null) {
           let genin = mujunGeninSagasu(keisanList, aShuTaipu, bShuTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, warizanKotaeTaipu);
           akakuHyouji(genin);
           alert(MUJUN_MESSEEJI);
           return;
         }
+        if (kekka === null) {
+          kekka = yobi;
+          kasanariAri = true;
+        }
+        dasitaFuda.add(mondaiFuda(kekka.a, op, kekka.b));
 
         let anaBasho = anaBashoSentaku;
         if (anaBashoSentaku === "random") {
@@ -1294,6 +1360,7 @@
       }
 
       document.getElementById("title-hyouji").textContent = title;
+      kasanariShirase(kasanariAri);
 
       fontSizeUpdate();
 
@@ -1339,6 +1406,33 @@
         return anaSpan();
       }
       return ataiSpan(value);
+    }
+
+    /**
+     * ＝のうしろ（答えらん）の表示。
+     * 答えが分数のときは、空らんを置かずに何も表示しない。
+     * 分子の空らんの下線と分数の線が重なって太い線になり、
+     * さらに分母の空らんの下線がずれて並ぶため、書くじゃまになっていた。
+     * 答えを表示するときは、これまでどおり分数のまま出す。
+     */
+    function bunsuuNoKatachiKa(value) {
+      if (!(typeof value === "object" && value !== null && "den" in value)) {
+        return false;
+      }
+      // 約分して整数になったものは分数ではない（下線の空らんを残す）
+      if (value.den === 1 && value.whole === 0) {
+        return false;
+      }
+      if (value.num === 0) {
+        return false;
+      }
+      return true;
+    }
+    function kotaeRanHyouji(value, isAna) {
+      if (isAna && bunsuuNoKatachiKa(value)) {
+        return "";
+      }
+      return ataiHyouji(value, isAna);
     }
 
     function ketasuuChousa(value, ketaSaidaiRef) {
@@ -1502,7 +1596,7 @@
             + ataiHyouji(mondai.a, aIsAna) + " "
             + mondai.op + " "
             + ataiHyouji(mondai.b, bIsAna) + " = "
-            + ataiHyouji(mondai.kotae, kotaeIsAna)
+            + kotaeRanHyouji(mondai.kotae, kotaeIsAna)
             + "</p>";
         }
       }
