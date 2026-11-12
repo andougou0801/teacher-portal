@@ -1410,9 +1410,10 @@
 
     /**
      * ＝のうしろ（答えらん）の表示。
-     * 答えが分数のときは、空らんを置かずに何も表示しない。
-     * 分子の空らんの下線と分数の線が重なって太い線になり、
-     * さらに分母の空らんの下線がずれて並ぶため、書くじゃまになっていた。
+     * 答えが分数のときも、空らんは分数の形にせず、
+     * ほかの数と同じ1本の下線にする。
+     * 分数の形にすると、分子の空らんの下線・分数の線・分母の空らんの下線が
+     * 3本ならび、ずれて見えて書きにくかったため。
      * 答えを表示するときは、これまでどおり分数のまま出す。
      */
     function bunsuuNoKatachiKa(value) {
@@ -1430,7 +1431,7 @@
     }
     function kotaeRanHyouji(value, isAna) {
       if (isAna && bunsuuNoKatachiKa(value)) {
-        return "";
+        return anaSpan();
       }
       return ataiHyouji(value, isAna);
     }
