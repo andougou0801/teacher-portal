@@ -658,6 +658,50 @@
       return list;
     }
 
+    /**
+     * 矛盾のときに出す文。
+     * 真分数は1より小さく、仮分数・帯分数は1以上なので、
+     * 「1つ目が真分数・2つ目が仮分数（または帯分数）」のひき算は、
+     * 答えが必ずマイナスになり、どうやっても問題を作れない。
+     * これは設定の打ちまちがいではないので、理由をそのまま伝える。
+     */
+    function mujunMesseeji(keisanList, aShuTaipu, aBunsuuTaipu, bShuTaipu, bBunsuuTaipu, warizanKotaeTaipu) {
+      // ひき算：1つ目が真分数（1より小さい）で、2つ目が1以上になる種類のとき
+      if (keisanList.includes("hikizan") && aShuTaipu === "bunsuu" && aBunsuuTaipu === "shin") {
+        let aida = null;
+        if (bShuTaipu === "bunsuu" && bBunsuuTaipu === "ka") {
+          aida = "仮分数";
+        } else if (bShuTaipu === "bunsuu" && bBunsuuTaipu === "tai") {
+          aida = "帯分数";
+        } else if (bShuTaipu === "seisuu") {
+          aida = "整数";
+        } else if (bShuTaipu === "shousuu") {
+          aida = "小数";
+        }
+        if (aida) {
+          return "ひき算で「1つ目＝真分数・2つ目＝" + aida + "」は作れません。\n" +
+            "真分数は1より小さいので、1以上の数をひくと答えが必ずマイナスになります。\n\n" +
+            "1つ目と2つ目を入れかえるか、1つ目の分数の種類を「仮分数」「帯分数」「ランダム」に\n" +
+            "してください。";
+        }
+      }
+      // わり算：小数を整数でわって、答えを整数にすることはできない
+      if (keisanList.includes("warizan") && warizanKotaeTaipu === "seisuu" &&
+        aShuTaipu === "shousuu" && bShuTaipu === "seisuu") {
+        return "わり算で「1つ目＝小数・2つ目＝整数・答え＝整数」は作れません。\n" +
+          "整数どうしをかけた答えは整数になるので、1つ目が小数になりません。\n\n" +
+          "「わり算の答え」を小数にするか、1つ目を整数にしてください。";
+      }
+      // わり算：整数どうしで、答えだけ小数にするのは作れる組み合わせが少ない
+      if (keisanList.includes("warizan") && warizanKotaeTaipu === "shousuu" &&
+        aShuTaipu === "seisuu" && bShuTaipu === "seisuu") {
+        return "わり算で「1つ目＝整数・2つ目＝整数・答え＝小数」になる組み合わせが、\n" +
+          "いまの数の範囲では見つかりませんでした。\n\n" +
+          "「問題の数」の範囲を広げるか、「わり算の答え」を整数にしてください。";
+      }
+      return MUJUN_MESSEEJI;
+    }
+
     function maruSuuji(n, zenbuSuu) {
       let sou = zenbuSuu || n;
       if (sou > 50) {
@@ -855,18 +899,27 @@
       return shu;
     }
 
-    function bunsuuAtaiTsukuruDenShitei(taipu, den, bunshiSaidai) {
+    /** 仮分数は分子が分母より大きいので、分母は「分子の最大」より小さくないと作れない */
+    function kaBunsuuNoDenSaidai(bunboSaidai, bunshiSaidai) {
+      return Math.max(2, Math.min(bunboSaidai, bunshiSaidai - 1));
+    }
+    function bunsuuAtaiTsukuruDenShitei(taipu, den, bunshiSaidai, seisuuSaishou, seisuuSaidai) {
       if (taipu === "tai") {
         let maxNum = Math.min(den - 1, bunshiSaidai);
         if (maxNum < 1) {
           maxNum = 1;
         }
         let num = Math.floor(Math.random() * maxNum) + 1;
-        let whole = Math.floor(Math.random() * 5) + 1;
+        // 整数部は「問題の数の範囲」に合わせる（1〜5の決め打ちだと設定が効かなかった）
+        let shita = Math.max(1, Math.floor(Number(seisuuSaishou)) || 1);
+        let ue = Math.max(shita, Math.floor(Number(seisuuSaidai)) || shita);
+        let whole = shita + Math.floor(Math.random() * (ue - shita + 1));
         return { whole: whole, num: num, den: den };
       } else if (taipu === "ka") {
-        let haba = Math.max(1, bunshiSaidai - den);
-        let num = den + Math.floor(Math.random() * haba) + 1;
+        // 分子は分母より大きく、かつ「分子の最大」までに収める
+        let shita = den + 1;
+        let ue = Math.max(shita, bunshiSaidai);
+        let num = shita + Math.floor(Math.random() * (ue - shita + 1));
         return { whole: 0, num: num, den: den };
       } else {
         let maxNum = Math.min(den - 1, bunshiSaidai);
@@ -878,9 +931,10 @@
       }
     }
 
-    function bunsuuAtaiTsukuru(taipu, bunboSaidai, bunshiSaidai) {
-      let den = Math.floor(Math.random() * (bunboSaidai - 1)) + 2;
-      return bunsuuAtaiTsukuruDenShitei(taipu, den, bunshiSaidai);
+    function bunsuuAtaiTsukuru(taipu, bunboSaidai, bunshiSaidai, seisuuSaishou, seisuuSaidai) {
+      let denSaidai = (taipu === "ka") ? kaBunsuuNoDenSaidai(bunboSaidai, bunshiSaidai) : bunboSaidai;
+      let den = Math.floor(Math.random() * (denSaidai - 1)) + 2;
+      return bunsuuAtaiTsukuruDenShitei(taipu, den, bunshiSaidai, seisuuSaishou, seisuuSaidai);
     }
 
     function ataiTsukuru(taipu, mondaiSaishou, mondaiSaidai, kyoyuDen, bunboSaidai, bunshiSaidai) {
@@ -891,9 +945,9 @@
         return randomShousuu(mondaiSaishou, mondaiSaidai);
       }
       if (kyoyuDen) {
-        return bunsuuAtaiTsukuruDenShitei(taipu, kyoyuDen, bunshiSaidai);
+        return bunsuuAtaiTsukuruDenShitei(taipu, kyoyuDen, bunshiSaidai, mondaiSaishou, mondaiSaidai);
       }
-      return bunsuuAtaiTsukuru(taipu, bunboSaidai, bunshiSaidai);
+      return bunsuuAtaiTsukuru(taipu, bunboSaidai, bunshiSaidai, mondaiSaishou, mondaiSaidai);
     }
 
     function zenbuBunsuu(v) {
@@ -940,7 +994,10 @@
     function kumiawaseTsukuruTaipuKotei(shurui, aTaipu, bTaipu, bunboShurui, mondaiSaishou, mondaiSaidai, bunboSaidai, bunshiSaidai) {
       let kyoyuDen = null;
       if (bunboShurui === "onaji" && aTaipu !== "seisuu" && aTaipu !== "shousuu" && bTaipu !== "seisuu" && bTaipu !== "shousuu") {
-        kyoyuDen = Math.floor(Math.random() * (bunboSaidai - 1)) + 2;
+        // どちらかが仮分数なら、分子が「分子の最大」に収まる分母だけを使う
+        let denSaidai = (aTaipu === "ka" || bTaipu === "ka")
+          ? kaBunsuuNoDenSaidai(bunboSaidai, bunshiSaidai) : bunboSaidai;
+        kyoyuDen = Math.floor(Math.random() * (denSaidai - 1)) + 2;
       }
 
       let vA = ataiTsukuru(aTaipu, mondaiSaishou, mondaiSaidai, kyoyuDen, bunboSaidai, bunshiSaidai);
@@ -1314,9 +1371,6 @@
 
         let op = shurui === "tashizan" ? "+" : shurui === "hikizan" ? "-" : shurui === "kakezan" ? "×" : "÷";
 
-        let aTaipu = zenTaipuKettei(aShuTaipu, aBunsuuTaipu);
-        let bTaipu = zenTaipuKettei(bShuTaipu, bBunsuuTaipu);
-
         // 条件に合う問題のうち、まだ出していないものを探す。
         // 条件には合うが同じ問題しか出てこないときは、yobi を使って1問だけ重ねる。
         // 条件に合う問題が1つも作れなかったときだけ、設定の矛盾として知らせる
@@ -1324,6 +1378,12 @@
         let yobi = null;
         let tries = 0;
         while (tries < 400) {
+          // 「ランダム」を選んでいるときは、やり直すたびに種類を引き直す。
+          // ループの外で1回だけ決めていたため、たとえば
+          // 「1つ目＝真分数・2つ目＝仮分数」を引いたひき算の問題は、
+          // 答えが必ずマイナスになり、400回ぜんぶ失敗して矛盾エラーになっていた。
+          let aTaipu = zenTaipuKettei(aShuTaipu, aBunsuuTaipu);
+          let bTaipu = zenTaipuKettei(bShuTaipu, bBunsuuTaipu);
           let kouho = ichikaiMondaiTsukokoromi(shurui, aTaipu, bTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, amariSettei, danSettei, warizanKotaeTaipu, bunboShurui, bunboSaidai, bunshiSaidai);
           tries++;
           if (kouho === null || !kotaeHanIHantei(kouho.kotae, kotaeSaishou, kotaeSaidai)) {
@@ -1341,7 +1401,7 @@
         if (yobi === null) {
           let genin = mujunGeninSagasu(keisanList, aShuTaipu, bShuTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, warizanKotaeTaipu);
           akakuHyouji(genin);
-          alert(MUJUN_MESSEEJI);
+          alert(mujunMesseeji(keisanList, aShuTaipu, aBunsuuTaipu, bShuTaipu, bBunsuuTaipu, warizanKotaeTaipu));
           return;
         }
         if (kekka === null) {
@@ -1400,6 +1460,13 @@
         return "<span class='ana'>" + value.quotient + "</span> あまり <span class='ana'>" + value.remainder + "</span>";
       }
       if (typeof value === "object" && value !== null && "den" in value) {
+        // 空らんは、1つ目・2つ目・答えのどこでも分数の形にしない。
+        // 分数の形にすると、分子の空らんの下線・分数の線・分母の空らんの下線が
+        // 3本ならび、ずれて見えて書きにくいため、ほかの数と同じ1本の下線にする。
+        // 数を表示するときは、これまでどおり分数のまま出す。
+        if (isAna && bunsuuNoKatachiKa(value)) {
+          return anaSpan();
+        }
         return bunsuuSpan(value.whole, value.num, value.den, isAna);
       }
       if (isAna) {
@@ -1408,14 +1475,7 @@
       return ataiSpan(value);
     }
 
-    /**
-     * ＝のうしろ（答えらん）の表示。
-     * 答えが分数のときも、空らんは分数の形にせず、
-     * ほかの数と同じ1本の下線にする。
-     * 分数の形にすると、分子の空らんの下線・分数の線・分母の空らんの下線が
-     * 3本ならび、ずれて見えて書きにくかったため。
-     * 答えを表示するときは、これまでどおり分数のまま出す。
-     */
+    /** 画面に分数の形で出る値か（約分して整数になるものは分数としてあつかわない） */
     function bunsuuNoKatachiKa(value) {
       if (!(typeof value === "object" && value !== null && "den" in value)) {
         return false;
@@ -1428,12 +1488,6 @@
         return false;
       }
       return true;
-    }
-    function kotaeRanHyouji(value, isAna) {
-      if (isAna && bunsuuNoKatachiKa(value)) {
-        return anaSpan();
-      }
-      return ataiHyouji(value, isAna);
     }
 
     function ketasuuChousa(value, ketaSaidaiRef) {
@@ -1597,7 +1651,7 @@
             + ataiHyouji(mondai.a, aIsAna) + " "
             + mondai.op + " "
             + ataiHyouji(mondai.b, bIsAna) + " = "
-            + kotaeRanHyouji(mondai.kotae, kotaeIsAna)
+            + ataiHyouji(mondai.kotae, kotaeIsAna)
             + "</p>";
         }
       }
