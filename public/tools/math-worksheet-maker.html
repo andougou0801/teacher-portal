@@ -428,17 +428,19 @@
     <div class="setsumei" id="naosu-setsumei" style="display:none;">※「なおす」の問題は、＝の左に数が1つだけ出て、＝のあとを答える形になります。空欄の場所の設定は使いません（いつも＝のあとが空欄です）。</div>
 
     <div id="kodawari-settings">
-      <div class="kodawari-midashi">問題の数・答えの範囲</div>
-      <div class="input-row">
+      <div class="kodawari-midashi" id="han-i-midashi">問題の数・答えの範囲</div>
+      <div class="input-row" id="mondai-han-i">
         <label>問題の数の最小値：<input type="number" id="mondai-saishou" value="1" min="0" max="1000"></label>
         <label>問題の数の最大値：<input type="number" id="mondai-saidai" value="10" min="1" max="1000"></label>
       </div>
-      <div class="input-row">
+      <div class="input-row" id="kotae-han-i">
         <label>答えの数の最小値：<input type="number" id="kotae-saishou" value="0" min="0" max="100000"></label>
         <label>答えの数の最大値：<input type="number" id="kotae-saidai" value="1000" min="1" max="100000"></label>
       </div>
-      <div class="setsumei">※4つの条件をすべて満たす問題を作ります。実際に作れる答えの範囲を自動で計算するので、答えの最大値を大きくしすぎても問題ありません。条件が本当に厳しすぎる場合はエラーになり、原因と思われる設定が赤くなります。</div>
+      <div class="setsumei" id="han-i-setsumei">※4つの条件をすべて満たす問題を作ります。実際に作れる答えの範囲を自動で計算するので、答えの最大値を大きくしすぎても問題ありません。条件が本当に厳しすぎる場合はエラーになり、原因と思われる設定が赤くなります。</div>
+      <div class="setsumei" id="naosu-han-i-setsumei" style="display:none;">※「なおす」だけを選んでいるので、「問題の数」は帯分数の整数部分（2と3分の1 の 2 のところ）の大きさに使われます。</div>
 
+      <div id="a-settings">
       <div class="kodawari-midashi">1つ目の数</div>
       <div class="input-row">
         <label>1つ目の数の種類：
@@ -458,7 +460,9 @@
           </select>
         </label>
       </div>
+      </div>
 
+      <div id="b-settings">
       <div class="kodawari-midashi">2つ目の数</div>
       <div class="input-row">
         <label>2つ目の数の種類：
@@ -478,14 +482,15 @@
           </select>
         </label>
       </div>
+      </div>
 
       <div id="bunsuu-saidai-settings">
         <div class="input-row">
-          <label>分母の最大値：<input type="number" id="bunbo-saidai" value="10" min="2" max="100"></label>
-          <label>分子の最大値：<input type="number" id="bunshi-saidai" value="10" min="2" max="200"></label>
+          <label id="bunbo-saidai-label">分母の最大値：<input type="number" id="bunbo-saidai" value="10" min="2" max="100"></label>
+          <label id="bunshi-saidai-label">分子の最大値：<input type="number" id="bunshi-saidai" value="10" min="2" max="200"></label>
         </div>
 
-        <label>分数の分母（両方が分数のときのみ）：
+        <label id="bunbo-shurui-label">分数の分母（両方が分数のときのみ）：
           <select id="bunbo-shurui">
             <option value="onaji">同じ分母</option>
             <option value="chigau">違う分母</option>
@@ -493,6 +498,7 @@
         </label>
       </div>
 
+      <div id="keisan-komakai">
       <div class="kodawari-midashi">くりあがり・わり算の細かい設定</div>
       <label id="kuriagari-label">くりあがり・くりさがり（両方が整数または小数のときのみ）：
         <select id="kuriagari">
@@ -533,9 +539,10 @@
         </select>
       </label>
       <div class="setsumei">※答えは、分数が関わる場合は約分した分数、それ以外は整数・小数で表示されます。わり算で1つ目と2つ目の数が同じになる問題は作りません。</div>
+      </div>
     </div>
 
-    <label>空欄にする場所：
+    <label id="ana-basho-label">空欄にする場所：
       <select id="ana-basho">
         <option value="kotae">答え</option>
         <option value="a">1つ目の数</option>
@@ -545,8 +552,8 @@
     </label>
     <label>文字の大きさ：<input type="range" id="fontsize" min="14" max="50" value="20" oninput="fontSizeUpdate()"> <span id="fontsize-hyouji">20</span>px</label>
     <label><input type="checkbox" id="kotae-hyouji" onchange="hyouji()"> 答えを表示する</label>
-    <label><input type="checkbox" id="hissan-hyouji" onchange="hissanKirikae()"> 筆算（縦書き）で表示する</label>
-    <div class="setsumei">※整数どうしの問題のみ筆算になります。小数・分数が関わる問題は横書きのまま表示されます。わり算は商を書く場所だけ空欄にし、計算の途中経過は表示しません。</div>
+    <label id="hissan-label"><input type="checkbox" id="hissan-hyouji" onchange="hissanKirikae()"> 筆算（縦書き）で表示する</label>
+    <div class="setsumei" id="hissan-setsumei">※整数どうしの問題のみ筆算になります。小数・分数が関わる問題は横書きのまま表示されます。わり算は商を書く場所だけ空欄にし、計算の途中経過は表示しません。</div>
     <button onclick="tsukuru()">問題を作る</button>
     <button onclick="insatsuJikkou()">印刷する</button>
     <button onclick="hozonJikkou()">保存する</button>
@@ -589,59 +596,81 @@
       kantanSetsumei.style.display = (mode === "kantan") ? "block" : "none";
     }
 
-    function danHyoujiKousin() {
-      let list = erabareteiruKeisan();
-      let hasKake = list.includes("kakezan");
-      let hasWari = list.includes("warizan");
-      let aShu = document.getElementById("a-shu-taipu").value;
-      let bShu = document.getElementById("b-shu-taipu").value;
-      let bothSeisuu = (aShu === "seisuu" && bShu === "seisuu");
-      document.getElementById("dan-label").style.display = ((hasKake || hasWari) && bothSeisuu) ? "block" : "none";
-    }
-
-    function taipuHyoujiKirikae() {
-      let aShu = document.getElementById("a-shu-taipu").value;
-      let bShu = document.getElementById("b-shu-taipu").value;
-      document.getElementById("a-bunsuu-taipu-label").style.display = (aShu === "bunsuu") ? "inline-flex" : "none";
-      document.getElementById("b-bunsuu-taipu-label").style.display = (bShu === "bunsuu") ? "inline-flex" : "none";
-
-      let bunsuuKanren = (aShu === "bunsuu" || aShu === "random" || bShu === "bunsuu" || bShu === "random");
-      document.getElementById("bunsuu-saidai-settings").style.display = bunsuuKanren ? "block" : "none";
-
-      danHyoujiKousin();
-    }
-
-    function keisanShuruiHenkou() {
+    /**
+     * いまの選びかたで使わない設定を隠す。
+     * たとえば「なおす」だけを選んだときは、1つ目・2つ目の数も、
+     * 答えの範囲も、空欄の場所も使わないので画面から消す。
+     * 条件があちこちに散らばると食いちがうので、ここ1か所で決めている。
+     */
+    function settingHyoujiKousin() {
+      function miseru(id, on, hyouji) {
+        let el = document.getElementById(id);
+        if (el) {
+          el.style.display = on ? (hyouji || "block") : "none";
+        }
+      }
       let list = erabareteiruKeisan();
       let hasTasu = list.includes("tashizan");
       let hasHiku = list.includes("hikizan");
+      let hasKake = list.includes("kakezan");
       let hasWari = list.includes("warizan");
-
       let hasNaosu = list.includes("naosu");
+      let hasKeisan = hasTasu || hasHiku || hasKake || hasWari;
 
-      document.getElementById("kuriagari-label").style.display = (hasTasu || hasHiku) ? "block" : "none";
-      document.getElementById("warizan-kotae-taipu-label").style.display = hasWari ? "block" : "none";
-      document.getElementById("naosu-label").style.display = hasNaosu ? "block" : "none";
-      document.getElementById("naosu-setsumei").style.display = hasNaosu ? "block" : "none";
-      naosuYakubunHyoujiKousin();
-      danHyoujiKousin();
-      amariHyoujiKousin();
+      let aShu = document.getElementById("a-shu-taipu").value;
+      let bShu = document.getElementById("b-shu-taipu").value;
+      let naosuKind = document.getElementById("naosu-shurui").value;
+
+      // 「なおす」が使う設定だけを見分ける
+      let naosuDeSeisuubu = hasNaosu &&
+        (naosuKind === "ka-tai" || naosuKind === "tai-ka" || naosuKind === "random");
+      let naosuDeBunbo = hasNaosu &&
+        (naosuKind !== "shousuu-bunsuu" && naosuKind !== "bunsuu-shousuu");
+
+      // 2つの数を使うのは、ふつうの計算のときだけ
+      miseru("a-settings", hasKeisan);
+      miseru("b-settings", hasKeisan);
+      miseru("kotae-han-i", hasKeisan);
+      miseru("han-i-setsumei", hasKeisan);
+      miseru("ana-basho-label", hasKeisan);
+      miseru("keisan-komakai", hasKeisan);
+      // 筆算は整数どうしの計算だけ。「なおす」には使わない
+      miseru("hissan-label", hasKeisan);
+      miseru("hissan-setsumei", hasKeisan);
+      miseru("mondai-han-i", hasKeisan || naosuDeSeisuubu);
+      miseru("han-i-midashi", hasKeisan || naosuDeSeisuubu);
+      miseru("naosu-han-i-setsumei", !hasKeisan && naosuDeSeisuubu);
+
+      // 分数まわり
+      let bunsuuKanren = hasKeisan &&
+        (aShu === "bunsuu" || aShu === "random" || bShu === "bunsuu" || bShu === "random");
+      miseru("bunsuu-saidai-settings", bunsuuKanren || naosuDeBunbo);
+      miseru("bunbo-saidai-label", bunsuuKanren || naosuDeBunbo, "inline-flex");
+      miseru("bunshi-saidai-label", bunsuuKanren, "inline-flex");
+      miseru("bunbo-shurui-label", bunsuuKanren);
+      miseru("a-bunsuu-taipu-label", hasKeisan && aShu === "bunsuu", "inline-flex");
+      miseru("b-bunsuu-taipu-label", hasKeisan && bShu === "bunsuu", "inline-flex");
+
+      // 計算ごとの細かい設定
+      miseru("kuriagari-label", hasTasu || hasHiku);
+      miseru("warizan-kotae-taipu-label", hasWari);
+      miseru("amari-label",
+        hasWari && document.getElementById("warizan-kotae-taipu").value !== "shousuu");
+      miseru("dan-label", (hasKake || hasWari) && aShu === "seisuu" && bShu === "seisuu");
+
+      // なおす
+      miseru("naosu-label", hasNaosu);
+      miseru("naosu-setsumei", hasNaosu);
+      miseru("naosu-yakubun-label",
+        hasNaosu && (naosuKind === "shousuu-bunsuu" || naosuKind === "random"));
     }
 
-    /** 「約分する／しない」は、小数を分数になおすときだけ使う */
-    function naosuYakubunHyoujiKousin() {
-      let hasNaosu = erabareteiruKeisan().includes("naosu");
-      let kind = document.getElementById("naosu-shurui").value;
-      let tsukau = hasNaosu && (kind === "shousuu-bunsuu" || kind === "random");
-      document.getElementById("naosu-yakubun-label").style.display = tsukau ? "block" : "none";
-    }
-
-    function amariHyoujiKousin() {
-      let list = erabareteiruKeisan();
-      let hasWari = list.includes("warizan");
-      let warizanKotaeTaipu = document.getElementById("warizan-kotae-taipu").value;
-      document.getElementById("amari-label").style.display = (hasWari && warizanKotaeTaipu !== "shousuu") ? "block" : "none";
-    }
+    /* 画面のタグから呼ばれている名前は残し、中身は1か所にまとめた */
+    function danHyoujiKousin() { settingHyoujiKousin(); }
+    function taipuHyoujiKirikae() { settingHyoujiKousin(); }
+    function keisanShuruiHenkou() { settingHyoujiKousin(); }
+    function naosuYakubunHyoujiKousin() { settingHyoujiKousin(); }
+    function amariHyoujiKousin() { settingHyoujiKousin(); }
 
     function erabareteiruKeisan() {
       let checkboxes = document.querySelectorAll(".keisan-checkbox:checked");
