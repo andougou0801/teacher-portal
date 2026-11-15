@@ -205,6 +205,17 @@
       display: inline-block;
       min-width: 2em;
     }
+    /* 「なおす」で、なおし方がまざっているときに付ける小さな札 */
+    .naosu-fuda {
+      display: inline-block;
+      font-size: 0.62em;
+      border: 1px solid #666;
+      border-radius: 0.5em;
+      padding: 0 0.4em;
+      margin-right: 0.4em;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
     .ana {
       display: inline-block;
       min-width: 1.6em;
@@ -395,7 +406,26 @@
       <label><input type="checkbox" class="keisan-checkbox" value="hikizan" onchange="keisanShuruiHenkou()"> ひき算</label>
       <label><input type="checkbox" class="keisan-checkbox" value="kakezan" onchange="keisanShuruiHenkou()"> かけ算</label>
       <label><input type="checkbox" class="keisan-checkbox" value="warizan" onchange="keisanShuruiHenkou()"> わり算</label>
+      <label><input type="checkbox" class="keisan-checkbox" value="naosu" onchange="keisanShuruiHenkou()"> なおす（0.1＝10分の1 など）</label>
     </div>
+
+    <label id="naosu-label" style="display:none;">なおし方：
+      <select id="naosu-shurui" onchange="naosuYakubunHyoujiKousin()">
+        <option value="random">ランダム（下の5つから）</option>
+        <option value="shousuu-bunsuu">小数を分数になおす（0.1 ＝ 10分の1）</option>
+        <option value="bunsuu-shousuu">分数を小数になおす（4分の1 ＝ 0.25）</option>
+        <option value="ka-tai">仮分数を帯分数になおす（3分の7 ＝ 2と3分の1）</option>
+        <option value="tai-ka">帯分数を仮分数になおす（2と3分の1 ＝ 3分の7）</option>
+        <option value="yakubun">約分する（8分の6 ＝ 4分の3）</option>
+      </select>
+    </label>
+    <label id="naosu-yakubun-label" style="display:none;">小数を分数になおすとき：
+      <select id="naosu-yakubun">
+        <option value="suru">約分する（0.2 ＝ 5分の1）</option>
+        <option value="shinai">約分しない（0.2 ＝ 10分の2）</option>
+      </select>
+    </label>
+    <div class="setsumei" id="naosu-setsumei" style="display:none;">※「なおす」の問題は、＝の左に数が1つだけ出て、＝のあとを答える形になります。空欄の場所の設定は使いません（いつも＝のあとが空欄です）。</div>
 
     <div id="kodawari-settings">
       <div class="kodawari-midashi">問題の数・答えの範囲</div>
@@ -587,10 +617,23 @@
       let hasHiku = list.includes("hikizan");
       let hasWari = list.includes("warizan");
 
+      let hasNaosu = list.includes("naosu");
+
       document.getElementById("kuriagari-label").style.display = (hasTasu || hasHiku) ? "block" : "none";
       document.getElementById("warizan-kotae-taipu-label").style.display = hasWari ? "block" : "none";
+      document.getElementById("naosu-label").style.display = hasNaosu ? "block" : "none";
+      document.getElementById("naosu-setsumei").style.display = hasNaosu ? "block" : "none";
+      naosuYakubunHyoujiKousin();
       danHyoujiKousin();
       amariHyoujiKousin();
+    }
+
+    /** 「約分する／しない」は、小数を分数になおすときだけ使う */
+    function naosuYakubunHyoujiKousin() {
+      let hasNaosu = erabareteiruKeisan().includes("naosu");
+      let kind = document.getElementById("naosu-shurui").value;
+      let tsukau = hasNaosu && (kind === "shousuu-bunsuu" || kind === "random");
+      document.getElementById("naosu-yakubun-label").style.display = tsukau ? "block" : "none";
     }
 
     function amariHyoujiKousin() {
@@ -716,7 +759,109 @@
       }
     }
 
+    /* =========================================================
+       「なおす」の問題（〇 ＝ □）
+       ＝の左に数を1つだけ出して、＝のあとを答えてもらう形。
+       たし算などと違って2つ目の数が無いので、b は null にしている。
+       ========================================================= */
+    var NAOSU_SHURUI = ["shousuu-bunsuu", "bunsuu-shousuu", "ka-tai", "tai-ka", "yakubun"];
+    /** なおし方が混ざっている紙で、1問ずつ何をするかを示す札 */
+    var NAOSU_FUDA = {
+      "shousuu-bunsuu": "分数に",
+      "bunsuu-shousuu": "小数に",
+      "ka-tai": "帯分数に",
+      "tai-ka": "仮分数に",
+      "yakubun": "約分"
+    };
+    /** 分数を小数になおせる（わり切れる）分母だけ */
+    var WARIKIRERU_BUNBO = [2, 4, 5, 8, 10, 20, 25, 50];
+
+    function naosuMondaiTsukuru(kind, bunboSaidai, seisuuSaishou, seisuuSaidai, yakubunSuru) {
+      if (kind === "random") {
+        kind = NAOSU_SHURUI[Math.floor(Math.random() * NAOSU_SHURUI.length)];
+      }
+      let denMax = Math.max(2, Math.min(20, Number(bunboSaidai) || 10));
+      let wShita = Math.max(1, Math.floor(Number(seisuuSaishou)) || 1);
+      let wUe = Math.max(wShita, Math.floor(Number(seisuuSaidai)) || wShita);
+
+      if (kind === "shousuu-bunsuu") {
+        // 0.1〜0.9（10分の□）を多めに、ときどき 0.05きざみ（100分の□）
+        let den = (Math.random() < 0.7) ? 10 : 100;
+        let num = (den === 10)
+          ? Math.floor(Math.random() * 9) + 1
+          : (Math.floor(Math.random() * 19) + 1) * 5;
+        let a = Number((num / den).toFixed(2));
+        // 分母は小数の桁数に合わせる。0.50 は 0.5 と書くので、
+        // そろえないと「0.5 ＝ 100分の50」という見なれない形になってしまう
+        let keta = (String(a).split(".")[1] || "").length;
+        let denSoroe = Math.pow(10, Math.max(1, keta));
+        let numSoroe = Math.round(a * denSoroe);
+        let bun = yakubunSuru
+          ? bunsuuYakubun(numSoroe, denSoroe)
+          : { num: numSoroe, den: denSoroe };
+        return { a: a, kotae: { whole: 0, num: bun.num, den: bun.den }, naosu: kind };
+      }
+
+      if (kind === "bunsuu-shousuu") {
+        let den = WARIKIRERU_BUNBO[Math.floor(Math.random() * WARIKIRERU_BUNBO.length)];
+        let num = Math.floor(Math.random() * (den - 1)) + 1;
+        let bun = bunsuuYakubun(num, den);   // 2/4 のような形は出さない
+        if (bun.den === 1) {
+          return null;
+        }
+        return {
+          a: { whole: 0, num: bun.num, den: bun.den },
+          kotae: Number((bun.num / bun.den).toFixed(3)),
+          naosu: kind
+        };
+      }
+
+      if (kind === "ka-tai" || kind === "tai-ka") {
+        let den = Math.floor(Math.random() * (denMax - 1)) + 2;
+        let whole = wShita + Math.floor(Math.random() * (wUe - wShita + 1));
+        let amari = Math.floor(Math.random() * (den - 1)) + 1;
+        // 「3と10分の6」のような約分できる形は出さない。
+        // 仮分数になおしたときも約分できてしまい、答えが1つに決まらないため
+        if (saidaiKoyakusuu(amari, den) !== 1) {
+          return null;
+        }
+        let ka = { whole: 0, num: whole * den + amari, den: den };
+        let tai = { whole: whole, num: amari, den: den };
+        return (kind === "ka-tai")
+          ? { a: ka, kotae: tai, naosu: kind }
+          : { a: tai, kotae: ka, naosu: kind };
+      }
+
+      // 約分する：約分できる分数を、答えの形から逆に作る
+      let denMoto = Math.floor(Math.random() * Math.max(1, Math.floor(denMax / 2) - 1)) + 2;
+      let numMoto = Math.floor(Math.random() * (denMoto - 1)) + 1;
+      if (saidaiKoyakusuu(numMoto, denMoto) !== 1) {
+        return null;
+      }
+      let baiMax = Math.floor(denMax / denMoto);
+      if (baiMax < 2) {
+        return null;
+      }
+      let bai = Math.floor(Math.random() * (baiMax - 1)) + 2;
+      return {
+        a: { whole: 0, num: numMoto * bai, den: denMoto * bai },
+        kotae: { whole: 0, num: numMoto, den: denMoto },
+        naosu: "yakubun"
+      };
+    }
+
     function kantanMondaiTsukuru(shurui, hissanMode) {
+      if (shurui === "naosu") {
+        let k = null;
+        for (let t = 0; t < 60 && k === null; t++) {
+          k = naosuMondaiTsukuru("random", 10, 1, 5, true);
+        }
+        if (k === null) {
+          k = { a: 0.5, kotae: { whole: 0, num: 1, den: 2 }, naosu: "shousuu-bunsuu" };
+        }
+        return { a: k.a, b: null, op: "", kotae: k.kotae, naosu: k.naosu };
+      }
+
       let op = shurui === "tashizan" ? "+" : shurui === "hikizan" ? "-" : shurui === "kakezan" ? "×" : "÷";
       let a, b, kotae;
 
@@ -1266,6 +1411,9 @@
     // 1枚の中に同じ問題が出ないようにするための「見分け札」。
     // 整数・小数・分数・あまりのどれでも、同じ見た目なら同じ札になる。
     function ataiFuda(v) {
+      if (v === null || v === undefined) {
+        return "";
+      }
       if (typeof v === "object" && v !== null) {
         if ("remainder" in v) {
           return v.quotient + "r" + v.remainder;
@@ -1332,13 +1480,17 @@
           }
           dasitaFuda.add(mondaiFuda(mondai.a, mondai.op, mondai.b));
 
-          let anaBasho = anaBashoSentaku;
-          if (anaBashoSentaku === "random") {
+          // 「なおす」は＝の左が問題そのものなので、いつも＝のあとを空欄にする
+          let anaBasho = mondai.naosu ? "kotae" : anaBashoSentaku;
+          if (anaBasho === "random") {
             let kouho = ["a", "b", "kotae"];
             anaBasho = kouho[Math.floor(Math.random() * 3)];
           }
 
-          genzaiNoMondai.push({ a: mondai.a, b: mondai.b, op: mondai.op, kotae: mondai.kotae, anaBasho: anaBasho });
+          genzaiNoMondai.push({
+            a: mondai.a, b: mondai.b, op: mondai.op, kotae: mondai.kotae,
+            anaBasho: anaBasho, naosu: mondai.naosu || null
+          });
         }
 
         document.getElementById("title-hyouji").textContent = title;
@@ -1363,13 +1515,16 @@
       let aBunsuuTaipu = document.getElementById("a-bunsuu-taipu").value;
       let bShuTaipu = document.getElementById("b-shu-taipu").value;
       let bBunsuuTaipu = document.getElementById("b-bunsuu-taipu").value;
+      let naosuShurui = document.getElementById("naosu-shurui").value;
+      let naosuYakubun = document.getElementById("naosu-yakubun").value === "suru";
 
       genzaiNoMondai = [];
 
       for (let i = 0; i < kaisu; i++) {
         let shurui = keisanList[Math.floor(Math.random() * keisanList.length)];
 
-        let op = shurui === "tashizan" ? "+" : shurui === "hikizan" ? "-" : shurui === "kakezan" ? "×" : "÷";
+        let op = shurui === "tashizan" ? "+" : shurui === "hikizan" ? "-" :
+          shurui === "kakezan" ? "×" : shurui === "warizan" ? "÷" : "";
 
         // 条件に合う問題のうち、まだ出していないものを探す。
         // 条件には合うが同じ問題しか出てこないときは、yobi を使って1問だけ重ねる。
@@ -1382,12 +1537,23 @@
           // ループの外で1回だけ決めていたため、たとえば
           // 「1つ目＝真分数・2つ目＝仮分数」を引いたひき算の問題は、
           // 答えが必ずマイナスになり、400回ぜんぶ失敗して矛盾エラーになっていた。
-          let aTaipu = zenTaipuKettei(aShuTaipu, aBunsuuTaipu);
-          let bTaipu = zenTaipuKettei(bShuTaipu, bBunsuuTaipu);
-          let kouho = ichikaiMondaiTsukokoromi(shurui, aTaipu, bTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, amariSettei, danSettei, warizanKotaeTaipu, bunboShurui, bunboSaidai, bunshiSaidai);
-          tries++;
-          if (kouho === null || !kotaeHanIHantei(kouho.kotae, kotaeSaishou, kotaeSaidai)) {
-            continue;
+          let kouho;
+          if (shurui === "naosu") {
+            // 「なおす」は2つ目の数が無く、答えの範囲もあてはまらない
+            kouho = naosuMondaiTsukuru(naosuShurui, bunboSaidai, mondaiSaishou, mondaiSaidai, naosuYakubun);
+            tries++;
+            if (kouho === null) {
+              continue;
+            }
+            kouho.b = null;
+          } else {
+            let aTaipu = zenTaipuKettei(aShuTaipu, aBunsuuTaipu);
+            let bTaipu = zenTaipuKettei(bShuTaipu, bBunsuuTaipu);
+            kouho = ichikaiMondaiTsukokoromi(shurui, aTaipu, bTaipu, mondaiSaishou, mondaiSaidai, kotaeSaishou, kotaeSaidai, kuriagariSettei, amariSettei, danSettei, warizanKotaeTaipu, bunboShurui, bunboSaidai, bunshiSaidai);
+            tries++;
+            if (kouho === null || !kotaeHanIHantei(kouho.kotae, kotaeSaishou, kotaeSaidai)) {
+              continue;
+            }
           }
           if (yobi === null) {
             yobi = kouho;
@@ -1410,13 +1576,17 @@
         }
         dasitaFuda.add(mondaiFuda(kekka.a, op, kekka.b));
 
-        let anaBasho = anaBashoSentaku;
-        if (anaBashoSentaku === "random") {
+        // 「なおす」は＝の左が問題そのものなので、いつも＝のあとを空欄にする
+        let anaBasho = (shurui === "naosu") ? "kotae" : anaBashoSentaku;
+        if (anaBasho === "random") {
           let kouho = ["a", "b", "kotae"];
           anaBasho = kouho[Math.floor(Math.random() * 3)];
         }
 
-        genzaiNoMondai.push({ a: kekka.a, b: kekka.b, op: op, kotae: kekka.kotae, anaBasho: anaBasho });
+        genzaiNoMondai.push({
+          a: kekka.a, b: kekka.b, op: op, kotae: kekka.kotae,
+          anaBasho: anaBasho, naosu: kekka.naosu || null
+        });
       }
 
       document.getElementById("title-hyouji").textContent = title;
@@ -1491,6 +1661,10 @@
     }
 
     function ketasuuChousa(value, ketaSaidaiRef) {
+      // 「なおす」の問題には2つ目の数が無い（null）。数えると桁数が狂う
+      if (value === null || value === undefined) {
+        return;
+      }
       if (typeof value === "object" && value !== null && "remainder" in value) {
         ketaSaidaiRef.v = Math.max(ketaSaidaiRef.v, String(value.quotient).length, String(value.remainder).length);
         return;
@@ -1634,6 +1808,16 @@
       let hissanHaba = habaJouhou.keta;
       let mondaiHTML = "";
 
+      // なおし方が2つ以上まざっているときだけ、何をするかの札をつける。
+      // 1種類だけなら紙ぜんたいが同じ作業なので、札は付けない
+      let naosuShuruiSet = {};
+      genzaiNoMondai.forEach(function (m) {
+        if (m.naosu) {
+          naosuShuruiSet[m.naosu] = true;
+        }
+      });
+      let naosuFudaIru = Object.keys(naosuShuruiSet).length >= 2;
+
       for (let i = 0; i < genzaiNoMondai.length; i++) {
         let mondai = genzaiNoMondai[i];
 
@@ -1645,6 +1829,16 @@
           mondaiHTML += hissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, hissanHaba);
         } else if (hissanMode && warizanHissanTaishou(mondai)) {
           mondaiHTML += warizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, kotaeHyouji);
+        } else if (mondai.naosu) {
+          // 「なおす」は2つ目の数が無いので、〇 ＝ □ の形で出す。
+          // なおし方が混ざっている紙では、6/10 が「約分」とも「小数になおす」とも
+          // 取れてしまうので、1問ずつ何をするかを添える
+          mondaiHTML += "<p>"
+            + "<span class='bangou'>" + maruSuuji(i + 1, genzaiNoMondai.length) + "</span>"
+            + (naosuFudaIru ? "<span class='naosu-fuda'>" + NAOSU_FUDA[mondai.naosu] + "</span>" : "")
+            + ataiHyouji(mondai.a, false) + " = "
+            + ataiHyouji(mondai.kotae, kotaeIsAna)
+            + "</p>";
         } else {
           mondaiHTML += "<p>"
             + "<span class='bangou'>" + maruSuuji(i + 1, genzaiNoMondai.length) + "</span>"
