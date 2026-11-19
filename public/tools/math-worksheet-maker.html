@@ -205,6 +205,12 @@
       display: inline-block;
       min-width: 2em;
     }
+    /* 単位（km・m など）。数のすぐうしろに置く */
+    .tani {
+      display: inline-block;
+      margin-left: 0.15em;
+      margin-right: 0.15em;
+    }
     /* 「なおす」で、なおし方がまざっているときに付ける小さな札 */
     .naosu-fuda {
       display: inline-block;
@@ -378,8 +384,36 @@
       <select id="settei-mode" onchange="setteiModeHenkou()">
         <option value="kantan" selected>簡単設定</option>
         <option value="kodawari">こだわり設定</option>
+        <option value="tani">単位設定（単位のなおし方だけ）</option>
       </select>
     </label>
+    <div id="tani-settings" style="display:none;">
+      <div class="setsumei">※単位をなおす練習だけのプリントを作ります（3km ＝ 3000m など）。計算の種類や数の設定は使いません。</div>
+      <label>単位の種類：
+        <select id="tani-shurui" onchange="taniHyoujiKousin()">
+          <option value="random">ランダム（下の5つから）</option>
+          <option value="nagasa" selected>長さ（mm・cm・m・km）</option>
+          <option value="kasa">かさ（mL・dL・L）</option>
+          <option value="omosa">重さ（g・kg・t）</option>
+          <option value="menseki">面積（cm²・m²・a・ha・km²）</option>
+          <option value="jikan">時間（秒・分・時間・日）</option>
+        </select>
+      </label>
+      <label>なおす向き：
+        <select id="tani-muki">
+          <option value="ryouhou" selected>両方</option>
+          <option value="dai-shou">大きい単位 → 小さい単位（3km ＝ 3000m）</option>
+          <option value="shou-dai">小さい単位 → 大きい単位（3000m ＝ 3km）</option>
+        </select>
+      </label>
+      <label>数の大きさ：
+        <select id="tani-kazu">
+          <option value="kiri" selected>きりのよい数（1・3・25 など）</option>
+          <option value="shousuu">小数も使う（0.5km ＝ 500m など）</option>
+        </select>
+      </label>
+      <div class="setsumei" id="tani-setsumei"></div>
+    </div>
     <div id="kantan-setsumei" class="setsumei">
       ※簡単設定では、次のルールで自動的に数字が作られます。<br>
       ・たし算：1けたの数（1〜9）どうし<br>
@@ -400,8 +434,8 @@
     </label>
     <div class="setsumei">※ 列数を増やすほど1ページに多くの問題を並べられます。文字が小さくなりすぎる場合は「文字の大きさ」で調整してください。</div>
 
-    <label>計算の種類（複数選べます）：</label>
-    <div class="checkbox-row">
+    <label id="keisan-shurui-label">計算の種類（複数選べます）：</label>
+    <div class="checkbox-row" id="keisan-shurui-row">
       <label><input type="checkbox" class="keisan-checkbox" value="tashizan" checked onchange="keisanShuruiHenkou()"> たし算</label>
       <label><input type="checkbox" class="keisan-checkbox" value="hikizan" onchange="keisanShuruiHenkou()"> ひき算</label>
       <label><input type="checkbox" class="keisan-checkbox" value="kakezan" onchange="keisanShuruiHenkou()"> かけ算</label>
@@ -589,11 +623,33 @@
 
     function setteiModeHenkou() {
       let mode = document.getElementById("settei-mode").value;
-      let kodawariSettings = document.getElementById("kodawari-settings");
-      let kantanSetsumei = document.getElementById("kantan-setsumei");
+      document.getElementById("kodawari-settings").style.display = (mode === "kodawari") ? "block" : "none";
+      document.getElementById("kantan-setsumei").style.display = (mode === "kantan") ? "block" : "none";
+      document.getElementById("tani-settings").style.display = (mode === "tani") ? "block" : "none";
+      taniHyoujiKousin();
+      settingHyoujiKousin();
+    }
 
-      kodawariSettings.style.display = (mode === "kodawari") ? "block" : "none";
-      kantanSetsumei.style.display = (mode === "kantan") ? "block" : "none";
+    /** 単位設定で選んでいる種類の、なおし方の例を出す */
+    function taniHyoujiKousin() {
+      let el = document.getElementById("tani-setsumei");
+      if (!el) {
+        return;
+      }
+      let shurui = document.getElementById("tani-shurui").value;
+      if (shurui === "random") {
+        el.textContent = "※5種類ぜんぶから出します。";
+        return;
+      }
+      let hyou = TANI_HYOU[shurui];
+      if (!hyou) {
+        el.textContent = "";
+        return;
+      }
+      el.textContent = "※" + hyou.na + "で出る組み合わせ：" +
+        hyou.kumi.map(function (k) {
+          return "1" + k.dai + "＝" + k.bai + k.shou;
+        }).join("　／　");
     }
 
     /**
@@ -609,6 +665,18 @@
           el.style.display = on ? (hyouji || "block") : "none";
         }
       }
+      // 単位設定のときは、計算の種類そのものを使わない
+      let taniMode = document.getElementById("settei-mode").value === "tani";
+      miseru("keisan-shurui-label", !taniMode);
+      miseru("keisan-shurui-row", !taniMode, "flex");
+      if (taniMode) {
+        ["naosu-label", "naosu-setsumei", "naosu-yakubun-label", "ana-basho-label",
+          "hissan-label", "hissan-setsumei"].forEach(function (id) {
+            miseru(id, false);
+          });
+        return;
+      }
+
       let list = erabareteiruKeisan();
       let hasTasu = list.includes("tashizan");
       let hasHiku = list.includes("hikizan");
@@ -786,6 +854,105 @@
       } else {
         return String.fromCharCode(0x32B1 + (n - 36));
       }
+    }
+
+    /* =========================================================
+       単位をなおす問題（3km ＝ 3000m）
+
+       小学校で習う単位だけを入れている。
+       組み合わせは「1つ上がるごとに何倍か」が素直なものに絞り、
+       mm から km のように差が大きすぎるものは入れていない。
+       ========================================================= */
+    var TANI_HYOU = {
+      nagasa: {
+        na: "長さ",
+        kumi: [
+          { dai: "cm", shou: "mm", bai: 10 },
+          { dai: "m", shou: "cm", bai: 100 },
+          { dai: "m", shou: "mm", bai: 1000 },
+          { dai: "km", shou: "m", bai: 1000 }
+        ]
+      },
+      kasa: {
+        na: "かさ",
+        kumi: [
+          { dai: "L", shou: "dL", bai: 10 },
+          { dai: "dL", shou: "mL", bai: 100 },
+          { dai: "L", shou: "mL", bai: 1000 }
+        ]
+      },
+      omosa: {
+        na: "重さ",
+        kumi: [
+          { dai: "kg", shou: "g", bai: 1000 },
+          { dai: "t", shou: "kg", bai: 1000 }
+        ]
+      },
+      menseki: {
+        na: "面積",
+        kumi: [
+          { dai: "m²", shou: "cm²", bai: 10000 },
+          { dai: "a", shou: "m²", bai: 100 },
+          { dai: "ha", shou: "a", bai: 100 },
+          { dai: "ha", shou: "m²", bai: 10000 },
+          { dai: "km²", shou: "ha", bai: 100 }
+        ]
+      },
+      jikan: {
+        na: "時間",
+        kumi: [
+          { dai: "分", shou: "秒", bai: 60 },
+          { dai: "時間", shou: "分", bai: 60 },
+          { dai: "日", shou: "時間", bai: 24 }
+        ]
+      }
+    };
+    var TANI_KEY = ["nagasa", "kasa", "omosa", "menseki", "jikan"];
+
+    /**
+     * 単位をなおす問題を1つ作る。
+     * 大きい単位のほうの数を先に決めてから何倍かするので、
+     * どちら向きでも答えがきれいな数になる。
+     */
+    function taniMondaiTsukuru(shurui, muki, kazuKata) {
+      if (shurui === "random") {
+        shurui = TANI_KEY[Math.floor(Math.random() * TANI_KEY.length)];
+      }
+      let hyou = TANI_HYOU[shurui];
+      if (!hyou) {
+        return null;
+      }
+      let kumi = hyou.kumi[Math.floor(Math.random() * hyou.kumi.length)];
+      let muki2 = muki;
+      if (muki === "ryouhou") {
+        muki2 = (Math.random() < 0.5) ? "dai-shou" : "shou-dai";
+      }
+
+      // 大きい単位のほうの数。小数を使うときは 0.5 きざみも混ぜる
+      let daiAtai;
+      if (kazuKata === "shousuu" && Math.random() < 0.45) {
+        daiAtai = (Math.floor(Math.random() * 19) + 1) / 2;   // 0.5〜9.5
+      } else {
+        daiAtai = Math.floor(Math.random() * 12) + 1;         // 1〜12
+      }
+      let shouAtai = Number((daiAtai * kumi.bai).toFixed(4));
+      // 時間は 0.5時間＝30分 のような形になるので、分や秒が整数のときだけ使う
+      if (!Number.isInteger(shouAtai)) {
+        return null;
+      }
+
+      if (muki2 === "dai-shou") {
+        return {
+          a: { atai: daiAtai, tani: kumi.dai },
+          kotae: { atai: shouAtai, tani: kumi.shou },
+          tani: shurui
+        };
+      }
+      return {
+        a: { atai: shouAtai, tani: kumi.shou },
+        kotae: { atai: daiAtai, tani: kumi.dai },
+        tani: shurui
+      };
     }
 
     /* =========================================================
@@ -1439,9 +1606,17 @@
 
     // 1枚の中に同じ問題が出ないようにするための「見分け札」。
     // 整数・小数・分数・あまりのどれでも、同じ見た目なら同じ札になる。
+    /** 単位の問題の見分け札（同じ問題を出さないため） */
+    function taniFuda(m) {
+      return m.a.atai + m.a.tani + "=" + m.kotae.tani;
+    }
+
     function ataiFuda(v) {
       if (v === null || v === undefined) {
         return "";
+      }
+      if (typeof v === "object" && v !== null && "tani" in v) {
+        return v.atai + v.tani;
       }
       if (typeof v === "object" && v !== null) {
         if ("remainder" in v) {
@@ -1473,14 +1648,58 @@
       akakuKesu();
       kasanariShirase(false);
 
+      // 同じプリントの中で、すでに出した問題をおぼえておく
+      let dasitaFuda = new Set();
+      let kasanariAri = false;
+
+      if (setteiMode === "tani") {
+        let taniShurui = document.getElementById("tani-shurui").value;
+        let taniMuki = document.getElementById("tani-muki").value;
+        let taniKazu = document.getElementById("tani-kazu").value;
+        genzaiNoMondai = [];
+
+        for (let i = 0; i < kaisu; i++) {
+          let mondai = null;
+          let yobi = null;
+          for (let t = 0; t < 400; t++) {
+            let kouho = taniMondaiTsukuru(taniShurui, taniMuki, taniKazu);
+            if (kouho === null) {
+              continue;
+            }
+            if (yobi === null) {
+              yobi = kouho;
+            }
+            if (!dasitaFuda.has(taniFuda(kouho))) {
+              mondai = kouho;
+              break;
+            }
+          }
+          if (mondai === null) {
+            mondai = yobi;
+            kasanariAri = true;
+          }
+          if (mondai === null) {
+            alert("この単位の設定では問題が作れません。単位の種類か数の大きさを変えてください。");
+            return;
+          }
+          dasitaFuda.add(taniFuda(mondai));
+          genzaiNoMondai.push({
+            a: mondai.a, b: null, op: "", kotae: mondai.kotae,
+            anaBasho: "kotae", naosu: null, tani: mondai.tani
+          });
+        }
+
+        document.getElementById("title-hyouji").textContent = title;
+        kasanariShirase(kasanariAri);
+        fontSizeUpdate();
+        hyouji();
+        return;
+      }
+
       if (keisanList.length === 0) {
         alert("計算の種類を1つ以上選んでください");
         return;
       }
-
-      // 同じプリントの中で、すでに出した問題をおぼえておく
-      let dasitaFuda = new Set();
-      let kasanariAri = false;
 
       if (setteiMode === "kantan") {
         genzaiNoMondai = [];
@@ -1694,6 +1913,12 @@
       if (value === null || value === undefined) {
         return;
       }
+      // 単位の問題は、単位をのぞいた数の桁数で空らんの幅を決める
+      if (typeof value === "object" && value !== null && "tani" in value) {
+        let moji = String(value.atai).replace(".", "");
+        ketaSaidaiRef.v = Math.max(ketaSaidaiRef.v, moji.length);
+        return;
+      }
       if (typeof value === "object" && value !== null && "remainder" in value) {
         ketaSaidaiRef.v = Math.max(ketaSaidaiRef.v, String(value.quotient).length, String(value.remainder).length);
         return;
@@ -1858,6 +2083,16 @@
           mondaiHTML += hissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, hissanHaba);
         } else if (hissanMode && warizanHissanTaishou(mondai)) {
           mondaiHTML += warizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, kotaeHyouji);
+        } else if (mondai.tani) {
+          // 単位の問題は「3 km ＝ □ m」の形。答えの単位は空らんのうしろに出す
+          mondaiHTML += "<p>"
+            + "<span class='bangou'>" + maruSuuji(i + 1, genzaiNoMondai.length) + "</span>"
+            + "<span class='ana'>" + mondai.a.atai + "</span>"
+            + "<span class='tani'>" + mondai.a.tani + "</span>"
+            + " = "
+            + (kotaeIsAna ? anaSpan() : "<span class='ana'>" + mondai.kotae.atai + "</span>")
+            + "<span class='tani'>" + mondai.kotae.tani + "</span>"
+            + "</p>";
         } else if (mondai.naosu) {
           // 「なおす」は2つ目の数が無いので、〇 ＝ □ の形で出す。
           // なおし方が混ざっている紙では、6/10 が「約分」とも「小数になおす」とも
