@@ -205,6 +205,12 @@
       display: inline-block;
       min-width: 2em;
     }
+    /* 問題の式は途中で折り返さない。折り返すと「＝のあとに書く単位」が
+       次の行に落ちて読めなくなる。折り返さずに横へはみ出させることで、
+       hamidashiKakunin の横はみ出し判定が働き、画面で知らせられる */
+    #mondai p {
+      white-space: nowrap;
+    }
     /* 単位（km・m など）。数のすぐうしろに置く */
     .tani {
       display: inline-block;
@@ -391,10 +397,10 @@
       <div class="setsumei">※単位をなおす練習だけのプリントを作ります（3km ＝ 3000m など）。計算の種類や数の設定は使いません。</div>
       <label>学年：
         <select id="tani-gakunen" onchange="taniHyoujiKousin()">
-          <option value="2">2年まで（mm・cm・m／mL・dL・L／日・時・分）</option>
-          <option value="3">3年まで（＋km／g・kg／秒）</option>
-          <option value="4" selected>4年まで（＋cm²・m²・km²）</option>
-          <option value="5">5年まで（＋cm³・m³）</option>
+          <option value="2">2年まで（mm・cm・m／mL・dL・L／日・時間・分）</option>
+          <option value="3">3年まで（＋km／g・kg／秒／t）</option>
+          <option value="4" selected>4年まで（＋cm²・m²・km²／a・ha）</option>
+          <option value="5">5年まで（＋cm³・m³／Lとcm³の関係）</option>
           <option value="all">学年で区切らない</option>
         </select>
       </label>
@@ -403,7 +409,7 @@
         <select id="tani-shurui" onchange="taniHyoujiKousin()"></select>
       </label>
       <label class="tani-fureru-label"><input type="checkbox" id="tani-fureru" checked onchange="taniHyoujiKousin()">
-        「触れる」とされている単位（t・a・ha）も使う</label>
+        <span id="tani-fureru-moji">「触れる」とされている単位も使う</span></label>
       <label>なおす向き：
         <select id="tani-muki">
           <option value="ryouhou" selected>両方</option>
@@ -413,8 +419,8 @@
       </label>
       <label>数の大きさ：
         <select id="tani-kazu">
-          <option value="kiri" selected>きりのよい数（1・3・25 など）</option>
-          <option value="shousuu">小数も使う（0.5km ＝ 500m など）</option>
+          <option value="kiri" selected>整数だけ（1〜12 の数）</option>
+          <option value="shousuu">小数も使う（0.1km ＝ 100m など）</option>
         </select>
       </label>
       <div class="setsumei" id="tani-setsumei"></div>
@@ -596,7 +602,7 @@
     <button onclick="tsukuru()">問題を作る</button>
     <button onclick="insatsuJikkou()">印刷する</button>
     <button onclick="hozonJikkou()">保存する</button>
-    <p class="setsumei overflow-warning" id="kasanari-warning" style="display:none;">⚠ この設定で作れる問題の種類が、問題数より少ないため、同じ問題が入っています。数の範囲を広げる、計算の種類を増やす、問題数を減らす、のいずれかで調整してください。</p>
+    <p class="setsumei overflow-warning" id="kasanari-warning" style="display:none;">⚠ この設定で作れる問題の種類が、問題数より少ないため、同じ問題が入っています。数の範囲を広げる、計算の種類を増やす、問題数を減らす、のいずれかで調整してください。<span id="kasanari-kazu"></span></p>
     <p class="setsumei overflow-warning" id="overflow-warning" style="display:none;">⚠ 1ページに収まっていません。問題数を減らす、列数を減らす、文字の大きさを小さくする、のいずれかで調整してください（このままでは印刷時に欄が重なったり、右側が切れたりします）。</p>
 
     <hr>
@@ -631,6 +637,15 @@
       document.getElementById("kodawari-settings").style.display = (mode === "kodawari") ? "block" : "none";
       document.getElementById("kantan-setsumei").style.display = (mode === "kantan") ? "block" : "none";
       document.getElementById("tani-settings").style.display = (mode === "tani") ? "block" : "none";
+      // 筆算で自動的に大きくした文字が、筆算を使わないモードに持ち越されると
+      // 理由が分からないまま紙からはみ出すので、既定にもどす
+      let hissan = document.getElementById("hissan-hyouji");
+      let fontsize = document.getElementById("fontsize");
+      if (mode === "tani" && hissan && hissan.checked && Number(fontsize.value) >= 30) {
+        hissan.checked = false;
+        fontsize.value = 20;
+        fontSizeUpdate();
+      }
       taniHyoujiKousin();
       settingHyoujiKousin();
     }
@@ -658,6 +673,35 @@
       let fl = document.querySelector(".tani-fureru-label");
       if (fl) {
         fl.style.display = fureruAru ? "block" : "none";
+      }
+      // その学年にある「触れる」単位だけをラベルに出す（3年ならtだけ）
+      let fureruTani = [];
+      TANI_KEY.forEach(function (s) {
+        TANI_HYOU[s].kumi.forEach(function (k) {
+          if (!k.fureru) { return; }
+          if (gakunen !== "all" && k.gaku > Number(gakunen)) { return; }
+          [k.dai, k.shou].forEach(function (t) {
+            if (["t", "a", "ha"].indexOf(t) >= 0 && fureruTani.indexOf(t) < 0) {
+              fureruTani.push(t);
+            }
+          });
+        });
+      });
+      let fm = document.getElementById("tani-fureru-moji");
+      if (fm) {
+        fm.textContent = "「触れる」とされている単位（" +
+          (fureruTani.length ? fureruTani.join("・") : "t・a・ha") + "）も使う";
+      }
+
+      // 小数は3年の学習内容。2年を選んでいるときは使えないようにする
+      let kazuSel = document.getElementById("tani-kazu");
+      let kazuLabel = kazuSel ? kazuSel.closest("label") : null;
+      let shousuuOK = (gakunen === "all" || Number(gakunen) >= 3);
+      if (kazuLabel) {
+        kazuLabel.style.display = shousuuOK ? "block" : "none";
+      }
+      if (!shousuuOK && kazuSel) {
+        kazuSel.value = "kiri";
       }
 
       // 選んでいたものが使えなくなったら、ランダムに戻す
@@ -926,6 +970,11 @@
         5年 B図形(4)ア(ア) 体積の単位（cm³, m³）
         5年 B図形(4)イ(ア) 体積の単位とこれまでに学習した単位との関係を考察する
       ※6年に新しい量の単位は示されていない。
+      ※角の大きさの単位（度（°））は4年 B図形(5)ア(イ)にあるが、
+        小学校では分・秒を扱わないため、なおす相手の単位が無い。
+        このツールは「単位のなおし方」専用なので対象外としている。
+      ※「週」「年」、速さ（時速・分速・秒速）は算数の本文に単位として
+        示されていないため入れていない。
     */
     var TANI_HYOU = {
       nagasa: {
@@ -933,7 +982,8 @@
         kumi: [
           { dai: "cm", shou: "mm", bai: 10, gaku: 2 },
           { dai: "m", shou: "cm", bai: 100, gaku: 2 },
-          { dai: "m", shou: "mm", bai: 1000, gaku: 2 },
+          // mとmmを直接つなぐのは3年から（2年で確かめるのは1cm＝10mm、1m＝100cm）
+          { dai: "m", shou: "mm", bai: 1000, gaku: 3 },
           { dai: "km", shou: "m", bai: 1000, gaku: 3 }
         ]
       },
@@ -976,14 +1026,36 @@
         kumi: [
           { dai: "m³", shou: "cm³", bai: 1000000, gaku: 5 },
           { dai: "L", shou: "cm³", bai: 1000, gaku: 5 },
-          { dai: "dL", shou: "cm³", bai: 100, gaku: 5 },
-          { dai: "m³", shou: "L", bai: 1000, gaku: 5 }
+          { dai: "m³", shou: "L", bai: 1000, gaku: 5 },
+          // 1mL＝1cm³。倍率が1なので数は変わらないが、
+          // かさと体積をつなぐ関係として教科書で必ず扱う
+          { dai: "mL", shou: "cm³", bai: 1, gaku: 5 }
         ]
       }
     };
     var TANI_KEY = ["nagasa", "kasa", "omosa", "jikan", "menseki", "taiseki"];
 
-    /** いまの学年と「触れる単位」の設定で使える組み合わせだけを取り出す */
+    /**
+     * 大きい単位のほうに使う数の上限。
+     * 倍率が大きい組み合わせでけた数が増えすぎるのと、
+     * 10や100でない倍率（24・60）で学年に合わないわり算になるのを防ぐ。
+     */
+    function taniKazuSaidai(kumi, gakunen) {
+      if (kumi.bai >= 1000000) {
+        return 3;             // 1km²＝1000000m²。3でも7けたになる
+      }
+      if (kumi.bai >= 10000) {
+        return 8;
+      }
+      if (kumi.bai === 24 || kumi.bai === 60) {
+        // 時間は10倍・100倍ではないので、大きくすると筆算が必要になる。
+        // 2年は「1日＝24時間」「1時間＝60分」を知る段階なので特に小さくおさえる
+        return (gakunen !== "all" && Number(gakunen) <= 2) ? 3 : 10;
+      }
+      return 12;
+    }
+
+    /** いまの学年と「単位の種類」の設定で使える組み合わせだけを取り出す */
     function taniTsukaeruKumi(shurui, gakunen, fureruOK) {
       let hyou = TANI_HYOU[shurui];
       if (!hyou) {
@@ -1020,18 +1092,47 @@
       if (kumiList.length === 0) {
         return null;
       }
-      let kumi = kumiList[Math.floor(Math.random() * kumiList.length)];
+      // 「触れる」程度の単位（t・a・ha）が主役にならないよう、出る重みを下げる。
+      // 同じ確率で選ぶと、面積では7割、重さでは5割がその単位になってしまう
+      let omomi = kumiList.map(function (k) { return k.fureru ? 1 : 4; });
+      let goukei = omomi.reduce(function (x, y) { return x + y; }, 0);
+      let hiku = Math.random() * goukei;
+      let kumi = kumiList[kumiList.length - 1];
+      for (let ki = 0; ki < kumiList.length; ki++) {
+        hiku -= omomi[ki];
+        if (hiku < 0) { kumi = kumiList[ki]; break; }
+      }
+
       let muki2 = muki;
       if (muki === "ryouhou") {
         muki2 = (Math.random() < 0.5) ? "dai-shou" : "shou-dai";
       }
 
-      // 何倍かが大きい組み合わせ（1km²＝1000000m² など）で数まで大きくすると
-      // けた数が多くなりすぎるので、倍率に合わせて数をおさえる
-      let daiSaidai = (kumi.bai >= 1000000) ? 5 : (kumi.bai >= 10000 ? 8 : 12);
+      // 小数は3年の学習内容。画面でも隠しているが、作る側でも止めておく
+      if (gakunen !== "all" && Number(gakunen) <= 2) {
+        kazuKata = "kiri";
+      }
+      let daiSaidai = taniKazuSaidai(kumi, gakunen);
+      // 1mL＝1cm³ のように倍率が1の組は、どちら向きでも数が同じ。
+      // 大小の区別がないので、向きの指定にかかわらずそのまま出す
+      if (kumi.bai === 1) {
+        let atai = (kazuKata === "shousuu" && Math.random() < 0.3)
+          ? (Math.floor(Math.random() * 9) + 1) / 10 * 100
+          : (Math.floor(Math.random() * daiSaidai) + 1) * 10;
+        // 数は同じでも、どちらの単位を左に置くかは「なおす向き」に合わせる
+        let dairaHidari = (muki2 === "dai-shou");
+        return {
+          a: { atai: atai, tani: dairaHidari ? kumi.dai : kumi.shou },
+          kotae: { atai: atai, tani: dairaHidari ? kumi.shou : kumi.dai },
+          tani: shurui
+        };
+      }
       let daiAtai;
-      if (kazuKata === "shousuu" && Math.random() < 0.45) {
-        daiAtai = (Math.floor(Math.random() * (daiSaidai * 2 - 1)) + 1) / 2;
+      if (kazuKata === "shousuu" && Math.random() < 0.55) {
+        // 0.1きざみも混ぜる。位取りの練習になるのは 0.5 より 0.1 のほう
+        daiAtai = (Math.random() < 0.5)
+          ? (Math.floor(Math.random() * 9) + 1) / 10
+          : (Math.floor(Math.random() * (daiSaidai * 2 - 1)) + 1) / 2;
       } else {
         daiAtai = Math.floor(Math.random() * daiSaidai) + 1;
       }
@@ -1731,10 +1832,17 @@
     function mondaiFuda(a, op, b) {
       return ataiFuda(a) + op + ataiFuda(b);
     }
-    function kasanariShirase(hyouji) {
+    function kasanariShirase(hyouji, tsukureruKazu) {
       let el = document.getElementById("kasanari-warning");
-      if (el) {
-        el.style.display = hyouji ? "block" : "none";
+      if (!el) {
+        return;
+      }
+      el.style.display = hyouji ? "block" : "none";
+      // 何通り作れるのかが分かると、問題数をいくつにすればよいか決めやすい
+      let kazuEl = document.getElementById("kasanari-kazu");
+      if (kazuEl) {
+        kazuEl.textContent = (hyouji && tsukureruKazu)
+          ? "（この設定で作れるのは " + tsukureruKazu + " 通りです）" : "";
       }
     }
 
@@ -1792,7 +1900,7 @@
         }
 
         document.getElementById("title-hyouji").textContent = title;
-        kasanariShirase(kasanariAri);
+        kasanariShirase(kasanariAri, dasitaFuda.size);
         fontSizeUpdate();
         hyouji();
         return;
@@ -2241,20 +2349,22 @@
       if (!frame || !printArea || !warning) {
         return;
       }
+      // 幅も印刷と同じにする。width:auto にするとブラウザの窓幅で測ることになり、
+      // 窓が広いときは見落とし、せまいときは出すぎる。
+      // 印刷はA4たて（210mm）に @page margin:20mm なので、中身は170mm×257mm
       let motoNoCss = frame.style.cssText;
-      frame.style.width = "auto";
+      frame.style.width = "210mm";
       frame.style.aspectRatio = "auto";
       frame.style.height = "257mm";
       frame.style.overflow = "visible";
-      frame.style.padding = "0";
+      frame.style.padding = "0 20mm";
       frame.style.margin = "0";
+      frame.style.boxSizing = "border-box";
       let hamidashiteiru = printArea.scrollHeight > printArea.clientHeight + 2;
+      let yokoHamidashiJissun = printArea.scrollWidth > printArea.clientWidth + 2;
       frame.style.cssText = motoNoCss;
 
-      let mondaiWaku = document.getElementById("mondai");
-      let yokoHamidashi = mondaiWaku ? (mondaiWaku.scrollWidth > mondaiWaku.clientWidth + 2) : false;
-
-      warning.style.display = (hamidashiteiru || yokoHamidashi) ? "block" : "none";
+      warning.style.display = (hamidashiteiru || yokoHamidashiJissun) ? "block" : "none";
     }
 
     function hissanKirikae() {
@@ -2432,6 +2542,25 @@
         return wordWarizanHissanHTMLTsukuru(mondai, i, aIsAna, bIsAna, kotaeIsAna, kotaeHyouji, fontSize);
       }
 
+      // 単位の問題は「3 km ＝ □ m」の形。2つ目の数が無い
+      if (mondai.tani) {
+        return "<span style='font-size:" + fontSize + "px;'>"
+          + maruSuuji(i + 1, genzaiNoMondai.length) + "　"
+          + mondai.a.atai + " " + mondai.a.tani + " = "
+          + (kotaeIsAna ? wordSenHTML(ataiHaba) : mondai.kotae.atai)
+          + " " + mondai.kotae.tani
+          + "</span>";
+      }
+      // 「なおす」も2つ目の数が無いので、〇 ＝ □ だけにする
+      if (mondai.naosu) {
+        return "<span style='font-size:" + fontSize + "px;'>"
+          + maruSuuji(i + 1, genzaiNoMondai.length) + "　"
+          + (wordNaosuFuda(mondai) || "")
+          + wordAtaiHyouji(mondai.a, false, ataiHaba) + " = "
+          + wordAtaiHyouji(mondai.kotae, kotaeIsAna, ataiHaba)
+          + "</span>";
+      }
+
       return "<span style='font-size:" + fontSize + "px;'>"
         + maruSuuji(i + 1, genzaiNoMondai.length) + "　"
         + wordAtaiHyouji(mondai.a, aIsAna, ataiHaba) + " "
@@ -2439,6 +2568,19 @@
         + wordAtaiHyouji(mondai.b, bIsAna, ataiHaba) + " = "
         + wordAtaiHyouji(mondai.kotae, kotaeIsAna, ataiHaba)
         + "</span>";
+    }
+
+    /** なおし方が混ざっている紙でだけ、Wordにも札を出す */
+    function wordNaosuFuda(mondai) {
+      let shurui = {};
+      genzaiNoMondai.forEach(function (m) {
+        if (m.naosu) { shurui[m.naosu] = true; }
+      });
+      if (Object.keys(shurui).length < 2) {
+        return "";
+      }
+      return "<span style='font-size:0.62em;border:1px solid #666;padding:0 4px;'>"
+        + NAOSU_FUDA[mondai.naosu] + "</span> ";
     }
 
     function wordMondaiHTMLTsukuru() {
