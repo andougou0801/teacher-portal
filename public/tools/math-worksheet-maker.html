@@ -389,16 +389,21 @@
     </label>
     <div id="tani-settings" style="display:none;">
       <div class="setsumei">※単位をなおす練習だけのプリントを作ります（3km ＝ 3000m など）。計算の種類や数の設定は使いません。</div>
-      <label>単位の種類：
-        <select id="tani-shurui" onchange="taniHyoujiKousin()">
-          <option value="random">ランダム（下の5つから）</option>
-          <option value="nagasa" selected>長さ（mm・cm・m・km）</option>
-          <option value="kasa">かさ（mL・dL・L）</option>
-          <option value="omosa">重さ（g・kg・t）</option>
-          <option value="menseki">面積（cm²・m²・a・ha・km²）</option>
-          <option value="jikan">時間（秒・分・時間・日）</option>
+      <label>学年：
+        <select id="tani-gakunen" onchange="taniHyoujiKousin()">
+          <option value="2">2年まで（mm・cm・m／mL・dL・L／日・時・分）</option>
+          <option value="3">3年まで（＋km／g・kg／秒）</option>
+          <option value="4" selected>4年まで（＋cm²・m²・km²）</option>
+          <option value="5">5年まで（＋cm³・m³）</option>
+          <option value="all">学年で区切らない</option>
         </select>
       </label>
+      <div class="setsumei">※学習指導要領（平成29年告示）で、その学年までに習う単位だけを出します。</div>
+      <label>単位の種類：
+        <select id="tani-shurui" onchange="taniHyoujiKousin()"></select>
+      </label>
+      <label class="tani-fureru-label"><input type="checkbox" id="tani-fureru" checked onchange="taniHyoujiKousin()">
+        「触れる」とされている単位（t・a・ha）も使う</label>
       <label>なおす向き：
         <select id="tani-muki">
           <option value="ryouhou" selected>両方</option>
@@ -630,26 +635,68 @@
       settingHyoujiKousin();
     }
 
-    /** 単位設定で選んでいる種類の、なおし方の例を出す */
+    /**
+     * 単位設定の画面を、選んだ学年に合わせて作りなおす。
+     * その学年までに習っていない単位は、種類そのものを選べないようにする。
+     */
     function taniHyoujiKousin() {
+      let sel = document.getElementById("tani-shurui");
       let el = document.getElementById("tani-setsumei");
-      if (!el) {
+      if (!sel || !el) {
         return;
       }
-      let shurui = document.getElementById("tani-shurui").value;
-      if (shurui === "random") {
-        el.textContent = "※5種類ぜんぶから出します。";
-        return;
+      let gakunen = document.getElementById("tani-gakunen").value;
+      let fureruOK = document.getElementById("tani-fureru").checked;
+      let tsukaeru = taniTsukaeruShurui(gakunen, fureruOK);
+
+      // 「触れる」の切替は、その単位がある学年のときだけ意味がある
+      let fureruAru = TANI_KEY.some(function (s) {
+        return TANI_HYOU[s].kumi.some(function (k) {
+          return k.fureru && (gakunen === "all" || k.gaku <= Number(gakunen));
+        });
+      });
+      let fl = document.querySelector(".tani-fureru-label");
+      if (fl) {
+        fl.style.display = fureruAru ? "block" : "none";
       }
-      let hyou = TANI_HYOU[shurui];
-      if (!hyou) {
-        el.textContent = "";
-        return;
+
+      // 選んでいたものが使えなくなったら、ランダムに戻す
+      let ima = sel.value;
+      if (ima !== "random" && tsukaeru.indexOf(ima) < 0) {
+        ima = "random";
       }
-      el.textContent = "※" + hyou.na + "で出る組み合わせ：" +
-        hyou.kumi.map(function (k) {
-          return "1" + k.dai + "＝" + k.bai + k.shou;
-        }).join("　／　");
+      sel.innerHTML = "";
+      let opt = document.createElement("option");
+      opt.value = "random";
+      opt.textContent = "ランダム（下の" + tsukaeru.length + "種類から）";
+      sel.appendChild(opt);
+      tsukaeru.forEach(function (s) {
+        let kumi = taniTsukaeruKumi(s, gakunen, fureruOK);
+        let taniMei = [];
+        kumi.forEach(function (k) {
+          if (taniMei.indexOf(k.dai) < 0) { taniMei.push(k.dai); }
+          if (taniMei.indexOf(k.shou) < 0) { taniMei.push(k.shou); }
+        });
+        let o = document.createElement("option");
+        o.value = s;
+        o.textContent = TANI_HYOU[s].na + "（" + taniMei.join("・") + "）";
+        sel.appendChild(o);
+      });
+      sel.value = ima;
+
+      // 出る組み合わせを、学年つきで見せる
+      let miseruShurui = (ima === "random") ? tsukaeru : [ima];
+      let gyou = [];
+      miseruShurui.forEach(function (s) {
+        let kumi = taniTsukaeruKumi(s, gakunen, fureruOK);
+        gyou.push(TANI_HYOU[s].na + "：" + kumi.map(function (k) {
+          return "1" + k.dai + "＝" + k.bai + k.shou + "（" + k.gaku + "年" +
+            (k.fureru ? "・触れる" : "") + "）";
+        }).join("　／　"));
+      });
+      el.textContent = gyou.length
+        ? "※出る組み合わせ　" + gyou.join("　｜　")
+        : "※この学年で使える単位がありません。学年を上げてください。";
     }
 
     /**
@@ -863,77 +910,130 @@
        組み合わせは「1つ上がるごとに何倍か」が素直なものに絞り、
        mm から km のように差が大きすぎるものは入れていない。
        ========================================================= */
+    /*
+      gaku … その組み合わせの両方の単位を習い終わる学年
+      fureru … 学習指導要領で「触れるものとする」とされている単位
+               （3年のトン、4年のアール・ヘクタール）
+
+      小学校学習指導要領（平成29年告示）第2章第3節 算数 の本文による。
+        2年 C測定(1)ア(ア) 長さの単位（mm, cm, m）、かさの単位（mL, dL, L）
+        2年 C測定(2)ア(ア) 日，時，分について知り，それらの関係を理解する
+        3年 C測定(1)ア(ア) 長さの単位（km）、重さの単位（g, kg）
+        3年 C測定(2)ア(ア) 秒について知る
+        3年 内容の取扱い(7) 重さの単位のトン（t）について触れる
+        4年 B図形(4)ア(ア) 面積の単位（cm², m², km²）
+        4年 内容の取扱い(8) アール（a），ヘクタール（ha）についても触れる
+        5年 B図形(4)ア(ア) 体積の単位（cm³, m³）
+        5年 B図形(4)イ(ア) 体積の単位とこれまでに学習した単位との関係を考察する
+      ※6年に新しい量の単位は示されていない。
+    */
     var TANI_HYOU = {
       nagasa: {
         na: "長さ",
         kumi: [
-          { dai: "cm", shou: "mm", bai: 10 },
-          { dai: "m", shou: "cm", bai: 100 },
-          { dai: "m", shou: "mm", bai: 1000 },
-          { dai: "km", shou: "m", bai: 1000 }
+          { dai: "cm", shou: "mm", bai: 10, gaku: 2 },
+          { dai: "m", shou: "cm", bai: 100, gaku: 2 },
+          { dai: "m", shou: "mm", bai: 1000, gaku: 2 },
+          { dai: "km", shou: "m", bai: 1000, gaku: 3 }
         ]
       },
       kasa: {
         na: "かさ",
         kumi: [
-          { dai: "L", shou: "dL", bai: 10 },
-          { dai: "dL", shou: "mL", bai: 100 },
-          { dai: "L", shou: "mL", bai: 1000 }
+          { dai: "L", shou: "dL", bai: 10, gaku: 2 },
+          { dai: "dL", shou: "mL", bai: 100, gaku: 2 },
+          { dai: "L", shou: "mL", bai: 1000, gaku: 2 }
         ]
       },
       omosa: {
         na: "重さ",
         kumi: [
-          { dai: "kg", shou: "g", bai: 1000 },
-          { dai: "t", shou: "kg", bai: 1000 }
-        ]
-      },
-      menseki: {
-        na: "面積",
-        kumi: [
-          { dai: "m²", shou: "cm²", bai: 10000 },
-          { dai: "a", shou: "m²", bai: 100 },
-          { dai: "ha", shou: "a", bai: 100 },
-          { dai: "ha", shou: "m²", bai: 10000 },
-          { dai: "km²", shou: "ha", bai: 100 }
+          { dai: "kg", shou: "g", bai: 1000, gaku: 3 },
+          { dai: "t", shou: "kg", bai: 1000, gaku: 3, fureru: true }
         ]
       },
       jikan: {
         na: "時間",
         kumi: [
-          { dai: "分", shou: "秒", bai: 60 },
-          { dai: "時間", shou: "分", bai: 60 },
-          { dai: "日", shou: "時間", bai: 24 }
+          { dai: "日", shou: "時間", bai: 24, gaku: 2 },
+          { dai: "時間", shou: "分", bai: 60, gaku: 2 },
+          { dai: "分", shou: "秒", bai: 60, gaku: 3 }
+        ]
+      },
+      menseki: {
+        na: "面積",
+        kumi: [
+          { dai: "m²", shou: "cm²", bai: 10000, gaku: 4 },
+          { dai: "km²", shou: "m²", bai: 1000000, gaku: 4 },
+          { dai: "a", shou: "m²", bai: 100, gaku: 4, fureru: true },
+          { dai: "ha", shou: "a", bai: 100, gaku: 4, fureru: true },
+          { dai: "ha", shou: "m²", bai: 10000, gaku: 4, fureru: true },
+          { dai: "km²", shou: "ha", bai: 100, gaku: 4, fureru: true }
+        ]
+      },
+      taiseki: {
+        na: "体積",
+        kumi: [
+          { dai: "m³", shou: "cm³", bai: 1000000, gaku: 5 },
+          { dai: "L", shou: "cm³", bai: 1000, gaku: 5 },
+          { dai: "dL", shou: "cm³", bai: 100, gaku: 5 },
+          { dai: "m³", shou: "L", bai: 1000, gaku: 5 }
         ]
       }
     };
-    var TANI_KEY = ["nagasa", "kasa", "omosa", "menseki", "jikan"];
+    var TANI_KEY = ["nagasa", "kasa", "omosa", "jikan", "menseki", "taiseki"];
+
+    /** いまの学年と「触れる単位」の設定で使える組み合わせだけを取り出す */
+    function taniTsukaeruKumi(shurui, gakunen, fureruOK) {
+      let hyou = TANI_HYOU[shurui];
+      if (!hyou) {
+        return [];
+      }
+      return hyou.kumi.filter(function (k) {
+        if (gakunen !== "all" && k.gaku > Number(gakunen)) {
+          return false;
+        }
+        return fureruOK || !k.fureru;
+      });
+    }
+    /** いまの設定で問題を出せる単位の種類 */
+    function taniTsukaeruShurui(gakunen, fureruOK) {
+      return TANI_KEY.filter(function (s) {
+        return taniTsukaeruKumi(s, gakunen, fureruOK).length > 0;
+      });
+    }
 
     /**
      * 単位をなおす問題を1つ作る。
      * 大きい単位のほうの数を先に決めてから何倍かするので、
      * どちら向きでも答えがきれいな数になる。
      */
-    function taniMondaiTsukuru(shurui, muki, kazuKata) {
+    function taniMondaiTsukuru(shurui, muki, kazuKata, gakunen, fureruOK) {
       if (shurui === "random") {
-        shurui = TANI_KEY[Math.floor(Math.random() * TANI_KEY.length)];
+        let erabeiru = taniTsukaeruShurui(gakunen, fureruOK);
+        if (erabeiru.length === 0) {
+          return null;
+        }
+        shurui = erabeiru[Math.floor(Math.random() * erabeiru.length)];
       }
-      let hyou = TANI_HYOU[shurui];
-      if (!hyou) {
+      let kumiList = taniTsukaeruKumi(shurui, gakunen, fureruOK);
+      if (kumiList.length === 0) {
         return null;
       }
-      let kumi = hyou.kumi[Math.floor(Math.random() * hyou.kumi.length)];
+      let kumi = kumiList[Math.floor(Math.random() * kumiList.length)];
       let muki2 = muki;
       if (muki === "ryouhou") {
         muki2 = (Math.random() < 0.5) ? "dai-shou" : "shou-dai";
       }
 
-      // 大きい単位のほうの数。小数を使うときは 0.5 きざみも混ぜる
+      // 何倍かが大きい組み合わせ（1km²＝1000000m² など）で数まで大きくすると
+      // けた数が多くなりすぎるので、倍率に合わせて数をおさえる
+      let daiSaidai = (kumi.bai >= 1000000) ? 5 : (kumi.bai >= 10000 ? 8 : 12);
       let daiAtai;
       if (kazuKata === "shousuu" && Math.random() < 0.45) {
-        daiAtai = (Math.floor(Math.random() * 19) + 1) / 2;   // 0.5〜9.5
+        daiAtai = (Math.floor(Math.random() * (daiSaidai * 2 - 1)) + 1) / 2;
       } else {
-        daiAtai = Math.floor(Math.random() * 12) + 1;         // 1〜12
+        daiAtai = Math.floor(Math.random() * daiSaidai) + 1;
       }
       let shouAtai = Number((daiAtai * kumi.bai).toFixed(4));
       // 時間は 0.5時間＝30分 のような形になるので、分や秒が整数のときだけ使う
@@ -1656,13 +1756,15 @@
         let taniShurui = document.getElementById("tani-shurui").value;
         let taniMuki = document.getElementById("tani-muki").value;
         let taniKazu = document.getElementById("tani-kazu").value;
+        let taniGakunen = document.getElementById("tani-gakunen").value;
+        let taniFureru = document.getElementById("tani-fureru").checked;
         genzaiNoMondai = [];
 
         for (let i = 0; i < kaisu; i++) {
           let mondai = null;
           let yobi = null;
           for (let t = 0; t < 400; t++) {
-            let kouho = taniMondaiTsukuru(taniShurui, taniMuki, taniKazu);
+            let kouho = taniMondaiTsukuru(taniShurui, taniMuki, taniKazu, taniGakunen, taniFureru);
             if (kouho === null) {
               continue;
             }
