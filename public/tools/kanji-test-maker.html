@@ -277,12 +277,15 @@
 
   /* ---- print preview area（A4横・縦書き） ---- */
   .preview-wrap{max-width:640px;margin:0 auto;}
+  /* プレビューの中身は、印刷できる範囲（267mm×180mm）と同じ大きさにする。
+     以前は padding:16mm だったので中身が265mm×178mmになり、
+     画面で収まって見えても紙では列が1つはみ出すことがあった */
   #a4-frame, #a4-frame-answer{
     width:297mm;
     aspect-ratio:297/210;
     overflow:hidden;
     box-sizing:border-box;
-    padding:16mm;
+    padding:15mm;
     margin:0 auto;
     background:#ffffff;
     border-radius:4px;
@@ -330,19 +333,23 @@
     border-bottom:2px solid #000;
     margin-left:6px;
   }
-  #title-hyouji{
+  /* 解答ページは問題ページを複製して作る。そのとき重複を避けてidを外すので、
+     印刷される中身の見た目は id ではなく class で指定する。
+     id で指定していたときは、解答ページだけ display:flex などが効かず、
+     縦書きの段が紙の高さにそろわずに大きくはみ出していた */
+  .print-title{
     text-align:center;
     font-size:22px;
     border-bottom:3px solid var(--accent);
     padding-bottom:8px;
     margin:0 0 8px;
   }
-  #instruction-hyouji{
+  .print-instruction{
     font-size:13px;
     color:#444;
     margin:0 0 14px;
   }
-  #mondai{
+  .mondai-box{
     flex:1;
     min-height:0;
     display:flex;
@@ -359,7 +366,7 @@
     line-height:1.5;
   }
   /* 余白の計算のあいだだけ、列の高さを内容ぶんにして実際の使用量を測る */
-  #mondai.measuring .q-item{height:auto;}
+  .mondai-box.measuring .q-item{height:auto;}
   .mondai-row + .mondai-row{
     border-top:1px dashed #999;
     margin-top:6px;
@@ -500,8 +507,11 @@
     .no-print{display:none;}
     body{background:#fff;padding:0;}
     .preview-wrap{max-width:none;}
+    /* 印刷できる範囲は A4よこ − @page margin:15mm ＝ 267mm × 180mm。
+       レイアウトの計算（layoutMondai）もこの実寸で測っているので、
+       印刷のときも同じ値を使い、画面と紙でずれないようにする */
     #a4-frame, #a4-frame-answer{
-      width:auto;
+      width:267mm;
       aspect-ratio:auto;
       height:180mm;
       overflow:visible;
@@ -510,8 +520,7 @@
       box-shadow:none;
       border-radius:0;
     }
-    #title-hyouji{border-bottom:3px solid #000;}
-    #print-area-answer h2{border-bottom:3px solid #000;}
+    .print-title{border-bottom:3px solid #000;}
     /* 解答ページは2枚目に印刷する */
     .answer-page{margin-top:0;}
     #a4-frame-answer{break-before:page;page-break-before:always;}
@@ -581,6 +590,15 @@
       <label><input type="radio" name="format" value="kaki"> 書き取り（よみがな → 漢字）</label>
       <label><input type="radio" name="format" value="mix"> ミックス（両方をランダムに）</label>
     </div>
+
+    <div class="toggle-row">
+      <input type="checkbox" id="bothReadings" checked>
+      <label for="bothReadings" style="margin:0;">1つの漢字から、音読みの言葉と訓読みの言葉の両方を出す（出せる問題が増えます）</label>
+    </div>
+    <p style="font-size:12px;color:#8a93a3;margin:-4px 0 12px;">
+      ※たとえば「安」なら「安全（あんぜん）」と「安い（やすい）」の2問になります。
+      同じ漢字が2回出るのは、ほかの漢字を出しきったあとだけです。
+    </p>
 
     <label for="countInput">問題数</label>
     <div class="count-row">
@@ -695,9 +713,9 @@
         <div class="hizuke-ran"><span class="kaku-sen-s"></span>月<span class="kaku-sen-s"></span>日</div>
         <div class="hizuke-ran"><span class="kaku-sen-s"></span>年<span class="kaku-sen-s"></span>組<span class="kaku-sen-s"></span>番　名前<span class="kaku-sen-l"></span></div>
       </div>
-      <h2 id="title-hyouji"></h2>
-      <p id="instruction-hyouji"></p>
-      <div id="mondai"></div>
+      <h2 id="title-hyouji" class="print-title"></h2>
+      <p id="instruction-hyouji" class="print-instruction"></p>
+      <div id="mondai" class="mondai-box"></div>
       <div class="page-footer">
         <div class="tensuu-ran"><span class="kaku-sen"></span>点</div>
       </div>
@@ -1786,10 +1804,28 @@
     },
   ];
 
-  function kanjiListOf(grade){
+  /**
+   * 1つの漢字につき、データには語が2つまで入っている（例：比較／比べる）。
+   * 多くは音読みの語と訓読みの語の組になっていて、1026字のうち522字に2つ目がある。
+   * これまで2つ目を使っていなかったので、出せる問題が半分近く眠っていた。
+   *
+   * なお、学習指導要領（平成29年告示）国語の本文には、どの読み方を何年生で習うかの
+   * 定めはない。学年別漢字配当表に載っているのは漢字だけで、本文にも
+   * 「音訓」「音読み」「訓読み」という語は出てこない（原文を全文検索して確認）。
+   * そのため読み方を学年で割りふることはせず、
+   * データにある2つ目の語を、その漢字と同じ学年のまま足している。
+   */
+  function kanjiListOf(grade, futatsumeMo){
     const g = GRADE_KANJI.find(x => x.grade === grade);
     if(!g) return [];
-    return g.kanji.map(row => ({ char: row[0], word: row[1], yomi: row[2], hint: row[3], example: row[4] || '' }));
+    const list = [];
+    g.kanji.forEach(row => {
+      list.push({ char: row[0], word: row[1], yomi: row[2], hint: row[3], example: row[4] || '', banme: 1 });
+      if(futatsumeMo && row[5] && row[6]){
+        list.push({ char: row[0], word: row[5], yomi: row[6], hint: row[7] || '', example: '', banme: 2 });
+      }
+    });
+    return list;
   }
 
   const gradeSelect = document.getElementById('gradeSelect');
@@ -1889,8 +1925,13 @@
   // ---- 出題する漢字を選ぶ機能（学年から自動作成モードの絞り込み） ----
   let selectedKanjiChars = new Set();
 
+  function bothReadingsOn(){
+    const el = document.getElementById('bothReadings');
+    return el ? el.checked : false;
+  }
+
   function currentPool(){
-    const full = kanjiListOf(currentGrade());
+    const full = kanjiListOf(currentGrade(), bothReadingsOn());
     if(kanjiPickerToggle.checked){
       return full.filter(entry => selectedKanjiChars.has(entry.char));
     }
@@ -2038,6 +2079,10 @@
   document.querySelectorAll('input[name="format"]').forEach(el => el.addEventListener('change', markDirty));
   countInput.addEventListener('input', markDirty);
   titleInput.addEventListener('input', markDirty);
+  document.getElementById('bothReadings').addEventListener('change', () => {
+    updatePoolSizeNote();
+    markDirty();
+  });
 
   document.querySelectorAll('[data-count]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -2164,8 +2209,21 @@
     if(count > pool.length) count = pool.length;
     countInput.value = String(count);
 
+    // まず1つの漢字につき1問ずつ選び、足りないぶんだけ2つ目の読みを足す。
+    // こうしないと、10問のうち同じ漢字が2回出るといったことが起きる
     const shuffled = shuffle(pool);
-    const chosen = shuffled.slice(0, count);
+    const tsukatta = new Set();
+    const hitotsume = [];
+    const nokori = [];
+    shuffled.forEach(entry => {
+      if(tsukatta.has(entry.char)){
+        nokori.push(entry);
+      }else{
+        tsukatta.add(entry.char);
+        hitotsume.push(entry);
+      }
+    });
+    const chosen = hitotsume.concat(shuffle(nokori)).slice(0, count);
 
     currentQuestions = chosen.map(entry => {
       let qType = format;
