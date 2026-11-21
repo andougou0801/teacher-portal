@@ -45,8 +45,17 @@ export function go(name, params = {}) {
   }
   next.classList.remove("is-leaving", "is-in");
   next.classList.add("is-active");
-  // 1コマ おいてから 動かす（同じコマだと アニメーションが 動かない）
-  requestAnimationFrame(() => requestAnimationFrame(() => next.classList.add("is-in")));
+  // 1コマ おいてから 動かす（同じコマだと アニメーションが 動かない）。
+  // ★タブが うしろに あるときは requestAnimationFrame が 止まるので、
+  //   タイマーでも 同じことを する。これが ないと 画面が まっ白のままになる。
+  let shown = false;
+  const showIt = () => {
+    if (shown) return;
+    shown = true;
+    next.classList.add("is-in");
+  };
+  requestAnimationFrame(() => requestAnimationFrame(showIt));
+  setTimeout(showIt, 60);
   current = name;
   session.touch();
   const fn = SCREENS[name];

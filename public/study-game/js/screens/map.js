@@ -22,6 +22,10 @@ const REWARD_BY_UNIT = {
 };
 
 export function enter() {
+  if (!state.slot) {
+    go("start");
+    return;
+  }
   const body = $("#map-body");
   clear(body);
 

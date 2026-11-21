@@ -2,11 +2,19 @@
 // 文字入力は1か所もない（出席ばんごうと かおを えらぶだけ）。
 import { $, el, clear, toast } from "../util.js";
 import { face } from "../icons.js";
-import { listSlots, createSlot, openSlot, MAX_SLOTS, state, deviceDay } from "../store.js";
+import {
+  listSlots,
+  createSlot,
+  openSlot,
+  MAX_SLOTS,
+  state,
+  deviceDay,
+  saveSettings,
+} from "../store.js";
 import { limitSec } from "../session.js";
 import { units } from "../data.js";
 import { refreshUnlocks } from "../srs.js";
-import { go } from "../app.js";
+import { go, applySettings } from "../app.js";
 import { sfx } from "../audio.js";
 
 let pickedNo = 0;
@@ -131,6 +139,23 @@ function confirmWho() {
 
 function install() {
   $("#btn-new").addEventListener("click", () => go("who"));
+
+  // 音は はじめ オフ（教室で いっせいに 鳴らないように）。
+  // 家で あそぶ子が すぐ つけられるよう、はじめの画面に 大きなボタンを 置く。
+  const soundBtn = $("#btn-sound");
+  const paintSound = () => {
+    const on = state.settings.sound !== false;
+    soundBtn.textContent = on ? "🔊 おと オン" : "🔈 おと オフ";
+    soundBtn.setAttribute("aria-pressed", String(on));
+  };
+  paintSound();
+  soundBtn.addEventListener("click", () => {
+    state.settings.sound = state.settings.sound === false;
+    saveSettings();
+    applySettings();
+    paintSound();
+    if (state.settings.sound) sfx.item();
+  });
   $("#who-ok").addEventListener("click", () => {
     if (pickedNo <= 0) {
       toast("① じぶんの ばんごうを えらんでね");
@@ -151,10 +176,8 @@ function install() {
   const start = () => {
     clearTimeout(pressTimer);
     pressTimer = setTimeout(() => {
-      if (!state.slot) {
-        const slots = listSlots();
-        if (slots.length) openSlot(slots[slots.length - 1].slot);
-      }
+      // ★ここで だれかの記録を かってに 開かない（前の子の まちが 見えてしまう）。
+      //   子どもを えらぶ必要の ある きのうは、せんせいモードの 中で 知らせる。
       sfx.item();
       go("teacher", { setup: true });
     }, 3000);

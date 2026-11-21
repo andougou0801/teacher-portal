@@ -69,7 +69,9 @@ export function answer(skillId, correct) {
     if (!r.first) r.first = today;
   } else {
     r.stage = clamp(r.stage - 1, 0, GAP.length - 1);
-    r.stageDay = today;
+    // ★ここで stageDay を さわらない。
+    //   さわると「1回まちがえた日は、そのあと 何回 できても 段が 上がらない」になり、
+    //   まちがえた子だけ いつまでも すすまなくなる。
     r.due = addDays(today, 1);
   }
 

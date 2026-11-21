@@ -60,8 +60,9 @@ const isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
 
 /* ================= 既定の形 ================= */
 const DEF_META = { schemaVersion: SCHEMA, slots: [] };
-// autoSpeak（じどう読み上げ）は はじめ オフ。教室で30台が いっせいに鳴るのを さけるため。
-const DEF_SETTINGS = { sound: true, speech: true, autoSpeak: false, textSize: 1 };
+// ★音は はじめ オフ。教室で30台が いっせいに 鳴ると、先生の しじが とおらなくなるため。
+//   家で つかうときは、はじめの画面の スピーカーボタンで すぐ つけられる。
+const DEF_SETTINGS = { sound: false, speech: true, autoSpeak: false, textSize: 1 };
 const DEF_TEACHER = { pin: "", minutes: DEFAULT_MINUTES, classTimer: 0, unlockLevel: 0 };
 
 function defProfile(no, faceIndex) {
@@ -78,6 +79,10 @@ function defProgress() {
     unlockedUnits: ["u01"],
     teacherUnlock: 0,
   };
+}
+
+export function newToday() {
+  return defToday();
 }
 
 function defToday() {
@@ -102,13 +107,16 @@ const K_DAY = "sg:day";
 
 export function deviceDay() {
   const v = readJSON(K_DAY, { d: dayKey(), sec: 0 }, isObj);
-  if (v.d !== dayKey()) return { d: dayKey(), sec: 0 };
-  return v;
+  if (v.d === dayKey()) return v;
+  // ★記録のほうが 先の日づけ＝時計を まえに もどされた、ということ。
+  //   その場合は 0 に もどさず、そのまま 数えつづける。
+  if (dayDiff(dayKey(), v.d) < 0) return v;
+  return { d: dayKey(), sec: 0 };
 }
 
-export function bumpDeviceDay() {
+export function bumpDeviceDay(sec = 1) {
   const v = deviceDay();
-  v.sec = (v.sec | 0) + 1;
+  v.sec = (v.sec | 0) + sec;
   writeRaw(K_DAY, JSON.stringify(v));
   return v.sec;
 }

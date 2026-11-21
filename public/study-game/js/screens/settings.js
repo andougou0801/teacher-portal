@@ -16,6 +16,7 @@ import {
   deviceDay,
 } from "../store.js";
 import { units, allSkills, skillMeta } from "../data.js";
+import { moya } from "../icons.js";
 import { rec, refreshUnlocks } from "../srs.js";
 import * as session from "../session.js";
 import * as speech from "../speech.js";
@@ -348,9 +349,15 @@ function renderTeacher(body) {
   unlock.appendChild(el("p", "note", "単元を おして ひらくこともできます（そこまで ぜんぶ 開きます）"));
   const unitRow = el("div", "row");
   units().forEach((u, i) => {
-    const b = el("button", "toggle", `${String(i + 1).padStart(2, "0")} ${u.title}`);
+    const b = el("button", "toggle");
     b.type = "button";
     b.style.minWidth = "auto";
+    // 絵（その単元の もやもや）も つけて、ぱっと 見分けられるようにする
+    b.innerHTML = `<span style="display:inline-block;width:26px;height:26px;vertical-align:-6px">${moya(
+      u.monster,
+      "normal",
+      26,
+    )}</span> ${String(i + 1).padStart(2, "0")} ${u.title}`;
     b.addEventListener("click", () => {
       openUpTo(i + 1, 2);
       toast(`${u.title} まで ひらきました`);
@@ -514,6 +521,10 @@ function renderTeacher(body) {
 
 /** その単元まで まとめて ひらく（累積開放。欠席・転入の子が 1回で 追いつける） */
 function openUpTo(unitNo, step) {
+  if (!state.slot) {
+    toast("先に 子どもを えらんでください（はじめの画面で ばんごうを おす）", 4000);
+    return;
+  }
   const list = units();
   state.progress.teacherUnlock = unitNo;
   const openIds = list.slice(0, unitNo).map((u) => u.unitId);

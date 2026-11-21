@@ -7,8 +7,13 @@ import { state, save } from "../store.js";
 import { units, unitMeta, skillMeta } from "../data.js";
 import { masteredByPower, masteredCount, isMastered } from "../srs.js";
 import { sfx } from "../audio.js";
+import { go } from "../app.js";
 
 export function enterAvatar() {
+  if (!state.slot) {
+    go("start");
+    return;
+  }
   const body = $("#avatar-body");
   clear(body);
   const p = state.progress;
@@ -63,6 +68,10 @@ export function enterAvatar() {
 }
 
 export function enterZukan() {
+  if (!state.slot) {
+    go("start");
+    return;
+  }
   const body = $("#zukan-body");
   clear(body);
   const p = state.progress;
@@ -109,6 +118,10 @@ export function enterZukan() {
 }
 
 export function enterRecord() {
+  if (!state.slot) {
+    go("start");
+    return;
+  }
   const body = $("#record-body");
   clear(body);
 

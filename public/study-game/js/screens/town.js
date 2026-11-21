@@ -1,7 +1,7 @@
 // まちの画面（ハブ）。ここから全部へ1タップで行ける。
 // ★町は「学んだぶん」だけ変わる。時間がたっても1ドットも変わらない。
 import { $, el, clear, toast, sleep } from "../util.js";
-import { buildingShapeMarkup, moya, MOYA_NAMES } from "../icons.js";
+import { buildingShapeMarkup, moya, MOYA_NAMES, iconShape } from "../icons.js";
 import { BUILDINGS, MATERIALS, MAT_ORDER, WEARS, TITLES, buildingByUnit } from "../content.js";
 import { state, save } from "../store.js";
 import { units, unitMeta } from "../data.js";
@@ -21,14 +21,24 @@ const HELLO = [
   "きょうの もんだい、がんばろう",
   "ぼく、ここに すんでるよ",
   "{no}ばんと いっしょだと たのしい",
+  "はなが ふえて きれいだね",
+  "きのうの もんだい、おぼえてる？",
+  "つぎは なにを たてるのかな",
+  "ここから まちが よく 見えるよ",
+  "{no}ばん、ゆっくりで いいよ",
+  "おはよう！ きょうも よろしく",
 ];
 
+// おすたびに つぎの ことばに かわる（なかまごとに おぼえておく）
+const greetCount = new Map();
+
 function greetIndex(unitId) {
-  // 日によって ことばが かわる（ランダムではなく、日づけと なかまで きまる）
   const day = new Date().getDate();
   let n = day;
   for (const ch of unitId) n += ch.charCodeAt(0);
-  return n % HELLO.length;
+  const extra = greetCount.get(unitId) || 0;
+  greetCount.set(unitId, extra + 1);
+  return (n + extra) % HELLO.length;
 }
 
 function tree(x, y) {
@@ -41,6 +51,12 @@ function tree(x, y) {
 }
 
 export function enter() {
+  // 子どもを えらんでいないのに ひらかれたら、はじめの画面へ もどす
+  // （先生モードの セットアップ直後などに ここへ 来ることがある）
+  if (!state.slot) {
+    go("start");
+    return;
+  }
   refreshUnlocks(units());
   render();
 }
@@ -97,8 +113,35 @@ function render() {
   svg += `<rect x="0" y="330" width="${W}" height="${H - 330}" fill="#5BBF6A"/>`;
   svg += `<path d="M0 420q250 30 500 0t500 0" stroke="#C98A4B" stroke-width="22" fill="none"/>`;
 
-  // 木と池（うごかない かざり。ずっと動く背景は 入れない）
+  // 木（うごかない かざり。ずっと動く背景は 入れない）
   svg += tree(690, 296) + tree(960, 300) + tree(240, 530);
+
+  // ★「ばっちり おぼえた」が 1つ ふえるごとに、まちに 花が 1つ ふえる。
+  //   たてものは なかなか 建たないので、毎日の すこしの がんばりが
+  //   目に見えるように するため（時間では 1つも ふえない）。
+  const mastered = masteredCount();
+  // たてものが ぜんぶ たったあとも、まちは そだちつづける
+  // （5つ おぼえるごとに、まちの どうぶつが 1ひき ふえる）
+  const animals = ["cat", "dog", "rabbit", "fish"];
+  for (let i = 0; i < Math.floor(mastered / 5); i++) {
+    const ax = 150 + ((i * 211) % 760);
+    const ay = 470 + ((i * 67) % 70);
+    svg += `<g transform="translate(${ax} ${ay}) scale(0.5)">${iconShape(animals[i % animals.length])}</g>`;
+  }
+
+  const flowers = mastered;
+  for (let i = 0; i < flowers; i++) {
+    const fx = 60 + ((i * 137) % 880);
+    const fy = 440 + ((i * 53) % 90);
+    const color = ["#F58BB0", "#F2B23C", "#E4564B", "#9A7FD1"][i % 4];
+    svg += `<g transform="translate(${fx} ${fy}) scale(0.5)">
+      <path d="M0 26V8" stroke="#4E9B52" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="0" cy="0" r="8" fill="${color}" stroke="#2B2A28" stroke-width="2.5"/>
+      <circle cx="-9" cy="6" r="7" fill="${color}" stroke="#2B2A28" stroke-width="2.5"/>
+      <circle cx="9" cy="6" r="7" fill="${color}" stroke="#2B2A28" stroke-width="2.5"/>
+      <circle cx="0" cy="7" r="4" fill="#FFE08A" stroke="#2B2A28" stroke-width="2"/>
+    </g>`;
+  }
 
   const built = BUILDINGS.filter((b) => p.buildings[b.id]?.built);
   const open = p.unlockedUnits || ["u01"];
@@ -173,7 +216,7 @@ function render() {
     if (next) {
       tip.textContent = `つぎは ${next.name}（${MATERIALS[next.mat].name} あと ${Math.max(0, next.cost - next.have)}）`;
     } else if (built.length >= BUILDINGS.length) {
-      tip.textContent = "まちが ぜんぶ できた！すごい！";
+      tip.textContent = "まちが ぜんぶ できた！ おぼえるたびに はなと どうぶつが ふえるよ";
     } else {
       tip.textContent = "ぼうけんに いって つぎの ばしょを ひらこう";
     }

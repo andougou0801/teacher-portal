@@ -94,9 +94,10 @@ async function buildQueue(params) {
   });
 
   // ② まえに 正解した スキルの「たしかめ」（12問ぶん あとに もう一度 出す約束）
-  const confirms = takeDueConfirms(2);
+  //    この単元の ぶんだけ 取り出す（ほかの単元の 予約は のこしておく。
+  //    取り出して 捨てると、その たしかめは 二度と 来なくなる）
+  const confirms = takeDueConfirms(2, (skillId) => skills.some((s) => s.id === skillId));
   for (const c of confirms) {
-    if (!skills.some((s) => s.id === c.skill)) continue;
     const picked = pickItems(unit, { skill: c.skill, level: rec(c.skill).lv, count: 1, exclude: used });
     if (picked[0]) {
       used.add(picked[0].id);
@@ -136,11 +137,13 @@ async function buildQueue(params) {
 }
 
 /** 「12問あとに たしかめる」の予約から、いま出すぶんを 取り出す */
-function takeDueConfirms(max) {
+function takeDueConfirms(max, accept) {
   const list = state.today.pendingConfirm;
   if (!Array.isArray(list) || !list.length) return [];
   const now = state.today.items || 0;
-  const due = list.filter((c) => c && typeof c.at === "number" && c.at <= now).slice(0, max);
+  const due = list
+    .filter((c) => c && typeof c.at === "number" && c.at <= now && (!accept || accept(c.skill)))
+    .slice(0, max);
   if (due.length) {
     state.today.pendingConfirm = list.filter((c) => !due.includes(c));
     save("today");
@@ -254,16 +257,26 @@ async function runLoop() {
   while (answered < queue.length && !stop) {
     let item = queue[answered];
     // うまくいっていない日は、のこりを やさしくして「できた」で おわらせる
-    if (rescued && stageInfo.unitData) {
-      const easier = pickItems(stageInfo.unitData, {
-        skill: item.skill,
-        level: 1,
-        count: 1,
-        exclude: new Set([item.id]),
-      });
-      if (easier[0]) {
-        item = easier[0];
-        queue[answered] = item;
+    if (rescued) {
+      // ふくしゅう（いろいろな単元）でも きくように、その問題の単元から えらび直す
+      const unitId = skillMeta(item.skill)?.unitId;
+      try {
+        const u = unitId ? await loadUnit(unitId) : stageInfo.unitData;
+        const easier = u
+          ? pickItems(u, {
+              skill: item.skill,
+              level: 1,
+              count: 1,
+              // いま並んでいる問題と おなじものを 出さない
+              exclude: new Set(queue.map((q) => q.id)),
+            })
+          : [];
+        if (easier[0]) {
+          item = easier[0];
+          queue[answered] = item;
+        }
+      } catch {
+        /* よみこめなくても そのままの問題を 出す */
       }
     }
     paintDots();
@@ -314,7 +327,7 @@ async function runLoop() {
               skill: item.skill,
               level: Math.max(1, rec(item.skill).lv),
               count: 1,
-              exclude: new Set([item.id]),
+              exclude: new Set(queue.map((q) => q.id)),
             });
             // ★入れ足すのではなく、あとの1問と 入れかえる。
             //   足すと まるの数が ふえて、まちがえた子ほど ゴールが とおくなって見える。
@@ -408,5 +421,8 @@ $("#btn-quit").addEventListener("click", () => {
   running = false;
   cancelQuiz();
   $("#judge").hidden = true;
+  // とちゅうで やめると ステージは 最初からに なる。だまって 消えると
+  // 1年生には「きえた」と 見えるので、ひとこと 出す。
+  toast("とちゅうの ぼうけんは、つぎは さいしょから やりなおすよ。といた もんだいは きろくに のこるよ", 4500);
   go("town");
 });

@@ -2,7 +2,7 @@
 // ・1秒ごとに数えて、すぐ保存する（タブを閉じても巻きもどらない）
 // ・画面がかくれたとき、60秒さわらなかったときは止める
 // ・時間を使いきったら「れんしゅうモード」になり、ざいりょうも建物も増えない（延長はできない）
-import { state, save, saveNow, bumpDeviceDay } from "./store.js";
+import { state, save, saveNow, bumpDeviceDay, newToday } from "./store.js";
 import { dayKey, dayDiff } from "./util.js";
 import { DEFAULT_MINUTES, DAILY_MATERIAL_CAP } from "./content.js";
 
@@ -72,33 +72,27 @@ export function start() {
         return;
       }
       // 日がかわったので、きょうの分をリセットする
-      state.days.push({
-        d: state.today.day,
-        items: state.today.items,
-        ok: state.today.ok,
-        newSkills: state.today.newSkills || [],
-      });
-      if (state.days.length > 60) state.days = state.days.slice(-60);
-      state.today = {
-        day: dayKey(),
-        sec: 0,
-        items: 0,
-        ok: 0,
-        mats: 0,
-        stages: {},
-        breakDone: false,
-        newSkills: [],
-        hardest: null,
-        finished: false,
-        built: [],
-      };
+      // 何もしていない日は 記録に のこさない
+      if (state.today.items > 0) {
+        state.days.push({
+          d: state.today.day,
+          items: state.today.items,
+          ok: state.today.ok,
+          newSkills: state.today.newSkills || [],
+        });
+        if (state.days.length > 60) state.days = state.days.slice(-60);
+      }
+      // ★形は store.js の newToday() に そろえる（ここで 手書きすると 中身が ずれる）
+      state.today = newToday();
       saveNow();
       emit();
       return;
     }
     const was = isOver();
     state.today.sec = (state.today.sec || 0) + 1;
-    bumpDeviceDay(); // 端末ぜんたいの合計（枠を作り直して やり直すのを 見つけるため）
+    // 端末ぜんたいの合計（枠を作り直して やり直すのを 見つけるため）。
+    // 毎秒 書くと 古い端末では おもいので、5秒ごとに まとめて 書く。
+    if (state.today.sec % 5 === 0) bumpDeviceDay(5);
     save("today");
     // おわりが とつぜん 来ると びっくりするので、2分前に 1回だけ 知らせる
     if (remainSec() === 120) {
