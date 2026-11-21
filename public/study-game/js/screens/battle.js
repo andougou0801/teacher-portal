@@ -13,7 +13,11 @@ import { go } from "../app.js";
 import { REWARD_BY_UNIT } from "./map.js";
 import { atk, monsterHp, grantWeaponIfCleared } from "../rpg.js";
 
-const QUESTIONS_PER_STAGE = 8;
+// 1回（15分）の問題数は 合計20問。
+// 小1が 1つの ことに 集中できる 長さから 決めた（6+8+6）。
+// ここを かえると、けいけんちの 計算（第2段）も かえる必要がある。
+const QUESTIONS_BY_STAGE = { review: 6, focus: 8, free: 6 };
+let target = 8;
 let running = false;
 let stop = false;
 let queue = [];
@@ -69,14 +73,40 @@ export async function enter(params = {}) {
 async function buildQueue(params) {
   queue = [];
   if (params.mode === "review") {
+    target = QUESTIONS_BY_STAGE.review;
     const due = dueSkills();
     const byUnit = new Map();
+    const used = new Set();
     for (const d of due) {
+      if (queue.length >= target) break;
       const unitId = d.skill.unitId;
       if (!byUnit.has(unitId)) byUnit.set(unitId, await loadUnit(unitId));
       const unit = byUnit.get(unitId);
-      const picked = pickItems(unit, { skill: d.skill.id, level: rec(d.skill.id).lv, count: 1 });
-      if (picked[0]) queue.push(picked[0]);
+      const picked = pickItems(unit, { skill: d.skill.id, level: rec(d.skill.id).lv, count: 1, exclude: used });
+      if (picked[0]) {
+        used.add(picked[0].id);
+        queue.push(picked[0]);
+      }
+    }
+    // 期限の来た問題が 少ない日でも、6問に そろえる
+    // （3問だけの ステージに なると、ごほうびの つり合いが くずれるため）
+    if (queue.length < target) {
+      const open = state.progress.unlockedUnits || ["u01"];
+      const candidates = [];
+      for (const id of open) {
+        const m = unitMeta(id);
+        for (const sk of m?.skills || []) candidates.push({ id, skill: sk.id, stage: rec(sk.id).stage });
+      }
+      candidates.sort((a, b) => a.stage - b.stage);
+      for (const c of candidates) {
+        if (queue.length >= target) break;
+        if (!byUnit.has(c.id)) byUnit.set(c.id, await loadUnit(c.id));
+        const picked = pickItems(byUnit.get(c.id), { skill: c.skill, level: rec(c.skill).lv, count: 1, exclude: used });
+        if (picked[0]) {
+          used.add(picked[0].id);
+          queue.push(picked[0]);
+        }
+      }
     }
     return {
       key: "review",
@@ -88,6 +118,10 @@ async function buildQueue(params) {
     };
   }
 
+  // はじめの「きょうの しごと」だけ8問。
+  // えらんで ぼうけん と、2回目からの しごとは6問（1日ぜんぶで だいたい20問に なるように）。
+  const doneAlready = !!(state.today.stages || {})[`focus:${params.unitId || "u01"}`];
+  target = params.kind === "free" || doneAlready ? QUESTIONS_BY_STAGE.free : QUESTIONS_BY_STAGE.focus;
   const unitId = params.unitId || "u01";
   const unit = await loadUnit(unitId);
   const meta = unitMeta(unitId);
@@ -121,10 +155,10 @@ async function buildQueue(params) {
     return ra.stage - rb.stage || ra.seen - rb.seen;
   });
   let guard = 0;
-  while (queue.length < QUESTIONS_PER_STAGE && guard++ < 10) {
+  while (queue.length < target && guard++ < 10) {
     let added = false;
     for (const s of ordered) {
-      if (queue.length >= QUESTIONS_PER_STAGE) break;
+      if (queue.length >= target) break;
       const picked = pickItems(unit, { skill: s.id, level: rec(s.id).lv, count: 1, exclude: used });
       if (picked[0]) {
         used.add(picked[0].id);
@@ -387,7 +421,7 @@ async function runLoop() {
                 }
               }
               if (at >= 0) queue[at] = again[0];
-              else if (queue.length < QUESTIONS_PER_STAGE + 2) queue.push(again[0]);
+              else if (queue.length < target + 2) queue.push(again[0]);
             }
           } catch {
             /* よみこめなくても 止めない */

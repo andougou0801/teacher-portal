@@ -66,7 +66,7 @@ export function enter() {
         iconHtml: moya(fm.monster, "normal", 64),
         reward: REWARD_BY_UNIT[focus] || "ki",
         done: !!done[`focus:${focus}`],
-        onGo: () => go("battle", { mode: "unit", unitId: focus }),
+        onGo: () => go("battle", { mode: "unit", unitId: focus, kind: "focus" }),
       }),
     );
   }
@@ -126,7 +126,7 @@ function openPicker(openUnits) {
       <span class="sc-reward"><i style="display:inline-block;width:16px;height:16px;border-radius:4px;background:${MATERIALS[REWARD_BY_UNIT[id] || "ki"].color}"></i>${MATERIALS[REWARD_BY_UNIT[id] || "ki"].name}</span>`;
     btn.addEventListener("click", () => {
       overlay.hidden = true;
-      go("battle", { mode: "unit", unitId: id });
+      go("battle", { mode: "unit", unitId: id, kind: "free" });
     });
     sheet.appendChild(btn);
   }
