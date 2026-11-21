@@ -19,6 +19,7 @@ const CORE = [
   "js/session.js",
   "js/savecode.js",
   "js/quiz.js",
+  "js/rpg.js",
   "js/screens/start.js",
   "js/screens/town.js",
   "js/screens/map.js",

@@ -11,6 +11,7 @@ import { ask, showHintNow, cancel as cancelQuiz } from "../quiz.js";
 import { sfx, resetStreak } from "../audio.js";
 import { go } from "../app.js";
 import { REWARD_BY_UNIT } from "./map.js";
+import { atk, monsterHp, grantWeaponIfCleared } from "../rpg.js";
 
 const QUESTIONS_PER_STAGE = 8;
 let running = false;
@@ -18,6 +19,9 @@ let stop = false;
 let queue = [];
 let stageInfo = null;
 let answered = 0;
+let hp = 0;
+let hpMax = 0;
+let hits = 0; // あてた回数（バーは これで 見せる＝1問で かならず 1こま 減る）
 let correctCount = 0;
 let gained = {};
 let wrongTries = {};
@@ -52,6 +56,10 @@ export async function enter(params = {}) {
     go("town");
     return;
   }
+  // もやもやの こさ（HP）を きめる。式は rpg.js を見ること。
+  hpMax = monsterHp(queue.length);
+  hp = hpMax;
+  hits = 0;
   paintMonster(stageInfo.monster, "normal");
   paintDots();
   await runLoop();
@@ -153,7 +161,36 @@ function takeDueConfirms(max, accept) {
 
 function paintMonster(id, mood) {
   const box = $("#battle-monster");
-  box.innerHTML = moya(id, mood, 110);
+  box.innerHTML = `<div class="moya-wrap">${moya(id, mood, 110)}</div><div class="hp-bar" id="hp-bar"></div>`;
+  paintHp();
+}
+
+/**
+ * もやもやの こさ（HP）。
+ * ★1問で けずれるのは いつも 全体の 1/(問題数) ぶん。
+ *   強くなっても HPが 同じだけ 上がるので、見た目の へり方は かわらない。
+ *   かわるのは「どの段の もやもやに 行けるか」のほう。
+ */
+function paintHp() {
+  const bar = $("#hp-bar");
+  if (!bar) return;
+  clear(bar);
+  const total = queue.length || 1;
+  // ★見せ方は「あてた回数」で決める。
+  //   こうげきりょくが 強くても HPが 同じだけ 上がるので、
+  //   へり方は いつも 1問＝1こま。さいごの1問で かならず 0になる。
+  const left = hp <= 0 ? 0 : Math.max(0, total - hits);
+  for (let i = 0; i < total; i++) {
+    const seg = el("i", i < left ? "" : "is-gone");
+    bar.appendChild(seg);
+  }
+  // こさが うすくなるほど、もやもやも うすく・小さく なる
+  const wrap = $("#battle-monster .moya-wrap");
+  if (wrap) {
+    const r = total > 0 ? left / total : 0;
+    wrap.style.opacity = String(0.55 + 0.45 * r);
+    wrap.style.transform = `scale(${0.82 + 0.18 * r})`;
+  }
 }
 
 function paintDots() {
@@ -307,6 +344,11 @@ async function runLoop() {
         }
       }
       const mat = giveMaterial(item, true);
+      // ★とどめ：さいごの問題に 正解したら、のこりが いくつでも 0にする
+      const isLast = answered >= queue.length - 1;
+      hits++;
+      hp = isLast ? 0 : Math.max(0, hp - atk());
+      paintHp();
       $("#battle-monster").classList.add("is-hit");
       setTimeout(() => $("#battle-monster").classList.remove("is-hit"), 260);
       floatGain(mat);
@@ -397,6 +439,7 @@ function finishStage() {
   // ★れんしゅうモード（きょうの ぶんが おわったあと）では、なかまも つぎの場所も ふえない。
   //   「おわり」と言いながら ごほうびが 出つづけると、おわれなくなるため。
   let newFriend = null;
+  let newWeapon = null;
   if (!session.isPractice()) {
     if (stageInfo.unitId) {
       const p = state.progress;
@@ -404,6 +447,8 @@ function finishStage() {
         p.friends.push(stageInfo.unitId);
         newFriend = stageInfo.unitId;
       }
+      // その単元を ぜんぶ ばっちりに したら、武器が 1本 もらえる（運では 出さない）
+      newWeapon = grantWeaponIfCleared(stageInfo.unitId);
     }
     refreshUnlocks(units());
   }
@@ -415,6 +460,7 @@ function finishStage() {
     correctCount,
     gained,
     newFriend,
+    newWeapon,
   });
 }
 

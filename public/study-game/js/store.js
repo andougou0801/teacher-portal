@@ -78,6 +78,8 @@ function defProgress() {
     wearing: "",
     unlockedUnits: ["u01"],
     teacherUnlock: 0,
+    weapons: [],
+    weapon: "kinobo",
   };
 }
 
@@ -179,6 +181,8 @@ export function openSlot(slot) {
   if (!isObj(p.buildings)) p.buildings = {};
   if (!Array.isArray(p.friends)) p.friends = [];
   if (!Array.isArray(p.wears)) p.wears = [];
+  if (!Array.isArray(p.weapons)) p.weapons = [];
+  if (typeof p.weapon !== "string") p.weapon = "kinobo";
   if (!Array.isArray(p.unlockedUnits) || !p.unlockedUnits.length) p.unlockedUnits = ["u01"];
   if (!Array.isArray(state.profile.titles)) state.profile.titles = [];
 

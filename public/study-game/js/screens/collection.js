@@ -6,6 +6,7 @@ import { BUILDINGS, WEARS, TITLES, POWERS, starsFor } from "../content.js";
 import { state, save } from "../store.js";
 import { units, unitMeta, skillMeta } from "../data.js";
 import { masteredByPower, masteredCount, isMastered, totalByPower } from "../srs.js";
+import { WEAPONS, equipped, atk, level, nextWeapon } from "../rpg.js";
 import { sfx } from "../audio.js";
 import { go } from "../app.js";
 
@@ -48,6 +49,41 @@ export function enterAvatar() {
   body.appendChild(
     el("p", "note", "ちからは「ばっちり おぼえた」が ふえると のびるよ"),
   );
+
+  // ぶき（単元を ぜんぶ ばっちりに すると 1本 もらえる）
+  body.appendChild(el("h3", "", "ぶき"));
+  const now = equipped();
+  const atkCard = el("div", "card kv");
+  atkCard.innerHTML = `いまの ぶき：<b>${now.name}</b><br>こうげきりょく：<b>${atk()}</b>　レベル：<b>${level()}</b>`;
+  body.appendChild(atkCard);
+  const wgrid = el("div", "wear-grid");
+  for (const w of WEAPONS) {
+    const has = w.id === "kinobo" || (p.weapons || []).includes(w.id);
+    const cell = el("button", `zukan-cell${has ? "" : " is-locked"}`);
+    cell.type = "button";
+    cell.setAttribute("aria-pressed", String(now.id === w.id));
+    cell.innerHTML = `<span class="w-mark">${has ? "⚔" : "？"}</span><span>${has ? w.name : w.note}</span>`;
+    if (has) {
+      cell.addEventListener("click", () => {
+        p.weapon = w.id;
+        save("progress");
+        sfx.tap();
+        enterAvatar();
+      });
+    }
+    wgrid.appendChild(cell);
+  }
+  body.appendChild(wgrid);
+  const nx = nextWeapon();
+  if (nx) {
+    body.appendChild(
+      el(
+        "p",
+        "note",
+        `つぎの ぶきは「${nx.weapon.name}」。${nx.weapon.note}を ぜんぶ ばっちりに すると もらえるよ（いま ${Math.round(nx.progress * 100)}%）`,
+      ),
+    );
+  }
 
   // みにつけるもの（見た目だけ。学習の じゃまを しない）
   body.appendChild(el("h3", "", "みにつけるもの"));

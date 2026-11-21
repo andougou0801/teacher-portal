@@ -29,6 +29,15 @@ export function enterResult(params = {}) {
     wrap.appendChild(el("div", "", `${params.correctCount || 0} もん できた`));
   }
 
+  // 武器をもらった（単元を ぜんぶ ばっちりに したとき）
+  if (params.newWeapon) {
+    const box = el("div", "weapon-get");
+    box.innerHTML = `<div class="wg-name">${params.newWeapon.name}を てにいれた！</div>
+      <div class="wg-note">${params.newWeapon.note}を ぜんぶ おぼえた しるし</div>`;
+    wrap.appendChild(box);
+    sfx.levelup();
+  }
+
   const gains = el("div", "gain-list");
   const got = params.gained || {};
   const keys = Object.keys(got);
