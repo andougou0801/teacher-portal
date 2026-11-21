@@ -1,7 +1,7 @@
 // ちず。きょう行ける ところは3つだけ（えらぶのは 子ども）。
 // ★なにが もらえるかは 先に見せる（運ではないから 予告できる）。
 import { $, el, clear } from "../util.js";
-import { moya, icon } from "../icons.js";
+import { moya } from "../icons.js";
 import { MATERIALS } from "../content.js";
 import { state } from "../store.js";
 import { unitMeta } from "../data.js";
@@ -16,7 +16,7 @@ const REWARD_BY_UNIT = {
   u03: "ishi",
   u04: "ki",
   u05: "ishi",
-  u06: "nendo",
+  u06: "glass",
   u07: "glass",
   u08: "glass",
 };
@@ -45,9 +45,9 @@ export function enter() {
     body.appendChild(
       stageCard({
         key: "review",
-        title: "ふくしゅうの もり",
-        sub: `まえに まちがえた もんだい ${due.length}もん`,
-        iconHtml: icon("star", 64),
+        title: "もういちどの もり",
+        sub: `もういちど やる もんだい ${due.length}もん`,
+        iconHtml: moya("osaraimoya", "normal", 64),
         reward: "nendo",
         done: !!done.review,
         onGo: () => go("battle", { mode: "review" }),
@@ -130,7 +130,7 @@ function openPicker(openUnits) {
     });
     sheet.appendChild(btn);
   }
-  const close = el("button", "btn", "やめる");
+  const close = el("button", "btn", "とじる");
   close.type = "button";
   close.addEventListener("click", () => {
     overlay.hidden = true;

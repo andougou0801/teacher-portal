@@ -726,6 +726,1069 @@
       "answer": "8",
       "hint": "「ふえる」も たしざん",
       "reward": "ki"
+    },
+    {
+      "id": "u04-101",
+      "skill": "u04-sum5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "2と 3で いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 2,
+        "b": 3
+      },
+      "choices": [
+        "5",
+        "4",
+        "6"
+      ],
+      "answer": 0,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-102",
+      "skill": "u04-sum5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "1と 2で いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "star",
+        "a": 1,
+        "b": 2
+      },
+      "choices": [
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-103",
+      "skill": "u04-sum5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "2と 2で いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "balloon",
+        "a": 2,
+        "b": 2
+      },
+      "choices": [
+        "3",
+        "5",
+        "4"
+      ],
+      "answer": 2,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-104",
+      "skill": "u04-sum5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "3 + 1 は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 3,
+        "b": 1
+      },
+      "answer": "4",
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-105",
+      "skill": "u04-sum5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "1 + 4 は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "flower",
+        "a": 1,
+        "b": 4
+      },
+      "answer": "5",
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-106",
+      "skill": "u04-sum5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "2 + 1 は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 2,
+        "b": 1
+      },
+      "answer": "3",
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-107",
+      "skill": "u04-sum5",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "4に 1を たすと",
+        "いくつ？"
+      ],
+      "answer": "5",
+      "hint": "4から 1つ かぞえすすめよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-108",
+      "skill": "u04-sum5",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "2に 2を たすと",
+        "いくつ？"
+      ],
+      "answer": "4",
+      "hint": "ゆびで 2と 2を あわせよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-109",
+      "skill": "u04-sum5",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ゆびを 2ほん たてて、",
+        "もう 3ぼん。ぜんぶで？"
+      ],
+      "answer": "5",
+      "hint": "ゆびを ぜんぶ かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-110",
+      "skill": "u04-sum5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いくつと 2で",
+        "5に なる？"
+      ],
+      "answer": "3",
+      "hint": "2と あわせて 5に なる かずだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-111",
+      "skill": "u04-sum5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "1と いくつで",
+        "5に なる？"
+      ],
+      "answer": "4",
+      "hint": "1と あわせて 5に なる かずだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-112",
+      "skill": "u04-sum5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "3と いくつで",
+        "4に なる？"
+      ],
+      "answer": "1",
+      "hint": "3から 4まで いくつ かぞえるかな",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-113",
+      "skill": "u04-sum10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "4 + 1 は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 4,
+        "b": 1
+      },
+      "choices": [
+        "5",
+        "4",
+        "6"
+      ],
+      "answer": 0,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-114",
+      "skill": "u04-sum10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "2 + 1 は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "cat",
+        "a": 2,
+        "b": 1
+      },
+      "choices": [
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-115",
+      "skill": "u04-sum10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "1 + 3 は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "flower",
+        "a": 1,
+        "b": 3
+      },
+      "choices": [
+        "3",
+        "5",
+        "4"
+      ],
+      "answer": 2,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-116",
+      "skill": "u04-sum10",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "6に 3を たすと",
+        "いくつ？"
+      ],
+      "answer": "9",
+      "hint": "6から 3つ かぞえすすめよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-117",
+      "skill": "u04-sum10",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "5に 5を たすと",
+        "いくつ？"
+      ],
+      "answer": "10",
+      "hint": "ゆびで 5と 5を あわせよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-118",
+      "skill": "u04-sum10",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "7に 2を たすと",
+        "いくつ？"
+      ],
+      "answer": "9",
+      "hint": "7から 2つ かぞえすすめよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-119",
+      "skill": "u04-sum10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いくつと 4で",
+        "9に なる？"
+      ],
+      "answer": "5",
+      "hint": "9から 4を とると いくつかな",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-120",
+      "skill": "u04-sum10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "2と いくつで",
+        "8に なる？"
+      ],
+      "answer": "6",
+      "hint": "2から 8まで いくつ かぞえるかな",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-121",
+      "skill": "u04-sum10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いくつと 7で",
+        "10に なる？"
+      ],
+      "answer": "3",
+      "hint": "7から 10まで いくつ かぞえるかな",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-122",
+      "skill": "u04-word-awasete",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 2,
+        "b": 1
+      },
+      "choices": [
+        "3",
+        "2",
+        "4"
+      ],
+      "answer": 0,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-123",
+      "skill": "u04-word-awasete",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "star",
+        "a": 3,
+        "b": 2
+      },
+      "choices": [
+        "4",
+        "5",
+        "6"
+      ],
+      "answer": 1,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-124",
+      "skill": "u04-word-awasete",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "balloon",
+        "a": 1,
+        "b": 3
+      },
+      "choices": [
+        "3",
+        "5",
+        "4"
+      ],
+      "answer": 2,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-125",
+      "skill": "u04-word-awasete",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 4,
+        "b": 3
+      },
+      "choices": [
+        "7",
+        "6",
+        "8"
+      ],
+      "answer": 0,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-126",
+      "skill": "u04-word-awasete",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "flower",
+        "a": 5,
+        "b": 3
+      },
+      "choices": [
+        "7",
+        "8",
+        "9"
+      ],
+      "answer": 1,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-127",
+      "skill": "u04-word-awasete",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 6,
+        "b": 3
+      },
+      "choices": [
+        "8",
+        "10",
+        "9"
+      ],
+      "answer": 2,
+      "hint": "10の へやで かんがえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-128",
+      "skill": "u04-word-awasete",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "star",
+        "a": 4,
+        "b": 4
+      },
+      "answer": "8",
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-129",
+      "skill": "u04-word-awasete",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 6,
+        "b": 2
+      },
+      "answer": "8",
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-130",
+      "skill": "u04-word-awasete",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "balloon",
+        "a": 5,
+        "b": 4
+      },
+      "answer": "9",
+      "hint": "10の へやで かんがえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-131",
+      "skill": "u04-word-awasete",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あわせて 8こ。",
+        "あかは 3こ。しろは？"
+      ],
+      "answer": "5",
+      "hint": "ぜんぶから あかを とろう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-132",
+      "skill": "u04-word-awasete",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あわせて 9ひき。",
+        "ねこは 4ひき。いぬは？"
+      ],
+      "answer": "5",
+      "hint": "ぜんぶから ねこを とろう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-133",
+      "skill": "u04-word-awasete",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あわせて 7ひき。",
+        "うさぎは 4ひき。いぬは？"
+      ],
+      "answer": "3",
+      "hint": "ぜんぶから うさぎを とろう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-134",
+      "skill": "u04-shiki",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あわせる しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 2,
+        "b": 1
+      },
+      "choices": [
+        "2 + 1",
+        "2 − 1",
+        "1 + 1"
+      ],
+      "answer": 0,
+      "hint": "「あわせる」は たしざんだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-135",
+      "skill": "u04-shiki",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あわせる しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "star",
+        "a": 3,
+        "b": 2
+      },
+      "choices": [
+        "3 − 2",
+        "3 + 2",
+        "2 + 2"
+      ],
+      "answer": 1,
+      "hint": "「あわせる」は たしざんだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-136",
+      "skill": "u04-shiki",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あわせる しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 1,
+        "b": 3
+      },
+      "choices": [
+        "3 + 3",
+        "1 − 3",
+        "1 + 3"
+      ],
+      "answer": 2,
+      "hint": "「あわせる」は たしざんだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-137",
+      "skill": "u04-shiki",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あわせる しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "flower",
+        "a": 4,
+        "b": 3
+      },
+      "choices": [
+        "4 + 3",
+        "4 − 3",
+        "3 + 3"
+      ],
+      "answer": 0,
+      "hint": "「あわせる」は たしざんだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-138",
+      "skill": "u04-shiki",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あわせる しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "balloon",
+        "a": 5,
+        "b": 4
+      },
+      "choices": [
+        "5 − 4",
+        "5 + 5",
+        "5 + 4"
+      ],
+      "answer": 2,
+      "hint": "「あわせる」は たしざんだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-139",
+      "skill": "u04-shiki",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あわせる しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 6,
+        "b": 2
+      },
+      "choices": [
+        "6 + 2",
+        "6 − 2",
+        "2 + 2"
+      ],
+      "answer": 0,
+      "hint": "「あわせる」は たしざんだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-140",
+      "skill": "u04-shiki",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "3と 5を あわせる しきの",
+        "こたえは いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 3,
+        "b": 5
+      },
+      "answer": "8",
+      "hint": "しきは 3 + 5 だよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-141",
+      "skill": "u04-shiki",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "4と 2を あわせる しきの",
+        "こたえは いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "star",
+        "a": 4,
+        "b": 2
+      },
+      "answer": "6",
+      "hint": "しきは 4 + 2 だよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-142",
+      "skill": "u04-shiki",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "6と 3を あわせる しきの",
+        "こたえは いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 6,
+        "b": 3
+      },
+      "answer": "9",
+      "hint": "しきは 6 + 3 だよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-143",
+      "skill": "u04-shiki",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ねこが 4ひき いました。",
+        "2ひき きました。しきは？"
+      ],
+      "choices": [
+        "4 − 2",
+        "4 + 2",
+        "2 + 2"
+      ],
+      "answer": 1,
+      "hint": "ふえるから たしざんだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-144",
+      "skill": "u04-shiki",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "あめが 5こ あります。",
+        "3こ もらいます。しきは？"
+      ],
+      "choices": [
+        "5 + 3",
+        "5 − 3",
+        "3 + 3"
+      ],
+      "answer": 0,
+      "hint": "ふえるから たしざんだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-145",
+      "skill": "u04-shiki",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ある かずと 3を あわせて",
+        "8に なる。ある かずは？"
+      ],
+      "answer": "5",
+      "hint": "8から 3を とって かんがえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-146",
+      "skill": "u04-word-fueru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "りんごが 2こ。1こ ふえた。",
+        "いま いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 2,
+        "b": 1
+      },
+      "choices": [
+        "3",
+        "2",
+        "4"
+      ],
+      "answer": 0,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-147",
+      "skill": "u04-word-fueru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あめが 3こ。1こ ふえた。",
+        "いま いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 3,
+        "b": 1
+      },
+      "choices": [
+        "3",
+        "4",
+        "5"
+      ],
+      "answer": 1,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-148",
+      "skill": "u04-word-fueru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ふうせん 2こ。2こ ふえた。",
+        "いま いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "balloon",
+        "a": 2,
+        "b": 2
+      },
+      "choices": [
+        "3",
+        "5",
+        "4"
+      ],
+      "answer": 2,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-149",
+      "skill": "u04-word-fueru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "はなが 4こ。3こ ふえた。",
+        "いま いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "flower",
+        "a": 4,
+        "b": 3
+      },
+      "choices": [
+        "7",
+        "6",
+        "8"
+      ],
+      "answer": 0,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-150",
+      "skill": "u04-word-fueru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ほしが 5こ。3こ ふえた。",
+        "いま いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "star",
+        "a": 5,
+        "b": 3
+      },
+      "choices": [
+        "7",
+        "8",
+        "9"
+      ],
+      "answer": 1,
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-151",
+      "skill": "u04-word-fueru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あめが 6こ。3こ ふえた。",
+        "いま いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 6,
+        "b": 3
+      },
+      "choices": [
+        "8",
+        "10",
+        "9"
+      ],
+      "answer": 2,
+      "hint": "10の へやで かんがえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-152",
+      "skill": "u04-word-fueru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "あめが 5こ。4こ ふえた。",
+        "いま いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 5,
+        "b": 4
+      },
+      "answer": "9",
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-153",
+      "skill": "u04-word-fueru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "りんごが 4こ。2こ ふえた。",
+        "いま いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 4,
+        "b": 2
+      },
+      "answer": "6",
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-154",
+      "skill": "u04-word-fueru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "はなが 3こ。5こ ふえた。",
+        "いま いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "flower",
+        "a": 3,
+        "b": 5
+      },
+      "answer": "8",
+      "hint": "ぜんぶ まとめて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-155",
+      "skill": "u04-word-fueru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ねこが 2ひき いました。",
+        "5ひき ふえると いくつ？"
+      ],
+      "answer": "7",
+      "hint": "「ふえる」は たしざん",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-156",
+      "skill": "u04-word-fueru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "くるまが 3だい とまって",
+        "います。6だい ふえると？"
+      ],
+      "answer": "9",
+      "hint": "「ふえる」は たしざん",
+      "reward": "ki"
+    },
+    {
+      "id": "u04-157",
+      "skill": "u04-word-fueru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "いぬが 4ひき いました。",
+        "4ひき ふえると いくつ？"
+      ],
+      "answer": "8",
+      "hint": "「ふえる」は たしざん",
+      "reward": "ki"
     }
   ]
 }

@@ -26,8 +26,8 @@ import { sfx } from "../audio.js";
 
 const SIZES = [
   { v: 1, label: "ふつう" },
-  { v: 1.15, label: "大きい" },
-  { v: 1.3, label: "もっと大きい" },
+  { v: 1.15, label: "おおきい" },
+  { v: 1.3, label: "もっと おおきい" },
 ];
 
 export function enterSettings() {
@@ -70,7 +70,7 @@ export function enterSettings() {
   }
 
   const sizeRow = el("div", "set-row");
-  sizeRow.appendChild(el("span", "s-name", "もじの 大きさ"));
+  sizeRow.appendChild(el("span", "s-name", "もじの おおきさ"));
   const sizeWrap = el("div", "row");
   SIZES.forEach((s) => {
     const b = el("button", "toggle", s.label);
@@ -92,7 +92,7 @@ export function enterSettings() {
     <b>おうちの人・せんせいへ</b><br>
     ・きろくは この タブレットの 中だけに あります。どこにも おくっていません<br>
     ・1日 15ふんで おわります。のばすことは できません<br>
-    ・ガチャ・かきん・こうこく・そとへの リンクは ありません<br>
+    ・ガチャ・課金・広告・外部リンクは ありません<br>
     ・入れるのは しゅっせきばんごうと かおだけ。なまえは 入れません<br>
     ・きぶんが わるい・目が つかれたら すぐ やめてください<br>
     ・タブレットを かえると きろくは うつりません（せんせいモードの セーブコードで うつせます）`;
@@ -294,7 +294,7 @@ function renderTeacher(body) {
 
   // 1日のめやす
   const day = el("div", "card");
-  day.appendChild(el("div", "s-name", "1日の めやす（まいにちの 上限）"));
+  day.appendChild(el("div", "s-name", "1日の学習時間（上限）"));
   const dayRow = el("div", "row");
   [10, 15, 20].forEach((m) => {
     const b = el("button", "toggle", `${m}ふん`);
@@ -312,7 +312,7 @@ function renderTeacher(body) {
 
   // かいほうコード
   const unlock = el("div", "card");
-  unlock.appendChild(el("div", "s-name", "かいほうコード（てんにゅう・けっせきの子を 追いつかせる）"));
+  unlock.appendChild(el("div", "s-name", "単元ひらきコード（4けた・転入や欠席の子を追いつかせる）"));
   unlock.appendChild(
     el(
       "p",

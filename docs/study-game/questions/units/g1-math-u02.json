@@ -1100,6 +1100,375 @@
       "answer": "2",
       "hint": "じぶんは かぞえないよ",
       "reward": "ki"
+    },
+    {
+      "id": "u02-101",
+      "skill": "u02-front",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ねこは まえから",
+        "なんばんめ？"
+      ],
+      "figure": {
+        "kind": "row",
+        "icons": [
+          "dog",
+          "rabbit",
+          "cat",
+          "fish",
+          "car",
+          "apple"
+        ],
+        "dir": "front"
+      },
+      "choices": [
+        "3",
+        "2",
+        "4"
+      ],
+      "answer": 0,
+      "hint": "まえから ひとつずつ かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-102",
+      "skill": "u02-front",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "はなは まえから",
+        "なんばんめ？"
+      ],
+      "figure": {
+        "kind": "row",
+        "icons": [
+          "star",
+          "apple",
+          "balloon",
+          "dog",
+          "flower",
+          "candy",
+          "car"
+        ],
+        "dir": "front"
+      },
+      "choices": [
+        "4",
+        "5",
+        "6"
+      ],
+      "answer": 1,
+      "hint": "やじるしの ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-103",
+      "skill": "u02-front",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "さかなは まえから",
+        "なんばんめ？"
+      ],
+      "figure": {
+        "kind": "row",
+        "icons": [
+          "candy",
+          "car",
+          "rabbit",
+          "star",
+          "balloon",
+          "cat",
+          "dog",
+          "fish"
+        ],
+        "dir": "front"
+      },
+      "choices": [
+        "7",
+        "6",
+        "8"
+      ],
+      "answer": 2,
+      "hint": "いちばん うしろだよ かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-104",
+      "skill": "u02-front",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "まえから 3ばんめの ひとの",
+        "すぐ うしろは なんばんめ？"
+      ],
+      "answer": "4",
+      "hint": "3の つぎの かずだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-105",
+      "skill": "u02-front",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "まえから 6ばんめの ひとの",
+        "すぐ うしろは なんばんめ？"
+      ],
+      "answer": "7",
+      "hint": "6の つぎの かずだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-106",
+      "skill": "u02-front",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "まえから 5ばんめの ひとの",
+        "すぐ まえは なんばんめ？"
+      ],
+      "answer": "4",
+      "hint": "5の ひとつ まえの かずだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-107",
+      "skill": "u02-back",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "うしろから 2ばんめは",
+        "どれ？"
+      ],
+      "figure": {
+        "kind": "row",
+        "icons": [
+          "cat",
+          "apple",
+          "dog",
+          "car"
+        ],
+        "dir": "back"
+      },
+      "choices": [
+        {
+          "icon": "cat"
+        },
+        {
+          "icon": "apple"
+        },
+        {
+          "icon": "dog"
+        },
+        {
+          "icon": "car"
+        }
+      ],
+      "answer": 2,
+      "hint": "いちばん うしろが 1ばんめだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-108",
+      "skill": "u02-back",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "うしろから 3ばんめは",
+        "どれ？"
+      ],
+      "figure": {
+        "kind": "row",
+        "icons": [
+          "fish",
+          "star",
+          "rabbit",
+          "balloon",
+          "flower"
+        ],
+        "dir": "back"
+      },
+      "choices": [
+        {
+          "icon": "fish"
+        },
+        {
+          "icon": "star"
+        },
+        {
+          "icon": "rabbit"
+        },
+        {
+          "icon": "balloon"
+        },
+        {
+          "icon": "flower"
+        }
+      ],
+      "answer": 2,
+      "hint": "やじるしの はんたいから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-109",
+      "skill": "u02-back",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "うしろから 2ばんめは",
+        "どれ？"
+      ],
+      "figure": {
+        "kind": "row",
+        "icons": [
+          "candy",
+          "dog",
+          "car"
+        ],
+        "dir": "back"
+      },
+      "choices": [
+        {
+          "icon": "candy"
+        },
+        {
+          "icon": "dog"
+        },
+        {
+          "icon": "car"
+        }
+      ],
+      "answer": 1,
+      "hint": "いちばん うしろが 1ばんめだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-110",
+      "skill": "u02-back",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "いぬは うしろから",
+        "なんばんめ？"
+      ],
+      "figure": {
+        "kind": "row",
+        "icons": [
+          "cat",
+          "apple",
+          "dog",
+          "flower",
+          "car",
+          "fish"
+        ],
+        "dir": "back"
+      },
+      "answer": "4",
+      "hint": "うしろの ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-111",
+      "skill": "u02-back",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ねこは うしろから",
+        "なんばんめ？"
+      ],
+      "figure": {
+        "kind": "row",
+        "icons": [
+          "star",
+          "candy",
+          "balloon",
+          "car",
+          "dog",
+          "cat",
+          "fish"
+        ],
+        "dir": "back"
+      },
+      "answer": "2",
+      "hint": "うしろの ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-112",
+      "skill": "u02-back",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "くるまは うしろから",
+        "なんばんめ？"
+      ],
+      "figure": {
+        "kind": "row",
+        "icons": [
+          "car",
+          "rabbit",
+          "apple",
+          "star",
+          "flower"
+        ],
+        "dir": "back"
+      },
+      "answer": "5",
+      "hint": "いちばん まえは うしろから なんばんめかな",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-113",
+      "skill": "u02-back",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "さかなの うしろには",
+        "いくつ いる？"
+      ],
+      "figure": {
+        "kind": "row",
+        "icons": [
+          "dog",
+          "cat",
+          "fish",
+          "apple",
+          "car",
+          "star"
+        ],
+        "dir": "back"
+      },
+      "answer": "3",
+      "hint": "さかなより うしろだけ かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-114",
+      "skill": "u02-back",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "まえから 4ばんめ、うしろから",
+        "3ばんめ。ぜんぶで いくつ？"
+      ],
+      "answer": "6",
+      "hint": "ふたつに かぞえた ひとが ダブるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u02-115",
+      "skill": "u02-back",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "まえから 3ばんめ、うしろから",
+        "5ばんめ。ぜんぶで いくつ？"
+      ],
+      "answer": "7",
+      "hint": "ふたつに かぞえた ひとが ダブるよ",
+      "reward": "ki"
     }
   ]
 }

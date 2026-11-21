@@ -70,6 +70,7 @@ export function enterSummary() {
   const wrap = $("#summary-wrap");
   clear(wrap);
   const over = session.isOver();
+  if (over) sfx.goal();
   wrap.appendChild(el("h2", "", over ? "きょうは おしまい" : "きょうの まとめ"));
 
   // できるようになったこと（動詞で、3つまで）
@@ -90,7 +91,7 @@ export function enterSummary() {
   if (state.today.hardest?.text) {
     const proof = el("div", "proof");
     proof.textContent = state.today.hardest.text;
-    wrap.appendChild(el("p", "note", "きょう いちばん むずかしかった もんだい"));
+    wrap.appendChild(el("p", "note", "きょう いちばん がんばった もんだい"));
     wrap.appendChild(proof);
   }
 
@@ -119,7 +120,7 @@ export function enterSummary() {
 
   if (over) {
     wrap.appendChild(
-      el("p", "note", "15ふんで おしまいです。のばすことは できません。つづきは あした。"),
+      el("p", "note", "きょうは ここまで。つづきは あしたね。"),
     );
     const paper = el("div", "card");
     paper.appendChild(el("div", "", "もっと やりたい子は、かみで この3もんを やってみよう"));
@@ -134,7 +135,7 @@ export function enterSummary() {
     });
     wrap.appendChild(close);
   } else {
-    const back = el("button", "btn btn-main", "まちへ もどる");
+    const back = el("button", "btn btn-main", "まちへ");
     back.type = "button";
     back.addEventListener("click", () => go("town"));
     wrap.appendChild(back);

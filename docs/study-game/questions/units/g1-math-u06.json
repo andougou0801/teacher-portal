@@ -373,6 +373,351 @@
       "answer": 2,
       "hint": "おなじ かずを ひくと 0",
       "reward": "nendo"
+    },
+    {
+      "id": "u06-101",
+      "skill": "u06-zero-add",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "2+0は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 2,
+        "b": 0
+      },
+      "choices": [
+        "0",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "0は なにも ない かず",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-102",
+      "skill": "u06-zero-add",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "0+4は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 0,
+        "b": 4
+      },
+      "choices": [
+        "4",
+        "0",
+        "5"
+      ],
+      "answer": 0,
+      "hint": "0は なにも ない かず",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-103",
+      "skill": "u06-zero-add",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "3+0は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "star",
+        "a": 3,
+        "b": 0
+      },
+      "choices": [
+        "3",
+        "4",
+        "0"
+      ],
+      "answer": 0,
+      "hint": "0は なにも ない かず",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-104",
+      "skill": "u06-zero-add",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "7+0は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "cat",
+        "a": 7,
+        "b": 0
+      },
+      "answer": "7",
+      "hint": "0は なにも ない かず",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-105",
+      "skill": "u06-zero-add",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "0+9は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "flower",
+        "a": 0,
+        "b": 9
+      },
+      "answer": "9",
+      "hint": "0は なにも ない かず",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-106",
+      "skill": "u06-zero-add",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "6+0は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "fish",
+        "a": 6,
+        "b": 0
+      },
+      "answer": "6",
+      "hint": "0は なにも ない かず",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-107",
+      "skill": "u06-zero-add",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ふくろに あめが 4こ。",
+        "0こ いれると ぜんぶで？"
+      ],
+      "answer": "4",
+      "hint": "0こ ふえても かわらないよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-108",
+      "skill": "u06-zero-add",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "かごに りんごが 0こ。",
+        "5こ いれると ぜんぶで？"
+      ],
+      "answer": "5",
+      "hint": "0こから ふえるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-109",
+      "skill": "u06-zero-add",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "いぬが 7ひき います。",
+        "0ひき きました。ぜんぶで？"
+      ],
+      "answer": "7",
+      "hint": "0ひき ふえても かわらないよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-110",
+      "skill": "u06-zero-add",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "0こ と 0こを あわせると",
+        "いくつ？"
+      ],
+      "answer": "0",
+      "hint": "なにも ないと なにも ないを あわせるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-111",
+      "skill": "u06-zero-add",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あるかずに 0を たすと 6。",
+        "あるかずは いくつ？"
+      ],
+      "answer": "6",
+      "hint": "0を たしても かわらないよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-112",
+      "skill": "u06-zero-add",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめが 3こ。0こ もらって",
+        "また 0こ。ぜんぶで？"
+      ],
+      "answer": "3",
+      "hint": "0こ ふえても かわらないよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-113",
+      "skill": "u06-zero-sub",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "3こ から 0こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "candy",
+        "total": 3,
+        "gone": 0
+      },
+      "choices": [
+        "0",
+        "3",
+        "2"
+      ],
+      "answer": 1,
+      "hint": "なにも とらないと かわらないよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-114",
+      "skill": "u06-zero-sub",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "4こ から 4こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "apple",
+        "total": 4,
+        "gone": 4
+      },
+      "choices": [
+        "0",
+        "4",
+        "1"
+      ],
+      "answer": 0,
+      "hint": "ぜんぶ とると 0に なるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-115",
+      "skill": "u06-zero-sub",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "5こ から 0こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "flower",
+        "total": 5,
+        "gone": 0
+      },
+      "choices": [
+        "0",
+        "4",
+        "5"
+      ],
+      "answer": 2,
+      "hint": "なにも とらないと かわらないよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-116",
+      "skill": "u06-zero-sub",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "8こ から 0こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "star",
+        "total": 8,
+        "gone": 0
+      },
+      "choices": [
+        "0",
+        "7",
+        "8"
+      ],
+      "answer": 2,
+      "hint": "なにも とらないと かわらないよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-117",
+      "skill": "u06-zero-sub",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "9ひき から 9ひき とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "fish",
+        "total": 9,
+        "gone": 9
+      },
+      "choices": [
+        "0",
+        "9",
+        "1"
+      ],
+      "answer": 0,
+      "hint": "ぜんぶ とると 0に なるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u06-118",
+      "skill": "u06-zero-sub",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "7だい から 0だい とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "car",
+        "total": 7,
+        "gone": 0
+      },
+      "choices": [
+        "0",
+        "6",
+        "7"
+      ],
+      "answer": 2,
+      "hint": "なにも とらないと かわらないよ",
+      "reward": "nendo"
     }
   ]
 }

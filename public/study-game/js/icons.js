@@ -1,5 +1,9 @@
 // 絵はぜんぶ自分で描く（SVG）。画像ファイルは置かない。
 // どれも 100×100 の箱の中に描く。有名なキャラクターに似せない、オリジナルの形。
+//
+// もやもや（モンスター）と、あとから足した たてものの形は `moya-art.js` にある。
+// 12体を「シルエット・頭の上のもの・おなかの印」で見分けられるように描き直したもの。
+import { moyaArt, MOYA_NAMES_12, BUILDING_ART_FN } from "./moya-art.js";
 
 const ink = "#2B2A28";
 
@@ -118,72 +122,11 @@ export function face(index, wearing, size = 100) {
 }
 
 /* ================= もやもや（モンスター） ================= */
-const MOYA = {
-  kazumoya: { color: "#8FB8D8", bumps: 5, eyes: 2 },
-  narabimoya: { color: "#C0A5DA", bumps: 7, eyes: 3 },
-  wakemoya: { color: "#9BD0B0", bumps: 4, eyes: 2 },
-  tasumoya: { color: "#F2B27C", bumps: 6, eyes: 2 },
-  hikimoya: { color: "#A8B0BC", bumps: 5, eyes: 1 },
-  zeromoya: { color: "#D8CBA0", bumps: 3, eyes: 2 },
-  nagasamoya: { color: "#7FD4E8", bumps: 6, eyes: 2 },
-  shirabemoya: { color: "#E79AAE", bumps: 5, eyes: 3 },
-};
-
-export const MOYA_NAMES = {
-  kazumoya: "かずもや",
-  narabimoya: "ならびもや",
-  wakemoya: "わけもや",
-  tasumoya: "たすもや",
-  hikimoya: "ひきもや",
-  zeromoya: "ぜろもや",
-  nagasamoya: "ながさもや",
-  shirabemoya: "しらべもや",
-};
-
-function blobPath(bumps) {
-  const cx = 50;
-  const cy = 56;
-  const r = 30;
-  const pts = [];
-  const n = Math.max(6, bumps * 2);
-  for (let i = 0; i < n; i++) {
-    const a = (i / n) * Math.PI * 2;
-    const rr = r + (i % 2 === 0 ? 5 : -3);
-    pts.push([cx + Math.cos(a) * rr, cy + Math.sin(a) * rr * 0.88]);
-  }
-  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
-  for (let i = 1; i <= pts.length; i++) {
-    const p = pts[i % pts.length];
-    const prev = pts[i - 1];
-    const mx = (prev[0] + p[0]) / 2;
-    const my = (prev[1] + p[1]) / 2;
-    d += `Q${prev[0].toFixed(1)} ${prev[1].toFixed(1)} ${mx.toFixed(1)} ${my.toFixed(1)}`;
-  }
-  return d + "Z";
-}
+// もやもや（モンスター）の絵は moya-art.js にある（12体・形で見分けられる）
+export const MOYA_NAMES = MOYA_NAMES_12;
 
 export function moya(id, mood = "normal", size = 100) {
-  const m = MOYA[id] || MOYA.kazumoya;
-  const eyes =
-    m.eyes === 1
-      ? `<circle cx="50" cy="52" r="6" fill="#fff" stroke="${ink}" stroke-width="2.5"/><circle cx="50" cy="52" r="2.6" fill="${ink}"/>`
-      : m.eyes === 2
-        ? `<circle cx="41" cy="50" r="5.5" fill="#fff" stroke="${ink}" stroke-width="2.5"/><circle cx="41" cy="50" r="2.4" fill="${ink}"/>
-           <circle cx="59" cy="50" r="5.5" fill="#fff" stroke="${ink}" stroke-width="2.5"/><circle cx="59" cy="50" r="2.4" fill="${ink}"/>`
-        : `<circle cx="38" cy="48" r="4.6" fill="#fff" stroke="${ink}" stroke-width="2.2"/><circle cx="38" cy="48" r="2" fill="${ink}"/>
-           <circle cx="52" cy="46" r="4.6" fill="#fff" stroke="${ink}" stroke-width="2.2"/><circle cx="52" cy="46" r="2" fill="${ink}"/>
-           <circle cx="64" cy="51" r="4.6" fill="#fff" stroke="${ink}" stroke-width="2.2"/><circle cx="64" cy="51" r="2" fill="${ink}"/>`;
-  const mouth =
-    mood === "friend"
-      ? `<path d="M42 64q8 8 16 0" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round"/>`
-      : mood === "sad"
-        ? `<path d="M42 68q8-6 16 0" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round"/>`
-        : `<path d="M42 66h16" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`;
-  const hat = mood === "friend" ? `<path d="M32 30q18-14 36 0z" fill="#F2B23C" stroke="${ink}" stroke-width="2.5"/>` : "";
-  return svg(
-    `<path d="${blobPath(m.bumps)}" fill="${m.color}" stroke="${ink}" stroke-width="3"/>${eyes}${mouth}${hat}`,
-    size,
-  );
+  return moyaArt(id, mood, size);
 }
 
 /* ================= たてもの ================= */
@@ -225,6 +168,10 @@ function gateShape(color) {
 }
 
 const BUILDING_SHAPES = {
+  // あとから足した3種（moya-art.js）。これで8棟ぜんぶ ちがう形になる
+  twinhouse: BUILDING_ART_FN.twinhouse,
+  factory: BUILDING_ART_FN.factory,
+  lighthouse: BUILDING_ART_FN.lighthouse,
   house: houseShape,
   tower: towerShape,
   barn: barnShape,

@@ -2,7 +2,7 @@
 // 日づけだけで管理する（時刻は使わない。端末の時計のずれで壊れないように）。
 import { state, save } from "./store.js";
 import { dayKey, addDays, dayDiff, clamp } from "./util.js";
-import { allSkills, unitMeta } from "./data.js";
+import { allSkills, unitMeta, skillMeta } from "./data.js";
 
 /** stage ごとの「つぎに出す日」までの日数 */
 const GAP = [1, 2, 4, 7, 14, 30];
@@ -12,7 +12,18 @@ export const REVIEW_CAP = 8;
 export const MASTER_STAGE = 2;
 
 function def() {
-  return { lv: 1, stage: 0, due: "", seen: 0, ok: 0, last5: 0, first: "", upDay: "", stageDay: "" };
+  return {
+    lv: 1,
+    stage: 0,
+    due: "",
+    seen: 0,
+    ok: 0,
+    last5: 0,
+    first: "",
+    upDay: "",
+    stageDay: "",
+    downDay: "",
+  };
 }
 
 export function rec(skillId) {
@@ -68,10 +79,14 @@ export function answer(skillId, correct) {
     r.due = addDays(today, GAP[r.stage]);
     if (!r.first) r.first = today;
   } else {
-    r.stage = clamp(r.stage - 1, 0, GAP.length - 1);
-    // ★ここで stageDay を さわらない。
-    //   さわると「1回まちがえた日は、そのあと 何回 できても 段が 上がらない」になり、
-    //   まちがえた子だけ いつまでも すすまなくなる。
+    // ★段を下げるのは「2問つづけて まちがえた」ときだけ、しかも1日1回まで。
+    //   上げるのが1日1段なのに 下げるのが 何回でもだと、
+    //   1回に同じスキルが 4〜16回 出る この作りでは、
+    //   正答率95%未満の子の段が **一生 上がらない**（シミュレーションで確認）。
+    if ((r.last5 & 0b11) === 0 && r.downDay !== today) {
+      r.stage = clamp(r.stage - 1, 0, GAP.length - 1);
+      r.downDay = today;
+    }
     r.due = addDays(today, 1);
   }
 
@@ -93,8 +108,19 @@ export function answer(skillId, correct) {
     r.lv = clamp(r.lv - 1, 1, 5);
   }
 
+  // その単元を「どの日にやったか」を おぼえておく（単元の開放を 日数で しばるため）
+  const unitId = skillMeta(skillId)?.unitId;
+  if (unitId) {
+    const days = state.progress.unitDays || (state.progress.unitDays = {});
+    const list = days[unitId] || (days[unitId] = []);
+    if (!list.includes(today)) {
+      list.push(today);
+      if (list.length > 3) list.shift();
+    }
+  }
+
   const newlyMastered = before.stage < MASTER_STAGE && r.stage >= MASTER_STAGE;
-  save("srs");
+  save("srs", "progress");
   return { newlyMastered, levelUp: r.lv > before.lv, rec: r };
 }
 
@@ -129,6 +155,11 @@ export function masteredByPower(power) {
   return allSkills().filter((s) => s.power === power && isMastered(s.id)).length;
 }
 
+/** その力に いくつ スキルが あるか（星の満点を 出すのに つかう） */
+export function totalByPower(power) {
+  return allSkills().filter((s) => s.power === power).length;
+}
+
 export function masteredCount() {
   return allSkills().filter((s) => isMastered(s.id)).length;
 }
@@ -136,10 +167,21 @@ export function masteredCount() {
 /** きょう取り組む単元（まだ終わっていない、いちばん前の単元） */
 export function focusUnit() {
   const open = state.progress.unlockedUnits || ["u01"];
+  // まだ半分も すすんでいない単元を いちばん前から
+  for (const id of open) {
+    if (unitProgress(id) < 0.5) return id;
+  }
+  // つぎに、半分はすすんだが まだ終わっていない単元
   for (const id of open) {
     if (unitProgress(id) < 1) return id;
   }
-  return open[open.length - 1] || "u01";
+  // ★ぜんぶ終わったあと、いつも最後の単元を出すと、同じ材料しか たまらない。
+  //   日によって かわる ようにして、材料が かたよらないようにする。
+  if (open.length) {
+    const day = Number(dayKey().slice(-2)) || 1;
+    return open[day % open.length];
+  }
+  return "u01";
 }
 
 /** 単元の自動開放：いまの単元が半分すすんだら、つぎの単元をひらく */
@@ -149,7 +191,15 @@ export function refreshUnlocks(unitsList) {
   for (let i = 0; i < unitsList.length; i++) {
     const u = unitsList[i];
     if (!open.has(u.unitId)) continue;
-    if (unitProgress(u.unitId) >= 0.5 && unitsList[i + 1] && !open.has(unitsList[i + 1].unitId)) {
+    // ★「半分すすんだ」だけだと、1日で8単元ぜんぶ 開いてしまう（通年型にならない）。
+    //   その単元を **ちがう日に2回以上** やっていることも 条件にする。
+    const days = (state.progress.unitDays || {})[u.unitId] || [];
+    if (
+      unitProgress(u.unitId) >= 0.5 &&
+      days.length >= 2 &&
+      unitsList[i + 1] &&
+      !open.has(unitsList[i + 1].unitId)
+    ) {
       open.add(unitsList[i + 1].unitId);
       changed = true;
     }

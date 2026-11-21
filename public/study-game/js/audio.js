@@ -67,39 +67,62 @@ function noise(start, dur, cutoff = 800) {
   src.start(ctx.currentTime + start);
 }
 
+// 音の決まり（サウンド担当）
+// ・同時に鳴らすのは3音まで、1音は0.4秒以内（古い端末でも つまらないように）
+// ・まちがいの音は 下げない（せめる音にしない）。低い大きな音も使わない
+// ・連続正解の音は 上がりっぱなしに しない（耳が つかれるため、8回めからは 上の4音を まわす）
 export const sfx = {
   tap() {
-    tone(880, 0, 0.04, "sine", 0.5);
+    tone(988, 0, 0.035, "sine", 0.4);
   },
   /** 連続正解で音階が1つずつ上がる（自分の積み上げの音） */
   correct() {
-    const i = Math.min(streak, SCALE.length - 1);
-    tone(SCALE[i], 0, 0.09, "triangle", 0.8);
-    tone(SCALE[i] * 1.5, 0.07, 0.1, "sine", 0.4);
-    streak = Math.min(streak + 1, SCALE.length - 1);
+    const k = streak < 8 ? streak : 4 + ((streak - 8) % 4);
+    const vol = streak < 12 ? 0.7 : 0.5;
+    tone(SCALE[k], 0, 0.1, "triangle", vol);
+    tone(SCALE[k] * 2, 0.02, 0.08, "sine", 0.15);
+    if (streak > 0 && streak % 8 === 0) tone(2093, 0.05, 0.06, "sine", 0.12);
+    streak++;
   },
-  /** まちがいは下げない。小さく短い音だけ */
+  /** まちがいは下げない。やわらかく上がる2音だけ */
   again() {
-    tone(330, 0, 0.12, "sine", 0.35);
+    tone(392, 0, 0.14, "sine", 0.3);
+    tone(494, 0.06, 0.14, "sine", 0.25);
     streak = 0;
   },
   item() {
-    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.055, 0.1, "triangle", 0.6));
+    [659, 784, 988, 1319].forEach((f, i) => tone(f, i * 0.05, 0.09, "sine", 0.45));
   },
   levelup() {
-    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.07, 0.16, "triangle", 0.7));
-    tone(130.81, 0, 0.3, "sine", 0.5);
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.07, 0.12, "triangle", 0.6));
+    tone(1046.5, 0.21, 0.18, "sine", 0.4);
   },
   henshin() {
-    noise(0, 0.12, 1200);
-    tone(220, 0.04, 0.14, "sawtooth", 0.3);
+    noise(0, 0.1, 2000);
+    [330, 494, 659].forEach((f, i) => tone(f, i * 0.07, 0.12, "triangle", 0.4));
   },
   build() {
-    [392, 523.25, 659.25].forEach((f, i) => tone(f, i * 0.12, 0.26, "triangle", 0.6));
+    [392, 523.25, 659.25].forEach((f, i) => tone(f, i * 0.09, 0.13, "triangle", 0.6));
   },
   close() {
-    tone(440, 0, 0.07, "sine", 0.4);
-    tone(330, 0.06, 0.09, "sine", 0.3);
+    tone(587, 0, 0.06, "sine", 0.3);
+    tone(440, 0.05, 0.08, "sine", 0.25);
+  },
+  /** 町に入ったとき（1回だけ。ずっと鳴る環境音は 入れない） */
+  start() {
+    tone(523.25, 0, 0.08, "sine", 0.35);
+    tone(784, 0.07, 0.1, "sine", 0.3);
+    tone(2637, 0.18, 0.05, "sine", 0.1);
+  },
+  /** ヒントが出たとき */
+  hint() {
+    tone(587, 0, 0.08, "sine", 0.25);
+    tone(740, 0.09, 0.1, "sine", 0.25);
+  },
+  /** きょうのぶんが おわったとき */
+  goal() {
+    [523.25, 659.25, 783.99].forEach((f, i) => tone(f, i * 0.08, 0.14, "triangle", 0.5));
+    tone(1568, 0.2, 0.18, "sine", 0.2);
   },
 };
 

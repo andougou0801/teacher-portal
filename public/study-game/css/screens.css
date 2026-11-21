@@ -553,13 +553,10 @@
   font-size: 30px;
 }
 
-.choice.is-ng::after {
-  content: "✕";
-  position: absolute;
-  top: -2px;
-  right: 8px;
-  color: var(--ng);
-  font-size: 30px;
+/* まちがえた ほうに ✕は つけない。正しい ほうの ○だけで しめす
+   （色だけに たよらず、せめられている ようにも 見せない） */
+.choice.is-ng {
+  opacity: 0.55;
 }
 
 .choice.is-ng {

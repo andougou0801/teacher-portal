@@ -907,6 +907,841 @@
       "answer": "6",
       "hint": "かずの せんを みて となりを さがそう",
       "reward": "ki"
+    },
+    {
+      "id": "u01-101",
+      "skill": "u01-count-5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ほしは いくつ？"
+      ],
+      "figure": {
+        "kind": "dots",
+        "icon": "star",
+        "count": 5,
+        "scatter": true
+      },
+      "choices": [
+        "5",
+        "4",
+        "3"
+      ],
+      "answer": 0,
+      "hint": "ばらばらでも ひとつずつ かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-102",
+      "skill": "u01-count-5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ふうせんは いくつ？"
+      ],
+      "figure": {
+        "kind": "dots",
+        "icon": "balloon",
+        "count": 3,
+        "scatter": true
+      },
+      "choices": [
+        "4",
+        "3",
+        "2"
+      ],
+      "answer": 1,
+      "hint": "かぞえた ものに しるしを つけよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-103",
+      "skill": "u01-count-5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "さかなは いくつ？"
+      ],
+      "figure": {
+        "kind": "dots",
+        "icon": "fish",
+        "count": 4,
+        "scatter": true
+      },
+      "choices": [
+        "5",
+        "3",
+        "4"
+      ],
+      "answer": 2,
+      "hint": "かぞえた ものに しるしを つけよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-104",
+      "skill": "u01-count-5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "あめは いくつ？"
+      ],
+      "figure": {
+        "kind": "dots",
+        "icon": "candy",
+        "count": 2,
+        "scatter": true
+      },
+      "answer": "2",
+      "hint": "ひとつずつ さわって かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-105",
+      "skill": "u01-count-5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "いぬは いくつ？"
+      ],
+      "figure": {
+        "kind": "dots",
+        "icon": "dog",
+        "count": 5,
+        "scatter": true
+      },
+      "answer": "5",
+      "hint": "かぞえた ものから じゅんに さわろう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-106",
+      "skill": "u01-count-5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "はなは いくつ？"
+      ],
+      "figure": {
+        "kind": "dots",
+        "icon": "flower",
+        "count": 4,
+        "scatter": true
+      },
+      "answer": "4",
+      "hint": "かぞえた ものから じゅんに さわろう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-107",
+      "skill": "u01-count-5",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "2の つぎの かずは？"
+      ],
+      "choices": [
+        "3",
+        "1",
+        "4"
+      ],
+      "answer": 0,
+      "hint": "1 2 3 と かぞえてみよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-108",
+      "skill": "u01-count-5",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "5の ひとつ まえの",
+        "かずは？"
+      ],
+      "choices": [
+        "3",
+        "4",
+        "5"
+      ],
+      "answer": 1,
+      "hint": "5 4 3 と もどって みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-109",
+      "skill": "u01-count-5",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "1 2 3 の つぎの",
+        "かずは？"
+      ],
+      "choices": [
+        "5",
+        "2",
+        "4"
+      ],
+      "answer": 2,
+      "hint": "3の つぎを かんがえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-110",
+      "skill": "u01-count-5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "りんごが 2こ あります。",
+        "1こ ふえたら いくつ？"
+      ],
+      "answer": "3",
+      "hint": "2の つぎの かずだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-111",
+      "skill": "u01-count-5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめが 3こ あります。",
+        "2こ もらったら いくつ？"
+      ],
+      "answer": "5",
+      "hint": "3から 2つ かぞえすすめよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-112",
+      "skill": "u01-count-5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ねこが 4ひき います。",
+        "1ぴき かえると いくつ？"
+      ],
+      "answer": "3",
+      "hint": "4の ひとつ まえの かずだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-113",
+      "skill": "u01-count-10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "りんごは いくつ？"
+      ],
+      "figure": {
+        "kind": "dots",
+        "icon": "apple",
+        "count": 2
+      },
+      "choices": [
+        "2",
+        "1",
+        "3"
+      ],
+      "answer": 0,
+      "hint": "ひとつずつ ゆびで かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-114",
+      "skill": "u01-count-10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ねこは いくつ？"
+      ],
+      "figure": {
+        "kind": "dots",
+        "icon": "cat",
+        "count": 5
+      },
+      "choices": [
+        "4",
+        "5",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "ひとつずつ ゆびで かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-115",
+      "skill": "u01-count-10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "くるまは いくつ？"
+      ],
+      "figure": {
+        "kind": "dots",
+        "icon": "car",
+        "count": 3
+      },
+      "choices": [
+        "2",
+        "4",
+        "3"
+      ],
+      "answer": 2,
+      "hint": "ひとつずつ ゆびで かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-116",
+      "skill": "u01-count-10",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "7の つぎの かずは？"
+      ],
+      "choices": [
+        "8",
+        "6",
+        "9"
+      ],
+      "answer": 0,
+      "hint": "7の となりを かんがえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-117",
+      "skill": "u01-count-10",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "10の ひとつ まえの",
+        "かずは？"
+      ],
+      "choices": [
+        "8",
+        "9",
+        "10"
+      ],
+      "answer": 1,
+      "hint": "10から ひとつ もどろう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-118",
+      "skill": "u01-count-10",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "5と 7の あいだの",
+        "かずは？"
+      ],
+      "choices": [
+        "4",
+        "8",
+        "6"
+      ],
+      "answer": 2,
+      "hint": "5 6 7 と かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-119",
+      "skill": "u01-count-10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "くるまが 6だい とまって",
+        "います。2だい ふえると？"
+      ],
+      "answer": "8",
+      "hint": "6の つぎの つぎだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-120",
+      "skill": "u01-count-10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "りんごが 9こ あります。",
+        "1こ たべると いくつ？"
+      ],
+      "answer": "8",
+      "hint": "9の ひとつ まえの かずだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-121",
+      "skill": "u01-count-10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ねこが 7ひき います。",
+        "3びき ふえると？"
+      ],
+      "answer": "10",
+      "hint": "7から 3つ かぞえすすめよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-122",
+      "skill": "u01-compare",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "おおいのは どっち？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "cat",
+        "a": 4,
+        "iconB": "fish",
+        "b": 1
+      },
+      "choices": [
+        {
+          "icon": "cat"
+        },
+        {
+          "icon": "fish"
+        }
+      ],
+      "answer": 0,
+      "hint": "うえと したを ならべて くらべよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-123",
+      "skill": "u01-compare",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "おおいのは どっち？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "star",
+        "a": 2,
+        "iconB": "balloon",
+        "b": 5
+      },
+      "choices": [
+        {
+          "icon": "star"
+        },
+        {
+          "icon": "balloon"
+        }
+      ],
+      "answer": 1,
+      "hint": "うえと したを ならべて くらべよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-124",
+      "skill": "u01-compare",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "おおいのは どっち？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "apple",
+        "a": 5,
+        "iconB": "flower",
+        "b": 3
+      },
+      "choices": [
+        {
+          "icon": "flower"
+        },
+        {
+          "icon": "apple"
+        }
+      ],
+      "answer": 1,
+      "hint": "ながい ほうが おおいよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-125",
+      "skill": "u01-compare",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "おおいのは どっち？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "car",
+        "a": 8,
+        "iconB": "dog",
+        "b": 6
+      },
+      "choices": [
+        {
+          "icon": "car"
+        },
+        {
+          "icon": "dog"
+        }
+      ],
+      "answer": 0,
+      "hint": "あまった ほうが おおいよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-126",
+      "skill": "u01-compare",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "おおいのは どっち？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "rabbit",
+        "a": 7,
+        "iconB": "candy",
+        "b": 9
+      },
+      "choices": [
+        {
+          "icon": "candy"
+        },
+        {
+          "icon": "rabbit"
+        }
+      ],
+      "answer": 0,
+      "hint": "うえと したを ならべて くらべよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-127",
+      "skill": "u01-compare",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "すくないのは どっち？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "flower",
+        "a": 10,
+        "iconB": "star",
+        "b": 7
+      },
+      "choices": [
+        {
+          "icon": "flower"
+        },
+        {
+          "icon": "star"
+        }
+      ],
+      "answer": 1,
+      "hint": "あまった ほうが おおいよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-128",
+      "skill": "u01-compare",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "7と 4では どっちが",
+        "おおい？"
+      ],
+      "choices": [
+        "4",
+        "7"
+      ],
+      "answer": 1,
+      "hint": "おおきい かずを えらぼう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-129",
+      "skill": "u01-compare",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "9と 10では どっちが",
+        "おおい？"
+      ],
+      "choices": [
+        "10",
+        "9"
+      ],
+      "answer": 0,
+      "hint": "かずの せんで おくの ほうだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-130",
+      "skill": "u01-compare",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "3と 8では どっちが",
+        "すくない？"
+      ],
+      "choices": [
+        "8",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "ちいさい かずを えらぼう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-131",
+      "skill": "u01-compare",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "うえは したより",
+        "いくつ おおい？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "car",
+        "a": 7,
+        "iconB": "apple",
+        "b": 4
+      },
+      "answer": "3",
+      "hint": "おなじ かずを とって のこりを かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-132",
+      "skill": "u01-compare",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "うえは したより",
+        "いくつ おおい？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "fish",
+        "a": 6,
+        "iconB": "cat",
+        "b": 2
+      },
+      "answer": "4",
+      "hint": "おなじ かずを とって のこりを かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-133",
+      "skill": "u01-compare",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめが 8こ、ガムが 5こ。",
+        "あめは いくつ おおい？"
+      ],
+      "answer": "3",
+      "hint": "8から 5を とると いくつかな",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-134",
+      "skill": "u01-order",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "1の つぎの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 1
+      },
+      "choices": [
+        "2",
+        "1",
+        "3"
+      ],
+      "answer": 0,
+      "hint": "かずの せんで みぎが つぎだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-135",
+      "skill": "u01-order",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "4の つぎの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 4
+      },
+      "choices": [
+        "3",
+        "5",
+        "6"
+      ],
+      "answer": 1,
+      "hint": "かずの せんで みぎが つぎだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-136",
+      "skill": "u01-order",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "5の ひとつ まえの",
+        "かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 5
+      },
+      "choices": [
+        "3",
+        "6",
+        "4"
+      ],
+      "answer": 2,
+      "hint": "かずの せんで ひだりが まえだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-137",
+      "skill": "u01-order",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "6の つぎの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 6
+      },
+      "choices": [
+        "7",
+        "5",
+        "8"
+      ],
+      "answer": 0,
+      "hint": "かずの せんで みぎが つぎだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-138",
+      "skill": "u01-order",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "9の ひとつ まえの",
+        "かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 9
+      },
+      "choices": [
+        "7",
+        "8",
+        "10"
+      ],
+      "answer": 1,
+      "hint": "かずの せんで ひだりが まえだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-139",
+      "skill": "u01-order",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "8の つぎの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 8
+      },
+      "choices": [
+        "7",
+        "10",
+        "9"
+      ],
+      "answer": 2,
+      "hint": "かずの せんで みぎが つぎだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-140",
+      "skill": "u01-order",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "7の ひとつ まえの",
+        "かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 7
+      },
+      "answer": "6",
+      "hint": "かずの せんで ひだりに ひとつ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-141",
+      "skill": "u01-order",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "9の つぎの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 9
+      },
+      "answer": "10",
+      "hint": "かずの せんで みぎに ひとつ",
+      "reward": "ki"
+    },
+    {
+      "id": "u01-142",
+      "skill": "u01-order",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "3の ひとつ まえの",
+        "かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 3
+      },
+      "answer": "2",
+      "hint": "かずの せんで ひだりに ひとつ",
+      "reward": "ki"
     }
   ]
 }

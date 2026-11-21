@@ -562,6 +562,525 @@
       "answer": 1,
       "hint": "10に なる ペアを おもいだそう",
       "reward": "ishi"
+    },
+    {
+      "id": "u03-101",
+      "skill": "u03-split-5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "5は 2と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 5,
+        "filled": 2
+      },
+      "choices": [
+        "3",
+        "2",
+        "4"
+      ],
+      "answer": 0,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-102",
+      "skill": "u03-split-5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "5は 4と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 5,
+        "filled": 4
+      },
+      "choices": [
+        "0",
+        "1",
+        "2"
+      ],
+      "answer": 1,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-103",
+      "skill": "u03-split-5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "5は 3と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 5,
+        "filled": 3
+      },
+      "choices": [
+        "1",
+        "3",
+        "2"
+      ],
+      "answer": 2,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-104",
+      "skill": "u03-split-5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "5は 2と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 5,
+        "filled": 2
+      },
+      "answer": "3",
+      "hint": "のこりの ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-105",
+      "skill": "u03-split-5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "5は 3と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 5,
+        "filled": 3
+      },
+      "answer": "2",
+      "hint": "のこりの ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-106",
+      "skill": "u03-split-5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "5は 4と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 5,
+        "filled": 4
+      },
+      "answer": "1",
+      "hint": "のこりの ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-107",
+      "skill": "u03-split-5",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "5を ふたつに わけます。",
+        "ひとつが 3なら のこりは？"
+      ],
+      "answer": "2",
+      "hint": "3と あわせて 5に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-108",
+      "skill": "u03-split-5",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "5を ふたつに わけます。",
+        "ひとつが 1なら のこりは？"
+      ],
+      "answer": "4",
+      "hint": "1と あわせて 5に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-109",
+      "skill": "u03-split-5",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "5を ふたつに わけます。",
+        "ひとつが 4なら のこりは？"
+      ],
+      "answer": "1",
+      "hint": "4と あわせて 5に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-110",
+      "skill": "u03-split-5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いくつと 3で",
+        "5に なる？"
+      ],
+      "answer": "2",
+      "hint": "3と あわせて 5に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-111",
+      "skill": "u03-split-5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いくつと 1で",
+        "5に なる？"
+      ],
+      "answer": "4",
+      "hint": "1と あわせて 5に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-112",
+      "skill": "u03-split-5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いくつと 4で",
+        "5に なる？"
+      ],
+      "answer": "1",
+      "hint": "4と あわせて 5に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-113",
+      "skill": "u03-split-9",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "4は 1と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 4,
+        "filled": 1
+      },
+      "choices": [
+        "3",
+        "2",
+        "4"
+      ],
+      "answer": 0,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-114",
+      "skill": "u03-split-9",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "3は 2と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 3,
+        "filled": 2
+      },
+      "choices": [
+        "2",
+        "1",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-115",
+      "skill": "u03-split-9",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "5は 3と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 5,
+        "filled": 3
+      },
+      "choices": [
+        "1",
+        "3",
+        "2"
+      ],
+      "answer": 2,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-116",
+      "skill": "u03-split-9",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "7は 3と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 7,
+        "filled": 3
+      },
+      "answer": "4",
+      "hint": "のこりの ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-117",
+      "skill": "u03-split-9",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "8は 5と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 8,
+        "filled": 5
+      },
+      "answer": "3",
+      "hint": "のこりの ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-118",
+      "skill": "u03-split-9",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "9は 4と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 9,
+        "filled": 4
+      },
+      "answer": "5",
+      "hint": "のこりの ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-119",
+      "skill": "u03-split-9",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "9は 6と いくつ？"
+      ],
+      "answer": "3",
+      "hint": "6と あわせて 9に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-120",
+      "skill": "u03-split-9",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "8は 2と いくつ？"
+      ],
+      "answer": "6",
+      "hint": "2と あわせて 8に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-121",
+      "skill": "u03-split-9",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "7は 1と いくつ？"
+      ],
+      "answer": "6",
+      "hint": "1と あわせて 7に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-122",
+      "skill": "u03-split-9",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いくつと 4で",
+        "9に なる？"
+      ],
+      "answer": "5",
+      "hint": "4と あわせて 9に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-123",
+      "skill": "u03-split-9",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いくつと 6で",
+        "8に なる？"
+      ],
+      "answer": "2",
+      "hint": "6と あわせて 8に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-124",
+      "skill": "u03-split-9",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いくつと 3で",
+        "7に なる？"
+      ],
+      "answer": "4",
+      "hint": "3と あわせて 7に なる かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-125",
+      "skill": "u03-split-10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "10は 5と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 10,
+        "filled": 5
+      },
+      "choices": [
+        "5",
+        "4",
+        "6"
+      ],
+      "answer": 0,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-126",
+      "skill": "u03-split-10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "10は 4と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 10,
+        "filled": 4
+      },
+      "choices": [
+        "5",
+        "6",
+        "7"
+      ],
+      "answer": 1,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-127",
+      "skill": "u03-split-10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "10は 2と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 10,
+        "filled": 2
+      },
+      "choices": [
+        "7",
+        "9",
+        "8"
+      ],
+      "answer": 2,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-128",
+      "skill": "u03-split-10",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "10は 7と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 10,
+        "filled": 7
+      },
+      "choices": [
+        "3",
+        "2",
+        "4"
+      ],
+      "answer": 0,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-129",
+      "skill": "u03-split-10",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "10は 6と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 10,
+        "filled": 6
+      },
+      "choices": [
+        "3",
+        "4",
+        "5"
+      ],
+      "answer": 1,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u03-130",
+      "skill": "u03-split-10",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "10は 8と いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 10,
+        "filled": 8
+      },
+      "choices": [
+        "1",
+        "3",
+        "2"
+      ],
+      "answer": 2,
+      "hint": "あいている ところを かぞえよう",
+      "reward": "ishi"
     }
   ]
 }

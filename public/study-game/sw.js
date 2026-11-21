@@ -10,6 +10,7 @@ const CORE = [
   "js/audio.js",
   "js/speech.js",
   "js/icons.js",
+  "js/moya-art.js",
   "js/figure.js",
   "js/content.js",
   "js/store.js",

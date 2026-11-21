@@ -5,7 +5,7 @@ import { face, moya, MOYA_NAMES, building } from "../icons.js";
 import { BUILDINGS, WEARS, TITLES, POWERS, starsFor } from "../content.js";
 import { state, save } from "../store.js";
 import { units, unitMeta, skillMeta } from "../data.js";
-import { masteredByPower, masteredCount, isMastered } from "../srs.js";
+import { masteredByPower, masteredCount, isMastered, totalByPower } from "../srs.js";
 import { sfx } from "../audio.js";
 import { go } from "../app.js";
 
@@ -32,11 +32,16 @@ export function enterAvatar() {
   // ちから（星5つ。中の かずは 見せない）
   const powers = el("div", "powers card");
   for (const key of Object.keys(POWERS)) {
+    const total = totalByPower(key);
+    // その学期に 1つも スキルが ない力は 出さない
+    // （ずっと ☆☆☆☆☆ のままだと「のびない」と 思わせてしまう）
+    if (total === 0) continue;
     const n = masteredByPower(key);
+    const stars = starsFor(n, total);
     const row = el("div", "power-row");
     row.innerHTML = `<span class="p-name">${POWERS[key]}</span><span class="stars">${"★".repeat(
-      starsFor(n),
-    )}${"☆".repeat(5 - starsFor(n))}</span>`;
+      stars,
+    )}${"☆".repeat(5 - stars)}</span>`;
     powers.appendChild(row);
   }
   body.appendChild(powers);

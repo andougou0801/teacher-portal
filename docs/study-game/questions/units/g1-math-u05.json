@@ -601,6 +601,573 @@
       "answer": "5",
       "hint": "おおい ほうから すくない ほうを ひく",
       "reward": "ishi"
+    },
+    {
+      "id": "u05-101",
+      "skill": "u05-sub5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "5こ から 2こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "candy",
+        "total": 5,
+        "gone": 2
+      },
+      "choices": [
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "けした ものは かぞえないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-102",
+      "skill": "u05-sub5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "4こ から 3こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "apple",
+        "total": 4,
+        "gone": 3
+      },
+      "choices": [
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 0,
+      "hint": "けした ものは かぞえないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-103",
+      "skill": "u05-sub5",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "さかなが 5ひき。",
+        "4ひき にげると のこりは？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "fish",
+        "total": 5,
+        "gone": 4
+      },
+      "choices": [
+        "0",
+        "1",
+        "2"
+      ],
+      "answer": 1,
+      "hint": "けした ものは かぞえないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-104",
+      "skill": "u05-sub5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "5こ から 1こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "star",
+        "total": 5,
+        "gone": 1
+      },
+      "answer": "4",
+      "hint": "けした ものは かぞえないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-105",
+      "skill": "u05-sub5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "4こ から 2こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "balloon",
+        "total": 4,
+        "gone": 2
+      },
+      "answer": "2",
+      "hint": "けした ものは かぞえないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-106",
+      "skill": "u05-sub5",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "くるまが 3だい。",
+        "2だい でると のこりは？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "car",
+        "total": 3,
+        "gone": 2
+      },
+      "answer": "1",
+      "hint": "けした ものは かぞえないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-107",
+      "skill": "u05-sub5",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "あめが 5こ あります。",
+        "2こ たべると のこりは？"
+      ],
+      "answer": "3",
+      "hint": "のこって いる ものを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-108",
+      "skill": "u05-sub5",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "いぬが 4ひき います。",
+        "1ぴき かえると のこりは？"
+      ],
+      "answer": "3",
+      "hint": "のこって いる ものを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-109",
+      "skill": "u05-sub5",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "えんぴつが 5ほん。",
+        "4ほん つかうと のこりは？"
+      ],
+      "answer": "1",
+      "hint": "のこって いる ものを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-110",
+      "skill": "u05-sub5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "5こ ありました。2こ あげて",
+        "1こ たべました。のこりは？"
+      ],
+      "answer": "2",
+      "hint": "1つずつ ひいて いこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-111",
+      "skill": "u05-sub5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "5こ から いくつか とったら",
+        "のこりが 2こ。とったのは？"
+      ],
+      "answer": "3",
+      "hint": "5から 2を ひくと わかるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-112",
+      "skill": "u05-sub5",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "4こ ありました。1こ あげて",
+        "1こ たべました。のこりは？"
+      ],
+      "answer": "2",
+      "hint": "1つずつ ひいて いこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-113",
+      "skill": "u05-sub10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "4こ から 1こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "candy",
+        "total": 4,
+        "gone": 1
+      },
+      "choices": [
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "けした ものは かぞえないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-114",
+      "skill": "u05-sub10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "5こ から 3こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "apple",
+        "total": 5,
+        "gone": 3
+      },
+      "choices": [
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "けした ものは かぞえないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-115",
+      "skill": "u05-sub10",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "3こ から 2こ とると",
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "balloon",
+        "total": 3,
+        "gone": 2
+      },
+      "choices": [
+        "0",
+        "1",
+        "2"
+      ],
+      "answer": 1,
+      "hint": "けした ものは かぞえないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-116",
+      "skill": "u05-sub10",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "あめが 9こ あります。",
+        "4こ たべると のこりは？"
+      ],
+      "answer": "5",
+      "hint": "のこって いる ものを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-117",
+      "skill": "u05-sub10",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "えんぴつが 8ほん。",
+        "6ぽん おると のこりは？"
+      ],
+      "answer": "2",
+      "hint": "のこって いる ものを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-118",
+      "skill": "u05-sub10",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "くるまが 7だい います。",
+        "4だい でると のこりは？"
+      ],
+      "answer": "3",
+      "hint": "のこって いる ものを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-119",
+      "skill": "u05-sub10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "9こ ありました。4こ あげて",
+        "2こ たべました。のこりは？"
+      ],
+      "answer": "3",
+      "hint": "1つずつ ひいて いこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-120",
+      "skill": "u05-sub10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "8こ から いくつか とったら",
+        "のこりが 3こ。とったのは？"
+      ],
+      "answer": "5",
+      "hint": "8から 3を ひくと わかるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-121",
+      "skill": "u05-sub10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "9ひき いました。3びき でて",
+        "2ひき でました。のこりは？"
+      ],
+      "answer": "4",
+      "hint": "1つずつ ひいて いこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-122",
+      "skill": "u05-chigai",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ねこと いぬを ならべたよ。",
+        "ちがいは いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "cat",
+        "a": 3,
+        "iconB": "dog",
+        "b": 1
+      },
+      "choices": [
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "うえと したを ひとつずつ むすぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-123",
+      "skill": "u05-chigai",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "りんごと あめを くらべよう。",
+        "ちがいは いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "apple",
+        "a": 5,
+        "iconB": "candy",
+        "b": 3
+      },
+      "choices": [
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 0,
+      "hint": "うえと したを ひとつずつ むすぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-124",
+      "skill": "u05-chigai",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ほしと はなを くらべよう。",
+        "ちがいは いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "star",
+        "a": 4,
+        "iconB": "flower",
+        "b": 1
+      },
+      "choices": [
+        "1",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "うえと したを ひとつずつ むすぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-125",
+      "skill": "u05-chigai",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "さかなと ねこを くらべよう。",
+        "ちがいは いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "fish",
+        "a": 8,
+        "iconB": "cat",
+        "b": 5
+      },
+      "choices": [
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "うえと したを ひとつずつ むすぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-126",
+      "skill": "u05-chigai",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "いぬと うさぎを くらべよう。",
+        "ちがいは いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "dog",
+        "a": 9,
+        "iconB": "rabbit",
+        "b": 5
+      },
+      "choices": [
+        "3",
+        "4",
+        "5"
+      ],
+      "answer": 1,
+      "hint": "うえと したを ひとつずつ むすぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-127",
+      "skill": "u05-chigai",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "うえと したの ちがいは",
+        "いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "car",
+        "a": 7,
+        "iconB": "balloon",
+        "b": 2
+      },
+      "choices": [
+        "4",
+        "5",
+        "6"
+      ],
+      "answer": 1,
+      "hint": "うえと したを ひとつずつ むすぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-128",
+      "skill": "u05-chigai",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "うえと したの ちがいは",
+        "いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "apple",
+        "a": 9,
+        "iconB": "candy",
+        "b": 4
+      },
+      "answer": "5",
+      "hint": "うえと したを ひとつずつ むすぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-129",
+      "skill": "u05-chigai",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "うえと したの ちがいは",
+        "いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "cat",
+        "a": 8,
+        "iconB": "dog",
+        "b": 7
+      },
+      "answer": "1",
+      "hint": "うえと したを ひとつずつ むすぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u05-130",
+      "skill": "u05-chigai",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "うえと したの ちがいは",
+        "いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "flower",
+        "a": 10,
+        "iconB": "star",
+        "b": 6
+      },
+      "answer": "4",
+      "hint": "うえと したを ひとつずつ むすぼう",
+      "reward": "ishi"
     }
   ]
 }

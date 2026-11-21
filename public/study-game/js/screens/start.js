@@ -38,7 +38,7 @@ export function enterStart() {
   });
   const newBtn = $("#btn-new");
   newBtn.disabled = slots.length >= MAX_SLOTS;
-  newBtn.textContent = slots.length ? "ほかの ひとが はじめる" : "はじめて あそぶ";
+  newBtn.textContent = slots.length ? "ほかの ひと" : "はじめて あそぶ";
   $("#start-note").textContent = slots.length >= MAX_SLOTS
     ? "この タブレットは いっぱいです。せんせいに いってね"
     : "きろくは この タブレットの なかだけ。どこにも おくりません。";

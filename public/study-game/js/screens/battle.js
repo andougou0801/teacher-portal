@@ -70,11 +70,11 @@ async function buildQueue(params) {
       const picked = pickItems(unit, { skill: d.skill.id, level: rec(d.skill.id).lv, count: 1 });
       if (picked[0]) queue.push(picked[0]);
     }
-    const first = due[0]?.skill?.unitId || "u01";
     return {
       key: "review",
-      title: "ふくしゅうの もり",
-      monster: unitMeta(first)?.monster || "kazumoya",
+      title: "もういちどの もり",
+      // ふくしゅう せんようの なかま（12体のうちの1体）
+      monster: "osaraimoya",
       unitId: null,
       back: "もどってきた もやもや",
     };
@@ -175,7 +175,8 @@ async function showJudge(correct, item) {
   judge.hidden = false;
   judge.className = `judge ${correct ? "is-ok" : "is-ng"}`;
   clear(judge);
-  const mark = el("div", "mark j-pop", correct ? "○" : "△");
+  // まちがいの印は ×や△に しない（せめられている ように 見えるため）
+  const mark = el("div", "mark j-pop", correct ? "○" : "🌱");
   judge.appendChild(mark);
   if (correct) {
     judge.appendChild(el("div", "", "できた！"));
@@ -224,7 +225,8 @@ function giveMaterial(item, correct) {
   if (!session.canGetMaterial()) return null;
   const skill = skillMeta(item.skill);
   const unitId = skill?.unitId || stageInfo?.unitId || "u01";
-  const mat = correct ? item.reward || REWARD_BY_UNIT[unitId] || "ki" : "nendo";
+  // 材料は「単元の表」を正とする（問題JSONの reward は ふるい 予備）
+  const mat = correct ? REWARD_BY_UNIT[unitId] || item.reward || "ki" : "nendo";
   state.progress.materials[mat] = (state.progress.materials[mat] || 0) + 1;
   state.today.mats = (state.today.mats || 0) + 1;
   gained[mat] = (gained[mat] || 0) + 1;
@@ -423,6 +425,6 @@ $("#btn-quit").addEventListener("click", () => {
   $("#judge").hidden = true;
   // とちゅうで やめると ステージは 最初からに なる。だまって 消えると
   // 1年生には「きえた」と 見えるので、ひとこと 出す。
-  toast("とちゅうの ぼうけんは、つぎは さいしょから やりなおすよ。といた もんだいは きろくに のこるよ", 4500);
+  toast("また さいしょから だよ。とけた ぶんは のこるよ", 4000);
   go("town");
 });

@@ -220,6 +220,7 @@ export function ask(item) {
         if (qans.dataset.locked) return;
         qhint.hidden = false;
         qhint.textContent = `ヒント： ${item.hint}`;
+        sfx.hint();
         if (canSpeak) speech.say(item.hint);
       }, HINT_MS);
     }
