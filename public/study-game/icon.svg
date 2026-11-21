@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="36" fill="#FDF6E8"/>
+  <circle cx="150" cy="44" r="18" fill="#FFE08A" stroke="#2B2A28" stroke-width="5"/>
+  <path d="M0 120q48-26 96 0t96-8v80H0z" fill="#5BBF6A" stroke="#2B2A28" stroke-width="5"/>
+  <path d="M36 150V108l28-20 28 20v42z" fill="#F4EADA" stroke="#2B2A28" stroke-width="5"/>
+  <path d="M28 110 64 82l36 28z" fill="#E4564B" stroke="#2B2A28" stroke-width="5"/>
+  <rect x="112" y="96" width="36" height="54" fill="#F4EADA" stroke="#2B2A28" stroke-width="5"/>
+  <path d="M106 96 130 72l24 24z" fill="#4FA3E3" stroke="#2B2A28" stroke-width="5"/>
+  <text x="96" y="176" font-size="22" text-anchor="middle" fill="#2B2A28" font-family="sans-serif">かず</text>
+</svg>

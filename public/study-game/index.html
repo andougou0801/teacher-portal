@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="noindex" />
+    <title>かずのまち</title>
+    <link rel="manifest" href="app.webmanifest" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="theme-color" content="#FDF6E8" />
+    <link rel="stylesheet" href="css/base.css?v=1" />
+    <link rel="stylesheet" href="css/screens.css?v=1" />
+  </head>
+  <body>
+    <div id="app" aria-live="polite">
+      <!-- はじめ -->
+      <section class="screen is-active" id="s-start" data-screen="start">
+        <div class="start-wrap">
+          <h1 class="logo" id="logo">かずのまち</h1>
+          <p class="logo-sub">かずを とりもどして まちを つくろう</p>
+          <div class="start-slots" id="start-slots"></div>
+          <button class="btn btn-main" id="btn-new" type="button">
+            はじめて あそぶ
+          </button>
+          <p class="note" id="start-note">
+            きろくは この タブレットの なかだけ。どこにも おくりません。
+          </p>
+        </div>
+      </section>
+
+      <!-- だれが あそぶ -->
+      <section class="screen" id="s-who" data-screen="who">
+        <header class="bar">
+          <button class="btn-back" type="button" data-go="start">
+            <span aria-hidden="true">←</span><span class="btn-back-label">もどる</span>
+          </button>
+          <h2 class="bar-title">じぶんを えらぼう</h2>
+        </header>
+        <div class="who-body">
+          <p class="who-step">① しゅっせきばんごう</p>
+          <div class="numgrid" id="who-numbers"></div>
+          <p class="who-step">② じぶんの かお</p>
+          <div class="facegrid" id="who-faces"></div>
+          <button class="btn btn-main" id="who-ok" type="button" disabled>
+            これで はじめる
+          </button>
+        </div>
+      </section>
+
+      <!-- まち -->
+      <section class="screen" id="s-town" data-screen="town">
+        <div class="town-top">
+          <div class="town-name" id="town-name">まち</div>
+          <div class="mats" id="town-mats"></div>
+        </div>
+        <div class="town-stage" id="town-stage"></div>
+        <div class="town-actions">
+          <button class="btn btn-go" id="btn-go" type="button">
+            きょうの ぼうけん
+          </button>
+          <div class="town-menu">
+            <button class="btn btn-sq" data-go="avatar" type="button">
+              <span class="ic">🧒</span><span>じぶん</span>
+            </button>
+            <button class="btn btn-sq" data-go="zukan" type="button">
+              <span class="ic">📖</span><span>ずかん</span>
+            </button>
+            <button class="btn btn-sq" data-go="record" type="button">
+              <span class="ic">⭐</span><span>きろく</span>
+            </button>
+            <button class="btn btn-sq" data-go="settings" type="button">
+              <span class="ic">⚙</span><span>せってい</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ちず -->
+      <section class="screen" id="s-map" data-screen="map">
+        <header class="bar">
+          <button class="btn-back" type="button" data-go="town">
+            <span aria-hidden="true">←</span><span class="btn-back-label">まちへ</span>
+          </button>
+          <h2 class="bar-title">どこへ いく？</h2>
+        </header>
+        <div class="map-body" id="map-body"></div>
+      </section>
+
+      <!-- たたかう -->
+      <section class="screen" id="s-battle" data-screen="battle">
+        <div class="battle-top">
+          <div class="progress-dots" id="battle-dots"></div>
+          <button class="btn-quit" id="btn-quit" type="button">やめる</button>
+        </div>
+        <div class="battle-monster" id="battle-monster"></div>
+        <div class="qcard" id="qcard">
+          <div class="qhead">
+            <p class="qtext" id="qtext"></p>
+            <button class="btn-speak" id="btn-speak" type="button" hidden>
+              <span aria-hidden="true">🔊</span>
+            </button>
+          </div>
+          <div class="qfigure" id="qfigure"></div>
+          <div class="qanswer" id="qanswer"></div>
+          <div class="qhint" id="qhint" hidden></div>
+        </div>
+        <div class="judge" id="judge" hidden></div>
+      </section>
+
+      <!-- やすみ -->
+      <section class="screen" id="s-break" data-screen="break">
+        <div class="break-wrap">
+          <div class="break-eye" aria-hidden="true">👀</div>
+          <h2>めを やすめよう</h2>
+          <p class="break-text">とおくを みてね。せなかも のばそう。</p>
+          <div class="break-count" id="break-count">20</div>
+        </div>
+      </section>
+
+      <!-- ステージの けっか -->
+      <section class="screen" id="s-result" data-screen="result">
+        <div class="result-wrap" id="result-wrap"></div>
+      </section>
+
+      <!-- きょうの まとめ -->
+      <section class="screen" id="s-summary" data-screen="summary">
+        <div class="summary-wrap" id="summary-wrap"></div>
+      </section>
+
+      <!-- じぶん（アバター） -->
+      <section class="screen" id="s-avatar" data-screen="avatar">
+        <header class="bar">
+          <button class="btn-back" type="button" data-go="town">
+            <span aria-hidden="true">←</span><span class="btn-back-label">まちへ</span>
+          </button>
+          <h2 class="bar-title">じぶん</h2>
+        </header>
+        <div class="avatar-body" id="avatar-body"></div>
+      </section>
+
+      <!-- ずかん -->
+      <section class="screen" id="s-zukan" data-screen="zukan">
+        <header class="bar">
+          <button class="btn-back" type="button" data-go="town">
+            <span aria-hidden="true">←</span><span class="btn-back-label">まちへ</span>
+          </button>
+          <h2 class="bar-title">ずかん</h2>
+        </header>
+        <div class="zukan-body" id="zukan-body"></div>
+      </section>
+
+      <!-- きろく -->
+      <section class="screen" id="s-record" data-screen="record">
+        <header class="bar">
+          <button class="btn-back" type="button" data-go="town">
+            <span aria-hidden="true">←</span><span class="btn-back-label">まちへ</span>
+          </button>
+          <h2 class="bar-title">きろく</h2>
+        </header>
+        <div class="record-body" id="record-body"></div>
+      </section>
+
+      <!-- せってい -->
+      <section class="screen" id="s-settings" data-screen="settings">
+        <header class="bar">
+          <button class="btn-back" type="button" data-go="town">
+            <span aria-hidden="true">←</span><span class="btn-back-label">まちへ</span>
+          </button>
+          <h2 class="bar-title">せってい</h2>
+        </header>
+        <div class="settings-body" id="settings-body"></div>
+      </section>
+
+      <!-- せんせいモード -->
+      <section class="screen" id="s-teacher" data-screen="teacher">
+        <header class="bar">
+          <button class="btn-back" type="button" data-go="town">
+            <span aria-hidden="true">←</span><span class="btn-back-label">もどる</span>
+          </button>
+          <h2 class="bar-title">せんせいモード</h2>
+        </header>
+        <div class="teacher-body" id="teacher-body"></div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+    <div class="overlay" id="overlay" hidden></div>
+
+    <noscript>
+      <p style="padding: 24px; font-size: 20px">
+        このゲームは JavaScript を つかいます。せっていで ゆるしてください。
+      </p>
+    </noscript>
+
+    <!-- ここに ?v= を付けないこと。ほかのファイルからは "js/app.js" で読むので、
+         URLが2つになり、同じプログラムが2回動いてしまう（時間が倍の速さで減る） -->
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "かずのまち",
+  "short_name": "かずのまち",
+  "lang": "ja",
+  "dir": "ltr",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FDF6E8",
+  "theme_color": "#FDF6E8",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
