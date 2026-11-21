@@ -19,8 +19,19 @@
   text-shadow: 0 3px 0 #fff, 0 5px 0 var(--line);
 }
 
+/* 英語は かざり。小さく・うすく・字間をあけて、ひらがなの じゃまを しない */
+.logo-en {
+  margin: -6px 0 0;
+  font-size: calc(15px * var(--scale));
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: var(--soil);
+  opacity: 0.75;
+}
+
 .logo-sub {
-  margin: 0;
+  margin: 6px 0 0;
   font-size: calc(20px * var(--scale));
   color: var(--ink-soft);
 }
