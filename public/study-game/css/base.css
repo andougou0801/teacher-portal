@@ -8,7 +8,9 @@
   --card: #ffffff;
   --ink: #2b2a28;
   --ink-soft: #6b6559;
-  --line: #d9cdb6;
+  /* わく線と影は、白地でも 3:1 以上の こさにする（うすいと「押せる物」に見えない） */
+  --line: #a08a62;
+  --line-soft: #d9cdb6;
   --sky: #4fa3e3;
   --grass: #5bbf6a;
   --soil: #c98a4b;
@@ -83,8 +85,13 @@ body {
   transform: translateX(16px);
 }
 
+/* display を変えた同じコマで opacity も変えると、アニメーションは動かない。
+   1コマ おいてから .is-in を付ける（app.js の go() を見ること） */
 .screen.is-active {
   display: flex;
+}
+
+.screen.is-active.is-in {
   opacity: 1;
   transform: none;
   transition: opacity 0.2s ease, transform 0.22s ease;
@@ -97,10 +104,14 @@ body {
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
+/* 「うごきを すくなく」の設定にしている端末では、全部の動きを止める */
 @media (prefers-reduced-motion: reduce) {
-  .screen.is-active,
-  .screen.is-leaving {
-    transition: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
   }
 }
 
@@ -131,12 +142,13 @@ button {
   box-shadow: 0 1px 0 var(--line);
 }
 
+/* オレンジに白文字は うすくて 読めない（2.6:1）。こい文字にして 5.5:1 にする */
 .btn-main,
 .btn-go {
   border-color: var(--go-dark);
   background: var(--go);
   box-shadow: 0 5px 0 var(--go-dark);
-  color: #fff;
+  color: var(--ink);
 }
 
 .btn-main.is-press,

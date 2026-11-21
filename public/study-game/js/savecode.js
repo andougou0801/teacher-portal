@@ -7,6 +7,7 @@
 import { state, save } from "./store.js";
 import { BUILDINGS, MAT_ORDER } from "./content.js";
 import { allSkills } from "./data.js";
+import { dayKey, addDays } from "./util.js";
 
 const ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"; // I L O U を入れない
 const VERSION = 1;
@@ -156,7 +157,8 @@ export function readCode(text) {
     state.srs[s.id] = {
       lv: cur?.lv || Math.max(1, Math.min(5, stage + 1)),
       stage,
-      due: cur?.due || "",
+      // ★「つぎに出す日」を 空のままに しない。空だと 復習に 一度も 出てこなくなる。
+      due: cur?.due || (stage > 0 ? addDays(dayKey(), 1) : ""),
       seen: cur?.seen || stage * 2,
       ok: cur?.ok || stage * 2,
       last5: cur?.last5 || 0,

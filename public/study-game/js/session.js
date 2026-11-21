@@ -2,8 +2,8 @@
 // ・1秒ごとに数えて、すぐ保存する（タブを閉じても巻きもどらない）
 // ・画面がかくれたとき、60秒さわらなかったときは止める
 // ・時間を使いきったら「れんしゅうモード」になり、ざいりょうも建物も増えない（延長はできない）
-import { state, save, saveNow } from "./store.js";
-import { dayKey } from "./util.js";
+import { state, save, saveNow, bumpDeviceDay } from "./store.js";
+import { dayKey, dayDiff } from "./util.js";
 import { DEFAULT_MINUTES, DAILY_MATERIAL_CAP } from "./content.js";
 
 let tick = 0;
@@ -64,6 +64,13 @@ export function start() {
     if (document.hidden) return;
     if (Date.now() - lastTouch > 60000) return; // 60秒さわっていない＝止める
     if (state.today.day !== dayKey()) {
+      // 時計を まえに もどされたときは、新しい1日に しない
+      if (dayDiff(dayKey(), state.today.day) < 0) {
+        state.today.sec = 24 * 3600;
+        saveNow();
+        emit();
+        return;
+      }
       // 日がかわったので、きょうの分をリセットする
       state.days.push({
         d: state.today.day,
@@ -91,7 +98,12 @@ export function start() {
     }
     const was = isOver();
     state.today.sec = (state.today.sec || 0) + 1;
+    bumpDeviceDay(); // 端末ぜんたいの合計（枠を作り直して やり直すのを 見つけるため）
     save("today");
+    // おわりが とつぜん 来ると びっくりするので、2分前に 1回だけ 知らせる
+    if (remainSec() === 120) {
+      document.dispatchEvent(new CustomEvent("time-soon"));
+    }
     if (!was && isOver()) emit();
     if (state.today.sec % 10 === 0) emit();
   }, 1000);
@@ -108,11 +120,13 @@ export function stop() {
   tick = 0;
 }
 
-/** じゅぎょうタイマー（せんせいモードでだけ差しかえ。終わったら元にもどる） */
+/**
+ * じゅぎょうタイマー（せんせいモードでだけ差しかえ。終わったら元にもどる）
+ * ★ここで「きょう つかった時間」を 0 にもどしてはいけない。
+ *   もどすと、タイマーを 押すだけで 何時間でも 遊べてしまう（延長はできない、という決まりが こわれる）。
+ */
 export function setClassTimer(minutes) {
   state.teacher.classTimer = minutes | 0;
-  state.today.sec = 0;
-  state.today.finished = false;
   saveNow();
   emit();
 }

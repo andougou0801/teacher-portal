@@ -93,24 +93,59 @@ async function buildQueue(params) {
     queue.push(it);
   });
 
-  // ② いまのレベルの もんだいを スキルごとに
-  const per = Math.max(1, Math.ceil((QUESTIONS_PER_STAGE - warm.length) / Math.max(1, skills.length)));
-  for (const s of skills) {
-    const lv = rec(s.id).lv;
-    const picked = pickItems(unit, { skill: s.id, level: lv, count: per, exclude: used });
-    picked.forEach((it) => {
-      used.add(it.id);
-      queue.push(it);
-    });
+  // ② まえに 正解した スキルの「たしかめ」（12問ぶん あとに もう一度 出す約束）
+  const confirms = takeDueConfirms(2);
+  for (const c of confirms) {
+    if (!skills.some((s) => s.id === c.skill)) continue;
+    const picked = pickItems(unit, { skill: c.skill, level: rec(c.skill).lv, count: 1, exclude: used });
+    if (picked[0]) {
+      used.add(picked[0].id);
+      queue.push(picked[0]);
+    }
   }
-  queue = queue.slice(0, QUESTIONS_PER_STAGE);
+
+  // ③ のこりは スキルを 1問ずつ 順ぐりに（どれか1つだけ 出ないことが ないように）
+  //    すすんでいない スキルから さきに 出す
+  const ordered = [...skills].sort((a, b) => {
+    const ra = rec(a.id);
+    const rb = rec(b.id);
+    return ra.stage - rb.stage || ra.seen - rb.seen;
+  });
+  let guard = 0;
+  while (queue.length < QUESTIONS_PER_STAGE && guard++ < 10) {
+    let added = false;
+    for (const s of ordered) {
+      if (queue.length >= QUESTIONS_PER_STAGE) break;
+      const picked = pickItems(unit, { skill: s.id, level: rec(s.id).lv, count: 1, exclude: used });
+      if (picked[0]) {
+        used.add(picked[0].id);
+        queue.push(picked[0]);
+        added = true;
+      }
+    }
+    if (!added) break;
+  }
   return {
     key: `focus:${unitId}`,
     title: meta?.title || "ぼうけん",
     monster: meta?.monster || "kazumoya",
     unitId,
+    unitData: unit,
     back: meta?.title || "",
   };
+}
+
+/** 「12問あとに たしかめる」の予約から、いま出すぶんを 取り出す */
+function takeDueConfirms(max) {
+  const list = state.today.pendingConfirm;
+  if (!Array.isArray(list) || !list.length) return [];
+  const now = state.today.items || 0;
+  const due = list.filter((c) => c && typeof c.at === "number" && c.at <= now).slice(0, max);
+  if (due.length) {
+    state.today.pendingConfirm = list.filter((c) => !due.includes(c));
+    save("today");
+  }
+  return due;
 }
 
 function paintMonster(id, mood) {
@@ -127,6 +162,9 @@ function paintDots() {
     else if (i === answered) dot.className = "is-now";
     box.appendChild(dot);
   }
+  // 色だけだと 1年生には「あと いくつ」が わからないので、数でも 出す
+  const count = el("span", "progress-count", `${Math.min(answered + 1, queue.length)} / ${queue.length}`);
+  box.appendChild(count);
 }
 
 async function showJudge(correct, item) {
@@ -144,7 +182,25 @@ async function showJudge(correct, item) {
     right.textContent = answerText(item);
     judge.appendChild(right);
   }
-  await sleep(correct ? 650 : 2200);
+  // 待たされるのが いちばん いやなので、4ひょうし（0.4秒）すぎたら
+  // どこを おしても つぎへ 行けるようにする
+  const wait = correct ? 650 : 2200;
+  const next = el("button", "btn", "つぎへ");
+  next.type = "button";
+  next.style.marginTop = "10px";
+  next.style.visibility = "hidden";
+  judge.appendChild(next);
+  let done = false;
+  const skip = () => {
+    done = true;
+  };
+  setTimeout(() => {
+    if (judge.hidden) return;
+    next.style.visibility = "visible";
+    judge.addEventListener("click", skip, { once: true });
+  }, 400);
+  const started = Date.now();
+  while (!done && Date.now() - started < wait) await sleep(60);
   judge.hidden = true;
 }
 
@@ -194,8 +250,22 @@ async function runBreak() {
 }
 
 async function runLoop() {
+  let rescued = false;
   while (answered < queue.length && !stop) {
-    const item = queue[answered];
+    let item = queue[answered];
+    // うまくいっていない日は、のこりを やさしくして「できた」で おわらせる
+    if (rescued && stageInfo.unitData) {
+      const easier = pickItems(stageInfo.unitData, {
+        skill: item.skill,
+        level: 1,
+        count: 1,
+        exclude: new Set([item.id]),
+      });
+      if (easier[0]) {
+        item = easier[0];
+        queue[answered] = item;
+      }
+    }
     paintDots();
     const res = await ask(item);
     if (stop || res.cancelled) break;
@@ -214,18 +284,25 @@ async function runLoop() {
       if (out.newlyMastered && !state.today.newSkills.includes(item.skill)) {
         state.today.newSkills.push(item.skill);
       }
+      // 「できた」の直後に その日の はじめての正解なら、12問あとに もう一度 たしかめる
+      if (out.rec.stage === 1 && out.rec.ok <= 2) {
+        state.today.pendingConfirm = state.today.pendingConfirm || [];
+        if (!state.today.pendingConfirm.some((c) => c.skill === item.skill)) {
+          state.today.pendingConfirm.push({ skill: item.skill, at: (state.today.items || 0) + 12 });
+        }
+      }
       const mat = giveMaterial(item, true);
       $("#battle-monster").classList.add("is-hit");
       setTimeout(() => $("#battle-monster").classList.remove("is-hit"), 260);
-      await showJudge(true, item);
       floatGain(mat);
       if (mat) sfx.item();
+      await showJudge(true, item);
     } else {
       sfx.again();
       showHintNow(item);
       const mat = giveMaterial(item, false);
-      await showJudge(false, item);
       floatGain(mat);
+      await showJudge(false, item);
       // もやもやが へんしんして、おなじ型を あとで もういちど
       wrongTries[item.skill] = (wrongTries[item.skill] || 0) + 1;
       if (wrongTries[item.skill] <= 2) {
@@ -239,9 +316,21 @@ async function runLoop() {
               count: 1,
               exclude: new Set([item.id]),
             });
+            // ★入れ足すのではなく、あとの1問と 入れかえる。
+            //   足すと まるの数が ふえて、まちがえた子ほど ゴールが とおくなって見える。
+            //   ただし「まだ1回も出ていないスキル」を けずらない（けずると その単元が
+            //   いつまでも おわらない）。けずれる場所が なければ、2問までなら 足す。
             if (again[0]) {
-              const at = Math.min(queue.length, answered + 3);
-              queue.splice(at, 0, again[0]);
+              const seenSkills = new Set(queue.slice(0, answered + 1).map((q) => q.skill));
+              let at = -1;
+              for (let i = answered + 3; i < queue.length; i++) {
+                if (seenSkills.has(queue[i].skill)) {
+                  at = i;
+                  break;
+                }
+              }
+              if (at >= 0) queue[at] = again[0];
+              else if (queue.length < QUESTIONS_PER_STAGE + 2) queue.push(again[0]);
             }
           } catch {
             /* よみこめなくても 止めない */
@@ -255,6 +344,11 @@ async function runLoop() {
     answered++;
     save("today", "progress");
     paintDots();
+
+    // 4問こえて 正答率が6わりを 下回ったら、のこりを やさしくする（1回だけ）
+    if (!rescued && answered >= 4 && correctCount / answered < 0.6) {
+      rescued = true;
+    }
 
     // 1回の まんなかで 20びょうの やすみ（10分より みじかい回には 入れない）
     if (
@@ -285,15 +379,19 @@ function finishStage() {
   state.today.stages[stageInfo.key] = true;
 
   // もやもやが なかまになる（その単元が 半分 すすんだとき）
+  // ★れんしゅうモード（きょうの ぶんが おわったあと）では、なかまも つぎの場所も ふえない。
+  //   「おわり」と言いながら ごほうびが 出つづけると、おわれなくなるため。
   let newFriend = null;
-  if (stageInfo.unitId) {
-    const p = state.progress;
-    if (unitProgress(stageInfo.unitId) >= 0.5 && !(p.friends || []).includes(stageInfo.unitId)) {
-      p.friends.push(stageInfo.unitId);
-      newFriend = stageInfo.unitId;
+  if (!session.isPractice()) {
+    if (stageInfo.unitId) {
+      const p = state.progress;
+      if (unitProgress(stageInfo.unitId) >= 0.5 && !(p.friends || []).includes(stageInfo.unitId)) {
+        p.friends.push(stageInfo.unitId);
+        newFriend = stageInfo.unitId;
+      }
     }
+    refreshUnlocks(units());
   }
-  refreshUnlocks(units());
   save();
   go("result", {
     title: stageInfo.title,

@@ -1,6 +1,6 @@
 // 保存と読み込み。端末の中（localStorage）だけ。どこにも送らない。
 // ★キーの名前は変えない。形を変えるときは新しいキーを作り、古いキーから読んで移す。
-import { dayKey, toast } from "./util.js";
+import { dayKey, dayDiff, toast } from "./util.js";
 import { MAT_ORDER, DEFAULT_MINUTES } from "./content.js";
 
 const K_META = "sg:meta";
@@ -41,6 +41,15 @@ function readJSON(key, fallback, check) {
     if (check && !check(value)) throw new Error("形が ちがう");
     return value;
   } catch {
+    // こわれたデータは 1件だけ とっておく（ためこむと 端末の ようりょうを 食べるため）
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith("sg:broken:")) localStorage.removeItem(k);
+      }
+    } catch {
+      /* 消せなくても つづける */
+    }
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
     writeRaw(`sg:broken:${stamp}:${key}`, raw);
     return structuredClone(fallback);
@@ -84,7 +93,24 @@ function defToday() {
     hardest: null,
     finished: false,
     built: [],
+    pendingConfirm: [],
   };
+}
+
+/** この端末ぜんたいの「きょう つかった時間」。枠（子ども）をまたいで数える。 */
+const K_DAY = "sg:day";
+
+export function deviceDay() {
+  const v = readJSON(K_DAY, { d: dayKey(), sec: 0 }, isObj);
+  if (v.d !== dayKey()) return { d: dayKey(), sec: 0 };
+  return v;
+}
+
+export function bumpDeviceDay() {
+  const v = deviceDay();
+  v.sec = (v.sec | 0) + 1;
+  writeRaw(K_DAY, JSON.stringify(v));
+  return v.sec;
 }
 
 /* ================= いま開いている子のデータ ================= */
@@ -148,8 +174,18 @@ export function openSlot(slot) {
   if (!Array.isArray(p.unlockedUnits) || !p.unlockedUnits.length) p.unlockedUnits = ["u01"];
   if (!Array.isArray(state.profile.titles)) state.profile.titles = [];
 
+  if (!Array.isArray(state.today.pendingConfirm)) state.today.pendingConfirm = [];
+
   // 日がかわっていたら、きのうの分をまとめて days に入れる
   const today = dayKey();
+  // ★端末の時計を まえに もどした場合（1日を やり直そうとした場合）は、
+  //   その日は つかいきった あつかいにする。
+  if (state.today.day && dayDiff(today, state.today.day) < 0) {
+    state.today = defToday();
+    state.today.sec = 24 * 3600;
+    saveNow();
+    return;
+  }
   if (state.today.day !== today) {
     if (state.today.items > 0) {
       state.days.push({
@@ -223,6 +259,11 @@ export function deleteSlot(slot) {
     }
   }
   if (state.slot === slot) state.slot = 0;
+}
+
+/** ほかの枠（子ども）の学習記録を のぞく。せんせいモードの「つまずき一覧」で使う。 */
+export function readSlotSrs(slot) {
+  return readJSON(pk(slot, "srs"), {}, isObj);
 }
 
 /** 書き出し用（先生・保護者が紙に残すため） */

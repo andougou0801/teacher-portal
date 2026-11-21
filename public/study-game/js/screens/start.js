@@ -2,7 +2,8 @@
 // 文字入力は1か所もない（出席ばんごうと かおを えらぶだけ）。
 import { $, el, clear, toast } from "../util.js";
 import { face } from "../icons.js";
-import { listSlots, createSlot, openSlot, MAX_SLOTS, state } from "../store.js";
+import { listSlots, createSlot, openSlot, MAX_SLOTS, state, deviceDay } from "../store.js";
+import { limitSec } from "../session.js";
 import { units } from "../data.js";
 import { refreshUnlocks } from "../srs.js";
 import { go } from "../app.js";
@@ -40,17 +41,22 @@ export function enterWho() {
   pickedFace = -1;
   const nums = $("#who-numbers");
   clear(nums);
-  for (let i = 1; i <= 40; i++) {
-    const b = el("button", "", String(i));
-    b.type = "button";
-    b.setAttribute("aria-pressed", "false");
-    b.addEventListener("click", () => {
-      pickedNo = i;
-      [...nums.children].forEach((c) => c.setAttribute("aria-pressed", "false"));
-      b.setAttribute("aria-pressed", "true");
-      updateOk();
-    });
-    nums.appendChild(b);
+  // 40こ ならべると 1年生は 自分の ばんごうを さがせないので、10ずつに くぎる
+  for (let start = 1; start <= 40; start += 10) {
+    const label = el("div", "numgroup", `${start} 〜 ${start + 9}`);
+    nums.appendChild(label);
+    for (let i = start; i < start + 10; i++) {
+      const b = el("button", "", String(i));
+      b.type = "button";
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", () => {
+        pickedNo = i;
+        nums.querySelectorAll("button").forEach((c) => c.setAttribute("aria-pressed", "false"));
+        b.setAttribute("aria-pressed", "true");
+        updateOk();
+      });
+      nums.appendChild(b);
+    }
   }
   const faces = $("#who-faces");
   clear(faces);
@@ -72,13 +78,36 @@ export function enterWho() {
 }
 
 function updateOk() {
-  $("#who-ok").disabled = !(pickedNo > 0 && pickedFace >= 0);
+  // ★「おせないボタン」に しない。1年生には 理由が わからないため。
+  //   おしたら、まだ えらんでいない ところへ つれていく。
+  const btn = $("#who-ok");
+  btn.disabled = false;
+  btn.textContent = pickedNo > 0 ? `${pickedNo}ばんで はじめる` : "これで はじめる";
 }
 
-function install() {
-  $("#btn-new").addEventListener("click", () => go("who"));
-  $("#who-ok").addEventListener("click", () => {
-    if (pickedNo <= 0 || pickedFace < 0) return;
+/** 「あなたは ○ばん で いいですか？」の たしかめ画面 */
+function confirmWho() {
+  const overlay = $("#overlay");
+  overlay.hidden = false;
+  clear(overlay);
+  const sheet = el("div", "sheet who-confirm");
+  sheet.innerHTML = `
+    <h3>これで いい？</h3>
+    <div class="who-big">${face(pickedFace, "", 140)}</div>
+    <div class="who-no">${pickedNo}ばん</div>
+    <p class="note">じぶんの ばんごうと かおか、たしかめてね。<br>ちがう ときは「なおす」を おしてね。</p>`;
+  const row = el("div", "row");
+  const ok = el("button", "btn btn-main", "これで いい");
+  ok.type = "button";
+  ok.addEventListener("click", () => {
+    overlay.hidden = true;
+    // ★新しい枠を つくって 1日を やり直す、という 抜け道を ふさぐ。
+    //   1台を 何人かで つかう学校が あるので、ふつうに つかうぶんには 止めない
+    //   （めやすの2倍を こえたときだけ 止める）。
+    if (deviceDay().sec > limitSec() * 2) {
+      toast("きょうは この タブレットで たくさん あそびました。せんせいに いってね", 5000);
+      return;
+    }
     const slot = createSlot(pickedNo, pickedFace);
     if (!slot) {
       toast("この タブレットは いっぱいです");
@@ -88,6 +117,33 @@ function install() {
     refreshUnlocks(units());
     sfx.levelup();
     go("town");
+  });
+  const back = el("button", "btn", "なおす");
+  back.type = "button";
+  back.addEventListener("click", () => {
+    overlay.hidden = true;
+  });
+  row.appendChild(ok);
+  row.appendChild(back);
+  sheet.appendChild(row);
+  overlay.appendChild(sheet);
+}
+
+function install() {
+  $("#btn-new").addEventListener("click", () => go("who"));
+  $("#who-ok").addEventListener("click", () => {
+    if (pickedNo <= 0) {
+      toast("① じぶんの ばんごうを えらんでね");
+      $("#who-numbers")?.scrollIntoView({ block: "center", behavior: "smooth" });
+      return;
+    }
+    if (pickedFace < 0) {
+      toast("② じぶんの かおを えらんでね");
+      $("#who-faces")?.scrollIntoView({ block: "center", behavior: "smooth" });
+      return;
+    }
+    // ★ばんごうの とりちがえを ふせぐ：大きく出して、もう一度 たしかめる
+    confirmWho();
   });
 
   // タイトルを3秒ながおしで せんせいモード（子どもは気づかない入口）
@@ -100,7 +156,7 @@ function install() {
         if (slots.length) openSlot(slots[slots.length - 1].slot);
       }
       sfx.item();
-      go("teacher");
+      go("teacher", { setup: true });
     }, 3000);
   };
   const stop = () => clearTimeout(pressTimer);

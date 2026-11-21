@@ -12,8 +12,10 @@ import {
   deleteSlot,
   exportJSON,
   importJSON,
+  readSlotSrs,
+  deviceDay,
 } from "../store.js";
-import { units, allSkills } from "../data.js";
+import { units, allSkills, skillMeta } from "../data.js";
 import { rec, refreshUnlocks } from "../srs.js";
 import * as session from "../session.js";
 import * as speech from "../speech.js";
@@ -97,7 +99,16 @@ export function enterSettings() {
 
   const t = el("button", "btn", "せんせいモード");
   t.type = "button";
-  t.addEventListener("click", () => go("teacher"));
+  t.addEventListener("click", () => {
+    // ★あんしょうばんごうが まだ ないときは、ここからは 登録させない。
+    //   ここから登録できると、子どもが 自分で 番号を きめて
+    //   じゅぎょうタイマーや かいほうコードを さわれてしまう。
+    if (!state.teacher.pin) {
+      toast("せんせいが さいしょに とうろくします（タイトルを 3びょう ながおし）", 5000);
+      return;
+    }
+    go("teacher");
+  });
   body.appendChild(t);
 }
 
@@ -130,10 +141,25 @@ async function digest(text) {
   }
 }
 
-export function enterTeacher() {
+/** 画面を はなれたら かぎを かけ直す（開けっぱなしに しない） */
+export function lockTeacher() {
+  unlocked = false;
+}
+
+export function enterTeacher(params = {}) {
   const body = $("#teacher-body");
   clear(body);
   if (!state.teacher.pin) {
+    if (!params.setup) {
+      body.appendChild(
+        el(
+          "div",
+          "card kv",
+          "あんしょうばんごうは、タイトルの もじを 3びょう ながおしすると とうろくできます（せんせい用）。",
+        ),
+      );
+      return;
+    }
     body.appendChild(pinForm("あんしょうばんごうを きめてください（4けた）", async (pin) => {
       state.teacher.pin = await digest(pin);
       saveTeacher();
@@ -201,6 +227,35 @@ function pinForm(label, onOk) {
 }
 
 function renderTeacher(body) {
+  // ① この端末の子の「つまずいているところ」（サーバーが無いので、この端末ぶんだけ）
+  const stuck = el("div", "card");
+  stuck.appendChild(el("div", "s-name", "つまずいているところ（この タブレットの子）"));
+  const rows = [];
+  for (const s of listSlots()) {
+    const srs = readSlotSrs(s.slot);
+    const bad = Object.entries(srs)
+      .filter(([, r]) => r && r.seen >= 3 && r.ok / r.seen < 0.6)
+      .sort((a, b) => a[1].ok / a[1].seen - b[1].ok / b[1].seen)
+      .slice(0, 3)
+      .map(([id]) => skillMeta(id)?.name || id);
+    if (bad.length) rows.push(`${s.no}ばん：${bad.join("／")}`);
+  }
+  if (rows.length) {
+    const ul = el("div", "kv");
+    ul.innerHTML = rows.map((r) => `・${r}`).join("<br>");
+    stuck.appendChild(ul);
+  } else {
+    stuck.appendChild(el("p", "note", "いまのところ、つまずいている子は いません（3回以上やって正答6割未満のものを出します）"));
+  }
+  stuck.appendChild(
+    el(
+      "p",
+      "note",
+      `この タブレットで きょう あそんだ 合計：${Math.floor(deviceDay().sec / 60)}分`,
+    ),
+  );
+  body.appendChild(stuck);
+
   // じゅぎょうタイマー
   const timer = el("div", "card");
   timer.appendChild(el("div", "s-name", "じゅぎょうタイマー（おわると もとに もどります）"));
@@ -285,31 +340,50 @@ function renderTeacher(body) {
       toast("その 単元は ありません");
       return;
     }
-    state.progress.teacherUnlock = unitNo;
-    const openIds = list.slice(0, unitNo).map((u) => u.unitId);
-    for (const s of allSkills()) {
-      if (!openIds.includes(s.unitId)) continue;
-      const r = rec(s.id);
-      r.lv = Math.max(r.lv, Math.min(5, Math.max(1, step)));
-    }
-    save();
-    refreshUnlocks(list);
+    openUpTo(unitNo, step);
     toast(`${list[unitNo - 1].title} まで ひらきました`);
   });
   unlock.appendChild(codeBtn);
-  const table = el("p", "note");
-  table.innerHTML = units()
-    .map((u, i) => `${String(i + 1).padStart(2, "0")} ${u.title}`)
-    .join("　／　");
-  unlock.appendChild(table);
+  // コードを 覚えていなくても、単元を おすだけで 開けるようにする
+  unlock.appendChild(el("p", "note", "単元を おして ひらくこともできます（そこまで ぜんぶ 開きます）"));
+  const unitRow = el("div", "row");
+  units().forEach((u, i) => {
+    const b = el("button", "toggle", `${String(i + 1).padStart(2, "0")} ${u.title}`);
+    b.type = "button";
+    b.style.minWidth = "auto";
+    b.addEventListener("click", () => {
+      openUpTo(i + 1, 2);
+      toast(`${u.title} まで ひらきました`);
+    });
+    unitRow.appendChild(b);
+  });
+  unlock.appendChild(unitRow);
   body.appendChild(unlock);
 
   // セーブコード
   const code = el("div", "card");
   code.appendChild(el("div", "s-name", "セーブコード（タブレットを かえるとき）"));
   if (state.slot) {
-    const show = el("div", "savecode", makeCode());
+    const text = makeCode();
+    const show = el("div", "savecode", text);
     code.appendChild(show);
+    const copy = el("button", "btn", "コードを コピー");
+    copy.type = "button";
+    copy.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("コピーしました");
+      } catch {
+        // コピーが つかえない端末では、えらびやすいように 全部 えらんでおく
+        const range = document.createRange();
+        range.selectNodeContents(show);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        toast("ながおしして コピーしてください");
+      }
+    });
+    code.appendChild(copy);
     code.appendChild(
       el("p", "note", "紙に ひかえて おくと、きろくが きえても ここから もどせます。なまえは 入っていません。"),
     );
@@ -410,6 +484,46 @@ function renderTeacher(body) {
     ),
   );
   body.appendChild(slots);
+
+  // あんしょうばんごうの 変更（子どもに 見られたときのため）
+  const pin = el("div", "card");
+  pin.appendChild(el("div", "s-name", "あんしょうばんごうを かえる"));
+  const pinBtn = el("button", "btn", "かえる");
+  pinBtn.type = "button";
+  pinBtn.addEventListener("click", () => {
+    clear(body);
+    body.appendChild(
+      pinForm("あたらしい あんしょうばんごう（4けた）", async (next) => {
+        state.teacher.pin = await digest(next);
+        saveTeacher();
+        toast("かえました");
+        renderTeacherReload();
+      }),
+    );
+  });
+  pin.appendChild(pinBtn);
+  pin.appendChild(
+    el(
+      "p",
+      "note",
+      "わすれたときは、この タブレットの ブラウザの「サイトのデータを消去」で 全部 消すと 初めからになります（子どもの きろくも 消えます）。",
+    ),
+  );
+  body.appendChild(pin);
+}
+
+/** その単元まで まとめて ひらく（累積開放。欠席・転入の子が 1回で 追いつける） */
+function openUpTo(unitNo, step) {
+  const list = units();
+  state.progress.teacherUnlock = unitNo;
+  const openIds = list.slice(0, unitNo).map((u) => u.unitId);
+  for (const s of allSkills()) {
+    if (!openIds.includes(s.unitId)) continue;
+    const r = rec(s.id);
+    r.lv = Math.max(r.lv, Math.min(5, Math.max(1, step)));
+  }
+  save();
+  refreshUnlocks(list);
 }
 
 function renderTeacherReload() {

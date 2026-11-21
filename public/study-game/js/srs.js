@@ -12,7 +12,7 @@ export const REVIEW_CAP = 8;
 export const MASTER_STAGE = 2;
 
 function def() {
-  return { lv: 1, stage: 0, due: "", seen: 0, ok: 0, last5: 0, first: "", upDay: "" };
+  return { lv: 1, stage: 0, due: "", seen: 0, ok: 0, last5: 0, first: "", upDay: "", stageDay: "" };
 }
 
 export function rec(skillId) {
@@ -57,23 +57,32 @@ export function answer(skillId, correct) {
   if (correct) r.ok++;
   pushLast5(r, correct);
 
+  // ★1日に1段までしか すすまない。
+  // そうしないと、同じ日に3回あたっただけで「ばっちりおぼえた」になってしまい、
+  // 日をあけて ためす という 仕組みが はたらかなくなる。
   if (correct) {
-    r.stage = clamp(r.stage + 1, 0, GAP.length - 1);
+    if (r.stageDay !== today) {
+      r.stage = clamp(r.stage + 1, 0, GAP.length - 1);
+      r.stageDay = today;
+    }
     r.due = addDays(today, GAP[r.stage]);
     if (!r.first) r.first = today;
   } else {
     r.stage = clamp(r.stage - 1, 0, GAP.length - 1);
+    r.stageDay = today;
     r.due = addDays(today, 1);
   }
 
   // レベルを上げる（あわてて上げない）
   const last3ok = (r.last5 & 0b111) === 0b111;
   const rate = r.seen >= 5 ? bits(r.last5) / 5 : 0;
+  // レベルを上げるのは「きのうも きょうも 条件を みたした」ときだけ。
+  // 何週間も前の1回を おぼえていて いきなり 上がる、ということが ないようにする。
   if (correct && last3ok && rate >= 0.8) {
-    if (r.upDay && r.upDay !== today) {
+    if (r.upDay && r.upDay !== today && dayDiff(today, r.upDay) <= 3) {
       r.lv = clamp(r.lv + 1, 1, 5);
       r.upDay = today;
-    } else if (!r.upDay) {
+    } else {
       r.upDay = today;
     }
   }

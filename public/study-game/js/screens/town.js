@@ -13,6 +13,24 @@ import { go } from "../app.js";
 const W = 1000;
 const H = 560;
 
+// なかまが 話すことば（子ども役の「なまえを よんでほしい」に こたえる）
+const HELLO = [
+  "{no}ばん、こんにちは！",
+  "{no}ばん、きょうも きたね！",
+  "まちが ひろく なったよ",
+  "きょうの もんだい、がんばろう",
+  "ぼく、ここに すんでるよ",
+  "{no}ばんと いっしょだと たのしい",
+];
+
+function greetIndex(unitId) {
+  // 日によって ことばが かわる（ランダムではなく、日づけと なかまで きまる）
+  const day = new Date().getDate();
+  let n = day;
+  for (const ch of unitId) n += ch.charCodeAt(0);
+  return n % HELLO.length;
+}
+
 function tree(x, y) {
   return `<g transform="translate(${x} ${y})">
     <rect x="-7" y="0" width="14" height="46" fill="#A9743C" stroke="#2B2A28" stroke-width="3"/>
@@ -35,20 +53,31 @@ export function refresh() {
 function paintMats() {
   const box = $("#town-mats");
   clear(box);
-  for (const m of MAT_ORDER) {
-    const n = state.progress.materials[m] || 0;
+  // 0のものまで ならべると、せまい画面で 2段に なって 町が つぶれる。
+  // 持っているものだけ、多い順に 3つまで。
+  const have = MAT_ORDER.map((m) => ({ m, n: state.progress.materials[m] || 0 }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n)
+    .slice(0, 3);
+  for (const { m, n } of have) {
     const chip = el("div", "mat");
     chip.innerHTML = `<i style="background:${MATERIALS[m].color}"></i><span>${MATERIALS[m].name} ${n}</span>`;
     box.appendChild(chip);
   }
 }
 
-/** いま建てられる建物（その単元を半分すすめていて、ざいりょうが足りているもの） */
+/**
+ * これから建てる建物の一覧（まだ建っていない・その単元がひらいているもの）。
+ * ready が true なら ざいりょうが そろっている。
+ * ★「単元をどれだけ進めたか」では しばらない。ざいりょう自体が 正解の数なので、
+ *   二重に しばると 何を あつめているのか 子どもに 見えなくなる。
+ */
 export function buildableList() {
+  const open = state.progress.unlockedUnits || ["u01"];
   const out = [];
   for (const b of BUILDINGS) {
     if (state.progress.buildings[b.id]?.built) continue;
-    if (unitProgress(b.unit) < 0.5) continue;
+    if (!open.includes(b.unit)) continue;
     const have = state.progress.materials[b.mat] || 0;
     out.push({ ...b, have, ready: have >= b.cost });
   }
@@ -72,13 +101,27 @@ function render() {
   svg += tree(690, 296) + tree(960, 300) + tree(240, 530);
 
   const built = BUILDINGS.filter((b) => p.buildings[b.id]?.built);
+  const open = p.unlockedUnits || ["u01"];
+  const nextUp = buildableList()[0];
   for (const b of BUILDINGS) {
     const x = (b.x / 100) * W;
     const y = (b.y / 100) * H;
     const info = p.buildings[b.id];
+    const scale = 1.9;
+    const place = `translate(${x - 50 * scale} ${y - 70 * scale}) scale(${scale})`;
     if (info?.built) {
-      const scale = 1.9;
-      svg += `<g class="b-built" data-id="${b.id}" transform="translate(${x - 50 * scale} ${y - 70 * scale}) scale(${scale})">${buildingShapeMarkup(b.shape, info.color || 0)}</g>`;
+      svg += `<g class="b-built" data-id="${b.id}" transform="${place}">${buildingShapeMarkup(b.shape, info.color || 0)}</g>`;
+    } else if (open.includes(b.unit)) {
+      // まだ たっていない たてものは、うすい かげで 見せる（なにを あつめているか 分かるように）
+      svg += `<g class="b-ghost" opacity="0.3" transform="${place}">${buildingShapeMarkup(b.shape, 0)}</g>`;
+      if (nextUp && nextUp.id === b.id) {
+        const need = Math.max(0, b.cost - (p.materials[b.mat] || 0));
+        svg += `<g transform="translate(${x} ${y + 24})">
+          <rect x="-72" y="-22" width="144" height="42" rx="21" fill="#FFFFFF" stroke="#2B2A28" stroke-width="3"/>
+          <rect x="-58" y="-12" width="22" height="22" rx="6" fill="${MATERIALS[b.mat].color}" stroke="#2B2A28" stroke-width="3"/>
+          <text x="6" y="8" font-size="26" text-anchor="middle" fill="#2B2A28" font-weight="700">あと ${need}</text>
+        </g>`;
+      }
     }
   }
 
@@ -87,10 +130,12 @@ function render() {
     const b = buildingByUnit(unitId);
     const bx = b ? (b.x / 100) * W : 200 + i * 90;
     const by = b ? (b.y / 100) * H : 460;
-    svg += `<g data-friend="${unitId}" transform="translate(${bx + 58} ${by + 2}) scale(0.9)">${moya(
+    // そとの g で 位置を きめ、なかの g を はねさせる
+    // （おなじ g に transform を 2つ 書くと、CSSのほうが 位置を 消してしまうため）
+    svg += `<g data-friend="${unitId}" transform="translate(${bx + 58} ${by + 2}) scale(0.9)"><g class="friend-body">${moya(
       unitMeta(unitId)?.monster || "kazumoya",
       "friend",
-    ).replace(/^<svg[^>]*>|<\/svg>$/g, "")}</g>`;
+    ).replace(/^<svg[^>]*>|<\/svg>$/g, "")}</g></g>`;
   });
 
   svg += "</svg>";
@@ -102,7 +147,13 @@ function render() {
       const id = node.getAttribute("data-friend");
       const monster = unitMeta(id)?.monster;
       sfx.item();
-      toast(`${MOYA_NAMES[monster] || "なかま"}「${state.profile.no}ばん、こんにちは！」`);
+      // おされたら 1回だけ ぴょんと はねる（ずっと動く 背景には しない）
+      const body = node.querySelector(".friend-body") || node;
+      body.classList.remove("is-hop");
+      void body.getBoundingClientRect();
+      body.classList.add("is-hop");
+      setTimeout(() => body.classList.remove("is-hop"), 500);
+      toast(`${MOYA_NAMES[monster] || "なかま"}「${HELLO[greetIndex(id)]}」`.replace("{no}", state.profile.no));
     });
   });
 

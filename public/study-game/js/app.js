@@ -2,10 +2,9 @@
 import { $, $$, installPressFeedback, toast } from "./util.js";
 import * as audio from "./audio.js";
 import * as speech from "./speech.js";
-import { state, meta, openSlot, saveNow } from "./store.js";
-import { loadManifest, units } from "./data.js";
+import { state, saveNow } from "./store.js";
+import { loadManifest } from "./data.js";
 import * as session from "./session.js";
-import { refreshUnlocks } from "./srs.js";
 
 import * as startScreen from "./screens/start.js";
 import * as townScreen from "./screens/town.js";
@@ -36,14 +35,18 @@ let current = "start";
 export function go(name, params = {}) {
   const next = $(`#app .screen[data-screen="${name}"]`);
   if (!next) return;
+  // せんせいモードから はなれたら、もう一度 あんしょうばんごうが いるようにする
+  if (current === "teacher" && name !== "teacher") settingsScreen.lockTeacher();
   const prev = $(`#app .screen.is-active`);
   if (prev && prev !== next) {
-    prev.classList.remove("is-active");
+    prev.classList.remove("is-active", "is-in");
     prev.classList.add("is-leaving");
     setTimeout(() => prev.classList.remove("is-leaving"), 200);
   }
-  next.classList.remove("is-leaving");
+  next.classList.remove("is-leaving", "is-in");
   next.classList.add("is-active");
+  // 1コマ おいてから 動かす（同じコマだと アニメーションが 動かない）
+  requestAnimationFrame(() => requestAnimationFrame(() => next.classList.add("is-in")));
   current = name;
   session.touch();
   const fn = SCREENS[name];
@@ -96,15 +99,16 @@ async function boot() {
     toast("もんだいが よみこめませんでした。もう一度 ひらいてね", 5000);
   }
 
-  // 前に遊んだ枠があればそれを開けておく（起動1タップで続きから）
-  const slots = meta().slots;
-  if (slots.length) {
-    openSlot(slots[slots.length - 1].slot);
-    refreshUnlocks(units());
-  }
+  // ★起動しただけでは だれの記録も 開かない。
+  //   自動で開くと、つぎに つかう子に 前の子の まち・きろくが 見えてしまう。
+  //   「はじめの画面」で 自分の ばんごうを 1回 おせば 続きから はじまる。
   session.start();
   session.onChange(() => {
     if (current === "town") townScreen.refresh();
+  });
+  document.addEventListener("time-soon", () => {
+    toast("あと 2ふんで きょうは おしまい。あわてなくて だいじょうぶ", 4000);
+    audio.sfx.close();
   });
 
   window.addEventListener("pagehide", saveNow);
