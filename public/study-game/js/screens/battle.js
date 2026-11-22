@@ -4,7 +4,7 @@ import { $, el, clear, sleep, toast } from "../util.js";
 import { moya } from "../icons.js";
 import { MATERIALS } from "../content.js";
 import { state, save } from "../store.js";
-import { loadUnit, unitMeta, pickItems, skillMeta, units } from "../data.js";
+import { loadUnit, unitMeta, pickItems, skillMeta} from "../data.js";
 import { rec, answer as srsAnswer, dueSkills, refreshUnlocks, unitProgress } from "../srs.js";
 import * as session from "../session.js";
 import { ask, showHintNow, cancel as cancelQuiz } from "../quiz.js";
@@ -484,7 +484,7 @@ function finishStage() {
       // その単元を ぜんぶ ばっちりに したら、武器が 1本 もらえる（運では 出さない）
       newWeapon = grantWeaponIfCleared(stageInfo.unitId);
     }
-    refreshUnlocks(units());
+    refreshUnlocks();
   }
   save();
   go("result", {

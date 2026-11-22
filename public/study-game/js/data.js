@@ -13,24 +13,45 @@ export async function loadManifest() {
   return manifest;
 }
 
-/** いま作っている範囲（小1・算数・1学期） */
-export function course() {
-  const list = manifest?.grades || [];
-  return list.find((g) => g.grade === 1 && g.subject === "math" && g.term === 1) || list[0] || { units: [] };
+/** 教科ごとの かたまり（いまは さんすう と こくご） */
+export function courses() {
+  return manifest?.grades || [];
 }
 
-export function units() {
-  return [...(course().units || [])].sort((a, b) => a.order - b.order);
+export function course(subject = "math") {
+  const list = courses();
+  return list.find((g) => g.subject === subject) || list[0] || { units: [] };
+}
+
+/** ある教科の単元（順番どおり）。教科を はぶくと さんすう */
+export function units(subject = "math") {
+  return [...(course(subject).units || [])].sort((a, b) => a.order - b.order);
+}
+
+/** ぜんぶの教科の単元（さんすう → こくご の順。セーブコードの順番にも つかう） */
+export function allUnits() {
+  const out = [];
+  for (const c of courses()) {
+    for (const u of [...(c.units || [])].sort((x, y) => x.order - y.order)) out.push({ ...u, subject: c.subject });
+  }
+  return out;
+}
+
+/** その教科に 単元が あるか */
+export function availableSubjects() {
+  return courses()
+    .filter((c) => (c.units || []).length)
+    .map((c) => c.subject);
 }
 
 export function unitMeta(unitId) {
-  return units().find((u) => u.unitId === unitId) || null;
+  return allUnits().find((u) => u.unitId === unitId) || null;
 }
 
 /** スキルの順番は固定（セーブコードでこの順に詰めるため、順番を変えない） */
 export function allSkills() {
   const out = [];
-  for (const u of units()) {
+  for (const u of allUnits()) {
     for (const s of u.skills || []) out.push({ ...s, unitId: u.unitId });
   }
   return out;
@@ -48,7 +69,7 @@ export async function loadUnit(unitId) {
   if (!res.ok) throw new Error(`${unitId} が よめません`);
   const data = await res.json();
   // 知らない type の問題は、その1問だけ外す（残りは遊べる）
-  const known = new Set(["choice", "input", "order"]);
+  const known = new Set(["choice", "input", "order", "trace"]);
   data.items = (data.items || []).filter((it) => known.has(it.type) && Array.isArray(it.prompt));
   unitCache.set(unitId, data);
   return data;

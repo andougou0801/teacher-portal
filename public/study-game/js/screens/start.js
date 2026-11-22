@@ -12,7 +12,6 @@ import {
   saveSettings,
 } from "../store.js";
 import { limitSec } from "../session.js";
-import { units } from "../data.js";
 import { refreshUnlocks } from "../srs.js";
 import { go, applySettings } from "../app.js";
 import { sfx } from "../audio.js";
@@ -31,7 +30,7 @@ export function enterStart() {
     btn.innerHTML = `<span class="slot-face">${face(s.face, "", 44)}</span><span>${s.no}ばん</span>`;
     btn.addEventListener("click", () => {
       openSlot(s.slot);
-      refreshUnlocks(units());
+      refreshUnlocks();
       go("town");
     });
     box.appendChild(btn);
@@ -122,7 +121,7 @@ function confirmWho() {
       return;
     }
     openSlot(slot);
-    refreshUnlocks(units());
+    refreshUnlocks();
     sfx.levelup();
     go("town");
   });

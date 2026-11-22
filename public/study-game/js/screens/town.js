@@ -4,14 +4,19 @@ import { $, el, clear, toast, sleep } from "../util.js";
 import { buildingShapeMarkup, moya, MOYA_NAMES, iconShape } from "../icons.js";
 import { BUILDINGS, MATERIALS, MAT_ORDER, WEARS, TITLES } from "../content.js";
 import { state, save } from "../store.js";
-import { units, unitMeta } from "../data.js";
+import { unitMeta } from "../data.js";
 import { unitProgress, masteredCount, refreshUnlocks } from "../srs.js";
+import { todaySubject, subjectOfUnit, townName } from "../subject.js";
+import { availableSubjects } from "../data.js";
 import * as session from "../session.js";
 import { sfx } from "../audio.js";
 import { go } from "../app.js";
 
 const W = 1000;
 const H = 560;
+
+// いま見ている まち（教科ごとに1つ。きょうの教科から はじまる）
+let viewSubject = "math";
 
 // なかまが 話すことば（子ども役の「なまえを よんでほしい」に こたえる）
 const HELLO = [
@@ -64,7 +69,8 @@ export function enter() {
     go("start");
     return;
   }
-  refreshUnlocks(units());
+  refreshUnlocks();
+  viewSubject = todaySubject(availableSubjects());
   render();
 }
 
@@ -95,12 +101,13 @@ function paintMats() {
  * ★「単元をどれだけ進めたか」では しばらない。ざいりょう自体が 正解の数なので、
  *   二重に しばると 何を あつめているのか 子どもに 見えなくなる。
  */
-export function buildableList() {
+export function buildableList(subject = viewSubject) {
   const open = state.progress.unlockedUnits || ["u01"];
   const out = [];
   for (const b of BUILDINGS) {
     if (state.progress.buildings[b.id]?.built) continue;
     if (!open.includes(b.unit)) continue;
+    if (subject && subjectOfUnit(b.unit) !== subject) continue;
     const have = state.progress.materials[b.mat] || 0;
     out.push({ ...b, have, ready: have >= b.cost });
   }
@@ -110,7 +117,7 @@ export function buildableList() {
 function render() {
   const stage = $("#town-stage");
   const p = state.progress;
-  $("#town-name").textContent = `${state.profile?.no ?? ""}ばんの まち`;
+  $("#town-name").textContent = `${state.profile?.no ?? ""}ばんの ${townName(viewSubject)}`;
   paintMats();
 
   let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
@@ -151,10 +158,12 @@ function render() {
     </g>`;
   }
 
-  const built = BUILDINGS.filter((b) => p.buildings[b.id]?.built);
+  // いま見ている まち（教科）の たてものだけ 出す
+  const here = BUILDINGS.filter((b) => subjectOfUnit(b.unit) === viewSubject);
+  const built = here.filter((b) => p.buildings[b.id]?.built);
   const open = p.unlockedUnits || ["u01"];
   const nextUp = buildableList()[0];
-  for (const b of BUILDINGS) {
+  for (const b of here) {
     const x = (b.x / 100) * W;
     const y = (b.y / 100) * H;
     const info = p.buildings[b.id];
@@ -190,7 +199,7 @@ function render() {
   // なかま（たおした もやもやが まちで くらす）
   // なかまは「みちぞい」に ならべる。
   // たてものの となりに おくと、「？」の はこや 木と かさなって しまうため。
-  const friendList = p.friends || [];
+  const friendList = (p.friends || []).filter((id) => subjectOfUnit(id) === viewSubject);
   friendList.forEach((unitId, i) => {
     const span = 760;
     const step = friendList.length > 1 ? span / (friendList.length - 1) : 0;
@@ -238,7 +247,7 @@ function render() {
     const next = buildableList()[0];
     if (next) {
       tip.textContent = `つぎは ${next.name}（${MATERIALS[next.mat].name} あと ${Math.max(0, next.cost - next.have)}）`;
-    } else if (built.length >= BUILDINGS.length) {
+    } else if (built.length >= here.length) {
       tip.textContent = "まちが ぜんぶ できた！ おぼえるたびに はなと どうぶつが ふえるよ";
     } else {
       tip.textContent = "ぼうけんに いって つぎの ばしょを ひらこう";

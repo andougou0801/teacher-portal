@@ -2,7 +2,8 @@
 // 日づけだけで管理する（時刻は使わない。端末の時計のずれで壊れないように）。
 import { state, save } from "./store.js";
 import { dayKey, addDays, dayDiff, clamp } from "./util.js";
-import { allSkills, unitMeta, skillMeta } from "./data.js";
+import { allSkills, unitMeta, skillMeta, units, allUnits, availableSubjects } from "./data.js";
+import { subjectOfUnit } from "./subject.js";
 
 /** stage ごとの「つぎに出す日」までの日数 */
 const GAP = [1, 2, 4, 7, 14, 30];
@@ -165,8 +166,14 @@ export function masteredCount() {
 }
 
 /** きょう取り組む単元（まだ終わっていない、いちばん前の単元） */
-export function focusUnit() {
-  const open = state.progress.unlockedUnits || ["u01"];
+export function focusUnit(subject = "math") {
+  const all = state.progress.unlockedUnits || ["u01"];
+  const open = all.filter((id) => subjectOfUnit(id) === subject);
+  if (!open.length) {
+    // その教科を まだ 1つも ひらいていない＝さいしょの単元
+    const first = units(subject)[0];
+    return first ? first.unitId : "u01";
+  }
   // まだ半分も すすんでいない単元を いちばん前から
   for (const id of open) {
     if (unitProgress(id) < 0.5) return id;
@@ -185,38 +192,47 @@ export function focusUnit() {
 }
 
 /** 単元の自動開放：いまの単元が半分すすんだら、つぎの単元をひらく */
-export function refreshUnlocks(unitsList) {
+/**
+ * 単元の自動開放。教科ごとに、前から じゅんに ひらいていく。
+ * ★「半分すすんだ」だけだと 1日で ぜんぶ 開いてしまうので、
+ *   その単元を **ちがう日に2回以上** やっていることも 条件にする。
+ */
+export function refreshUnlocks() {
   const open = new Set(state.progress.unlockedUnits || ["u01"]);
   let changed = false;
-  for (let i = 0; i < unitsList.length; i++) {
-    const u = unitsList[i];
-    if (!open.has(u.unitId)) continue;
-    // ★「半分すすんだ」だけだと、1日で8単元ぜんぶ 開いてしまう（通年型にならない）。
-    //   その単元を **ちがう日に2回以上** やっていることも 条件にする。
-    const days = (state.progress.unitDays || {})[u.unitId] || [];
-    if (
-      unitProgress(u.unitId) >= 0.5 &&
-      days.length >= 2 &&
-      unitsList[i + 1] &&
-      !open.has(unitsList[i + 1].unitId)
-    ) {
-      open.add(unitsList[i + 1].unitId);
+  for (const subject of availableSubjects()) {
+    const list = units(subject);
+    if (!list.length) continue;
+    // その教科の さいしょの単元は いつでも ひらいている
+    if (!open.has(list[0].unitId)) {
+      open.add(list[0].unitId);
       changed = true;
     }
-  }
-  // せんせいモードのコードで開けた分（累積開放）
-  const upto = state.progress.teacherUnlock | 0;
-  for (let i = 0; i < Math.min(upto, unitsList.length); i++) {
-    if (!open.has(unitsList[i].unitId)) {
-      open.add(unitsList[i].unitId);
-      changed = true;
+    for (let i = 0; i < list.length; i++) {
+      const u = list[i];
+      if (!open.has(u.unitId)) continue;
+      const days = (state.progress.unitDays || {})[u.unitId] || [];
+      if (unitProgress(u.unitId) >= 0.5 && days.length >= 2 && list[i + 1] && !open.has(list[i + 1].unitId)) {
+        open.add(list[i + 1].unitId);
+        changed = true;
+      }
+    }
+    // せんせいモードのコードで ひらいた分（累積開放）
+    const upto = state.progress.teacherUnlock | 0;
+    if (subject === "math") {
+      for (let i = 0; i < Math.min(upto, list.length); i++) {
+        if (!open.has(list[i].unitId)) {
+          open.add(list[i].unitId);
+          changed = true;
+        }
+      }
     }
   }
   if (changed) {
-    state.progress.unlockedUnits = unitsList
-      .filter((u) => open.has(u.unitId))
-      .map((u) => u.unitId);
+    const order = allUnits().map((u) => u.unitId);
+    state.progress.unlockedUnits = order.filter((id) => open.has(id));
     save("progress");
   }
   return state.progress.unlockedUnits;
 }
+

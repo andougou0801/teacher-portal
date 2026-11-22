@@ -4,7 +4,8 @@ import { $, el, clear } from "../util.js";
 import { moya, icon } from "../icons.js";
 import { MATERIALS } from "../content.js";
 import { state } from "../store.js";
-import { unitMeta } from "../data.js";
+import { unitMeta, availableSubjects } from "../data.js";
+import { todaySubject, subjectName, subjectOfUnit } from "../subject.js";
 import { dueSkills, focusUnit, unitProgress } from "../srs.js";
 import * as session from "../session.js";
 import { go } from "../app.js";
@@ -19,6 +20,15 @@ const REWARD_BY_UNIT = {
   u06: "glass",
   u07: "glass",
   u08: "glass",
+  // こくご（ことばのまち）
+  j01: "ki",
+  j02: "ki",
+  j03: "ki",
+  j04: "ishi",
+  j05: "ishi",
+  j06: "nendo",
+  j07: "nendo",
+  j08: "glass",
 };
 
 export function enter() {
@@ -36,9 +46,17 @@ export function enter() {
     body.appendChild(note);
   }
 
+  // きょうの教科（じどうで 交互。せんせいモードで 片方に 固定できる）
+  const subject = todaySubject(availableSubjects());
   const due = dueSkills();
-  const focus = focusUnit();
+  const focus = focusUnit(subject);
   const done = state.today.stages || {};
+
+  if (availableSubjects().length > 1) {
+    const head = el("div", "card kv");
+    head.innerHTML = `きょうは <b>${subjectName(subject)}</b> の ひ`;
+    body.appendChild(head);
+  }
 
   // ① ふくしゅう
   if (due.length > 0) {
@@ -72,7 +90,8 @@ export function enter() {
   }
 
   // ③ えらんで ぼうけん（ひらいている単元から じぶんで えらぶ）
-  const open = (state.progress.unlockedUnits || []).filter((u) => u !== focus);
+  const open = (state.progress.unlockedUnits || [])
+    .filter((u) => u !== focus && subjectOfUnit(u) === subject);
   if (open.length) {
     const card = el("button", "stage-card");
     card.type = "button";

@@ -15,9 +15,10 @@ import {
   readSlotSrs,
   deviceDay,
 } from "../store.js";
-import { units, allSkills, skillMeta } from "../data.js";
+import { units, allSkills, skillMeta, availableSubjects } from "../data.js";
 import { moya } from "../icons.js";
 import { runTrace } from "../trace.js";
+import { subjectMode, setSubjectMode, subjectName } from "../subject.js";
 import { rec, refreshUnlocks } from "../srs.js";
 import * as session from "../session.js";
 import * as speech from "../speech.js";
@@ -411,7 +412,7 @@ function renderTeacher(body) {
     }
     try {
       readCode(codeIn.value);
-      refreshUnlocks(units());
+      refreshUnlocks();
       toast("もどしました");
       renderTeacherReload();
     } catch (err) {
@@ -449,7 +450,7 @@ function renderTeacher(body) {
     if (!f) return;
     try {
       importJSON(await f.text());
-      refreshUnlocks(units());
+      refreshUnlocks();
       toast("読みこみました");
       renderTeacherReload();
     } catch (err) {
@@ -492,6 +493,39 @@ function renderTeacher(body) {
     ),
   );
   body.appendChild(slots);
+
+  // きょうの教科（さんすう／こくご）
+  const subj = el("div", "card");
+  subj.appendChild(el("div", "s-name", "きょうの教科"));
+  subj.appendChild(
+    el(
+      "p",
+      "note",
+      "1日15分は2教科の合計です。「じどう」にしておくと、さんすうとこくごが日ごとに入れかわります（同じ日に両方はやらせません）。授業で使うときだけ、片方に固定してください。",
+    ),
+  );
+  const subjRow = el("div", "row");
+  for (const [mode, label] of [
+    ["auto", "じどう"],
+    ["math", "さんすう"],
+    ["japanese", "こくご"],
+  ]) {
+    const b = el("button", "toggle", label);
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(subjectMode() === mode));
+    b.addEventListener("click", () => {
+      setSubjectMode(mode);
+      saveSettings();
+      toast(`${label} に しました`);
+      renderTeacherReload();
+    });
+    subjRow.appendChild(b);
+  }
+  subj.appendChild(subjRow);
+  subj.appendChild(
+    el("p", "note", `いま ひらいている教科：${availableSubjects().map((s) => subjectName(s)).join("・")}`),
+  );
+  body.appendChild(subj);
 
   // なぞり書きの しさく（国語を 入れる前の ためし）
   const trace = el("div", "card");
@@ -594,7 +628,7 @@ function openUpTo(unitNo, step) {
     r.lv = Math.max(r.lv, Math.min(5, Math.max(1, step)));
   }
   save();
-  refreshUnlocks(list);
+  refreshUnlocks();
 }
 
 function renderTeacherReload() {

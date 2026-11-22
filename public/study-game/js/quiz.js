@@ -7,6 +7,7 @@ import { icon } from "./icons.js";
 import { sfx } from "./audio.js";
 import * as speech from "./speech.js";
 import { state } from "./store.js";
+import { runTrace } from "./trace.js";
 
 const HINT_MS = 36000;
 
@@ -157,6 +158,34 @@ function renderOrder(item, box, done) {
 }
 
 /**
+ * なぞり書き（ひらがなを 指で なぞる）。
+ * ★まちがいが ない形にしてある。筆順どおりに なぞれたら できあがり。
+ *   手書きを 読みとって ○×を つけると、正しく書いたのに ×に なる事故が 起きるため。
+ */
+function renderTrace(item, box, done) {
+  const pad = el("div", "");
+  box.appendChild(pad);
+  const again = el("button", "btn", "もういちど");
+  again.type = "button";
+  again.style.marginTop = "8px";
+  box.appendChild(again);
+
+  let cleanup = () => {};
+  const start = () => {
+    cleanup();
+    cleanup = runTrace(pad, item.char || item.answer || "あ", () => {
+      if (box.dataset.locked) return;
+      box.dataset.locked = "1";
+      cleanup();
+      done(true, item.char || "");
+    });
+  };
+  again.addEventListener("click", start);
+  start();
+  box._cleanupTrace = () => cleanup();
+}
+
+/**
  * 1問出して、こたえが返るまで待つ。
  * @returns {Promise<{correct:boolean, ms:number, value:string}>}
  */
@@ -200,6 +229,10 @@ export function ask(item) {
   return new Promise((resolve) => {
     const finish = (correct, value = "", cancelled = false) => {
       clearTimeout(hintTimer);
+      if (qans._cleanupTrace) {
+        qans._cleanupTrace();
+        qans._cleanupTrace = null;
+      }
       if (qans._onKey) {
         document.removeEventListener("keydown", qans._onKey);
         qans._onKey = null;
@@ -213,6 +246,7 @@ export function ask(item) {
 
     if (item.type === "choice") renderChoices(item, qans, finish);
     else if (item.type === "order") renderOrder(item, qans, finish);
+    else if (item.type === "trace") renderTrace(item, qans, finish);
     else renderInput(item, qans, finish);
 
     if (item.hint) {

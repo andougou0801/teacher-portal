@@ -21,6 +21,7 @@ export const POWERS = {
   compare: "くらべるちから",
   shape: "かたちのちから",
   read: "よみとくちから",
+  word: "ことばのちから",
 };
 
 export const BUILDINGS = [
@@ -28,6 +29,15 @@ export const BUILDINGS = [
   { id: "narabinomichi", name: "ならびのもん", unit: "u02", shape: "gate", mat: "ki", cost: 14, x: 34, y: 48 },
   { id: "wakekkohouse", name: "わけっこハウス", unit: "u03", shape: "twinhouse", mat: "ishi", cost: 16, x: 56, y: 50 },
   { id: "shirabeyagura", name: "しらべやぐら", unit: "u08", shape: "tower", mat: "glass", cost: 20, x: 80, y: 46 },
+  // ことばのまち（こくご）。はたけ・たんぼ・おみせ が ひらいていく
+  { id: "hatake", name: "はたけ", unit: "j01", shape: "field", mat: "ki", cost: 12, x: 12, y: 50 },
+  { id: "tanbo", name: "たんぼ", unit: "j02", shape: "paddy", mat: "ki", cost: 14, x: 34, y: 48 },
+  { id: "yaoya", name: "やおや", unit: "j03", shape: "shop", mat: "ki", cost: 16, x: 56, y: 50 },
+  { id: "butai", name: "おはなしのぶたい", unit: "j08", shape: "stage", mat: "glass", cost: 20, x: 80, y: 46 },
+  { id: "bungu", name: "ぶんぼうぐや", unit: "j04", shape: "pencilshop", mat: "ishi", cost: 18, x: 12, y: 76 },
+  { id: "yubin", name: "ゆうびんきょく", unit: "j05", shape: "post", mat: "ishi", cost: 20, x: 35, y: 78 },
+  { id: "toshoshitsu", name: "としょしつ", unit: "j06", shape: "library", mat: "nendo", cost: 16, x: 58, y: 78 },
+  { id: "ishibumi", name: "いしぶみ", unit: "j07", shape: "monument", mat: "nendo", cost: 18, x: 80, y: 74 },
   { id: "tasizankoujou", name: "たしざんこうじょう", unit: "u04", shape: "factory", mat: "ki", cost: 20, x: 12, y: 76 },
   { id: "hikizansouko", name: "ひきざんそうこ", unit: "u05", shape: "barn", mat: "ishi", cost: 20, x: 35, y: 78 },
   { id: "zeronoizumi", name: "ゼロのいずみ", unit: "u06", shape: "well", mat: "nendo", cost: 14, x: 58, y: 78 },

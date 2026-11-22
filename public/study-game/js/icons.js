@@ -167,7 +167,84 @@ function gateShape(color) {
     <path d="M34 66h32" stroke="${ink}" stroke-width="3"/>`;
 }
 
+function fieldShape(color) {
+  return `<rect x="10" y="56" width="80" height="34" rx="8" fill="#C98A4B" stroke="${ink}" stroke-width="3"/>
+    <path d="M14 66h72M14 76h72" stroke="#A9743C" stroke-width="3"/>
+    <g fill="${color}" stroke="${ink}" stroke-width="2.5">
+      <circle cx="26" cy="52" r="8"/><circle cx="50" cy="48" r="9"/><circle cx="74" cy="52" r="8"/>
+    </g>
+    <path d="M26 56v8M50 53v11M74 56v8" stroke="#4E9B52" stroke-width="3"/>`;
+}
+
+function paddyShape(color) {
+  return `<rect x="8" y="54" width="84" height="36" rx="10" fill="#9FD8F2" stroke="${ink}" stroke-width="3"/>
+    <path d="M14 72q10-6 20 0t20 0 20 0" stroke="#6FBBE8" stroke-width="3" fill="none"/>
+    <g stroke="${color}" stroke-width="4" stroke-linecap="round">
+      <path d="M24 62v-12M24 50l-6-6M24 50l6-6"/>
+      <path d="M50 60v-14M50 46l-6-6M50 46l6-6"/>
+      <path d="M76 62v-12M76 50l-6-6M76 50l6-6"/>
+    </g>`;
+}
+
+function shopShape(color) {
+  return `<rect x="18" y="48" width="64" height="42" fill="#F4EADA" stroke="${ink}" stroke-width="3"/>
+    <path d="M12 48h76l-8 14H20z" fill="${color}" stroke="${ink}" stroke-width="3"/>
+    <path d="M28 62v-14M44 62v-14M60 62v-14M76 62v-14" stroke="${ink}" stroke-width="2"/>
+    <rect x="28" y="68" width="18" height="16" rx="3" fill="#C98A4B" stroke="${ink}" stroke-width="2.5"/>
+    <rect x="54" y="68" width="18" height="16" rx="3" fill="#C98A4B" stroke="${ink}" stroke-width="2.5"/>`;
+}
+
+function pencilShopShape(color) {
+  return `<rect x="20" y="52" width="60" height="38" fill="#F4EADA" stroke="${ink}" stroke-width="3"/>
+    <path d="M14 52 50 30l36 22z" fill="${color}" stroke="${ink}" stroke-width="3"/>
+    <rect x="38" y="64" width="24" height="26" fill="${color}" stroke="${ink}" stroke-width="3"/>
+    <g transform="translate(50 42) rotate(-20)">
+      <rect x="-5" y="-16" width="10" height="24" fill="#F2B23C" stroke="${ink}" stroke-width="2.5"/>
+      <path d="M-5 8h10l-5 8z" fill="#E4564B" stroke="${ink}" stroke-width="2.5"/>
+    </g>`;
+}
+
+function postShape(color) {
+  return `<rect x="18" y="50" width="64" height="40" fill="#F4EADA" stroke="${ink}" stroke-width="3"/>
+    <path d="M12 50h76l-6 10H18z" fill="${color}" stroke="${ink}" stroke-width="3"/>
+    <rect x="34" y="64" width="32" height="22" rx="3" fill="#FFFFFF" stroke="${ink}" stroke-width="3"/>
+    <path d="M34 64l16 12 16-12" fill="none" stroke="${ink}" stroke-width="3"/>`;
+}
+
+function libraryShape(color) {
+  return `<rect x="16" y="46" width="68" height="44" fill="#F4EADA" stroke="${ink}" stroke-width="3"/>
+    <path d="M10 46h80l-6 10H16z" fill="${color}" stroke="${ink}" stroke-width="3"/>
+    <g stroke="${ink}" stroke-width="2.5">
+      <rect x="26" y="62" width="10" height="24" fill="#E4564B"/>
+      <rect x="38" y="58" width="10" height="28" fill="#4FA3E3"/>
+      <rect x="50" y="64" width="10" height="22" fill="#5BBF6A"/>
+      <rect x="62" y="60" width="10" height="26" fill="#F2B23C"/>
+    </g>`;
+}
+
+function monumentShape(color) {
+  return `<ellipse cx="50" cy="86" rx="30" ry="8" fill="#5BBF6A" stroke="${ink}" stroke-width="3"/>
+    <path d="M34 84V40q16-14 32 0v44z" fill="#D8D2C6" stroke="${ink}" stroke-width="3"/>
+    <path d="M42 54h16M42 64h16M42 74h10" stroke="${color}" stroke-width="3" stroke-linecap="round"/>`;
+}
+
+function stageShape(color) {
+  return `<rect x="10" y="40" width="80" height="12" rx="4" fill="#A9743C" stroke="${ink}" stroke-width="3"/>
+    <rect x="16" y="52" width="68" height="30" fill="#FFF6E0" stroke="${ink}" stroke-width="3"/>
+    <path d="M16 52h22q-4 18-10 30H16z" fill="${color}" stroke="${ink}" stroke-width="3"/>
+    <path d="M84 52H62q4 18 10 30h12z" fill="${color}" stroke="${ink}" stroke-width="3"/>
+    <rect x="10" y="82" width="80" height="8" rx="3" fill="#C98A4B" stroke="${ink}" stroke-width="3"/>`;
+}
+
 const BUILDING_SHAPES = {
+  field: fieldShape,
+  paddy: paddyShape,
+  shop: shopShape,
+  pencilshop: pencilShopShape,
+  post: postShape,
+  library: libraryShape,
+  monument: monumentShape,
+  stage: stageShape,
   // あとから足した3種（moya-art.js）。これで8棟ぜんぶ ちがう形になる
   twinhouse: BUILDING_ART_FN.twinhouse,
   factory: BUILDING_ART_FN.factory,
