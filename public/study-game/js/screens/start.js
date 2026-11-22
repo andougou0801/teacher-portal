@@ -12,7 +12,7 @@ import {
   saveSettings,
 } from "../store.js";
 import { limitSec } from "../session.js";
-import { todaySubject, townName, SUBJECTS } from "../subject.js";
+import { todaySubject, townName, forceSubject, SUBJECTS } from "../subject.js";
 import { availableSubjects } from "../data.js";
 import { isDebug } from "../debug.js";
 import { refreshUnlocks } from "../srs.js";
@@ -33,6 +33,8 @@ export function enterStart() {
     btn.type = "button";
     btn.innerHTML = `<span class="slot-face">${face(s.face, "", 44)}</span><span>${s.no}ばん</span>`;
     btn.addEventListener("click", () => {
+      // ★前の子が 行っていた まちを 引きつがない
+      forceSubject("");
       openSlot(s.slot);
       refreshUnlocks();
       go("town");
@@ -145,6 +147,7 @@ function confirmWho() {
       toast("この タブレットは いっぱいです");
       return;
     }
+    forceSubject("");
     openSlot(slot);
     refreshUnlocks();
     sfx.levelup();
