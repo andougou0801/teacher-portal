@@ -6,7 +6,15 @@ import { BUILDINGS, MATERIALS, MAT_ORDER, WEARS, TITLES } from "../content.js";
 import { state, save } from "../store.js";
 import { unitMeta } from "../data.js";
 import { unitProgress, masteredCount, refreshUnlocks } from "../srs.js";
-import { todaySubject, subjectOfUnit, townName, forceSubject, forcedSubject, SUBJECTS } from "../subject.js";
+import {
+  todaySubject,
+  subjectOfUnit,
+  townName,
+  forceSubject,
+  forcedSubject,
+  canSwitchSubject,
+  SUBJECTS,
+} from "../subject.js";
 import { isDebug } from "../debug.js";
 import { availableSubjects } from "../data.js";
 import * as session from "../session.js";
@@ -72,8 +80,11 @@ export function enter() {
   }
   refreshUnlocks();
   const open = availableSubjects();
-  // かくにんモードのときだけ、見ている まちを そのままに する
-  viewSubject = (isDebug() && open.includes(forcedSubject()) && forcedSubject()) || todaySubject(open);
+  // 自分で となりの まちへ 行っていれば そのまま。
+  // 行っていなければ きょうの まち（日づけで きまる）。
+  const picked = forcedSubject();
+  const keep = picked && open.includes(picked) && (isDebug() || canSwitchSubject(open));
+  viewSubject = keep ? picked : todaySubject(open);
   render();
 }
 
@@ -118,14 +129,15 @@ export function buildableList(subject = viewSubject) {
 }
 
 /**
- * かくにんモードのときだけ出す「まちを かえる」ボタン。
- * ふだんは ここに 何も出ない（子どもは 教科を えらべない）。
+ * 「となりの まちへ」ボタン。
+ * ★先生が 教科を 固定している あいだは 出さない（授業中に 行かれると こまる）。
+ *   かくにんモードでは いつでも 出す。
  */
 function paintSubjectSwitch() {
   const top = $(".town-top");
   let btn = document.getElementById("btn-subject");
   const open = availableSubjects();
-  if (!isDebug() || open.length < 2) {
+  if (!(isDebug() || canSwitchSubject(open)) || open.length < 2) {
     btn?.remove();
     return;
   }
@@ -142,7 +154,7 @@ function paintSubjectSwitch() {
     top.appendChild(btn);
   }
   const next = open[(open.indexOf(viewSubject) + 1) % open.length];
-  btn.textContent = `→ ${SUBJECTS[next].town}`;
+  btn.textContent = `${SUBJECTS[next].town} へ`;
 }
 
 function render() {
