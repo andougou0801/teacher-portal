@@ -1,0 +1,363 @@
+{
+  "schemaVersion": 1,
+  "unitId": "j01",
+  "grade": 1,
+  "subject": "japanese",
+  "term": 1,
+  "order": 1,
+  "title": "ひらがなを よむ",
+  "allowedChars": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ0123456789「」？ ",
+  "monster": "katachimoya",
+  "building": "hatake",
+  "skills": [
+    {
+      "id": "j01-mikake",
+      "name": "にた じを みわける",
+      "power": "word"
+    },
+    {
+      "id": "j01-hajime",
+      "name": "ことばの はじめの じ",
+      "power": "word"
+    },
+    {
+      "id": "j01-sagasu",
+      "name": "おなじ じを さがす",
+      "power": "read"
+    }
+  ],
+  "items": [
+    {
+      "id": "j01-001",
+      "skill": "j01-mikake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「ね」は どれ？"
+      ],
+      "choices": [
+        "ね",
+        "わ",
+        "れ"
+      ],
+      "answer": 0,
+      "hint": "くるんと まいて いるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-002",
+      "skill": "j01-mikake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「は」は どれ？"
+      ],
+      "choices": [
+        "ほ",
+        "は",
+        "ま"
+      ],
+      "answer": 1,
+      "hint": "よこの せんは ひとつ",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-003",
+      "skill": "j01-mikake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「ねこ」は どれ？"
+      ],
+      "choices": [
+        "わこ",
+        "ねこ",
+        "れこ"
+      ],
+      "answer": 1,
+      "hint": "こえに して よんでみて",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-004",
+      "skill": "j01-mikake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「さかな」は どれ？"
+      ],
+      "choices": [
+        "さかな",
+        "きかな",
+        "ちかな"
+      ],
+      "answer": 0,
+      "hint": "こえに して よんでみて",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-005",
+      "skill": "j01-mikake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「わ」は どれ？"
+      ],
+      "choices": [
+        "ね",
+        "れ",
+        "わ",
+        "め"
+      ],
+      "answer": 2,
+      "hint": "かたちを よく みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-006",
+      "skill": "j01-mikake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「ほ」は どれ？"
+      ],
+      "choices": [
+        "は",
+        "ま",
+        "ほ",
+        "け"
+      ],
+      "answer": 2,
+      "hint": "うえに たての せんが あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-007",
+      "skill": "j01-hajime",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「ねこ」の はじめの じは？"
+      ],
+      "choices": [
+        "ね",
+        "こ",
+        "お"
+      ],
+      "answer": 0,
+      "hint": "ことばの あたまを みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-008",
+      "skill": "j01-hajime",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「とり」の はじめの じは？"
+      ],
+      "choices": [
+        "り",
+        "と",
+        "ち"
+      ],
+      "answer": 1,
+      "hint": "ことばの あたまを みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-009",
+      "skill": "j01-hajime",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「さかな」の おわりの じは？"
+      ],
+      "choices": [
+        "さ",
+        "か",
+        "な",
+        "は"
+      ],
+      "answer": 2,
+      "hint": "さいごに よむ じだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-010",
+      "skill": "j01-hajime",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「くるま」の おわりの じは？"
+      ],
+      "choices": [
+        "く",
+        "る",
+        "ま",
+        "も"
+      ],
+      "answer": 2,
+      "hint": "さいごに よむ じだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-011",
+      "skill": "j01-hajime",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ねこが はなを みた",
+        "はじめの ことばは？"
+      ],
+      "choices": [
+        "ねこ",
+        "はな",
+        "みた",
+        "が"
+      ],
+      "answer": 0,
+      "hint": "いちばん まえに あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-012",
+      "skill": "j01-hajime",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "とりが そらを とぶ",
+        "おわりの ことばは？"
+      ],
+      "choices": [
+        "とり",
+        "そら",
+        "とぶ",
+        "を"
+      ],
+      "answer": 2,
+      "hint": "いちばん うしろに あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-013",
+      "skill": "j01-sagasu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「わ」が ある ことばは？"
+      ],
+      "choices": [
+        "にわ",
+        "いぬ",
+        "ねこ",
+        "とり"
+      ],
+      "answer": 0,
+      "hint": "ひとつずつ よんでみて",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-014",
+      "skill": "j01-sagasu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「は」が ある ことばは？"
+      ],
+      "choices": [
+        "くるま",
+        "はな",
+        "ねこ",
+        "とり"
+      ],
+      "answer": 1,
+      "hint": "ひとつずつ よんでみて",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-015",
+      "skill": "j01-sagasu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "にわの にわとりを みる",
+        "「わ」は いくつ？"
+      ],
+      "choices": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "ゆびで おさえて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-016",
+      "skill": "j01-sagasu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ははと はなを かう",
+        "「は」は いくつ？"
+      ],
+      "choices": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "answer": 1,
+      "hint": "ゆびで おさえて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-017",
+      "skill": "j01-sagasu",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "「にわとり」に ならべよう"
+      ],
+      "tokens": [
+        "わ",
+        "り",
+        "に",
+        "と"
+      ],
+      "answer": [
+        2,
+        0,
+        3,
+        1
+      ],
+      "hint": "はじめの じは 「に」",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-018",
+      "skill": "j01-sagasu",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "「ひまわり」に ならべよう"
+      ],
+      "tokens": [
+        "ま",
+        "ひ",
+        "り",
+        "わ"
+      ],
+      "answer": [
+        1,
+        0,
+        3,
+        2
+      ],
+      "hint": "はじめの じは 「ひ」",
+      "reward": "ki"
+    }
+  ]
+}

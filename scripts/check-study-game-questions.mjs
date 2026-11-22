@@ -204,6 +204,31 @@ function checkItem(unitId, item, skillIds, seenIds) {
   if (sub && Number(sub[1]) - Number(sub[2]) < 0) add("ひき算の答えがマイナスになる");
 }
 
+/**
+ * ★国語でいちばん大事な検査。
+ * 単元に allowedChars（その時点までに 習った字）が あるときは、
+ * 問題文・選択肢・札・ヒントに **それ以外の字を つかっていないか** を見る。
+ * これが ないと「まだ 習っていない字」が 出てきて、子どもが 読めずに 止まる。
+ */
+function checkAllowedChars(unit, item) {
+  const allowed = unit.allowedChars;
+  if (!allowed) return;
+  const ok = new Set([...allowed, " ", "　"]);
+  const texts = [
+    ...(item.prompt || []),
+    ...(item.choices || []).map((c) => (typeof c === "string" ? c : c?.label || "")),
+    ...(item.tokens || []),
+    item.hint || "",
+  ];
+  const bad = new Set();
+  for (const t of texts) {
+    for (const ch of String(t)) if (!ok.has(ch)) bad.add(ch);
+  }
+  if (bad.size) {
+    errors.push(`${unit.unitId} ${item.id}: まだ習っていない字をつかっている「${[...bad].join("")}」`);
+  }
+}
+
 function main() {
   const args = process.argv.slice(2);
   const seenIds = new Set();
@@ -232,6 +257,7 @@ function main() {
       const skillIds = new Set((data.skills || []).map((s) => s.id));
       for (const it of data.items || []) {
         checkItem(data.unitId, it, skillIds, seenIds);
+        checkAllowedChars(data, it);
         total++;
       }
     }
