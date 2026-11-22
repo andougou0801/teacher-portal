@@ -2,7 +2,7 @@
 // ★町は「学んだぶん」だけ変わる。時間がたっても1ドットも変わらない。
 import { $, el, clear, toast, sleep } from "../util.js";
 import { buildingShapeMarkup, moya, MOYA_NAMES, iconShape } from "../icons.js";
-import { BUILDINGS, MATERIALS, MAT_ORDER, WEARS, TITLES, buildingByUnit } from "../content.js";
+import { BUILDINGS, MATERIALS, MAT_ORDER, WEARS, TITLES } from "../content.js";
 import { state, save } from "../store.js";
 import { units, unitMeta } from "../data.js";
 import { unitProgress, masteredCount, refreshUnlocks } from "../srs.js";
@@ -121,7 +121,8 @@ function render() {
   svg += `<path d="M0 420q250 30 500 0t500 0" stroke="#C98A4B" stroke-width="22" fill="none"/>`;
 
   // 木（うごかない かざり。ずっと動く背景は 入れない）
-  svg += tree(690, 296) + tree(960, 300) + tree(240, 530);
+  // 木は、たてもの・なかま・下の帯と かさならない ところに おく
+  svg += tree(690, 300) + tree(955, 320) + tree(450, 335);
 
   // ★「ばっちり おぼえた」が 1つ ふえるごとに、まちに 花が 1つ ふえる。
   //   たてものは なかなか 建たないので、毎日の すこしの がんばりが
@@ -162,11 +163,22 @@ function render() {
     if (info?.built) {
       svg += `<g class="b-built" data-id="${b.id}" transform="${place}">${buildingShapeMarkup(b.shape, info.color || 0)}</g>`;
     } else if (open.includes(b.unit)) {
-      // まだ たっていない たてものは、うすい かげで 見せる（なにを あつめているか 分かるように）
-      svg += `<g class="b-ghost" opacity="0.3" transform="${place}">${buildingShapeMarkup(b.shape, 0)}</g>`;
+      // まだ たっていない たてものは「？」で 見せる。
+      // うすい たてものだと「もう あるのかな？」と まぎらわしいので、
+      // 「ここに なにかが たつ」と はっきり わかる かたちに する。
+      const w = 112;
+      svg += `<g class="b-unknown" transform="translate(${x - w / 2} ${y - 86})">
+        <rect x="0" y="0" width="${w}" height="${w}" rx="20" fill="#FFFFFF" fill-opacity="0.72"
+              stroke="#2B2A28" stroke-width="4" stroke-dasharray="12 9"/>
+        <text x="${w / 2}" y="${w / 2 + 24}" font-size="64" font-weight="700"
+              text-anchor="middle" fill="#2B2A28" opacity="0.72">？</text>
+      </g>`;
       if (nextUp && nextUp.id === b.id) {
         const need = Math.max(0, b.cost - (p.materials[b.mat] || 0));
-        svg += `<g transform="translate(${x} ${y + 24})">
+        // 札は その たてものの 足もとに 出す（どの たてものの ことか すぐ分かるように）。
+        // 下の 帯に かくれないよう、下がりすぎないようにも する
+        const labelY = Math.min(y + 48, 468);
+        svg += `<g transform="translate(${x} ${labelY})">
           <rect x="-72" y="-22" width="144" height="42" rx="21" fill="#FFFFFF" stroke="#2B2A28" stroke-width="3"/>
           <rect x="-58" y="-12" width="22" height="22" rx="6" fill="${MATERIALS[b.mat].color}" stroke="#2B2A28" stroke-width="3"/>
           <text x="6" y="8" font-size="26" text-anchor="middle" fill="#2B2A28" font-weight="700">あと ${need}</text>
@@ -176,13 +188,17 @@ function render() {
   }
 
   // なかま（たおした もやもやが まちで くらす）
-  (p.friends || []).forEach((unitId, i) => {
-    const b = buildingByUnit(unitId);
-    const bx = b ? (b.x / 100) * W : 200 + i * 90;
-    const by = b ? (b.y / 100) * H : 460;
+  // なかまは「みちぞい」に ならべる。
+  // たてものの となりに おくと、「？」の はこや 木と かさなって しまうため。
+  const friendList = p.friends || [];
+  friendList.forEach((unitId, i) => {
+    const span = 760;
+    const step = friendList.length > 1 ? span / (friendList.length - 1) : 0;
+    const bx = 110 + i * step - 58;
+    const by = 398;
     // そとの g で 位置を きめ、なかの g を はねさせる
     // （おなじ g に transform を 2つ 書くと、CSSのほうが 位置を 消してしまうため）
-    svg += `<g data-friend="${unitId}" transform="translate(${bx + 58} ${by + 2}) scale(0.9)"><g class="friend-body">${moya(
+    svg += `<g data-friend="${unitId}" transform="translate(${bx + 58} ${by + 2}) scale(0.78)"><g class="friend-body">${moya(
       unitMeta(unitId)?.monster || "kazumoya",
       "friend",
     ).replace(/^<svg[^>]*>|<\/svg>$/g, "")}</g></g>`;

@@ -306,17 +306,19 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  /* カードが すくない日は まんなかに よせる（下が ぽっかり あかないように） */
+  justify-content: center;
+  gap: 16px;
   padding-bottom: 8px;
 }
 
 .stage-card {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   width: 100%;
-  min-height: 108px;
-  padding: 12px 16px;
+  min-height: clamp(108px, 19dvh, 170px);
+  padding: 14px 18px;
   border: 3px solid var(--line);
   border-radius: var(--r);
   background: var(--card);
@@ -335,8 +337,8 @@
 
 .stage-card .sc-icon {
   flex: 0 0 auto;
-  width: 64px;
-  height: 64px;
+  width: 84px;
+  height: 84px;
 }
 
 .stage-card .sc-main {
@@ -345,12 +347,14 @@
 }
 
 .stage-card .sc-title {
-  font-size: calc(25px * var(--scale));
+  display: block;
+  font-size: calc(28px * var(--scale));
   font-weight: 700;
 }
 
 .stage-card .sc-sub {
-  font-size: calc(18px * var(--scale));
+  display: block;
+  font-size: calc(19px * var(--scale));
   color: var(--ink-soft);
   line-height: 1.5;
 }

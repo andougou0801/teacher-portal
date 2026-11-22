@@ -1,7 +1,7 @@
 // ちず。きょう行ける ところは3つだけ（えらぶのは 子ども）。
 // ★なにが もらえるかは 先に見せる（運ではないから 予告できる）。
 import { $, el, clear } from "../util.js";
-import { moya } from "../icons.js";
+import { moya, icon } from "../icons.js";
 import { MATERIALS } from "../content.js";
 import { state } from "../store.js";
 import { unitMeta } from "../data.js";
