@@ -1081,3 +1081,32 @@
   font-size: 30px;
   line-height: 1.1;
 }
+
+/* ===== なぞり書き（国語のしさく） ===== */
+.trace-sheet {
+  text-align: center;
+}
+
+.trace-pad {
+  width: min(320px, 76vw);
+  margin: 10px auto;
+  touch-action: none; /* 指でなぞるとき、画面が 動かないようにする */
+}
+
+.trace-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 18px;
+}
+
+.trace-msg {
+  min-height: 34px;
+  font-size: calc(26px * var(--scale));
+  font-weight: 700;
+  color: var(--ok);
+}
+
+.trace-sheet .row {
+  justify-content: center;
+}

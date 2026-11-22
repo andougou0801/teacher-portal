@@ -17,6 +17,7 @@ import {
 } from "../store.js";
 import { units, allSkills, skillMeta } from "../data.js";
 import { moya } from "../icons.js";
+import { runTrace } from "../trace.js";
 import { rec, refreshUnlocks } from "../srs.js";
 import * as session from "../session.js";
 import * as speech from "../speech.js";
@@ -492,6 +493,26 @@ function renderTeacher(body) {
   );
   body.appendChild(slots);
 
+  // なぞり書きの しさく（国語を 入れる前の ためし）
+  const trace = el("div", "card");
+  trace.appendChild(el("div", "s-name", "なぞり書きの ためし（国語の しさく）"));
+  trace.appendChild(
+    el(
+      "p",
+      "note",
+      "指で なぞって ためせます。ゆびの 太さで 通りにくくないか、1年生の 指で 通せるかを 見てください。",
+    ),
+  );
+  const traceRow = el("div", "row");
+  for (const ch of ["あ", "い", "う"]) {
+    const b = el("button", "btn", ch);
+    b.type = "button";
+    b.addEventListener("click", () => openTrace(ch));
+    traceRow.appendChild(b);
+  }
+  trace.appendChild(traceRow);
+  body.appendChild(trace);
+
   // あんしょうばんごうの 変更（子どもに 見られたときのため）
   const pin = el("div", "card");
   pin.appendChild(el("div", "s-name", "あんしょうばんごうを かえる"));
@@ -517,6 +538,45 @@ function renderTeacher(body) {
     ),
   );
   body.appendChild(pin);
+}
+
+/** なぞり書きを ためす（国語を 入れる前の しさく） */
+function openTrace(ch) {
+  const overlay = $("#overlay");
+  overlay.hidden = false;
+  clear(overlay);
+  const sheet = el("div", "sheet trace-sheet");
+  sheet.appendChild(el("h3", "", `「${ch}」を なぞろう`));
+  sheet.appendChild(el("p", "note", "オレンジの 点から、ばんごうの じゅんに なぞってね"));
+  const pad = el("div", "");
+  sheet.appendChild(pad);
+  const msg = el("div", "trace-msg", "");
+  sheet.appendChild(msg);
+  const row = el("div", "row");
+  const again = el("button", "btn", "もういちど");
+  again.type = "button";
+  const close = el("button", "btn", "とじる");
+  close.type = "button";
+  row.appendChild(again);
+  row.appendChild(close);
+  sheet.appendChild(row);
+  overlay.appendChild(sheet);
+
+  let cleanup = () => {};
+  const start = () => {
+    msg.textContent = "";
+    cleanup();
+    cleanup = runTrace(pad, ch, () => {
+      msg.textContent = "できた！";
+      sfx.levelup();
+    });
+  };
+  again.addEventListener("click", start);
+  close.addEventListener("click", () => {
+    cleanup();
+    overlay.hidden = true;
+  });
+  start();
 }
 
 /** その単元まで まとめて ひらく（累積開放。欠席・転入の子が 1回で 追いつける） */
