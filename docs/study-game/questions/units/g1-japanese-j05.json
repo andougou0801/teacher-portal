@@ -356,6 +356,493 @@
       ],
       "hint": "はなした ことばを はさもう",
       "reward": "ishi"
+    },
+    {
+      "id": "j05-101",
+      "skill": "j05-maru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "。の なまえは どれ？"
+      ],
+      "choices": [
+        "てん",
+        "まる",
+        "かぎ"
+      ],
+      "answer": 1,
+      "hint": "まるい かたちの しるしだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-102",
+      "skill": "j05-maru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "とりが とんだ",
+        "おわりに つけるのは？"
+      ],
+      "choices": [
+        "。",
+        "「"
+      ],
+      "answer": 0,
+      "hint": "ぶんが おわった ところの しるし",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-103",
+      "skill": "j05-maru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "。を つける ところは どこ？"
+      ],
+      "choices": [
+        "ぶんの おわり",
+        "ぶんの はじめ",
+        "ことばの あいだ"
+      ],
+      "answer": 0,
+      "hint": "はなしが ひとつ おわった ところ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-104",
+      "skill": "j05-maru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ちがって いるのは どれ？"
+      ],
+      "choices": [
+        "ゆきが ふった。",
+        "。くもが うごいた",
+        "つきが でた。"
+      ],
+      "answer": 1,
+      "hint": "しるしの ばしょを よく みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-105",
+      "skill": "j05-maru",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ゆきが ふった。つみきを つんだ。",
+        "ぶんは いくつ ある？"
+      ],
+      "choices": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "まるの かずを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-106",
+      "skill": "j05-maru",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "あさに おきた。ごはんを たべた。",
+        "あさに おきた ごはんを たべた。",
+        "あさに おきた。ごはんを たべた",
+        "あさに おきた、ごはんを たべた、"
+      ],
+      "answer": 0,
+      "hint": "ぶんの おわりごとに しるしを つけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-107",
+      "skill": "j05-maru",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ちがって いるのは どれ？"
+      ],
+      "choices": [
+        "うみへ いった。",
+        "かわへ。いった。",
+        "もりへ いった。"
+      ],
+      "answer": 1,
+      "hint": "ひとつの ぶんに ひとつだけ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-108",
+      "skill": "j05-maru",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "きのう、こうえんへ いった",
+        "おわりに つけるのは？"
+      ],
+      "choices": [
+        "。",
+        "、",
+        "「",
+        "」"
+      ],
+      "answer": 0,
+      "hint": "いきつぎでは なく おわりの しるし",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-109",
+      "skill": "j05-maru",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "ただしい ぶんに ならべよう"
+      ],
+      "tokens": [
+        "のぼった。",
+        "やまへ",
+        "いぬが"
+      ],
+      "answer": [
+        2,
+        1,
+        0
+      ],
+      "hint": "おわりの しるしが ついた ふだは さいご",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-110",
+      "skill": "j05-ten",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "、の なまえは どれ？"
+      ],
+      "choices": [
+        "まる",
+        "てん",
+        "かぎ"
+      ],
+      "answer": 1,
+      "hint": "ちいさい てんの かたちだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-111",
+      "skill": "j05-ten",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ふたつ ならべる とき",
+        "あいだに つけるのは？"
+      ],
+      "choices": [
+        "。",
+        "、"
+      ],
+      "answer": 1,
+      "hint": "ぶんは まだ おわって いないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-112",
+      "skill": "j05-ten",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "あかい、あおい、しろい",
+        "あかい。あおい。しろい",
+        "あかい」あおい」しろい"
+      ],
+      "answer": 0,
+      "hint": "ならべる ときに つかう しるし",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-113",
+      "skill": "j05-ten",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あか あお しろの あいだに",
+        "てんは いくつ いる？"
+      ],
+      "choices": [
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "ことばの あいだごとに ひとつ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-114",
+      "skill": "j05-ten",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あさに なったので おきた。",
+        "てんを いれる ところは？"
+      ],
+      "choices": [
+        "「あさに」の あと",
+        "「なったので」の あと",
+        "「おきた」の あと"
+      ],
+      "answer": 1,
+      "hint": "いきを つぐ ところを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-115",
+      "skill": "j05-ten",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "くつ、かさ、ぼうしを もった。",
+        "てんは いくつ ある？"
+      ],
+      "choices": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 2,
+      "hint": "ちいさい てんを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-116",
+      "skill": "j05-ten",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ちがって いるのは どれ？"
+      ],
+      "choices": [
+        "ひるに、えを かいた。",
+        "よるに。ほんを とじた。",
+        "あさに、はなを みた。"
+      ],
+      "answer": 1,
+      "hint": "とちゅうの しるしを よく みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-117",
+      "skill": "j05-ten",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "かぜが ふいて はっぱが とんだ。",
+        "てんは どこに いれる？"
+      ],
+      "choices": [
+        "「かぜが」の あと",
+        "「ふいて」の あと",
+        "「はっぱが」の あと",
+        "「とんだ」の あと"
+      ],
+      "answer": 1,
+      "hint": "ふたつの できごとの あいだ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-118",
+      "skill": "j05-ten",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "ただしい ぶんに ならべよう"
+      ],
+      "tokens": [
+        "はしった。",
+        "いぬが",
+        "ほえて、"
+      ],
+      "answer": [
+        1,
+        2,
+        0
+      ],
+      "hint": "いきつぎの しるしの ふだは まん なか",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-119",
+      "skill": "j05-kagi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "かぎの おわりは どちら？"
+      ],
+      "choices": [
+        "」",
+        "「"
+      ],
+      "answer": 0,
+      "hint": "ことばの あとに つける ほうだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-120",
+      "skill": "j05-kagi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "かぎは いくつで ひとくみ？"
+      ],
+      "choices": [
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "はじめと おわりに つけるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-121",
+      "skill": "j05-kagi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "とりに 「おいで」と いった。",
+        "かぎの なかの ことばは？"
+      ],
+      "choices": [
+        "とり",
+        "おいで",
+        "いった"
+      ],
+      "answer": 1,
+      "hint": "こえに だした ところを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-122",
+      "skill": "j05-kagi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "かぎの なかに かくのは なに？"
+      ],
+      "choices": [
+        "はなした ことば",
+        "かぞえた かず",
+        "ぶんの おわり"
+      ],
+      "answer": 0,
+      "hint": "くちに だした ことばだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-123",
+      "skill": "j05-kagi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "かぎが たりないのは どれ？"
+      ],
+      "choices": [
+        "「おいで」と いった。",
+        "「まって と さけんだ。",
+        "「いくよ」と こたえた。"
+      ],
+      "answer": 1,
+      "hint": "おわりの しるしを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-124",
+      "skill": "j05-kagi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「おいで」と いった",
+        "この ぶんに たりないのは？"
+      ],
+      "choices": [
+        "。",
+        "、",
+        "「"
+      ],
+      "answer": 0,
+      "hint": "ぶんの いちばん うしろを みてね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-125",
+      "skill": "j05-kagi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ふたりが ひとつずつ はなすと",
+        "かぎは なんくみ いる？"
+      ],
+      "choices": [
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "はなした ことばごとに ひとくみ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-126",
+      "skill": "j05-kagi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "いただきますと いった。",
+        "かぎを つける ことばは？"
+      ],
+      "choices": [
+        "いただきます",
+        "いった",
+        "と"
+      ],
+      "answer": 0,
+      "hint": "こえに だした ところだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j05-127",
+      "skill": "j05-kagi",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "ただしい ぶんに ならべよう"
+      ],
+      "tokens": [
+        "」",
+        "はい",
+        "と こたえた。",
+        "「"
+      ],
+      "answer": [
+        3,
+        1,
+        0,
+        2
+      ],
+      "hint": "はなした ことばを ふたつの しるしで はさもう",
+      "reward": "ishi"
     }
   ]
 }

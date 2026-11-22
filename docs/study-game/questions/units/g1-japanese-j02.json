@@ -368,6 +368,512 @@
       ],
       "hint": "な に ぬ ね の",
       "reward": "ki"
+    },
+    {
+      "id": "j02-101",
+      "skill": "j02-gyou",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「らりるれ」の つぎは？"
+      ],
+      "choices": [
+        "ろ",
+        "わ",
+        "を"
+      ],
+      "answer": 0,
+      "hint": "らの ならびを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-102",
+      "skill": "j02-gyou",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「はひふへ」の つぎは？"
+      ],
+      "choices": [
+        "ほ",
+        "ま",
+        "み"
+      ],
+      "answer": 0,
+      "hint": "はの ならびを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-103",
+      "skill": "j02-gyou",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「まみむめも」の 2ばんめは？"
+      ],
+      "choices": [
+        "ま",
+        "み",
+        "む"
+      ],
+      "answer": 1,
+      "hint": "まえから ゆびで かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-104",
+      "skill": "j02-gyou",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「はひふへほ」の 4ばんめは？"
+      ],
+      "choices": [
+        "ふ",
+        "へ",
+        "ほ"
+      ],
+      "answer": 1,
+      "hint": "まえから ひとつずつ かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-105",
+      "skill": "j02-gyou",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「がぎぐげご」の まんなかは？"
+      ],
+      "choices": [
+        "が",
+        "ぎ",
+        "ぐ",
+        "げ"
+      ],
+      "answer": 2,
+      "hint": "5つの まんなかを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-106",
+      "skill": "j02-gyou",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「ばびぶべぼ」の 2ばんめは？"
+      ],
+      "choices": [
+        "ば",
+        "び",
+        "ぶ",
+        "べ"
+      ],
+      "answer": 1,
+      "hint": "はじめの じの つぎだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-107",
+      "skill": "j02-gyou",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「さ し ？ せ そ」",
+        "？に はいる じは？"
+      ],
+      "choices": [
+        "す",
+        "せ",
+        "そ",
+        "さ"
+      ],
+      "answer": 0,
+      "hint": "まえと あとを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-108",
+      "skill": "j02-gyou",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「な ？ ぬ ね の」",
+        "？に はいる じは？"
+      ],
+      "choices": [
+        "に",
+        "な",
+        "ぬ",
+        "の"
+      ],
+      "answer": 0,
+      "hint": "はじめの じの つぎを おもいだそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-109",
+      "skill": "j02-gyou",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「ふ」は どの ならび？"
+      ],
+      "choices": [
+        "なにぬねの",
+        "はひふへほ",
+        "まみむめも"
+      ],
+      "answer": 1,
+      "hint": "ならびを ひとつずつ よんで さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-110",
+      "skill": "j02-tsugi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「ち」の つぎの じは？"
+      ],
+      "choices": [
+        "た",
+        "つ",
+        "て"
+      ],
+      "answer": 1,
+      "hint": "たの ならびを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-111",
+      "skill": "j02-tsugi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「ひ」の つぎの じは？"
+      ],
+      "choices": [
+        "は",
+        "ふ",
+        "ほ"
+      ],
+      "answer": 1,
+      "hint": "はの ならびを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-112",
+      "skill": "j02-tsugi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「も」の まえの じは？"
+      ],
+      "choices": [
+        "ま",
+        "み",
+        "め"
+      ],
+      "answer": 2,
+      "hint": "まの ならびを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-113",
+      "skill": "j02-tsugi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「ん」の まえの じは？"
+      ],
+      "choices": [
+        "わ",
+        "を",
+        "ら"
+      ],
+      "answer": 1,
+      "hint": "わの ならびを おもいだそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-114",
+      "skill": "j02-tsugi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「ぐ」の つぎの じは？"
+      ],
+      "choices": [
+        "が",
+        "ぎ",
+        "げ",
+        "ご"
+      ],
+      "answer": 2,
+      "hint": "がの ならびを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-115",
+      "skill": "j02-tsugi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「べ」の まえの じは？"
+      ],
+      "choices": [
+        "ば",
+        "び",
+        "ぶ",
+        "ぼ"
+      ],
+      "answer": 2,
+      "hint": "ばの ならびを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-116",
+      "skill": "j02-tsugi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「か」から 2つ あとの じは？"
+      ],
+      "choices": [
+        "き",
+        "く",
+        "け",
+        "こ"
+      ],
+      "answer": 1,
+      "hint": "かの つぎの つぎだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-117",
+      "skill": "j02-tsugi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「と」から 2つ まえの じは？"
+      ],
+      "choices": [
+        "た",
+        "ち",
+        "つ",
+        "て"
+      ],
+      "answer": 2,
+      "hint": "とから まえへ かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-118",
+      "skill": "j02-tsugi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「な」から 3つ あとの じは？"
+      ],
+      "choices": [
+        "に",
+        "ぬ",
+        "ね",
+        "の"
+      ],
+      "answer": 2,
+      "hint": "ゆびで ひとつずつ すすもう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-119",
+      "skill": "j02-dan",
+      "level": 1,
+      "type": "order",
+      "prompt": [
+        "ならびの とおりに ならべよう"
+      ],
+      "tokens": [
+        "ふ",
+        "は",
+        "ひ"
+      ],
+      "answer": [
+        1,
+        2,
+        0
+      ],
+      "hint": "はの ならびを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-120",
+      "skill": "j02-dan",
+      "level": 1,
+      "type": "order",
+      "prompt": [
+        "ならびの とおりに ならべよう"
+      ],
+      "tokens": [
+        "る",
+        "ら",
+        "り"
+      ],
+      "answer": [
+        1,
+        2,
+        0
+      ],
+      "hint": "らの ならびを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-121",
+      "skill": "j02-dan",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "たての ならびを おもいだそう",
+        "「う く す」の つぎは？"
+      ],
+      "choices": [
+        "つ",
+        "ぬ",
+        "ふ",
+        "む"
+      ],
+      "answer": 0,
+      "hint": "うの だんを たてに よもう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-122",
+      "skill": "j02-dan",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "たての ならびを おもいだそう",
+        "「お こ そ」の つぎは？"
+      ],
+      "choices": [
+        "と",
+        "の",
+        "ほ",
+        "も"
+      ],
+      "answer": 0,
+      "hint": "おの だんを たてに よもう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-123",
+      "skill": "j02-dan",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "たての ならびを おもいだそう",
+        "「え け せ」の つぎは？"
+      ],
+      "choices": [
+        "て",
+        "ね",
+        "へ",
+        "め"
+      ],
+      "answer": 0,
+      "hint": "えの だんを たてに よもう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-124",
+      "skill": "j02-dan",
+      "level": 3,
+      "type": "order",
+      "prompt": [
+        "ならびの とおりに ならべよう"
+      ],
+      "tokens": [
+        "め",
+        "ま",
+        "も",
+        "み"
+      ],
+      "answer": [
+        1,
+        3,
+        0,
+        2
+      ],
+      "hint": "まの ならびを こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-125",
+      "skill": "j02-dan",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "たての ならびの とおりに ならべよう"
+      ],
+      "tokens": [
+        "さ",
+        "か",
+        "た",
+        "あ"
+      ],
+      "answer": [
+        3,
+        1,
+        0,
+        2
+      ],
+      "hint": "あの だんを たてに よもう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-126",
+      "skill": "j02-dan",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "たての ならびを おもいだそう",
+        "「か さ た な」の つぎは？"
+      ],
+      "choices": [
+        "は",
+        "ま",
+        "や",
+        "ら"
+      ],
+      "answer": 0,
+      "hint": "あの だんを たてに よもう",
+      "reward": "ki"
+    },
+    {
+      "id": "j02-127",
+      "skill": "j02-dan",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "ならびの とおりに ならべよう"
+      ],
+      "tokens": [
+        "ご",
+        "が",
+        "ぐ",
+        "ぎ",
+        "げ"
+      ],
+      "answer": [
+        1,
+        3,
+        2,
+        4,
+        0
+      ],
+      "hint": "がの ならびを こえに だそう",
+      "reward": "ki"
     }
   ]
 }

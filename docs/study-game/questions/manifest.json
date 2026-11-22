@@ -211,7 +211,7 @@
       "units": [
         {
           "unitId": "j01",
-          "title": "ひらがなを よむ",
+          "title": "ひらがなを よむ・かく",
           "order": 1,
           "file": "units/g1-japanese-j01.json",
           "monster": "mojimoya",
@@ -220,6 +220,11 @@
             {
               "id": "j01-nazori",
               "name": "ゆびで なぞって かく",
+              "power": "write"
+            },
+            {
+              "id": "j01-nazori2",
+              "name": "むずかしい じを なぞる",
               "power": "write"
             },
             {

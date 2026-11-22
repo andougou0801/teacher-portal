@@ -354,6 +354,493 @@
       "answer": 0,
       "hint": "いきて うごく ものだね",
       "reward": "nendo"
+    },
+    {
+      "id": "j06-101",
+      "skill": "j06-nakama",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "むしは どれ？"
+      ],
+      "choices": [
+        "あり",
+        "いし",
+        "かさ"
+      ],
+      "answer": 0,
+      "hint": "とても ちいさい いきものだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-102",
+      "skill": "j06-nakama",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "いろの なまえは どれ？"
+      ],
+      "choices": [
+        "あか",
+        "こま",
+        "みち"
+      ],
+      "answer": 0,
+      "hint": "くれよんに ある なまえだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-103",
+      "skill": "j06-nakama",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "からだに あるのは どれ？"
+      ],
+      "choices": [
+        "みみ",
+        "いす",
+        "そら"
+      ],
+      "answer": 0,
+      "hint": "かおに ある ものを さがそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-104",
+      "skill": "j06-nakama",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "とりは どれ？"
+      ],
+      "choices": [
+        "すずめ",
+        "つくえ",
+        "えんぴつ"
+      ],
+      "answer": 0,
+      "hint": "そらを とぶ いきものだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-105",
+      "skill": "j06-nakama",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "はなは どれ？"
+      ],
+      "choices": [
+        "たんぽぽ",
+        "ばけつ",
+        "ふうせん",
+        "のこぎり"
+      ],
+      "answer": 0,
+      "hint": "のはらに さく ものだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-106",
+      "skill": "j06-nakama",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "がっこうで つかう ものは？"
+      ],
+      "choices": [
+        "えんぴつ",
+        "くじら",
+        "ゆき",
+        "やま"
+      ],
+      "answer": 0,
+      "hint": "ふでばこに はいる ものだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-107",
+      "skill": "j06-nakama",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "だいどころを みた。",
+        "のみものは どれ？"
+      ],
+      "choices": [
+        "ぎゅうにゅう",
+        "ぼうし",
+        "まくら",
+        "のこぎり"
+      ],
+      "answer": 0,
+      "hint": "こっぷに いれる ものだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-108",
+      "skill": "j06-nakama",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "おもちゃばこを あけた。",
+        "あそぶ ものは どれ？"
+      ],
+      "choices": [
+        "こま",
+        "にんじん",
+        "ぞうきん",
+        "ものさし"
+      ],
+      "answer": 0,
+      "hint": "てで もって あそぶ ものだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-109",
+      "skill": "j06-nakama",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "みんなで うたった。",
+        "がっきは どれ？"
+      ],
+      "choices": [
+        "たいこ",
+        "ばけつ",
+        "ぼうし",
+        "つくえ"
+      ],
+      "answer": 0,
+      "hint": "おとを だす ものだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-110",
+      "skill": "j06-hamidashi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "なかまで ないのは どれ？"
+      ],
+      "choices": [
+        "あか",
+        "あお",
+        "つくえ"
+      ],
+      "answer": 2,
+      "hint": "のこりは いろの なまえだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-111",
+      "skill": "j06-hamidashi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "なかまで ないのは どれ？"
+      ],
+      "choices": [
+        "て",
+        "あし",
+        "ふね"
+      ],
+      "answer": 2,
+      "hint": "のこりは からだに あるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-112",
+      "skill": "j06-hamidashi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "なかまで ないのは どれ？"
+      ],
+      "choices": [
+        "すずめ",
+        "からす",
+        "えんぴつ"
+      ],
+      "answer": 2,
+      "hint": "のこりは そらを とぶよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-113",
+      "skill": "j06-hamidashi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "なかまで ないのは どれ？"
+      ],
+      "choices": [
+        "ぼうし",
+        "くつ",
+        "つき"
+      ],
+      "answer": 2,
+      "hint": "のこりは みに つける ものだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-114",
+      "skill": "j06-hamidashi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "なかまで ないのは どれ？"
+      ],
+      "choices": [
+        "たいこ",
+        "ふえ",
+        "すず",
+        "にんじん"
+      ],
+      "answer": 3,
+      "hint": "のこりは おとを だす ものだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-115",
+      "skill": "j06-hamidashi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "なかまで ないのは どれ？"
+      ],
+      "choices": [
+        "たんぽぽ",
+        "ひまわり",
+        "さくら",
+        "はさみ"
+      ],
+      "answer": 3,
+      "hint": "のこりは さく ものだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-116",
+      "skill": "j06-hamidashi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "こっぷに いれる もの。",
+        "なかまで ないのは？"
+      ],
+      "choices": [
+        "みず",
+        "おちゃ",
+        "ぎゅうにゅう",
+        "ぞうきん"
+      ],
+      "answer": 3,
+      "hint": "のまない ものは どれ？",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-117",
+      "skill": "j06-hamidashi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ふでばこを あけた。",
+        "なかまで ないのは？"
+      ],
+      "choices": [
+        "えんぴつ",
+        "けしごむ",
+        "ものさし",
+        "きゅうり"
+      ],
+      "answer": 3,
+      "hint": "べんきょうに つかわないよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-118",
+      "skill": "j06-hamidashi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "みんなで そとに でた。",
+        "なかまで ないのは？"
+      ],
+      "choices": [
+        "ぶらんこ",
+        "すべりだい",
+        "てつぼう",
+        "まくら"
+      ],
+      "answer": 3,
+      "hint": "そとに ない ものは どれ？",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-119",
+      "skill": "j06-matome",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あか あお きいろは？"
+      ],
+      "choices": [
+        "いろ",
+        "のりもの",
+        "たべもの",
+        "むし"
+      ],
+      "answer": 0,
+      "hint": "くれよんの なまえだね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-120",
+      "skill": "j06-matome",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "すずめ からす はとは？"
+      ],
+      "choices": [
+        "とり",
+        "やさい",
+        "いろ",
+        "のりもの"
+      ],
+      "answer": 0,
+      "hint": "はねで そらを とぶ なかまだね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-121",
+      "skill": "j06-matome",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あり せみ ばったは？"
+      ],
+      "choices": [
+        "むし",
+        "くだもの",
+        "のりもの",
+        "いろ"
+      ],
+      "answer": 0,
+      "hint": "とても ちいさい いきものだね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-122",
+      "skill": "j06-matome",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "たんぽぽ ひまわりは？"
+      ],
+      "choices": [
+        "はな",
+        "どうぶつ",
+        "のりもの",
+        "いろ"
+      ],
+      "answer": 0,
+      "hint": "さいて きれいな ものだね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-123",
+      "skill": "j06-matome",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "みず おちゃ ぎゅうにゅうは？"
+      ],
+      "choices": [
+        "のみもの",
+        "がっき",
+        "とり",
+        "はな"
+      ],
+      "answer": 0,
+      "hint": "こっぷに いれる ものだね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-124",
+      "skill": "j06-matome",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "たいこ ふえ すずは？"
+      ],
+      "choices": [
+        "がっき",
+        "やさい",
+        "とり",
+        "いろ"
+      ],
+      "answer": 0,
+      "hint": "おとを だす ものだね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-125",
+      "skill": "j06-matome",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "へやを かたづけた。",
+        "こまは なんの なかま？"
+      ],
+      "choices": [
+        "おもちゃ",
+        "やさい",
+        "とり",
+        "いろ"
+      ],
+      "answer": 0,
+      "hint": "あそぶ ときに つかうね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-126",
+      "skill": "j06-matome",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "かおを あらった。",
+        "みみは なんの なかま？"
+      ],
+      "choices": [
+        "からだ",
+        "のりもの",
+        "くだもの",
+        "むし"
+      ],
+      "answer": 0,
+      "hint": "じぶんに ついて いる ものだね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j06-127",
+      "skill": "j06-matome",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "きょうしつを みた。",
+        "えんぴつは なんの なかま？"
+      ],
+      "choices": [
+        "がっこうで つかう もの",
+        "たべもの",
+        "のりもの",
+        "どうぶつ"
+      ],
+      "answer": 0,
+      "hint": "べんきょうに つかう ものだね",
+      "reward": "nendo"
     }
   ]
 }

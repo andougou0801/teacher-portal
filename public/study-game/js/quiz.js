@@ -118,11 +118,17 @@ function renderOrder(item, box, done) {
   const need = item.answer.length;
   const slots = el("div", "order-slots");
   const picked = [];
-  for (let i = 0; i < need; i++) slots.appendChild(el("div", "order-slot", ""));
+  // ★札が「ふうせんを ふくらませた」のような 文のときは、字を 小さくする。
+  //   1字の札と 同じ大きさで 出すと、はこからも 画面からも はみ出す。
+  const longest = Math.max(...(item.tokens || [""]).map((t) => [...t].length));
+  const longClass = longest > 4 ? " is-long" : "";
+  for (let i = 0; i < need; i++) slots.appendChild(el("div", "order-slot" + longClass, ""));
   box.appendChild(slots);
   const tokens = el("div", "order-tokens");
   (item.tokens || []).forEach((t, i) => {
-    const b = el("button", "token", t);
+    // ★長さは 札ごとに 見る。「と こたえた。」と いっしょに 「 の 1字の札が
+    //   出ることが あるので、ぜんぶ 小さくすると かぎが 見えなくなる。
+    const b = el("button", "token" + ([...t].length > 4 ? " is-long" : ""), t);
     b.type = "button";
     b.addEventListener("click", () => {
       if (box.dataset.locked) return;

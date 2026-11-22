@@ -1,0 +1,495 @@
+{
+  "j03": [
+    {
+      "id": "j03-101",
+      "skill": "j03-nobasu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「ふうせん」の 2ばんめは？"
+      ],
+      "choices": [
+        "ふ",
+        "う",
+        "せ"
+      ],
+      "answer": 1,
+      "hint": "ゆびで ひとつずつ かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-102",
+      "skill": "j03-nobasu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "のばす おとが ある ことばは？"
+      ],
+      "choices": [
+        "こうえん",
+        "ねこ",
+        "はな"
+      ],
+      "answer": 0,
+      "hint": "こえに だして ながさを きいてみて",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-103",
+      "skill": "j03-nobasu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "おにいさん",
+        "おにさん",
+        "おにーさん"
+      ],
+      "answer": 0,
+      "hint": "ひらがなでは ー は つかわないよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-104",
+      "skill": "j03-nobasu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "ふうせん",
+        "ふーせん",
+        "ふうせ"
+      ],
+      "answer": 0,
+      "hint": "ー は かたかなの じだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-105",
+      "skill": "j03-nobasu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "おおきい",
+        "おうきい",
+        "おーきい",
+        "おきい"
+      ],
+      "answer": 0,
+      "hint": "ふたつめの じを よく みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-106",
+      "skill": "j03-nobasu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "とおい",
+        "とうい",
+        "とーい",
+        "とい"
+      ],
+      "answer": 0,
+      "hint": "のばす じを よく みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-107",
+      "skill": "j03-nobasu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "こうえんで あそぶ",
+        "のばす おとは いくつ？"
+      ],
+      "choices": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "ながく のばす ところを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-108",
+      "skill": "j03-nobasu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "のばす おとが ない ことばは？"
+      ],
+      "choices": [
+        "ねこ",
+        "こうえん",
+        "ふうせん",
+        "とおい"
+      ],
+      "answer": 0,
+      "hint": "ひとつずつ こえに だして よもう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-109",
+      "skill": "j03-nobasu",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "「こうえん」に ならべよう"
+      ],
+      "tokens": [
+        "え",
+        "こ",
+        "ん",
+        "う"
+      ],
+      "answer": [
+        1,
+        3,
+        0,
+        2
+      ],
+      "hint": "のばす じを わすれないで",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-110",
+      "skill": "j03-chiisai",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "こっぷ",
+        "こつぷ",
+        "こぷ"
+      ],
+      "answer": 0,
+      "hint": "つまる おとを よく きいてみて",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-111",
+      "skill": "j03-chiisai",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "はっぱ",
+        "はつぱ",
+        "はぱ"
+      ],
+      "answer": 0,
+      "hint": "ちいさく かく じが あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-112",
+      "skill": "j03-chiisai",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "きんぎょ",
+        "きんぎよ",
+        "きんきょ"
+      ],
+      "answer": 0,
+      "hint": "おわりの じの おおきさを みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-113",
+      "skill": "j03-chiisai",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "おもちゃ",
+        "おもちや",
+        "おもちゃあ"
+      ],
+      "answer": 0,
+      "hint": "こえに だして ながさを きいてみて",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-114",
+      "skill": "j03-chiisai",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "しゅくだい",
+        "しゆくだい",
+        "しゅくたい",
+        "しゆくたい"
+      ],
+      "answer": 0,
+      "hint": "じの おおきさと てんてんを みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-115",
+      "skill": "j03-chiisai",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "ちょうちょ",
+        "ちようちよ",
+        "ちょうちよ",
+        "ちようちょ"
+      ],
+      "answer": 0,
+      "hint": "じの おおきさを ぜんぶ みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-116",
+      "skill": "j03-chiisai",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ねこが ぴょんと とんだ",
+        "ちいさい じは いくつ？"
+      ],
+      "choices": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "ちいさく かいた じを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-117",
+      "skill": "j03-chiisai",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "きょうは きっぷを かう",
+        "ちいさい じは いくつ？"
+      ],
+      "choices": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "ゆびで おさえて かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-118",
+      "skill": "j03-chiisai",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "「きんぎょ」に ならべよう"
+      ],
+      "tokens": [
+        "ぎょ",
+        "ん",
+        "き"
+      ],
+      "answer": [
+        2,
+        1,
+        0
+      ],
+      "hint": "はじめの おとを よく きいてみて",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-119",
+      "skill": "j03-n",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「ん」が ある ことばは？"
+      ],
+      "choices": [
+        "ごはん",
+        "ねこ",
+        "はな"
+      ],
+      "answer": 0,
+      "hint": "おわりの じを よく みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-120",
+      "skill": "j03-n",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「ん」が ない ことばは？"
+      ],
+      "choices": [
+        "さかな",
+        "みかん",
+        "りんご"
+      ],
+      "answer": 0,
+      "hint": "ひとつずつ よんで みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-121",
+      "skill": "j03-n",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「ん」が ふたつ あるのは？"
+      ],
+      "choices": [
+        "しんぶん",
+        "ごはん",
+        "ふうせん"
+      ],
+      "answer": 0,
+      "hint": "ゆびで さして かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-122",
+      "skill": "j03-n",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「しんぶん」の 3ばんめは？"
+      ],
+      "choices": [
+        "し",
+        "ん",
+        "ぶ"
+      ],
+      "answer": 2,
+      "hint": "ゆびで ひとつずつ かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-123",
+      "skill": "j03-n",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「ん」で おわる ことばは？"
+      ],
+      "choices": [
+        "ふうせん",
+        "りんご",
+        "ねこ",
+        "さかな"
+      ],
+      "answer": 0,
+      "hint": "いちばん うしろの おとだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-124",
+      "skill": "j03-n",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「りんご」の 「ん」は なんばんめ？"
+      ],
+      "choices": [
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "hint": "はじめから ゆびで かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-125",
+      "skill": "j03-n",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "みんなで ぱんを たべる",
+        "「ん」は いくつ？"
+      ],
+      "choices": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "ひとつずつ こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-126",
+      "skill": "j03-n",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "でんしゃで こうえんに いく",
+        "「ん」は いくつ？"
+      ],
+      "choices": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 1,
+      "hint": "はじめから こえに だそう",
+      "reward": "ki"
+    },
+    {
+      "id": "j03-127",
+      "skill": "j03-n",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "「ふうせん」に ならべよう"
+      ],
+      "tokens": [
+        "せ",
+        "ふ",
+        "ん",
+        "う"
+      ],
+      "answer": [
+        1,
+        3,
+        0,
+        2
+      ],
+      "hint": "のばす じを わすれないで",
+      "reward": "ki"
+    }
+  ]
+}

@@ -255,8 +255,14 @@ function main() {
       const groups = Array.isArray(data.items) ? { [data.unitId]: data.items } : data;
       for (const [unitId, items] of Object.entries(groups)) {
         if (!Array.isArray(items)) continue;
+        // ★下検査でも「まだ習っていない字」を見る。
+        //   国語でいちばん多いまちがいなので、ここを飛ばすと意味がない。
+        const unitFile = readdirSync(unitDir).find((n) => n.endsWith(`-${unitId}.json`));
+        const unit = unitFile ? JSON.parse(readFileSync(join(unitDir, unitFile), "utf8")) : null;
+        const skillIds = unit ? new Set((unit.skills || []).map((x) => x.id)) : null;
         for (const it of items) {
-          checkItem(unitId, it, null, seenIds);
+          checkItem(unitId, it, skillIds, seenIds);
+          if (unit) checkAllowedChars(unit, it);
           total++;
         }
       }

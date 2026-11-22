@@ -370,6 +370,513 @@
       ],
       "hint": "さいごは うごきの ことば",
       "reward": "nendo"
+    },
+    {
+      "id": "j07-101",
+      "skill": "j07-dare",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "さるが たべる",
+        "だれが たべる？"
+      ],
+      "choices": [
+        "さる",
+        "たべる",
+        "が"
+      ],
+      "answer": 0,
+      "hint": "「が」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-102",
+      "skill": "j07-dare",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "かえるが はねる",
+        "だれが はねる？"
+      ],
+      "choices": [
+        "はねる",
+        "が",
+        "かえる"
+      ],
+      "answer": 2,
+      "hint": "「が」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-103",
+      "skill": "j07-dare",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あひるが およぐ",
+        "だれが およぐ？"
+      ],
+      "choices": [
+        "あひる",
+        "およぐ",
+        "が"
+      ],
+      "answer": 0,
+      "hint": "「が」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-104",
+      "skill": "j07-dare",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "せみが ないた",
+        "だれが ないた？"
+      ],
+      "choices": [
+        "ないた",
+        "せみ",
+        "が"
+      ],
+      "answer": 1,
+      "hint": "「が」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-105",
+      "skill": "j07-dare",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "おばあさんが あるく",
+        "だれが あるく？"
+      ],
+      "choices": [
+        "あるく",
+        "が",
+        "おばあさん",
+        "みち"
+      ],
+      "answer": 2,
+      "hint": "「が」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-106",
+      "skill": "j07-dare",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "うさぎが にんじんを たべる",
+        "だれが たべる？"
+      ],
+      "choices": [
+        "にんじん",
+        "うさぎ",
+        "たべる",
+        "を"
+      ],
+      "answer": 1,
+      "hint": "「が」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-107",
+      "skill": "j07-dare",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ゆうがた おじいさんが きた。",
+        "だれが きた？"
+      ],
+      "choices": [
+        "ゆうがた",
+        "おじいさん",
+        "きた",
+        "いえ"
+      ],
+      "answer": 1,
+      "hint": "「が」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-108",
+      "skill": "j07-dare",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "いけで かめが およいだ。",
+        "だれが およいだ？"
+      ],
+      "choices": [
+        "いけ",
+        "かめ",
+        "およいだ",
+        "みず"
+      ],
+      "answer": 1,
+      "hint": "「が」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-109",
+      "skill": "j07-dare",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "あさ はやく ひよこが ないた。",
+        "だれが ないた？"
+      ],
+      "choices": [
+        "あさ",
+        "ひよこ",
+        "ないた",
+        "にわ"
+      ],
+      "answer": 1,
+      "hint": "「が」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-110",
+      "skill": "j07-dousuru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "つきが でる",
+        "つきは どうする？"
+      ],
+      "choices": [
+        "つき",
+        "でる",
+        "が"
+      ],
+      "answer": 1,
+      "hint": "うごきを あらわす ことば",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-111",
+      "skill": "j07-dousuru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "かぜが ふく",
+        "かぜは どうする？"
+      ],
+      "choices": [
+        "ふく",
+        "かぜ",
+        "が"
+      ],
+      "answer": 0,
+      "hint": "うごきを あらわす ことば",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-112",
+      "skill": "j07-dousuru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ひよこが あるく",
+        "ひよこは どうする？"
+      ],
+      "choices": [
+        "ひよこ",
+        "あるく",
+        "が"
+      ],
+      "answer": 1,
+      "hint": "うごきを あらわす ことば",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-113",
+      "skill": "j07-dousuru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "さるが のぼる",
+        "さるは どうする？"
+      ],
+      "choices": [
+        "のぼる",
+        "さる",
+        "が"
+      ],
+      "answer": 0,
+      "hint": "うごきを あらわす ことば",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-114",
+      "skill": "j07-dousuru",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "わたしが えを かく",
+        "わたしは どうする？"
+      ],
+      "choices": [
+        "え",
+        "かく",
+        "わたし",
+        "を"
+      ],
+      "answer": 1,
+      "hint": "さいごの ことばを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-115",
+      "skill": "j07-dousuru",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "うさぎが みみを うごかす",
+        "うさぎは どうする？"
+      ],
+      "choices": [
+        "みみ",
+        "を",
+        "うごかす",
+        "うさぎ"
+      ],
+      "answer": 2,
+      "hint": "さいごの ことばを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-116",
+      "skill": "j07-dousuru",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あさから ゆきが つもった。",
+        "ゆきは どうした？"
+      ],
+      "choices": [
+        "あさ",
+        "ゆき",
+        "つもった",
+        "とけた"
+      ],
+      "answer": 2,
+      "hint": "うごきを あらわす ことば",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-117",
+      "skill": "j07-dousuru",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "きのう おねえさんが うたった。",
+        "おねえさんは どうした？"
+      ],
+      "choices": [
+        "きのう",
+        "おねえさん",
+        "うたった",
+        "おどった"
+      ],
+      "answer": 2,
+      "hint": "うごきを あらわす ことば",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-118",
+      "skill": "j07-dousuru",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ゆうべ おじいさんが ねむった。",
+        "おじいさんは どうした？"
+      ],
+      "choices": [
+        "ゆうべ",
+        "おじいさん",
+        "ねむった",
+        "おきた"
+      ],
+      "answer": 2,
+      "hint": "うごきを あらわす ことば",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-119",
+      "skill": "j07-awaseru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「だれが どうする」の ぶんは？"
+      ],
+      "choices": [
+        "かえるが はねる",
+        "あおい そら",
+        "おおきい いし"
+      ],
+      "answer": 0,
+      "hint": "うごきの ことばが ある ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-120",
+      "skill": "j07-awaseru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「だれが どうする」の ぶんは？"
+      ],
+      "choices": [
+        "ちいさい とり",
+        "さるが たべる",
+        "しろい くも"
+      ],
+      "answer": 1,
+      "hint": "うごきの ことばが ある ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-121",
+      "skill": "j07-awaseru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "いけで かえるが はねた。",
+        "だれが どうした？"
+      ],
+      "choices": [
+        "いけが はねた",
+        "かえるが はねた",
+        "かえるが いけ"
+      ],
+      "answer": 1,
+      "hint": "「が」の まえと さいごを みよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-122",
+      "skill": "j07-awaseru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "みちで さるが あるいた。",
+        "だれが どうした？"
+      ],
+      "choices": [
+        "みちが あるいた",
+        "さるが あるいた",
+        "さるが みち"
+      ],
+      "answer": 1,
+      "hint": "「が」の まえと さいごを みよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-123",
+      "skill": "j07-awaseru",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "やまで さるが きに のぼる。",
+        "だれが どうする？"
+      ],
+      "choices": [
+        "やまが のぼる",
+        "さるが のぼる",
+        "きが のぼる",
+        "さるが やま"
+      ],
+      "answer": 1,
+      "hint": "「が」の まえと さいごを みよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-124",
+      "skill": "j07-awaseru",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "いえで おばあさんが わらった。",
+        "だれが どうした？"
+      ],
+      "choices": [
+        "いえが わらった",
+        "おばあさんが わらった",
+        "おばあさんが いえ",
+        "いえが おばあさん"
+      ],
+      "answer": 1,
+      "hint": "「が」の まえと さいごを みよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-125",
+      "skill": "j07-awaseru",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "ただしい ぶんに ならべよう"
+      ],
+      "tokens": [
+        "あるく。",
+        "かめが",
+        "のんびり"
+      ],
+      "answer": [
+        1,
+        2,
+        0
+      ],
+      "hint": "さいごは うごきの ことば",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-126",
+      "skill": "j07-awaseru",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "ただしい ぶんに ならべよう"
+      ],
+      "tokens": [
+        "ないた。",
+        "ひよこが",
+        "にわで"
+      ],
+      "answer": [
+        2,
+        1,
+        0
+      ],
+      "hint": "さいごは うごきの ことば",
+      "reward": "nendo"
+    },
+    {
+      "id": "j07-127",
+      "skill": "j07-awaseru",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "ただしい ぶんに ならべよう"
+      ],
+      "tokens": [
+        "たべた。",
+        "さるが",
+        "やまで",
+        "きのみを"
+      ],
+      "answer": [
+        2,
+        1,
+        3,
+        0
+      ],
+      "hint": "さいごは うごきの ことば",
+      "reward": "nendo"
     }
   ]
 }

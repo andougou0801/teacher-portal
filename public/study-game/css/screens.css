@@ -640,6 +640,7 @@
 
 .order-slots {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   justify-content: center;
   min-height: 86px;
@@ -656,6 +657,24 @@
   background: #fffdf6;
   font-size: calc(34px * var(--scale));
   font-weight: 700;
+}
+
+/* ★日本語は どこでも 行が 折れてしまう。「ちかづ／いて きた」のように
+   ことばの とちゅうで 折れると 1年生は 読めない。
+   この ゲームの 文は 分かち書き（ことばの あいだに すきま）なので、
+   keep-all に すると すきまでしか 折れなくなる。 */
+.order-slot,
+.token {
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+/* 文の札は 字を 小さく（1字の札は 大きいまま） */
+.order-slot.is-long,
+.token.is-long {
+  padding: 6px 12px;
+  font-size: calc(21px * var(--scale));
+  line-height: 1.35;
 }
 
 .order-slot.is-filled {
@@ -1112,6 +1131,10 @@
 }
 
 /* ===== かくにんモード（おとな用）の帯 ===== */
+#app.debug-on .screen {
+  padding-top: 30px;
+}
+
 .debug-badge {
   position: absolute;
   top: 0;

@@ -358,6 +358,479 @@
       ],
       "hint": "いく ところの あとは 「へ」",
       "reward": "ishi"
+    },
+    {
+      "id": "j04-101",
+      "skill": "j04-wa",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どちら？"
+      ],
+      "choices": [
+        "とりは とぶ",
+        "とりわ とぶ"
+      ],
+      "answer": 0,
+      "hint": "よみかたと かくじが ちがう じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-102",
+      "skill": "j04-wa",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どちら？"
+      ],
+      "choices": [
+        "ゆきわ しろい",
+        "ゆきは しろい"
+      ],
+      "answer": 1,
+      "hint": "「なにが」の あとに つく じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-103",
+      "skill": "j04-wa",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "いぬは おおきい",
+        "いぬわ おおきい",
+        "いぬお おおきい"
+      ],
+      "answer": 0,
+      "hint": "「なにが」の あとに つく じを えらぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-104",
+      "skill": "j04-wa",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "つきお まるい",
+        "つきわ まるい",
+        "つきは まるい"
+      ],
+      "answer": 2,
+      "hint": "こえに だすと 「わ」と よむ じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-105",
+      "skill": "j04-wa",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "あめお つめたい",
+        "あめは つめたい",
+        "あめへ つめたい",
+        "あめを つめたい"
+      ],
+      "answer": 1,
+      "hint": "「なにが」の あとの じを おもいだそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-106",
+      "skill": "j04-wa",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "ここは ひろい",
+        "ここわ ひろい",
+        "ここお ひろい",
+        "ここへ ひろい"
+      ],
+      "answer": 0,
+      "hint": "「ここ」の あとも おなじ きまりだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-107",
+      "skill": "j04-wa",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ちがって いるのは どれ？"
+      ],
+      "choices": [
+        "はなは さく",
+        "くもは うごく",
+        "さかなわ およぐ"
+      ],
+      "answer": 2,
+      "hint": "ことばの あとの じを くらべよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-108",
+      "skill": "j04-wa",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ちがって いるのは どれ？"
+      ],
+      "choices": [
+        "くつは あたらしい",
+        "かさわ あかい",
+        "こえは おおきい"
+      ],
+      "answer": 1,
+      "hint": "かきかたが ひとつだけ ちがうよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-109",
+      "skill": "j04-wa",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "ただしい ぶんに ならべよう"
+      ],
+      "tokens": [
+        "ふく",
+        "は",
+        "かぜ"
+      ],
+      "answer": [
+        2,
+        1,
+        0
+      ],
+      "hint": "「なにが」の あとに つく ふだを まん なかに",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-110",
+      "skill": "j04-o",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どちら？"
+      ],
+      "choices": [
+        "くつを はく",
+        "くつお はく"
+      ],
+      "answer": 0,
+      "hint": "「なにを」するかを あらわす じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-111",
+      "skill": "j04-o",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どちら？"
+      ],
+      "choices": [
+        "ぼうしお かぶる",
+        "ぼうしを かぶる"
+      ],
+      "answer": 1,
+      "hint": "「お」と にて いるけど ちがう じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-112",
+      "skill": "j04-o",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "かさお さす",
+        "かさを さす",
+        "かさへ さす"
+      ],
+      "answer": 1,
+      "hint": "する ものの あとに つく じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-113",
+      "skill": "j04-o",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "うたお うたう",
+        "うたへ うたう",
+        "うたを うたう"
+      ],
+      "answer": 2,
+      "hint": "「なにを」するかを あらわす じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-114",
+      "skill": "j04-o",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "たねお まく",
+        "たねを まく",
+        "たねへ まく"
+      ],
+      "answer": 1,
+      "hint": "する ものの あとの じを えらぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-115",
+      "skill": "j04-o",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "おりがみを おる",
+        "おりがみお おる",
+        "おりがみへ おる"
+      ],
+      "answer": 0,
+      "hint": "「なにを」おるのかを かんがえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-116",
+      "skill": "j04-o",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ちがって いるのは どれ？"
+      ],
+      "choices": [
+        "ふえを ふく",
+        "たいこお たたく",
+        "てを あげる"
+      ],
+      "answer": 1,
+      "hint": "する ものの あとの じを くらべよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-117",
+      "skill": "j04-o",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "ぼくは つみきを つむ",
+        "ぼくは つみきお つむ",
+        "ぼくは つみきへ つむ"
+      ],
+      "answer": 0,
+      "hint": "する ものの あとに つく じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-118",
+      "skill": "j04-o",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "ただしい ぶんに ならべよう"
+      ],
+      "tokens": [
+        "を",
+        "てがみ",
+        "わたしは",
+        "かく"
+      ],
+      "answer": [
+        2,
+        1,
+        0,
+        3
+      ],
+      "hint": "かく ものの あとに つく ふだを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-119",
+      "skill": "j04-e",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どちら？"
+      ],
+      "choices": [
+        "こうえんへ いく",
+        "こうえんえ いく"
+      ],
+      "answer": 0,
+      "hint": "いく ところの あとに つく じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-120",
+      "skill": "j04-e",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どちら？"
+      ],
+      "choices": [
+        "かわえ おりる",
+        "かわへ おりる"
+      ],
+      "answer": 1,
+      "hint": "むかう ところの あとに つく じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-121",
+      "skill": "j04-e",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "もりへ はいる",
+        "もりえ はいる",
+        "もりお はいる"
+      ],
+      "answer": 0,
+      "hint": "いく ところの あとの じを えらぼう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-122",
+      "skill": "j04-e",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "えきお はしる",
+        "えきえ はしる",
+        "えきへ はしる"
+      ],
+      "answer": 2,
+      "hint": "どこに むかうかを あらわす じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-123",
+      "skill": "j04-e",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "にわへ でる",
+        "にわえ でる",
+        "にわお でる"
+      ],
+      "answer": 0,
+      "hint": "でて いく ところの あとの じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-124",
+      "skill": "j04-e",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ただしいのは どれ？"
+      ],
+      "choices": [
+        "そらえ とぶ",
+        "そらへ とぶ",
+        "そらお とぶ"
+      ],
+      "answer": 1,
+      "hint": "とんで いく ところの あとの じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-125",
+      "skill": "j04-e",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ちがって いるのは どれ？"
+      ],
+      "choices": [
+        "へやへ はいる",
+        "おみせへ いく",
+        "はたけえ でる"
+      ],
+      "answer": 2,
+      "hint": "ところの あとの じを くらべよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-126",
+      "skill": "j04-e",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "どこかに いく とき",
+        "ところの あとに つく じは？"
+      ],
+      "choices": [
+        "は",
+        "を",
+        "へ",
+        "お"
+      ],
+      "answer": 2,
+      "hint": "よみかたと かくじが ちがう じだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j04-127",
+      "skill": "j04-e",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "ただしい ぶんに ならべよう"
+      ],
+      "tokens": [
+        "へ",
+        "こうえん",
+        "いぬは",
+        "はしる"
+      ],
+      "answer": [
+        2,
+        1,
+        0,
+        3
+      ],
+      "hint": "いく ところの あとに つく ふだを さがそう",
+      "reward": "ishi"
     }
   ]
 }

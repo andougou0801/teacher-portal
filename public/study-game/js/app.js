@@ -82,6 +82,8 @@ function paintDebugBadge() {
     document.getElementById("app").appendChild(badge);
   }
   badge.hidden = !isDebug();
+  // 帯のぶんだけ 画面を 下げる（もどるボタンに かぶらないように）
+  document.getElementById("app").classList.toggle("debug-on", isDebug());
 }
 
 export function currentScreen() {
