@@ -11,6 +11,8 @@ const CORE = [
   "js/speech.js",
   "js/icons.js",
   "js/moya-art.js",
+  "js/moya-art-jp.js",
+  "js/hiragana-strokes.js",
   "js/figure.js",
   "js/content.js",
   "js/store.js",

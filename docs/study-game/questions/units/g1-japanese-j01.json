@@ -7,7 +7,7 @@
   "order": 1,
   "title": "ひらがなを よむ",
   "allowedChars": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ0123456789「」？ ",
-  "monster": "katachimoya",
+  "monster": "mojimoya",
   "building": "hatake",
   "skills": [
     {

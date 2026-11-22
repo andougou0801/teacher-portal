@@ -214,7 +214,7 @@
           "title": "ひらがなを よむ",
           "order": 1,
           "file": "units/g1-japanese-j01.json",
-          "monster": "katachimoya",
+          "monster": "mojimoya",
           "building": "hatake",
           "skills": [
             {
@@ -239,7 +239,7 @@
           "title": "ひらがなの ならび",
           "order": 2,
           "file": "units/g1-japanese-j02.json",
-          "monster": "tokeimoya",
+          "monster": "narabekotoba",
           "building": "tanbo",
           "skills": [
             {
@@ -264,7 +264,7 @@
           "title": "のばす じと ちいさい じ",
           "order": 3,
           "file": "units/g1-japanese-j03.json",
-          "monster": "kasamoya",
+          "monster": "nobashimoya",
           "building": "yaoya",
           "skills": [
             {
@@ -289,7 +289,7 @@
           "title": "は を へ",
           "order": 4,
           "file": "units/g1-japanese-j04.json",
-          "monster": "kazumoya",
+          "monster": "joshimoya",
           "building": "bungu",
           "skills": [
             {
@@ -314,7 +314,7 @@
           "title": "、と。と「」",
           "order": 5,
           "file": "units/g1-japanese-j05.json",
-          "monster": "narabimoya",
+          "monster": "tenmarumoya",
           "building": "yubin",
           "skills": [
             {
@@ -339,7 +339,7 @@
           "title": "ことばの なかま",
           "order": 6,
           "file": "units/g1-japanese-j06.json",
-          "monster": "wakemoya",
+          "monster": "nakamamoya",
           "building": "toshoshitsu",
           "skills": [
             {
@@ -364,7 +364,7 @@
           "title": "だれが どうする",
           "order": 7,
           "file": "units/g1-japanese-j07.json",
-          "monster": "tasumoya",
+          "monster": "daremoya",
           "building": "ishibumi",
           "skills": [
             {
@@ -389,7 +389,7 @@
           "title": "じゅんばん",
           "order": 8,
           "file": "units/g1-japanese-j08.json",
-          "monster": "hikimoya",
+          "monster": "junbanmoya",
           "building": "butai",
           "skills": [
             {

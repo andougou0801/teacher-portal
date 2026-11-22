@@ -7,7 +7,7 @@
   "order": 7,
   "title": "だれが どうする",
   "allowedChars": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっー0123456789「」、。？ ",
-  "monster": "tasumoya",
+  "monster": "daremoya",
   "building": "ishibumi",
   "skills": [
     {

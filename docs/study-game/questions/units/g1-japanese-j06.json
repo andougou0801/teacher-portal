@@ -7,7 +7,7 @@
   "order": 6,
   "title": "ことばの なかま",
   "allowedChars": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっー0123456789「」、。？ ",
-  "monster": "wakemoya",
+  "monster": "nakamamoya",
   "building": "toshoshitsu",
   "skills": [
     {

@@ -7,7 +7,7 @@
   "order": 8,
   "title": "じゅんばん",
   "allowedChars": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっー0123456789「」、。？ ",
-  "monster": "hikimoya",
+  "monster": "junbanmoya",
   "building": "butai",
   "skills": [
     {

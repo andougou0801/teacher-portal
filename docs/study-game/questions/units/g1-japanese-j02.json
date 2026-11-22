@@ -7,7 +7,7 @@
   "order": 2,
   "title": "ひらがなの ならび",
   "allowedChars": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ0123456789「」？ ",
-  "monster": "tokeimoya",
+  "monster": "narabekotoba",
   "building": "tanbo",
   "skills": [
     {

@@ -4,6 +4,7 @@
 // もやもや（モンスター）と、あとから足した たてものの形は `moya-art.js` にある。
 // 12体を「シルエット・頭の上のもの・おなかの印」で見分けられるように描き直したもの。
 import { moyaArt, MOYA_NAMES_12, BUILDING_ART_FN } from "./moya-art.js";
+import { moyaArtJp, MOYA_NAMES_JP, MOYA_ART_JP } from "./moya-art-jp.js";
 
 const ink = "#2B2A28";
 
@@ -123,9 +124,11 @@ export function face(index, wearing, size = 100) {
 
 /* ================= もやもや（モンスター） ================= */
 // もやもや（モンスター）の絵は moya-art.js にある（12体・形で見分けられる）
-export const MOYA_NAMES = MOYA_NAMES_12;
+// さんすう12体＋こくご8体＝20体
+export const MOYA_NAMES = { ...MOYA_NAMES_12, ...MOYA_NAMES_JP };
 
 export function moya(id, mood = "normal", size = 100) {
+  if (MOYA_ART_JP[id]) return moyaArtJp(id, mood, size);
   return moyaArt(id, mood, size);
 }
 
