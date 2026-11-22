@@ -12,6 +12,8 @@ import {
   saveSettings,
 } from "../store.js";
 import { limitSec } from "../session.js";
+import { todaySubject, townName, SUBJECTS } from "../subject.js";
+import { availableSubjects } from "../data.js";
 import { isDebug } from "../debug.js";
 import { refreshUnlocks } from "../srs.js";
 import { go, applySettings } from "../app.js";
@@ -22,6 +24,7 @@ let pickedFace = -1;
 let pressTimer = 0;
 
 export function enterStart() {
+  paintLogo();
   const box = $("#start-slots");
   clear(box);
   const slots = listSlots();
@@ -42,6 +45,27 @@ export function enterStart() {
   $("#start-note").textContent = slots.length >= MAX_SLOTS
     ? "この タブレットは いっぱいです。せんせいに いってね"
     : "きろくは この タブレットの なかだけ。どこにも おくりません。";
+}
+
+/**
+ * はじめの画面の 名前は「きょうの まち」。
+ * ★ずっと「かずのまち」に して おくと、こくごの日に ひらいた子も
+ *   先生も「このアプリは 算数だけ」と 思ってしまう。
+ *   （きょうが どちらかは 日づけで きまる。子どもは えらべない）
+ */
+function paintLogo() {
+  const subject = todaySubject(availableSubjects());
+  const logo = $("#logo");
+  if (logo) logo.textContent = townName(subject);
+  const en = $(".logo-en");
+  if (en) en.textContent = SUBJECTS[subject]?.en || "";
+  const sub = $(".logo-sub");
+  if (sub) {
+    sub.textContent =
+      subject === "japanese"
+        ? "ことばを とりもどして まちを つくろう"
+        : "かずを とりもどして まちを つくろう";
+  }
 }
 
 export function enterWho() {

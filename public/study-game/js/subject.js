@@ -45,3 +45,19 @@ export const townName = (id) => SUBJECTS[id]?.town || "かずのまち";
 export function subjectOfUnit(unitId) {
   return String(unitId).startsWith("j") ? "japanese" : "math";
 }
+
+/**
+ * かくにんモード（おとな用）だけで つかう「見ている まち」。
+ * ★ふだんの あそびでは つかわない。
+ *   子どもに 教科を えらばせると「すきな ほうばかり」に なるため、
+ *   日づけで 交互に きめる という 決まりは そのまま。
+ *   これは 運営者が 1日で 両方を 見るための 道具。
+ *   どこにも 保存しない（アプリを 開きなおすと 元にもどる）。
+ */
+let forced = "";
+export function forceSubject(id) {
+  forced = SUBJECTS[id] ? id : "";
+}
+export function forcedSubject() {
+  return forced;
+}

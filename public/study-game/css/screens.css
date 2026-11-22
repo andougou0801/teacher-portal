@@ -180,6 +180,15 @@
   flex: 0 0 auto;
 }
 
+/* かくにんモードの「まちを かえる」ボタン（ふだんは 出ない） */
+#btn-subject {
+  margin-left: auto;
+  min-height: 44px;
+  padding: 6px 14px;
+  font-size: calc(16px * var(--scale));
+  white-space: nowrap;
+}
+
 .town-name {
   font-size: calc(24px * var(--scale));
   font-weight: 700;

@@ -6,7 +6,8 @@ import { BUILDINGS, MATERIALS, MAT_ORDER, WEARS, TITLES } from "../content.js";
 import { state, save } from "../store.js";
 import { unitMeta } from "../data.js";
 import { unitProgress, masteredCount, refreshUnlocks } from "../srs.js";
-import { todaySubject, subjectOfUnit, townName } from "../subject.js";
+import { todaySubject, subjectOfUnit, townName, forceSubject, forcedSubject, SUBJECTS } from "../subject.js";
+import { isDebug } from "../debug.js";
 import { availableSubjects } from "../data.js";
 import * as session from "../session.js";
 import { sfx } from "../audio.js";
@@ -70,7 +71,9 @@ export function enter() {
     return;
   }
   refreshUnlocks();
-  viewSubject = todaySubject(availableSubjects());
+  const open = availableSubjects();
+  // かくにんモードのときだけ、見ている まちを そのままに する
+  viewSubject = (isDebug() && open.includes(forcedSubject()) && forcedSubject()) || todaySubject(open);
   render();
 }
 
@@ -114,11 +117,40 @@ export function buildableList(subject = viewSubject) {
   return out;
 }
 
+/**
+ * かくにんモードのときだけ出す「まちを かえる」ボタン。
+ * ふだんは ここに 何も出ない（子どもは 教科を えらべない）。
+ */
+function paintSubjectSwitch() {
+  const top = $(".town-top");
+  let btn = document.getElementById("btn-subject");
+  const open = availableSubjects();
+  if (!isDebug() || open.length < 2) {
+    btn?.remove();
+    return;
+  }
+  if (!btn) {
+    btn = el("button", "btn btn-small");
+    btn.id = "btn-subject";
+    btn.type = "button";
+    btn.addEventListener("click", () => {
+      const next = open[(open.indexOf(viewSubject) + 1) % open.length];
+      forceSubject(next);
+      viewSubject = next;
+      render();
+    });
+    top.appendChild(btn);
+  }
+  const next = open[(open.indexOf(viewSubject) + 1) % open.length];
+  btn.textContent = `→ ${SUBJECTS[next].town}`;
+}
+
 function render() {
   const stage = $("#town-stage");
   const p = state.progress;
   $("#town-name").textContent = `${state.profile?.no ?? ""}ばんの ${townName(viewSubject)}`;
   paintMats();
+  paintSubjectSwitch();
 
   let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
   svg += `<rect x="0" y="0" width="${W}" height="${H}" fill="#BFE3FB"/>`;

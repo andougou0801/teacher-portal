@@ -5,7 +5,8 @@ import { moya, icon } from "../icons.js";
 import { MATERIALS } from "../content.js";
 import { state } from "../store.js";
 import { unitMeta, availableSubjects } from "../data.js";
-import { todaySubject, subjectName, subjectOfUnit } from "../subject.js";
+import { todaySubject, subjectName, subjectOfUnit, forcedSubject } from "../subject.js";
+import { isDebug } from "../debug.js";
 import { dueSkills, focusUnit, unitProgress } from "../srs.js";
 import * as session from "../session.js";
 import { go } from "../app.js";
@@ -47,7 +48,12 @@ export function enter() {
   }
 
   // きょうの教科（じどうで 交互。せんせいモードで 片方に 固定できる）
-  const subject = todaySubject(availableSubjects());
+  // ★この関数の 下のほうで open を べつの いみで つかっている。
+  //   同じ名前に すると アプリ ぜんたいが 止まる（const の 二重宣言）。
+  const openSubjects = availableSubjects();
+  // ちずも まちと 同じ教科を 出す（かくにんモードで 町を かえたとき）
+  const subject =
+    (isDebug() && openSubjects.includes(forcedSubject()) && forcedSubject()) || todaySubject(openSubjects);
   const due = dueSkills();
   const focus = focusUnit(subject);
   const done = state.today.stages || {};
