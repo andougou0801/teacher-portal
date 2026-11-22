@@ -16,7 +16,7 @@ const srcDir = join(root, "docs", "study-game", "questions");
 const outDir = join(root, "public", "study-game", "data");
 
 const KANJI = /[一-鿿]/;
-const TYPES = new Set(["choice", "input", "order"]);
+const TYPES = new Set(["choice", "input", "order", "trace"]);
 const errors = [];
 const warnings = [];
 
@@ -44,6 +44,8 @@ function checkItem(unitId, item) {
     }
   } else if (item.type === "input") {
     if (!/^\d+$/.test(String(item.answer))) errors.push(`${where}: answer が数字でない`);
+  } else if (item.type === "trace") {
+    if (!item.char || [...item.char].length !== 1) errors.push(`${where}: trace の char が 1文字でない`);
   } else if (item.type === "order") {
     if (!Array.isArray(item.tokens) || !Array.isArray(item.answer)) errors.push(`${where}: tokens / answer がない`);
     else if (item.tokens.length !== item.answer.length) errors.push(`${where}: tokens と answer の数が合わない`);

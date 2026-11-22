@@ -15,7 +15,15 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const unitDir = join(root, "docs", "study-game", "questions", "units");
 
 const KANJI = /[一-鿿]/;
-const TYPES = new Set(["choice", "input", "order"]);
+const TYPES = new Set(["choice", "input", "order", "trace"]);
+// なぞり書きで つかえる字（筆順データに ある字だけ）
+const TRACEABLE = new Set(
+  readFileSync(join(root, "public", "study-game", "js", "hiragana-strokes.js"), "utf8")
+    .split("\n")
+    .map((line) => /^ {2}(\S): \{$/.exec(line))
+    .filter(Boolean)
+    .map((mm) => mm[1]),
+);
 const FIGS = new Set([
   "dots",
   "row",
@@ -160,6 +168,11 @@ function checkItem(unitId, item, skillIds, seenIds) {
     if (new Set(vals).size !== vals.length) add("choices に同じものが2つある");
   } else if (item.type === "input") {
     if (!/^\d+$/.test(String(item.answer))) add("input の answer が数字でない");
+  } else if (item.type === "trace") {
+    // なぞり書きは 答えあわせを しない（筆順どおり なぞれたかだけ）。
+    // そのかわり「筆順データの ない字」が 出ていないかを 見る。
+    if (!item.char || [...item.char].length !== 1) add("trace の char が 1文字でない");
+    else if (!TRACEABLE.has(item.char)) add(`筆順データに ない字「${item.char}」`);
   } else if (item.type === "order") {
     if (!Array.isArray(item.tokens) || !Array.isArray(item.answer)) add("tokens / answer がない");
     else {
@@ -179,7 +192,8 @@ function checkItem(unitId, item, skillIds, seenIds) {
     }
   }
 
-  // ★計算の検算
+  // ★計算の検算（なぞり書きは 計算ではないので とばす）
+  if (item.type === "trace") return;
   const want = expectedAnswer(item);
   if (want == null) {
     unchecked.push(`${where}「${item.prompt.join(" ")}」`);

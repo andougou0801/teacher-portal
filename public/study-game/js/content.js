@@ -22,6 +22,7 @@ export const POWERS = {
   shape: "かたちのちから",
   read: "よみとくちから",
   word: "ことばのちから",
+  write: "かくちから",
 };
 
 export const BUILDINGS = [

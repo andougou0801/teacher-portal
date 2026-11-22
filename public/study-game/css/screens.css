@@ -1110,3 +1110,20 @@
 .trace-sheet .row {
   justify-content: center;
 }
+
+/* ===== かくにんモード（おとな用）の帯 ===== */
+.debug-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 3px 10px;
+  background: #2B2A28;
+  color: #FFE08A;
+  font-size: calc(15px * var(--scale));
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}

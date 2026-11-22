@@ -24,6 +24,7 @@ const CORE = [
   "js/rpg.js",
   "js/trace.js",
   "js/subject.js",
+  "js/debug.js",
   "js/screens/start.js",
   "js/screens/town.js",
   "js/screens/map.js",

@@ -4,6 +4,7 @@ import { state, save } from "./store.js";
 import { dayKey, addDays, dayDiff, clamp } from "./util.js";
 import { allSkills, unitMeta, skillMeta, units, allUnits, availableSubjects } from "./data.js";
 import { subjectOfUnit } from "./subject.js";
+import { isDebug } from "./debug.js";
 
 /** stage ごとの「つぎに出す日」までの日数 */
 const GAP = [1, 2, 4, 7, 14, 30];
@@ -73,7 +74,7 @@ export function answer(skillId, correct) {
   // そうしないと、同じ日に3回あたっただけで「ばっちりおぼえた」になってしまい、
   // 日をあけて ためす という 仕組みが はたらかなくなる。
   if (correct) {
-    if (r.stageDay !== today) {
+    if (r.stageDay !== today || isDebug()) {
       r.stage = clamp(r.stage + 1, 0, GAP.length - 1);
       r.stageDay = today;
     }
@@ -200,6 +201,15 @@ export function focusUnit(subject = "math") {
 export function refreshUnlocks() {
   const open = new Set(state.progress.unlockedUnits || ["u01"]);
   let changed = false;
+  if (isDebug()) {
+    // かくにんモード：ぜんぶの単元を ひらく
+    for (const u of allUnits()) {
+      if (!open.has(u.unitId)) {
+        open.add(u.unitId);
+        changed = true;
+      }
+    }
+  }
   for (const subject of availableSubjects()) {
     const list = units(subject);
     if (!list.length) continue;

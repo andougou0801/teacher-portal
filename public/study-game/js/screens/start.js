@@ -12,6 +12,7 @@ import {
   saveSettings,
 } from "../store.js";
 import { limitSec } from "../session.js";
+import { isDebug } from "../debug.js";
 import { refreshUnlocks } from "../srs.js";
 import { go, applySettings } from "../app.js";
 import { sfx } from "../audio.js";
@@ -111,7 +112,7 @@ function confirmWho() {
     // ★新しい枠を つくって 1日を やり直す、という 抜け道を ふさぐ。
     //   1台を 何人かで つかう学校が あるので、ふつうに つかうぶんには 止めない
     //   （めやすの2倍を こえたときだけ 止める）。
-    if (deviceDay().sec > limitSec() * 2) {
+    if (!isDebug() && deviceDay().sec > limitSec() * 2) {
       toast("きょうは この タブレットで たくさん あそびました。せんせいに いってね", 5000);
       return;
     }

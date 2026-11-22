@@ -11,6 +11,11 @@
   "building": "hatake",
   "skills": [
     {
+      "id": "j01-nazori",
+      "name": "ゆびで なぞって かく",
+      "power": "write"
+    },
+    {
       "id": "j01-mikake",
       "name": "にた じを みわける",
       "power": "word"
@@ -27,6 +32,306 @@
     }
   ],
   "items": [
+    {
+      "id": "j01-101",
+      "skill": "j01-nazori",
+      "level": 1,
+      "type": "trace",
+      "prompt": [
+        "「い」を ゆびで なぞろう"
+      ],
+      "char": "い",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-102",
+      "skill": "j01-nazori",
+      "level": 1,
+      "type": "trace",
+      "prompt": [
+        "「こ」を ゆびで なぞろう"
+      ],
+      "char": "こ",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-103",
+      "skill": "j01-nazori",
+      "level": 1,
+      "type": "trace",
+      "prompt": [
+        "「し」を ゆびで なぞろう"
+      ],
+      "char": "し",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-104",
+      "skill": "j01-nazori",
+      "level": 1,
+      "type": "trace",
+      "prompt": [
+        "「つ」を ゆびで なぞろう"
+      ],
+      "char": "つ",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-105",
+      "skill": "j01-nazori",
+      "level": 1,
+      "type": "trace",
+      "prompt": [
+        "「く」を ゆびで なぞろう"
+      ],
+      "char": "く",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-106",
+      "skill": "j01-nazori",
+      "level": 2,
+      "type": "trace",
+      "prompt": [
+        "「か」を ゆびで なぞろう"
+      ],
+      "char": "か",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-107",
+      "skill": "j01-nazori",
+      "level": 2,
+      "type": "trace",
+      "prompt": [
+        "「た」を ゆびで なぞろう"
+      ],
+      "char": "た",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-108",
+      "skill": "j01-nazori",
+      "level": 2,
+      "type": "trace",
+      "prompt": [
+        "「と」を ゆびで なぞろう"
+      ],
+      "char": "と",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-109",
+      "skill": "j01-nazori",
+      "level": 2,
+      "type": "trace",
+      "prompt": [
+        "「な」を ゆびで なぞろう"
+      ],
+      "char": "な",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-110",
+      "skill": "j01-nazori",
+      "level": 2,
+      "type": "trace",
+      "prompt": [
+        "「り」を ゆびで なぞろう"
+      ],
+      "char": "り",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-111",
+      "skill": "j01-nazori",
+      "level": 3,
+      "type": "trace",
+      "prompt": [
+        "「あ」を ゆびで なぞろう"
+      ],
+      "char": "あ",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-112",
+      "skill": "j01-nazori",
+      "level": 3,
+      "type": "trace",
+      "prompt": [
+        "「き」を ゆびで なぞろう"
+      ],
+      "char": "き",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-113",
+      "skill": "j01-nazori",
+      "level": 3,
+      "type": "trace",
+      "prompt": [
+        "「さ」を ゆびで なぞろう"
+      ],
+      "char": "さ",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-114",
+      "skill": "j01-nazori",
+      "level": 3,
+      "type": "trace",
+      "prompt": [
+        "「す」を ゆびで なぞろう"
+      ],
+      "char": "す",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-115",
+      "skill": "j01-nazori",
+      "level": 3,
+      "type": "trace",
+      "prompt": [
+        "「て」を ゆびで なぞろう"
+      ],
+      "char": "て",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-116",
+      "skill": "j01-nazori",
+      "level": 4,
+      "type": "trace",
+      "prompt": [
+        "「ふ」を ゆびで なぞろう"
+      ],
+      "char": "ふ",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-117",
+      "skill": "j01-nazori",
+      "level": 4,
+      "type": "trace",
+      "prompt": [
+        "「ま」を ゆびで なぞろう"
+      ],
+      "char": "ま",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-118",
+      "skill": "j01-nazori",
+      "level": 4,
+      "type": "trace",
+      "prompt": [
+        "「む」を ゆびで なぞろう"
+      ],
+      "char": "む",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-119",
+      "skill": "j01-nazori",
+      "level": 4,
+      "type": "trace",
+      "prompt": [
+        "「や」を ゆびで なぞろう"
+      ],
+      "char": "や",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-120",
+      "skill": "j01-nazori",
+      "level": 4,
+      "type": "trace",
+      "prompt": [
+        "「ら」を ゆびで なぞろう"
+      ],
+      "char": "ら",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-121",
+      "skill": "j01-nazori",
+      "level": 5,
+      "type": "trace",
+      "prompt": [
+        "「ぬ」を ゆびで なぞろう"
+      ],
+      "char": "ぬ",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-122",
+      "skill": "j01-nazori",
+      "level": 5,
+      "type": "trace",
+      "prompt": [
+        "「ね」を ゆびで なぞろう"
+      ],
+      "char": "ね",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-123",
+      "skill": "j01-nazori",
+      "level": 5,
+      "type": "trace",
+      "prompt": [
+        "「を」を ゆびで なぞろう"
+      ],
+      "char": "を",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-124",
+      "skill": "j01-nazori",
+      "level": 5,
+      "type": "trace",
+      "prompt": [
+        "「も」を ゆびで なぞろう"
+      ],
+      "char": "も",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
+    {
+      "id": "j01-125",
+      "skill": "j01-nazori",
+      "level": 5,
+      "type": "trace",
+      "prompt": [
+        "「れ」を ゆびで なぞろう"
+      ],
+      "char": "れ",
+      "hint": "ばんごうの とおりに ゆびで なぞろう",
+      "reward": "ki"
+    },
     {
       "id": "j01-001",
       "skill": "j01-mikake",

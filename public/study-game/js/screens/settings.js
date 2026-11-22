@@ -19,6 +19,9 @@ import { units, allSkills, skillMeta, availableSubjects } from "../data.js";
 import { moya } from "../icons.js";
 import { runTrace } from "../trace.js";
 import { subjectMode, setSubjectMode, subjectName } from "../subject.js";
+import { isDebug, setDebug } from "../debug.js";
+import { MAT_ORDER } from "../content.js";
+import { dayKey, addDays } from "../util.js";
 import { rec, refreshUnlocks } from "../srs.js";
 import * as session from "../session.js";
 import * as speech from "../speech.js";
@@ -527,6 +530,9 @@ function renderTeacher(body) {
   );
   body.appendChild(subj);
 
+  // ★かくにんモード（おとな用の裏モード）
+  body.appendChild(debugCard());
+
   // なぞり書きの しさく（国語を 入れる前の ためし）
   const trace = el("div", "card");
   trace.appendChild(el("div", "s-name", "なぞり書きの ためし（国語の しさく）"));
@@ -572,6 +578,123 @@ function renderTeacher(body) {
     ),
   );
   body.appendChild(pin);
+}
+
+/**
+ * かくにんモード（おとな用の裏モード）。
+ * ふだんの しばり（1日15分・1日12個・単元はじゅんに開放・1日1段）を 外して、
+ * ぜんぶの機能を 一気に 確かめるためのもの。
+ * ★先生モードの中だけに置く（子どもは あんしょうばんごうが ないと 入れない）。
+ */
+function debugCard() {
+  const card = el("div", "card");
+  card.appendChild(el("div", "s-name", "かくにんモード（おとな用）"));
+  card.appendChild(
+    el(
+      "p",
+      "note",
+      "オンにすると、1日15分・1日の材料12個・単元の開放・1日1段のしばりが すべて外れます。ぜんぶの単元がひらき、何問でも続けられます。子どもに使わせないでください。オンの間は、画面の上に帯が出ます。",
+    ),
+  );
+  const row = el("div", "row");
+  const toggle = el("button", "toggle", isDebug() ? "オン" : "オフ");
+  toggle.type = "button";
+  toggle.setAttribute("aria-pressed", String(isDebug()));
+  toggle.addEventListener("click", () => {
+    setDebug(!isDebug());
+    toast(isDebug() ? "かくにんモードを オンに しました" : "ふつうに もどしました");
+    renderTeacherReload();
+  });
+  row.appendChild(toggle);
+  card.appendChild(row);
+
+  if (!isDebug()) return card;
+
+  // ---- オンのときだけ出す、確かめ用の道具 ----
+  card.appendChild(el("p", "note", "— 確かめ用（この子の記録を書きかえます）—"));
+  const tools = el("div", "row");
+
+  const tool = (label, fn) => {
+    const b = el("button", "btn", label);
+    b.type = "button";
+    b.addEventListener("click", () => {
+      if (!state.slot) {
+        toast("先に 子どもを えらんでください");
+        return;
+      }
+      fn();
+      saveNow();
+      renderTeacherReload();
+    });
+    tools.appendChild(b);
+  };
+
+  tool("きょうの分をリセット", () => {
+    state.today.sec = 0;
+    state.today.stages = {};
+    state.today.mats = 0;
+    state.today.breakDone = false;
+    toast("きょうの時間・ステージ・材料を 0に もどしました");
+  });
+
+  tool("ざいりょう +100", () => {
+    for (const m of MAT_ORDER) state.progress.materials[m] = (state.progress.materials[m] || 0) + 100;
+    toast("材料を 100ずつ ふやしました");
+  });
+
+  tool("ふくしゅうを いま出す", () => {
+    const today = dayKey();
+    let n = 0;
+    for (const r of Object.values(state.srs || {})) {
+      if (r && r.stage > 0) {
+        r.due = today;
+        n++;
+      }
+    }
+    toast(`${n}この スキルを ふくしゅうに 出しました`);
+  });
+
+  tool("ぜんぶ ばっちりに", () => {
+    const today = dayKey();
+    for (const s of allSkills()) {
+      const r = rec(s.id);
+      r.stage = 5;
+      r.lv = 5;
+      r.seen = Math.max(r.seen, 10);
+      r.ok = Math.max(r.ok, 10);
+      r.first = r.first || today;
+      r.due = addDays(today, 30);
+    }
+    refreshUnlocks();
+    toast("ぜんぶのスキルを「ばっちり」に しました（武器・称号・レベルが そろいます）");
+  });
+
+  tool("この子を まっさらに", () => {
+    state.srs = {};
+    state.days = [];
+    state.progress.materials = { ki: 0, ishi: 0, glass: 0, nendo: 0 };
+    state.progress.buildings = {};
+    state.progress.friends = [];
+    state.progress.weapons = [];
+    state.progress.weapon = "kinobo";
+    state.progress.wears = [];
+    state.progress.wearing = "";
+    state.progress.unitDays = {};
+    state.progress.unlockedUnits = ["u01"];
+    state.profile.titles = [];
+    state.today.sec = 0;
+    state.today.stages = {};
+    state.today.mats = 0;
+    state.today.items = 0;
+    state.today.ok = 0;
+    state.today.newSkills = [];
+    state.today.built = [];
+    refreshUnlocks();
+    toast("この子の きろくを まっさらに しました");
+  });
+
+  card.appendChild(tools);
+  return card;
 }
 
 /** なぞり書きを ためす（国語を 入れる前の しさく） */

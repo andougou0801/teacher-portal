@@ -5,6 +5,7 @@
 import { state, save, saveNow, bumpDeviceDay, newToday } from "./store.js";
 import { dayKey, dayDiff } from "./util.js";
 import { DEFAULT_MINUTES, DAILY_MATERIAL_CAP } from "./content.js";
+import { isDebug } from "./debug.js";
 
 let tick = 0;
 let lastTouch = Date.now();
@@ -40,6 +41,7 @@ export function remainSec() {
 }
 
 export function isOver() {
+  if (isDebug()) return false; // かくにんモード：時間で 止めない
   return remainSec() <= 0;
 }
 
@@ -49,6 +51,7 @@ export function isPractice() {
 }
 
 export function canGetMaterial() {
+  if (isDebug()) return true; // かくにんモード：1日の上限を 外す
   return !isPractice() && (state.today.mats || 0) < DAILY_MATERIAL_CAP;
 }
 

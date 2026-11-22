@@ -3,6 +3,7 @@ import { $, $$, installPressFeedback, toast } from "./util.js";
 import * as audio from "./audio.js";
 import * as speech from "./speech.js";
 import { state, saveNow } from "./store.js";
+import { isDebug } from "./debug.js";
 import { loadManifest } from "./data.js";
 import * as session from "./session.js";
 
@@ -57,6 +58,7 @@ export function go(name, params = {}) {
   requestAnimationFrame(() => requestAnimationFrame(showIt));
   setTimeout(showIt, 60);
   current = name;
+  paintDebugBadge();
   session.touch();
   const fn = SCREENS[name];
   if (fn) {
@@ -67,6 +69,19 @@ export function go(name, params = {}) {
       toast("うまく ひらけませんでした");
     }
   }
+}
+
+/** かくにんモード（おとな用）に 入っている間は、いつも 帯を 出す（切りわすれ ぼうし） */
+function paintDebugBadge() {
+  let badge = document.getElementById("debug-badge");
+  if (!badge) {
+    badge = document.createElement("div");
+    badge.id = "debug-badge";
+    badge.className = "debug-badge";
+    badge.textContent = "かくにんモード（おとな用）";
+    document.getElementById("app").appendChild(badge);
+  }
+  badge.hidden = !isDebug();
 }
 
 export function currentScreen() {

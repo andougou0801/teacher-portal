@@ -218,6 +218,11 @@
           "building": "hatake",
           "skills": [
             {
+              "id": "j01-nazori",
+              "name": "ゆびで なぞって かく",
+              "power": "write"
+            },
+            {
               "id": "j01-mikake",
               "name": "にた じを みわける",
               "power": "word"
