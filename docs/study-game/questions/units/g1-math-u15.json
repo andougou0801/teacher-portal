@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "u15",
+  "grade": 1,
+  "subject": "math",
+  "term": 2,
+  "order": 15,
+  "title": "なんじ なんじはん",
+  "monster": "tokeimoya",
+  "building": "tokeidai",
+  "skills": [
+    {
+      "id": "u15-hour",
+      "name": "なんじを よむ",
+      "power": "read"
+    },
+    {
+      "id": "u15-half",
+      "name": "なんじはんを よむ",
+      "power": "read"
+    },
+    {
+      "id": "u15-life",
+      "name": "1日の できごとと 時こく",
+      "power": "read"
+    }
+  ],
+  "items": []
+}

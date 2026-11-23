@@ -166,7 +166,10 @@ function render() {
 
   let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
   svg += `<rect x="0" y="0" width="${W}" height="${H}" fill="#BFE3FB"/>`;
-  svg += `<circle cx="880" cy="80" r="46" fill="#FFE08A" stroke="#2B2A28" stroke-width="3"/>`;
+  svg += `<circle cx="932" cy="54" r="34" fill="#FFE08A" stroke="#2B2A28" stroke-width="3"/>`;
+  // ★おくの おか。2学期の たてものは ここに たつ。
+  //   手前から おくへ そだっていくので、まちが ひろがって 見える。
+  svg += `<path d="M0 198q170-28 340 4t330-10 330 14v360H0z" fill="#A6DBA9" stroke="#2B2A28" stroke-width="3"/>`;
   svg += `<path d="M0 300q160-90 320 0t340-20 340 30v250H0z" fill="#7FCB84" stroke="#2B2A28" stroke-width="3"/>`;
   svg += `<rect x="0" y="330" width="${W}" height="${H - 330}" fill="#5BBF6A"/>`;
   svg += `<path d="M0 420q250 30 500 0t500 0" stroke="#C98A4B" stroke-width="22" fill="none"/>`;
@@ -211,7 +214,8 @@ function render() {
     const x = (b.x / 100) * W;
     const y = (b.y / 100) * H;
     const info = p.buildings[b.id];
-    const scale = 1.9;
+    // おくの だんは 小さく えがく（とおくに あるように 見せる）
+    const scale = b.y < 42 ? 1.15 : 1.9;
     const place = `translate(${x - 50 * scale} ${y - 70 * scale}) scale(${scale})`;
     if (info?.built) {
       svg += `<g class="b-built" data-id="${b.id}" transform="${place}">${buildingShapeMarkup(b.shape, info.color || 0)}</g>`;
@@ -219,11 +223,11 @@ function render() {
       // まだ たっていない たてものは「？」で 見せる。
       // うすい たてものだと「もう あるのかな？」と まぎらわしいので、
       // 「ここに なにかが たつ」と はっきり わかる かたちに する。
-      const w = 112;
-      svg += `<g class="b-unknown" transform="translate(${x - w / 2} ${y - 86})">
+      const w = b.y < 42 ? 70 : 112;
+      svg += `<g class="b-unknown" transform="translate(${x - w / 2} ${y - w * 0.77})">
         <rect x="0" y="0" width="${w}" height="${w}" rx="20" fill="#FFFFFF" fill-opacity="0.72"
               stroke="#2B2A28" stroke-width="4" stroke-dasharray="12 9"/>
-        <text x="${w / 2}" y="${w / 2 + 24}" font-size="64" font-weight="700"
+        <text x="${w / 2}" y="${w / 2 + w * 0.21}" font-size="${Math.round(w * 0.57)}" font-weight="700"
               text-anchor="middle" fill="#2B2A28" opacity="0.72">？</text>
       </g>`;
       if (nextUp && nextUp.id === b.id) {

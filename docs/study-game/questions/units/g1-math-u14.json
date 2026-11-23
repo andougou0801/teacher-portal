@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "u14",
+  "grade": 1,
+  "subject": "math",
+  "term": 2,
+  "order": 14,
+  "title": "おおきい かず",
+  "monster": "ookazumoya",
+  "building": "tounokura",
+  "skills": [
+    {
+      "id": "u14-tens",
+      "name": "10の まとまりで みる",
+      "power": "count"
+    },
+    {
+      "id": "u14-read",
+      "name": "2けたの かずを よむ",
+      "power": "count"
+    },
+    {
+      "id": "u14-order",
+      "name": "かずの ならびと 大小",
+      "power": "compare"
+    }
+  ],
+  "items": []
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "u16",
+  "grade": 1,
+  "subject": "math",
+  "term": 2,
+  "order": 16,
+  "title": "ものの いち",
+  "monster": "ichimoya",
+  "building": "michishirube",
+  "skills": [
+    {
+      "id": "u16-maeushiro",
+      "name": "まえと うしろ",
+      "power": "shape"
+    },
+    {
+      "id": "u16-migihidari",
+      "name": "みぎと ひだり",
+      "power": "shape"
+    },
+    {
+      "id": "u16-ueshita",
+      "name": "うえと した",
+      "power": "shape"
+    }
+  ],
+  "items": []
+}

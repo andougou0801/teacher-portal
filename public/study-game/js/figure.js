@@ -1,5 +1,6 @@
 // 問題の絵。JSONの figure の指示どおりにSVGを組み立てる（画像ファイルを持たない）。
 import { iconShape, icon } from "./icons.js";
+import { KINDS2 } from "./figure2.js";
 
 const ink = "#2B2A28";
 const line = "#D9CDB6";
@@ -247,6 +248,7 @@ const KINDS = {
   clips,
   graph,
   numline,
+  ...KINDS2,
 };
 
 /** 知らない kind は何も描かない（その1問が解けなくならないように、絵だけ省く） */

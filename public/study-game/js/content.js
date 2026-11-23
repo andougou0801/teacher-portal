@@ -43,6 +43,16 @@ export const BUILDINGS = [
   { id: "hikizansouko", name: "ひきざんそうこ", unit: "u05", shape: "barn", mat: "ishi", cost: 20, x: 35, y: 78 },
   { id: "zeronoizumi", name: "ゼロのいずみ", unit: "u06", shape: "well", mat: "nendo", cost: 14, x: 58, y: 78 },
   { id: "hakarinotou", name: "はかりのとう", unit: "u07", shape: "lighthouse", mat: "glass", cost: 18, x: 80, y: 74 },
+  // ★2学期は まちの おくの だんだん（おかの 上）に たつ。
+  //   手前の 列が うまってから おくが ふえるので、まちが そだって 見える。
+  { id: "mitsubashi", name: "みっつばし", unit: "u09", shape: "bridge", mat: "ki", cost: 14, x: 7, y: 33 },
+  { id: "mizunoie", name: "みずのいえ", unit: "u10", shape: "waterhouse", mat: "glass", cost: 16, x: 19, y: 33 },
+  { id: "noborinotou", name: "のぼりのとう", unit: "u11", shape: "uptower", mat: "ishi", cost: 20, x: 31, y: 33 },
+  { id: "katachihiroba", name: "かたちのひろば", unit: "u12", shape: "plaza", mat: "ki", cost: 16, x: 43, y: 33 },
+  { id: "kudarinomon", name: "くだりのもん", unit: "u13", shape: "downgate", mat: "ishi", cost: 20, x: 55, y: 33 },
+  { id: "tounokura", name: "とおのくら", unit: "u14", shape: "granary", mat: "nendo", cost: 18, x: 67, y: 33 },
+  { id: "tokeidai", name: "とけいだい", unit: "u15", shape: "clocktower", mat: "glass", cost: 20, x: 79, y: 33 },
+  { id: "michishirube", name: "みちしるべ", unit: "u16", shape: "signpost", mat: "ki", cost: 12, x: 91, y: 33 },
 ];
 
 export const WEARS = [
@@ -66,6 +76,14 @@ export const TITLES = [
   { id: "t-zero", name: "ゼロの ものがたり", unit: "u06" },
   { id: "t-length", name: "ながさ みつけびと", unit: "u07" },
   { id: "t-graph", name: "しらべの たんていと", unit: "u08" },
+  { id: "t-three", name: "みっつの たつじん", unit: "u09" },
+  { id: "t-kasa", name: "かさくらべ めいじん", unit: "u10" },
+  { id: "t-up", name: "くりあがり たいしょう", unit: "u11" },
+  { id: "t-shape", name: "かたち みつけびと", unit: "u12" },
+  { id: "t-down", name: "くりさがり たいしょう", unit: "u13" },
+  { id: "t-big", name: "おおきいかず はかせ", unit: "u14" },
+  { id: "t-clock", name: "とけい めいじん", unit: "u15" },
+  { id: "t-place", name: "みちしるべ づくり", unit: "u16" },
 ];
 
 export const buildingByUnit = (unitId) => BUILDINGS.find((b) => b.unit === unitId);

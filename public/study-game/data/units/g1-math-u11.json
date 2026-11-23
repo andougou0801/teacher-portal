@@ -1,0 +1,1 @@
+{"schemaVersion":1,"unitId":"u11","grade":1,"subject":"math","term":2,"order":11,"title":"たしざん（くりあがり）","monster":"kuriagarimoya","building":"noborinotou","skills":[{"id":"u11-make10","name":"10を つくって たす","power":"count"},{"id":"u11-add-9","name":"9や 8に たす","power":"count"},{"id":"u11-add-any","name":"くりあがりの たしざん","power":"count"}],"items":[]}

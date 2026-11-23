@@ -35,6 +35,13 @@ const FIGS = new Set([
   "clips",
   "graph",
   "numline",
+  "clock",
+  "cups",
+  "vessels",
+  "area",
+  "solids",
+  "place",
+  "blocks10",
 ]);
 const ICONS = new Set([
   "apple",
@@ -70,6 +77,21 @@ const unchecked = [];
 function expectedAnswer(item) {
   const text = item.prompt.join(" ");
   const f = item.figure || {};
+
+  // 「9 + 1 + 3 は いくつ？」「10 - 9 + 3 は いくつ？」
+  // 数が3つ以上ならんだ式は、左から順に計算する。
+  // くりあがり・くりさがりの「まず10をつくる／10からひく」の2段の形がこれ。
+  // ※ = のある式は、いちばん後ろの = より後ろだけを答えとして見る。
+  const expr = text.includes("=") ? text.slice(text.lastIndexOf("=") + 1) : text;
+  const chain = expr.match(/\d+(?:\s*[+\-−ー]\s*\d+){2,}/);
+  if (chain) {
+    const parts = chain[0].match(/\d+|[+\-−ー]/g);
+    let v = Number(parts[0]);
+    for (let i = 1; i < parts.length; i += 2) {
+      v = parts[i] === "+" ? v + Number(parts[i + 1]) : v - Number(parts[i + 1]);
+    }
+    return v;
+  }
 
   // 「3 + 4 は いくつ？」
   let m = text.match(/(\d+)\s*\+\s*(\d+)/);
@@ -122,6 +144,18 @@ function expectedAnswer(item) {
     }
   }
   return null;
+}
+
+/**
+ * その単元が 何学期か。
+ * ★学期で 出してよい 数の 大きさが ちがう。
+ *   1学期：和は10まで・数は20まで
+ *   2学期：くりあがり/くりさがり（和は18まで）・数は100まで
+ *   ここを 学期で 分けないと、2学期の 正しい問題まで エラーに なる。
+ */
+function termOf(unitId) {
+  const n = Number(String(unitId).replace(/\D/g, "")) || 1;
+  return n <= 8 ? 1 : 2;
 }
 
 function checkItem(unitId, item, skillIds, seenIds) {
@@ -212,8 +246,13 @@ function checkItem(unitId, item, skillIds, seenIds) {
   // 小1・1学期の範囲
   const nums = (item.prompt.join(" ").match(/\d+/g) || []).map(Number);
   if (nums.some((n) => n > 20)) warns.push(`${where}: 20より大きい数が出ている`);
+  // ★学期で 上限が ちがう（termOf のコメントを見てください）。
+  //   1学期：和は10まで。2学期：くりあがりが あるので 和は18まで。
+  const maxSum = termOf(unitId) === 1 ? 10 : 18;
   const sum = item.prompt.join(" ").match(/(\d+)\s*\+\s*(\d+)/);
-  if (sum && Number(sum[1]) + Number(sum[2]) > 10) add("たし算の答えが10をこえている（1学期の範囲外）");
+  if (sum && Number(sum[1]) + Number(sum[2]) > maxSum) {
+    add(`たし算の答えが${maxSum}をこえている（小1の範囲外）`);
+  }
   const sub = item.prompt.join(" ").match(/(\d+)\s*[-−ー]\s*(\d+)/);
   if (sub && Number(sub[1]) - Number(sub[2]) < 0) add("ひき算の答えがマイナスになる");
 }

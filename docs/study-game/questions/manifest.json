@@ -206,6 +206,213 @@
     },
     {
       "grade": 1,
+      "subject": "math",
+      "term": 2,
+      "units": [
+        {
+          "unitId": "u09",
+          "title": "3つの かずの けいさん",
+          "order": 9,
+          "file": "units/g1-math-u09.json",
+          "monster": "mitsumoya",
+          "building": "mitsubashi",
+          "skills": [
+            {
+              "id": "u09-add3",
+              "name": "3つ たす",
+              "power": "count"
+            },
+            {
+              "id": "u09-sub3",
+              "name": "3つ ひく",
+              "power": "count"
+            },
+            {
+              "id": "u09-mix3",
+              "name": "たして ひく",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "u10",
+          "title": "どちらが おおい",
+          "order": 10,
+          "file": "units/g1-math-u10.json",
+          "monster": "kasamoya",
+          "building": "mizunoie",
+          "skills": [
+            {
+              "id": "u10-kasa",
+              "name": "かさを くらべる",
+              "power": "compare"
+            },
+            {
+              "id": "u10-cup",
+              "name": "コップ なんばいぶん",
+              "power": "compare"
+            },
+            {
+              "id": "u10-hiro",
+              "name": "ひろさを くらべる",
+              "power": "compare"
+            }
+          ]
+        },
+        {
+          "unitId": "u11",
+          "title": "たしざん（くりあがり）",
+          "order": 11,
+          "file": "units/g1-math-u11.json",
+          "monster": "kuriagarimoya",
+          "building": "noborinotou",
+          "skills": [
+            {
+              "id": "u11-make10",
+              "name": "10を つくって たす",
+              "power": "count"
+            },
+            {
+              "id": "u11-add-9",
+              "name": "9や 8に たす",
+              "power": "count"
+            },
+            {
+              "id": "u11-add-any",
+              "name": "くりあがりの たしざん",
+              "power": "count"
+            }
+          ]
+        },
+        {
+          "unitId": "u12",
+          "title": "かたち",
+          "order": 12,
+          "file": "units/g1-math-u12.json",
+          "monster": "katachimoya",
+          "building": "katachihiroba",
+          "skills": [
+            {
+              "id": "u12-nakama",
+              "name": "おなじ かたちの なかま",
+              "power": "shape"
+            },
+            {
+              "id": "u12-tokucho",
+              "name": "かたちの とくちょう",
+              "power": "shape"
+            },
+            {
+              "id": "u12-tsukuru",
+              "name": "かたちを つくる",
+              "power": "shape"
+            }
+          ]
+        },
+        {
+          "unitId": "u13",
+          "title": "ひきざん（くりさがり）",
+          "order": 13,
+          "file": "units/g1-math-u13.json",
+          "monster": "kurisagarimoya",
+          "building": "kudarinomon",
+          "skills": [
+            {
+              "id": "u13-break10",
+              "name": "10から ひく",
+              "power": "count"
+            },
+            {
+              "id": "u13-sub-9",
+              "name": "9や 8を ひく",
+              "power": "count"
+            },
+            {
+              "id": "u13-sub-any",
+              "name": "くりさがりの ひきざん",
+              "power": "count"
+            }
+          ]
+        },
+        {
+          "unitId": "u14",
+          "title": "おおきい かず",
+          "order": 14,
+          "file": "units/g1-math-u14.json",
+          "monster": "ookazumoya",
+          "building": "tounokura",
+          "skills": [
+            {
+              "id": "u14-tens",
+              "name": "10の まとまりで みる",
+              "power": "count"
+            },
+            {
+              "id": "u14-read",
+              "name": "2けたの かずを よむ",
+              "power": "count"
+            },
+            {
+              "id": "u14-order",
+              "name": "かずの ならびと 大小",
+              "power": "compare"
+            }
+          ]
+        },
+        {
+          "unitId": "u15",
+          "title": "なんじ なんじはん",
+          "order": 15,
+          "file": "units/g1-math-u15.json",
+          "monster": "tokeimoya",
+          "building": "tokeidai",
+          "skills": [
+            {
+              "id": "u15-hour",
+              "name": "なんじを よむ",
+              "power": "read"
+            },
+            {
+              "id": "u15-half",
+              "name": "なんじはんを よむ",
+              "power": "read"
+            },
+            {
+              "id": "u15-life",
+              "name": "1日の できごとと 時こく",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "u16",
+          "title": "ものの いち",
+          "order": 16,
+          "file": "units/g1-math-u16.json",
+          "monster": "ichimoya",
+          "building": "michishirube",
+          "skills": [
+            {
+              "id": "u16-maeushiro",
+              "name": "まえと うしろ",
+              "power": "shape"
+            },
+            {
+              "id": "u16-migihidari",
+              "name": "みぎと ひだり",
+              "power": "shape"
+            },
+            {
+              "id": "u16-ueshita",
+              "name": "うえと した",
+              "power": "shape"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": 1,
       "subject": "japanese",
       "term": 1,
       "units": [

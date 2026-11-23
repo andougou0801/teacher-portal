@@ -4,6 +4,7 @@
 // もやもや（モンスター）と、あとから足した たてものの形は `moya-art.js` にある。
 // 12体を「シルエット・頭の上のもの・おなかの印」で見分けられるように描き直したもの。
 import { moyaArt, MOYA_NAMES_12, BUILDING_ART_FN } from "./moya-art.js";
+import { BUILDING_ART_M2 } from "./building-art-m2.js";
 import { moyaArtJp, MOYA_NAMES_JP, MOYA_ART_JP } from "./moya-art-jp.js";
 
 const ink = "#2B2A28";
@@ -257,6 +258,8 @@ const BUILDING_SHAPES = {
   barn: barnShape,
   well: wellShape,
   gate: gateShape,
+  // 1年2学期（算数）の8棟
+  ...BUILDING_ART_M2,
 };
 
 export function building(shape, colorIndex = 0, size = 100) {
