@@ -25,5 +25,854 @@
       "power": "shape"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "u22-001",
+      "skill": "u22-kazu",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "りんごは なんこ？"
+      ],
+      "figure": {
+        "kind": "dots",
+        "count": 8,
+        "icon": "apple"
+      },
+      "answer": 8,
+      "hint": "ひだりから じゅんに かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-002",
+      "skill": "u22-kazu",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "あと いくつで 10に なる？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 10,
+        "filled": 7
+      },
+      "answer": 3,
+      "hint": "あいて いる ますを かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-003",
+      "skill": "u22-kazu",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "ねこは なんびき？"
+      ],
+      "figure": {
+        "kind": "graph",
+        "rows": [
+          {
+            "icon": "apple",
+            "count": 4
+          },
+          {
+            "icon": "cat",
+            "count": 6
+          }
+        ]
+      },
+      "answer": 6,
+      "hint": "ねこの だんの しかくを かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-004",
+      "skill": "u22-kazu",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "4の つぎの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 4
+      },
+      "answer": 5,
+      "hint": "みぎに ひとつ すすんだ かず",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-005",
+      "skill": "u22-kazu",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "10と 3で いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 3
+      },
+      "answer": 13,
+      "hint": "10の まとまりと ばらを みて",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-006",
+      "skill": "u22-kazu",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "のこりの ますは いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 10,
+        "filled": 9
+      },
+      "answer": 1,
+      "hint": "まるの ない ますを かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-007",
+      "skill": "u22-kazu",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "10が 4つで いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 4,
+        "ones": 0
+      },
+      "answer": 40,
+      "hint": "10、20、30と かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-008",
+      "skill": "u22-kazu",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "この かずは いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 5,
+        "ones": 6
+      },
+      "answer": 56,
+      "hint": "まとまりが 5つと ばらが 6こ",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-009",
+      "skill": "u22-kazu",
+      "level": 3,
+      "type": "order",
+      "prompt": [
+        "ちいさい じゅんに ならべよう"
+      ],
+      "tokens": [
+        "7",
+        "10",
+        "4"
+      ],
+      "answer": [
+        2,
+        0,
+        1
+      ],
+      "hint": "いちばん ちいさいのは どれかな",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-010",
+      "skill": "u22-kazu",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "16の まえの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 10,
+        "to": 20,
+        "mark": 16
+      },
+      "answer": 15,
+      "hint": "ひだりに ひとつ もどった かず",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-011",
+      "skill": "u22-kazu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "おおきいのは どっち？"
+      ],
+      "choices": [
+        "68",
+        "86"
+      ],
+      "answer": 1,
+      "hint": "まず じゅうの くらいを くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-012",
+      "skill": "u22-kazu",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "ちいさい じゅんに ならべよう"
+      ],
+      "tokens": [
+        "30",
+        "13",
+        "31"
+      ],
+      "answer": [
+        1,
+        0,
+        2
+      ],
+      "hint": "じゅうの くらいから くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-013",
+      "skill": "u22-kazu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "この かずは いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 10,
+        "ones": 2
+      },
+      "choices": [
+        "12",
+        "102",
+        "120"
+      ],
+      "answer": 1,
+      "hint": "10の まとまりが 10こで 100",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-014",
+      "skill": "u22-kazu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "まるの ところの かずは どれ？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 114,
+        "to": 120,
+        "mark": 117
+      },
+      "choices": [
+        "116",
+        "117",
+        "118"
+      ],
+      "answer": 1,
+      "hint": "めもりを ひだりから よんで みよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-015",
+      "skill": "u22-kazu",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "ちいさい じゅんに ならべよう"
+      ],
+      "tokens": [
+        "100",
+        "98",
+        "103"
+      ],
+      "answer": [
+        1,
+        0,
+        2
+      ],
+      "hint": "100より おおきいのは どれかな",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-016",
+      "skill": "u22-keisan",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "a": 3,
+        "b": 4,
+        "icon": "apple"
+      },
+      "answer": 7,
+      "hint": "ひだりと みぎを あわせて かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-017",
+      "skill": "u22-keisan",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 9,
+        "gone": 4,
+        "icon": "fish"
+      },
+      "answer": 5,
+      "hint": "ばつの ついて いない ものを かぞえて",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-018",
+      "skill": "u22-keisan",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "5 + 3 は いくつ？"
+      ],
+      "answer": 8,
+      "hint": "5から 3つ すすんで かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-019",
+      "skill": "u22-keisan",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "6 + 4 は いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 10,
+        "filled": 6
+      },
+      "answer": 10,
+      "hint": "ますが ちょうど いっぱいに なるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-020",
+      "skill": "u22-keisan",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "7 - 2 は いくつ？"
+      ],
+      "answer": 5,
+      "hint": "7から 2つ もどって かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-021",
+      "skill": "u22-keisan",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "あわせて いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "a": 5,
+        "b": 5,
+        "icon": "star"
+      },
+      "answer": 10,
+      "hint": "5と 5で 10に なるね",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-022",
+      "skill": "u22-keisan",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "8 + 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "tenframe",
+        "total": 10,
+        "filled": 8
+      },
+      "answer": 13,
+      "hint": "8に 2を たして まず 10に しよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-023",
+      "skill": "u22-keisan",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "9 + 4 は いくつ？"
+      ],
+      "answer": 13,
+      "hint": "9に 1を たして まず 10に しよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-024",
+      "skill": "u22-keisan",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "12 - 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 2
+      },
+      "answer": 7,
+      "hint": "10から 5を ひいて のこりを たそう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-025",
+      "skill": "u22-keisan",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "7 + 6 は いくつ？"
+      ],
+      "answer": 13,
+      "hint": "7に 3を たして まず 10に しよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-026",
+      "skill": "u22-keisan",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "のこりは いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 14,
+        "gone": 6,
+        "icon": "candy"
+      },
+      "answer": 8,
+      "hint": "のこって いる あめを かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-027",
+      "skill": "u22-keisan",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "15 - 8 は いくつ？"
+      ],
+      "answer": 7,
+      "hint": "10から 8を ひいて 5を たそう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-028",
+      "skill": "u22-keisan",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "9 + 8 は いくつ？"
+      ],
+      "answer": 17,
+      "hint": "9に 1を たして まず 10に しよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-029",
+      "skill": "u22-keisan",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "16 - 9 は いくつ？"
+      ],
+      "answer": 7,
+      "hint": "10から 9を ひいて 6を たそう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-030",
+      "skill": "u22-keisan",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめを 7こ もって います。",
+        "5こ もらうと ぜんぶで いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "a": 7,
+        "b": 5,
+        "icon": "candy"
+      },
+      "answer": 12,
+      "hint": "7に 3を たして まず 10に しよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-031",
+      "skill": "u22-katachi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 3
+      },
+      "choices": [
+        "2じ",
+        "3じ",
+        "4じ"
+      ],
+      "answer": 1,
+      "hint": "みじかい はりが さして いる かず",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-032",
+      "skill": "u22-katachi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ころがらないのは どれ？"
+      ],
+      "figure": {
+        "kind": "solids",
+        "items": [
+          "ball",
+          "box",
+          "tube"
+        ]
+      },
+      "choices": [
+        "ボール",
+        "はこ",
+        "つつ"
+      ],
+      "answer": 1,
+      "hint": "たいらな めんだけの かたちは どれ",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-033",
+      "skill": "u22-katachi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "まえから 3ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish"
+        ],
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "ねこ",
+        "いぬ",
+        "うさぎ",
+        "さかな"
+      ],
+      "answer": 2,
+      "hint": "まえと かいて ある ほうから かぞえて",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-034",
+      "skill": "u22-katachi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ながいのは どちら？"
+      ],
+      "figure": {
+        "kind": "sticks",
+        "lengths": [
+          120,
+          80
+        ],
+        "offsets": [
+          0,
+          0
+        ]
+      },
+      "choices": [
+        "うえ",
+        "した"
+      ],
+      "answer": 0,
+      "hint": "はしを そろえて くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-035",
+      "skill": "u22-katachi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "みずが おおいのは どちら？"
+      ],
+      "figure": {
+        "kind": "cups",
+        "a": 4,
+        "b": 6,
+        "nameA": "あか",
+        "nameB": "あお"
+      },
+      "choices": [
+        "あか",
+        "あお"
+      ],
+      "answer": 1,
+      "hint": "コップの かずで くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-036",
+      "skill": "u22-katachi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 7,
+        "half": true
+      },
+      "choices": [
+        "7じ",
+        "7じはん",
+        "8じはん"
+      ],
+      "answer": 1,
+      "hint": "ながい はりが したを さして いるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-037",
+      "skill": "u22-katachi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ひろいのは どちら？"
+      ],
+      "figure": {
+        "kind": "area",
+        "a": 9,
+        "b": 6,
+        "nameA": "あか",
+        "nameB": "あお"
+      },
+      "choices": [
+        "あか",
+        "あお"
+      ],
+      "answer": 0,
+      "hint": "ますの かずで くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-038",
+      "skill": "u22-katachi",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ながさは クリップ なんこぶん？"
+      ],
+      "figure": {
+        "kind": "clips",
+        "count": 6
+      },
+      "answer": 6,
+      "hint": "クリップを ひだりから かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-039",
+      "skill": "u22-katachi",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "いろいたは なんまい？"
+      ],
+      "figure": {
+        "kind": "tiles",
+        "pattern": [
+          "bc"
+        ],
+        "color": "#F2B23C"
+      },
+      "answer": 2,
+      "hint": "まんなかの せんで わかれて いるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-040",
+      "skill": "u22-katachi",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "あかは あおより",
+        "コップ なんばいぶん おおい？"
+      ],
+      "figure": {
+        "kind": "cups",
+        "a": 5,
+        "b": 3,
+        "nameA": "あか",
+        "nameB": "あお"
+      },
+      "answer": 2,
+      "hint": "おなじ かずを けして かんがえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-041",
+      "skill": "u22-katachi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "したから 2ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "apple",
+          "star",
+          "car",
+          "flower"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "りんご",
+        "ほし",
+        "くるま",
+        "はな"
+      ],
+      "answer": 2,
+      "hint": "したと かいて ある ほうから かぞえて",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-042",
+      "skill": "u22-katachi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 12
+      },
+      "choices": [
+        "11じ",
+        "12じ",
+        "1じ"
+      ],
+      "answer": 1,
+      "hint": "はりが 2ほんとも おなじ ところだね",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-043",
+      "skill": "u22-katachi",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ますの かずの ちがいは なんこぶん？"
+      ],
+      "figure": {
+        "kind": "area",
+        "a": 10,
+        "b": 7,
+        "nameA": "あか",
+        "nameB": "あお"
+      },
+      "answer": 3,
+      "hint": "あかと あおの ますを かぞえて くらべる",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-044",
+      "skill": "u22-katachi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "みずが すくないのは どちら？"
+      ],
+      "figure": {
+        "kind": "vessels",
+        "a": 80,
+        "b": 55,
+        "nameA": "ひだり",
+        "nameB": "みぎ"
+      },
+      "choices": [
+        "ひだり",
+        "みぎ"
+      ],
+      "answer": 1,
+      "hint": "みずの たかさを くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u22-045",
+      "skill": "u22-katachi",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "なんじはん？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 9,
+        "half": true
+      },
+      "answer": 9,
+      "hint": "みじかい はりが すぎた かずを よむ",
+      "reward": "glass"
+    }
+  ]
 }

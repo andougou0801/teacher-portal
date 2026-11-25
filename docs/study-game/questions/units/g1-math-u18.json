@@ -25,5 +25,612 @@
       "power": "count"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "u18-001",
+      "skill": "u18-tens",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "20 + 30 は いくつ？"
+      ],
+      "answer": 50,
+      "hint": "たばが 2ほんと 3ぼんだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-002",
+      "skill": "u18-tens",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "10と 40で いくつ？"
+      ],
+      "answer": 50,
+      "hint": "たばの かずを たそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-003",
+      "skill": "u18-tens",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "30 + 30 は いくつ？"
+      ],
+      "choices": [
+        "33",
+        "60",
+        "90"
+      ],
+      "answer": 1,
+      "hint": "たばが 3ぼんと 3ぼんで 6ぽん",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-004",
+      "skill": "u18-tens",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "70 - 40 は いくつ？"
+      ],
+      "answer": 30,
+      "hint": "たばを 4ほん とろう",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-005",
+      "skill": "u18-tens",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "50 - 20 は いくつ？"
+      ],
+      "answer": 30,
+      "hint": "たばが 5ほんから 2ほん へるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-006",
+      "skill": "u18-tens",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "90 - 60 は いくつ？"
+      ],
+      "choices": [
+        "40",
+        "20",
+        "30"
+      ],
+      "answer": 2,
+      "hint": "9ほんから 6ぽん とると 3ぼん",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-007",
+      "skill": "u18-tens",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "40 + 50 は いくつ？"
+      ],
+      "answer": 90,
+      "hint": "たばが 4ほんと 5ほんだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-008",
+      "skill": "u18-tens",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "60 + 20 は いくつ？"
+      ],
+      "answer": 80,
+      "hint": "たばの かずを たそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-009",
+      "skill": "u18-tens",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "80と 20で いくつ？"
+      ],
+      "answer": 100,
+      "hint": "たばが 10ぽんに なると ひゃく",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-010",
+      "skill": "u18-tens",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "100 - 40 は いくつ？"
+      ],
+      "answer": 60,
+      "hint": "たばが 10ぽんから 4ほん へるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-011",
+      "skill": "u18-tens",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "100 - 70 は いくつ？"
+      ],
+      "answer": 30,
+      "hint": "10ぽんから 7ほん とると 3ぼん",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-012",
+      "skill": "u18-tens",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "100 - 50 は いくつ？"
+      ],
+      "answer": 50,
+      "hint": "はんぶんの たばが のこるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-013",
+      "skill": "u18-tens",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "50は 20と いくつ？"
+      ],
+      "answer": 30,
+      "hint": "あと なんぼん たせば 5ほんかな",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-014",
+      "skill": "u18-tens",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "90は 40と いくつ？"
+      ],
+      "answer": 50,
+      "hint": "4ほんに あと なんぼんで 9ほん",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-015",
+      "skill": "u18-tens",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "100は 30と いくつ？"
+      ],
+      "answer": 70,
+      "hint": "3ぼんに あと なんぼんで 10ぽん",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-016",
+      "skill": "u18-ones",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "35 + 2 は いくつ？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 30,
+        "to": 40,
+        "mark": 35
+      },
+      "answer": 37,
+      "hint": "かずの せんで みぎに 2つ すすもう",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-017",
+      "skill": "u18-ones",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "41と 3で いくつ？"
+      ],
+      "answer": 44,
+      "hint": "ばらだけ たせば いいよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-018",
+      "skill": "u18-ones",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "52 + 4 は いくつ？"
+      ],
+      "choices": [
+        "48",
+        "56",
+        "92"
+      ],
+      "answer": 1,
+      "hint": "たばは 5ほんの まま。ばらが ふえる",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-019",
+      "skill": "u18-ones",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "38 - 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 30,
+        "to": 40,
+        "mark": 38
+      },
+      "answer": 33,
+      "hint": "かずの せんで ひだりに 5つ もどろう",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-020",
+      "skill": "u18-ones",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "57 - 4 は いくつ？"
+      ],
+      "answer": 53,
+      "hint": "ばらだけ とれば いいよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-021",
+      "skill": "u18-ones",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "46 - 3 は いくつ？"
+      ],
+      "choices": [
+        "49",
+        "40",
+        "43"
+      ],
+      "answer": 2,
+      "hint": "たばは 4ほんの まま。ばらが へる",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-022",
+      "skill": "u18-ones",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "63 + 5 は いくつ？"
+      ],
+      "answer": 68,
+      "hint": "ばらが 3こから 8こに なるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-023",
+      "skill": "u18-ones",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "74 - 2 は いくつ？"
+      ],
+      "answer": 72,
+      "hint": "ばらが 4こから 2こに なるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-024",
+      "skill": "u18-ones",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "81 + 6 は いくつ？"
+      ],
+      "answer": 87,
+      "hint": "たばは 8ほんの まま",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-025",
+      "skill": "u18-ones",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "92 + 7 は いくつ？"
+      ],
+      "answer": 99,
+      "hint": "ばらが 2こから 9こに なるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-026",
+      "skill": "u18-ones",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "68 - 6 は いくつ？"
+      ],
+      "answer": 62,
+      "hint": "ばらが 8こから 2こに なるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-027",
+      "skill": "u18-ones",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "73 + 6 は いくつ？"
+      ],
+      "choices": [
+        "79",
+        "67",
+        "13"
+      ],
+      "answer": 0,
+      "hint": "たばは 7ほんの まま。ばらを たそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-028",
+      "skill": "u18-ones",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "45は 40と いくつ？"
+      ],
+      "answer": 5,
+      "hint": "たばの ぶんを とって みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-029",
+      "skill": "u18-ones",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ばらが 4こ ふえると",
+        "いくつに なる？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 6,
+        "ones": 3
+      },
+      "answer": 67,
+      "hint": "いまは 63。ばらだけ ふえるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-030",
+      "skill": "u18-ones",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ばらを 3こ とると",
+        "いくつに なる？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 5,
+        "ones": 8
+      },
+      "answer": 55,
+      "hint": "いまは 58。ばらだけ へるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-031",
+      "skill": "u18-mix",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "40 + 25 は いくつ？"
+      ],
+      "answer": 65,
+      "hint": "たばを 4ほん ふやすよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-032",
+      "skill": "u18-mix",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "30と 14で いくつ？"
+      ],
+      "answer": 44,
+      "hint": "たばの かずだけ ふえるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-033",
+      "skill": "u18-mix",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "20 + 35 は いくつ？"
+      ],
+      "choices": [
+        "37",
+        "25",
+        "55"
+      ],
+      "answer": 2,
+      "hint": "ばらは 5この まま。たばが ふえる",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-034",
+      "skill": "u18-mix",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "63 - 20 は いくつ？"
+      ],
+      "answer": 43,
+      "hint": "たばを 2ほん とろう",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-035",
+      "skill": "u18-mix",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "57 - 30 は いくつ？"
+      ],
+      "answer": 27,
+      "hint": "ばらは 7この まま。たばが へる",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-036",
+      "skill": "u18-mix",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "48 - 10 は いくつ？"
+      ],
+      "choices": [
+        "58",
+        "38",
+        "47"
+      ],
+      "answer": 1,
+      "hint": "たばが ひとつ へるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-037",
+      "skill": "u18-mix",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "45 + 30 は いくつ？"
+      ],
+      "answer": 75,
+      "hint": "たばが 3ぼん ふえるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-038",
+      "skill": "u18-mix",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "72 - 50 は いくつ？"
+      ],
+      "answer": 22,
+      "hint": "たばが 7ほんから 2ほんに なるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-039",
+      "skill": "u18-mix",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "26 + 60 は いくつ？"
+      ],
+      "answer": 86,
+      "hint": "ばらは 6この まま",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-040",
+      "skill": "u18-mix",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "83 - 60 は いくつ？"
+      ],
+      "answer": 23,
+      "hint": "たばを 6ぽん とろう",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-041",
+      "skill": "u18-mix",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "54 + 40 は いくつ？"
+      ],
+      "answer": 94,
+      "hint": "たばが 5ほんから 9ほんに なるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-042",
+      "skill": "u18-mix",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "96 - 70 は いくつ？"
+      ],
+      "choices": [
+        "36",
+        "26",
+        "16"
+      ],
+      "answer": 1,
+      "hint": "たばが 9ほんから 2ほんに なるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-043",
+      "skill": "u18-mix",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめが 32こ あります。",
+        "20こ ふえると いくつ？"
+      ],
+      "answer": 52,
+      "hint": "たばが 2ほん ふえるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-044",
+      "skill": "u18-mix",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ほしが 76こ ありました。",
+        "30こ へると いくつ？"
+      ],
+      "answer": 46,
+      "hint": "たばが 3ぼん へるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "u18-045",
+      "skill": "u18-mix",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "48 + 50 は いくつ？"
+      ],
+      "answer": 98,
+      "hint": "ばらは 8この まま。たばが ふえる",
+      "reward": "ki"
+    }
+  ]
 }

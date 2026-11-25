@@ -25,5 +25,747 @@
       "power": "compare"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "u17-001",
+      "skill": "u17-over100",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "100と 10で いくつ？"
+      ],
+      "answer": 110,
+      "hint": "ひゃくの つぎに 10を たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-002",
+      "skill": "u17-over100",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "100と 5で いくつ？"
+      ],
+      "answer": 105,
+      "hint": "ひゃくの あとに ばらが 5こ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-003",
+      "skill": "u17-over100",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "100と 20で いくつ？"
+      ],
+      "choices": [
+        "102",
+        "120",
+        "100"
+      ],
+      "answer": 1,
+      "hint": "10の たばが 2ほん ふえるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-004",
+      "skill": "u17-over100",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "いくつ ある？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 10,
+        "ones": 4
+      },
+      "answer": 104,
+      "hint": "たばが 10ぽんで ひゃく。ばらを たそう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-005",
+      "skill": "u17-over100",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "100と 8で いくつ？"
+      ],
+      "answer": 108,
+      "hint": "ひゃくの あとに ばらが 8こ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-006",
+      "skill": "u17-over100",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "いくつ ある？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 11,
+        "ones": 2
+      },
+      "choices": [
+        "102",
+        "112",
+        "110"
+      ],
+      "answer": 1,
+      "hint": "たばが 11ぽん、ばらが 2こ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-007",
+      "skill": "u17-over100",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "100より 3 おおきい かずは？"
+      ],
+      "answer": 103,
+      "hint": "100 101 102 と かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-008",
+      "skill": "u17-over100",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "100より 7 おおきい かずは？"
+      ],
+      "answer": 107,
+      "hint": "ひゃくから 7こ すすむよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-009",
+      "skill": "u17-over100",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "100より 15 おおきい かずは？"
+      ],
+      "choices": [
+        "105",
+        "115",
+        "110"
+      ],
+      "answer": 1,
+      "hint": "ひゃくの あとに じゅうごが つくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-010",
+      "skill": "u17-over100",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「ひゃくに」は どれ？"
+      ],
+      "choices": [
+        "120",
+        "102",
+        "112"
+      ],
+      "answer": 1,
+      "hint": "ひゃくの あとに ばらが 2こだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-011",
+      "skill": "u17-over100",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "この かずは どう よむ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 11,
+        "ones": 3
+      },
+      "choices": [
+        "ひゃくじゅうさん",
+        "ひゃくさんじゅう",
+        "ひゃくさん"
+      ],
+      "answer": 0,
+      "hint": "ひゃくと じゅうと さんだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-012",
+      "skill": "u17-over100",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "「ひゃくじゅう」は いくつ？"
+      ],
+      "answer": 110,
+      "hint": "ひゃくと じゅうを あわせた かきかた",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-013",
+      "skill": "u17-over100",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "110は 100と いくつ？"
+      ],
+      "answer": 10,
+      "hint": "ひゃくの ぶんを とって みよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-014",
+      "skill": "u17-over100",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "105は 100と いくつ？"
+      ],
+      "answer": 5,
+      "hint": "ひゃくの あとに のこる ばらの かず",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-015",
+      "skill": "u17-over100",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "100と 19で いくつ？"
+      ],
+      "answer": 119,
+      "hint": "ひゃくの あとに じゅうきゅう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-016",
+      "skill": "u17-line",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "103の つぎの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 100,
+        "to": 110,
+        "mark": 103
+      },
+      "answer": 104,
+      "hint": "かずの せんで みぎが つぎだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-017",
+      "skill": "u17-line",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "107の まえの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 100,
+        "to": 110,
+        "mark": 107
+      },
+      "answer": 106,
+      "hint": "かずの せんで ひだりが まえだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-018",
+      "skill": "u17-line",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "110の つぎの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 105,
+        "to": 115,
+        "mark": 110
+      },
+      "choices": [
+        "109",
+        "111",
+        "120"
+      ],
+      "answer": 1,
+      "hint": "かずの せんで みぎに ひとつ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-019",
+      "skill": "u17-line",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "108 109 の つぎは？"
+      ],
+      "answer": 110,
+      "hint": "ひとつずつ ふえて いるね",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-020",
+      "skill": "u17-line",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "101 102 の つぎは？"
+      ],
+      "answer": 103,
+      "hint": "ひゃくの あとの かずの ならび",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-021",
+      "skill": "u17-line",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "117 118 の つぎは？"
+      ],
+      "choices": [
+        "116",
+        "119",
+        "120"
+      ],
+      "answer": 1,
+      "hint": "ひとつずつ ふえて いるね",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-022",
+      "skill": "u17-line",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "100の つぎの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 95,
+        "to": 105,
+        "mark": 100
+      },
+      "answer": 101,
+      "hint": "ひゃくの つぎは ひゃくいちだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-023",
+      "skill": "u17-line",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "90 100 の つぎは？"
+      ],
+      "answer": 110,
+      "hint": "10ずつ ふえて いるね",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-024",
+      "skill": "u17-line",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "115の まえの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 110,
+        "to": 120,
+        "mark": 115
+      },
+      "choices": [
+        "116",
+        "110",
+        "114"
+      ],
+      "answer": 2,
+      "hint": "かずの せんで ひだりに ひとつ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-025",
+      "skill": "u17-line",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "112の つぎの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 108,
+        "to": 118,
+        "mark": 112
+      },
+      "answer": 113,
+      "hint": "ばらが ひとつ ふえるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-026",
+      "skill": "u17-line",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "109の つぎの かずは？"
+      ],
+      "answer": 110,
+      "hint": "ばらが 10こに なると たばが ふえる",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-027",
+      "skill": "u17-line",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "119の つぎの かずは？"
+      ],
+      "answer": 120,
+      "hint": "ばらが 10こに なると たばが ふえる",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-028",
+      "skill": "u17-line",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "104と 106の あいだの かずは？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 100,
+        "to": 110
+      },
+      "answer": 105,
+      "hint": "かずの せんで まんなかを さがそう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-029",
+      "skill": "u17-line",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "110 111 112 の つぎは？"
+      ],
+      "answer": 113,
+      "hint": "ひとつずつ ふえて いるね",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-030",
+      "skill": "u17-line",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "120の まえの かずは？"
+      ],
+      "answer": 119,
+      "hint": "たばを ひとつ ばらに もどそう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-031",
+      "skill": "u17-compare",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "100と 110では",
+        "どっちが おおきい？"
+      ],
+      "choices": [
+        "100",
+        "110"
+      ],
+      "answer": 1,
+      "hint": "かずの せんで みぎの ほうが おおきい",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-032",
+      "skill": "u17-compare",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "108と 103では",
+        "どっちが おおきい？"
+      ],
+      "choices": [
+        "108",
+        "103"
+      ],
+      "answer": 0,
+      "hint": "ひゃくの あとの ばらで くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-033",
+      "skill": "u17-compare",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "110と 101では",
+        "どっちが ちいさい？"
+      ],
+      "choices": [
+        "110",
+        "101"
+      ],
+      "answer": 1,
+      "hint": "たばの かずが すくない ほうだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-034",
+      "skill": "u17-compare",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "99と 101では",
+        "どっちが おおきい？"
+      ],
+      "choices": [
+        "101",
+        "99"
+      ],
+      "answer": 0,
+      "hint": "ひゃくを こえた ほうが おおきいよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-035",
+      "skill": "u17-compare",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "115と 105では",
+        "どっちが おおきい？"
+      ],
+      "choices": [
+        "115",
+        "105"
+      ],
+      "answer": 0,
+      "hint": "じゅうの くらいで くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-036",
+      "skill": "u17-compare",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "102と 98では",
+        "どっちが おおきい？"
+      ],
+      "choices": [
+        "98",
+        "102"
+      ],
+      "answer": 1,
+      "hint": "ひゃくを こえた ほうが おおきいよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-037",
+      "skill": "u17-compare",
+      "level": 3,
+      "type": "order",
+      "prompt": [
+        "ちいさい じゅんに ならべよう"
+      ],
+      "tokens": [
+        "110",
+        "101",
+        "100"
+      ],
+      "answer": [
+        2,
+        1,
+        0
+      ],
+      "hint": "ひゃくから じゅんに さがそう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-038",
+      "skill": "u17-compare",
+      "level": 3,
+      "type": "order",
+      "prompt": [
+        "おおきい じゅんに ならべよう"
+      ],
+      "tokens": [
+        "99",
+        "120",
+        "108"
+      ],
+      "answer": [
+        1,
+        2,
+        0
+      ],
+      "hint": "ひゃくを こえた かずが おおきいよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-039",
+      "skill": "u17-compare",
+      "level": 3,
+      "type": "order",
+      "prompt": [
+        "ちいさい じゅんに ならべよう"
+      ],
+      "tokens": [
+        "113",
+        "103",
+        "108"
+      ],
+      "answer": [
+        1,
+        2,
+        0
+      ],
+      "hint": "ひゃくの あとの かずで くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-040",
+      "skill": "u17-compare",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "ちいさい じゅんに ならべよう"
+      ],
+      "tokens": [
+        "120",
+        "102",
+        "111",
+        "98"
+      ],
+      "answer": [
+        3,
+        1,
+        2,
+        0
+      ],
+      "hint": "ひゃくより ちいさい かずが さいしょ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-041",
+      "skill": "u17-compare",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "おおきい じゅんに ならべよう"
+      ],
+      "tokens": [
+        "105",
+        "115",
+        "100",
+        "110"
+      ],
+      "answer": [
+        1,
+        3,
+        0,
+        2
+      ],
+      "hint": "じゅうの くらいから くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-042",
+      "skill": "u17-compare",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "107と 117では",
+        "どっちが ちいさい？"
+      ],
+      "choices": [
+        "107",
+        "117"
+      ],
+      "answer": 0,
+      "hint": "じゅうの くらいで くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-043",
+      "skill": "u17-compare",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "いちばん おおきい かずは どれ？"
+      ],
+      "choices": [
+        "109",
+        "119",
+        "99"
+      ],
+      "answer": 1,
+      "hint": "まず ひゃくを こえた かずを みよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-044",
+      "skill": "u17-compare",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "いちばん ちいさい かずは どれ？"
+      ],
+      "choices": [
+        "110",
+        "101",
+        "120"
+      ],
+      "answer": 1,
+      "hint": "ひゃくに いちばん ちかい かずだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u17-045",
+      "skill": "u17-compare",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "ちいさい じゅんに ならべよう"
+      ],
+      "tokens": [
+        "118",
+        "108",
+        "80",
+        "100"
+      ],
+      "answer": [
+        2,
+        3,
+        1,
+        0
+      ],
+      "hint": "ひゃくより ちいさい かずが さいしょ",
+      "reward": "glass"
+    }
+  ]
 }

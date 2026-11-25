@@ -25,5 +25,906 @@
       "power": "read"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "u19-001",
+      "skill": "u19-fueru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ねこが 3びき いました。",
+        "2ひき きました。ぜんぶで？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "cat",
+        "a": 3,
+        "b": 2
+      },
+      "choices": [
+        "5",
+        "4",
+        "6"
+      ],
+      "answer": 0,
+      "hint": "ふえたら たしざん。ぜんぶ かぞえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-002",
+      "skill": "u19-fueru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "りんごが 4こ ありました。",
+        "3こ もらった。ぜんぶで？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 4,
+        "b": 3
+      },
+      "choices": [
+        "6",
+        "7",
+        "8"
+      ],
+      "answer": 1,
+      "hint": "ふえたら たしざん。ぜんぶ かぞえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-003",
+      "skill": "u19-fueru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ふうせんが 2こ。",
+        "5こ ふえた。ぜんぶで？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "balloon",
+        "a": 2,
+        "b": 5
+      },
+      "choices": [
+        "6",
+        "8",
+        "7"
+      ],
+      "answer": 2,
+      "hint": "ふえたら たしざん。ぜんぶ かぞえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-004",
+      "skill": "u19-fueru",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "さかなが 6ぴき いました。",
+        "3びき きた。ぜんぶで なんびき？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "fish",
+        "a": 6,
+        "b": 3
+      },
+      "answer": "9",
+      "hint": "ふえたら たしざんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-005",
+      "skill": "u19-fueru",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "ほしが 5こ ありました。",
+        "4こ ふえた。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "star",
+        "a": 5,
+        "b": 4
+      },
+      "answer": "9",
+      "hint": "ふえたら たしざんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-006",
+      "skill": "u19-fueru",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "あめが 7こ ありました。",
+        "2こ もらった。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 7,
+        "b": 2
+      },
+      "answer": "9",
+      "hint": "ふえたら たしざんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-007",
+      "skill": "u19-fueru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "りんごが 8こ ありました。",
+        "5こ ふえた。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 8,
+        "b": 5
+      },
+      "answer": "13",
+      "hint": "まず 10を つくって かんがえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-008",
+      "skill": "u19-fueru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ねこが 9ひき いました。",
+        "6ぴき きた。ぜんぶで なんびき？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "cat",
+        "a": 9,
+        "b": 6
+      },
+      "answer": "15",
+      "hint": "まず 10を つくって かんがえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-009",
+      "skill": "u19-fueru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "あめが 7こ ありました。",
+        "4こ もらった。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 7,
+        "b": 4
+      },
+      "answer": "11",
+      "hint": "まず 10を つくって かんがえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-010",
+      "skill": "u19-fueru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "うさぎが 6ぴき あそんで",
+        "います。7ひき きた。ぜんぶで？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "rabbit",
+        "a": 6,
+        "b": 7
+      },
+      "answer": "13",
+      "hint": "ずの ふたつを あわせよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-011",
+      "skill": "u19-fueru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "くるまが 9だい とまって",
+        "います。8だい きた。ぜんぶで？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "car",
+        "a": 9,
+        "b": 8
+      },
+      "answer": "17",
+      "hint": "ずの ふたつを あわせよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-012",
+      "skill": "u19-fueru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "はなが 5ほん さいて います。",
+        "9ほん さいた。ぜんぶで？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "flower",
+        "a": 5,
+        "b": 9
+      },
+      "answer": "14",
+      "hint": "ずの ふたつを あわせよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-013",
+      "skill": "u19-fueru",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ねこが きて 12ひきに なった。",
+        "4ひき きた。はじめは なんびき？"
+      ],
+      "answer": "8",
+      "hint": "ずを かいて ふえた ぶんを とろう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-014",
+      "skill": "u19-fueru",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめを もらって 16こに",
+        "なった。7こ もらった。はじめは？"
+      ],
+      "answer": "9",
+      "hint": "ずを かいて ふえた ぶんを とろう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-015",
+      "skill": "u19-fueru",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ふうせんが ふえて 13こに",
+        "なった。6こ ふえた。はじめは？"
+      ],
+      "answer": "7",
+      "hint": "ずを かいて ふえた ぶんを とろう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-016",
+      "skill": "u19-heru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あめが 5こ ありました。",
+        "2こ たべた。のこりは なんこ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "candy",
+        "total": 5,
+        "gone": 2
+      },
+      "choices": [
+        "3",
+        "2",
+        "4"
+      ],
+      "answer": 0,
+      "hint": "ばつの ついて いない かずを かぞえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-017",
+      "skill": "u19-heru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ねこが 7ひき いました。",
+        "3びき かえった。のこりは？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "cat",
+        "total": 7,
+        "gone": 3
+      },
+      "choices": [
+        "3",
+        "4",
+        "5"
+      ],
+      "answer": 1,
+      "hint": "ばつの ついて いない かずを かぞえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-018",
+      "skill": "u19-heru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "りんごが 6こ ありました。",
+        "4こ たべた。のこりは？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "apple",
+        "total": 6,
+        "gone": 4
+      },
+      "choices": [
+        "3",
+        "1",
+        "2"
+      ],
+      "answer": 2,
+      "hint": "ばつの ついて いない かずを かぞえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-019",
+      "skill": "u19-heru",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "さかなが 9ひき いました。",
+        "4ひき いった。のこりは なんびき？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "fish",
+        "total": 9,
+        "gone": 4
+      },
+      "answer": "5",
+      "hint": "へったら ひきざんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-020",
+      "skill": "u19-heru",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "ほしが 10こ ありました。",
+        "6こ きえた。のこりは なんこ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "star",
+        "total": 10,
+        "gone": 6
+      },
+      "answer": "4",
+      "hint": "へったら ひきざんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-021",
+      "skill": "u19-heru",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "ふうせんが 8こ ありました。",
+        "5こ とんだ。のこりは なんこ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "balloon",
+        "total": 8,
+        "gone": 5
+      },
+      "answer": "3",
+      "hint": "へったら ひきざんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-022",
+      "skill": "u19-heru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "あめが 13こ ありました。",
+        "5こ たべた。のこりは なんこ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "candy",
+        "total": 13,
+        "gone": 5
+      },
+      "answer": "8",
+      "hint": "10から ひいて かんがえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-023",
+      "skill": "u19-heru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ねこが 15ひき いました。",
+        "9ひき かえった。のこりは？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "cat",
+        "total": 15,
+        "gone": 9
+      },
+      "answer": "6",
+      "hint": "10から ひいて かんがえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-024",
+      "skill": "u19-heru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "りんごが 12こ ありました。",
+        "3こ たべた。のこりは なんこ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "apple",
+        "total": 12,
+        "gone": 3
+      },
+      "answer": "9",
+      "hint": "10から ひいて かんがえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-025",
+      "skill": "u19-heru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "うさぎが 14ひき いました。",
+        "6ぴき かえった。のこりは？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "rabbit",
+        "total": 14,
+        "gone": 6
+      },
+      "answer": "8",
+      "hint": "ずの ばつを のぞいて かぞえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-026",
+      "skill": "u19-heru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "くるまが 11だい とまって",
+        "いた。8だい でた。のこりは？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "car",
+        "total": 11,
+        "gone": 8
+      },
+      "answer": "3",
+      "hint": "ずの ばつを のぞいて かぞえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-027",
+      "skill": "u19-heru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "はなが 16ほん さいて",
+        "いた。7ほん かれた。のこりは？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "flower",
+        "total": 16,
+        "gone": 7
+      },
+      "answer": "9",
+      "hint": "ずの ばつを のぞいて かぞえよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-028",
+      "skill": "u19-heru",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめを 5こ たべたら",
+        "のこりは 6こ。はじめは なんこ？"
+      ],
+      "answer": "11",
+      "hint": "ずに たべた ぶんを たしもどそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-029",
+      "skill": "u19-heru",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ねこが 7ひき かえったら",
+        "のこりは 6ぴき。はじめは？"
+      ],
+      "answer": "13",
+      "hint": "ずに かえった ぶんを たしもどそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-030",
+      "skill": "u19-heru",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ふうせんが 12こ あった。",
+        "のこりは 4こ。とんだのは？"
+      ],
+      "answer": "8",
+      "hint": "ぜんぶから のこりを とろう",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-031",
+      "skill": "u19-shiki",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ずに あう しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 3,
+        "b": 4
+      },
+      "choices": [
+        "3 + 4",
+        "4 − 3",
+        "3 + 3"
+      ],
+      "answer": 0,
+      "hint": "ふたつを あわせる ずだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-032",
+      "skill": "u19-shiki",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ずに あう しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "cat",
+        "a": 5,
+        "b": 2
+      },
+      "choices": [
+        "5 − 2",
+        "5 + 2",
+        "2 + 2"
+      ],
+      "answer": 1,
+      "hint": "ふたつを あわせる ずだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-033",
+      "skill": "u19-shiki",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ずに あう しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 6,
+        "b": 3
+      },
+      "choices": [
+        "6 + 6",
+        "6 − 3",
+        "6 + 3"
+      ],
+      "answer": 2,
+      "hint": "ふたつを あわせる ずだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-034",
+      "skill": "u19-shiki",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ずに あう しきは どれ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "candy",
+        "total": 9,
+        "gone": 4
+      },
+      "choices": [
+        "9 − 4",
+        "9 + 4",
+        "9 − 5"
+      ],
+      "answer": 0,
+      "hint": "ばつが ついた かずを ひくよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-035",
+      "skill": "u19-shiki",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ずに あう しきは どれ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "cat",
+        "total": 8,
+        "gone": 3
+      },
+      "choices": [
+        "8 + 3",
+        "8 − 3",
+        "5 − 3"
+      ],
+      "answer": 1,
+      "hint": "ばつが ついた かずを ひくよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-036",
+      "skill": "u19-shiki",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ずに あう しきは どれ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "apple",
+        "total": 10,
+        "gone": 6
+      },
+      "choices": [
+        "10 + 6",
+        "10 − 4",
+        "10 − 6"
+      ],
+      "answer": 2,
+      "hint": "ばつが ついた かずを ひくよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-037",
+      "skill": "u19-shiki",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "7 + 5 に あう おはなしは？"
+      ],
+      "choices": [
+        "7こ あって 5こ ふえた",
+        "7こ あって 5こ たべた",
+        "7こと 5この ちがい"
+      ],
+      "answer": 0,
+      "hint": "たしざんは ふえる、ひきざんは へる",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-038",
+      "skill": "u19-shiki",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "13 − 8 に あう おはなしは？"
+      ],
+      "choices": [
+        "13こに 8こ ふえた",
+        "13こから 8こ へった",
+        "13こと 8こを あわせた"
+      ],
+      "answer": 1,
+      "hint": "たしざんは ふえる、ひきざんは へる",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-039",
+      "skill": "u19-shiki",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "6 + 9 に あう おはなしは？"
+      ],
+      "choices": [
+        "6ぴき いて 9ひき きた",
+        "15ひき いて 9ひき かえった",
+        "9ひきと 6ぴきの ちがい"
+      ],
+      "answer": 0,
+      "hint": "たしざんは ふえる、ひきざんは へる",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-040",
+      "skill": "u19-shiki",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "ずに あう しきを つくろう"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "flower",
+        "a": 4,
+        "b": 5
+      },
+      "tokens": [
+        "5",
+        "+",
+        "4",
+        "=",
+        "9"
+      ],
+      "answer": [
+        2,
+        1,
+        0,
+        3,
+        4
+      ],
+      "hint": "さいごは こたえの かず",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-041",
+      "skill": "u19-shiki",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "ずに あう しきを つくろう"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "star",
+        "total": 12,
+        "gone": 5
+      },
+      "tokens": [
+        "7",
+        "12",
+        "−",
+        "5",
+        "="
+      ],
+      "answer": [
+        1,
+        2,
+        3,
+        4,
+        0
+      ],
+      "hint": "さいごは こたえの かず",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-042",
+      "skill": "u19-shiki",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "ずに あう しきを つくろう"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 8,
+        "b": 6
+      },
+      "tokens": [
+        "14",
+        "8",
+        "6",
+        "+",
+        "="
+      ],
+      "answer": [
+        1,
+        3,
+        2,
+        4,
+        0
+      ],
+      "hint": "さいごは こたえの かず",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-043",
+      "skill": "u19-shiki",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ねこが 12ひき。4ひき かえった。",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "12 + 4",
+        "12 − 4",
+        "12 − 8"
+      ],
+      "answer": 1,
+      "hint": "へるなら ひきざん、ふえるなら たしざん",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-044",
+      "skill": "u19-shiki",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "あめが 9こ。6こ もらった。",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "9 + 6",
+        "9 − 6",
+        "6 + 6"
+      ],
+      "answer": 0,
+      "hint": "へるなら ひきざん、ふえるなら たしざん",
+      "reward": "nendo"
+    },
+    {
+      "id": "u19-045",
+      "skill": "u19-shiki",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "はなが 15ほん。7ほん かれた。",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "15 + 7",
+        "8 − 7",
+        "15 − 7"
+      ],
+      "answer": 2,
+      "hint": "へるなら ひきざん、ふえるなら たしざん",
+      "reward": "nendo"
+    }
+  ]
 }
