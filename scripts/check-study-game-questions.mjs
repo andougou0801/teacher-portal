@@ -130,6 +130,20 @@ function expectedAnswer(item) {
   if (f.kind === "two-rows" && /ちがい/.test(text)) {
     return Math.abs(f.a - f.b);
   }
+  // かさ（コップ なんばいぶん）と ひろさ（ます なんこぶん）。
+  // どちらも 左が a（あか）、右が b（あお）。
+  if ((f.kind === "cups" || f.kind === "area") && typeof f.a === "number" && typeof f.b === "number") {
+    // 「あかは あおより ます なんこぶん ひろい？」のように、
+    // 「より」と きいていたら どちらの ばあいも ちがいを きいている。
+    if (/ちがい|より/.test(text)) return Math.abs(f.a - f.b);
+    if (/あわせ|ぜんぶ/.test(text)) return f.a + f.b;
+    // 「あかは なんばいぶん？」のように、どちらを きいているかが はっきりしているとき
+    const asksA = /あかは|ひだりは/.test(text);
+    const asksB = /あおは|みぎは/.test(text);
+    if (asksA && !asksB) return f.a;
+    if (asksB && !asksA) return f.b;
+  }
+
   if (f.kind === "clips" && /なんこぶん|いくつぶん/.test(text)) {
     return f.count;
   }
