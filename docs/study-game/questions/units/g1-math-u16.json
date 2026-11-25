@@ -25,5 +25,1326 @@
       "power": "shape"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "u16-001",
+      "skill": "u16-maeushiro",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "まえから 2ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit"
+        ],
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "ねこ",
+        "いぬ",
+        "うさぎ"
+      ],
+      "answer": 1,
+      "hint": "まえと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-002",
+      "skill": "u16-maeushiro",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "まえから 1ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "dog",
+          "fish",
+          "car"
+        ],
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "いぬ",
+        "さかな",
+        "くるま"
+      ],
+      "answer": 0,
+      "hint": "まえと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-003",
+      "skill": "u16-maeushiro",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "まえから 3ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "rabbit",
+          "cat",
+          "flower"
+        ],
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "うさぎ",
+        "ねこ",
+        "はな"
+      ],
+      "answer": 2,
+      "hint": "まえと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-004",
+      "skill": "u16-maeushiro",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "うしろから 1ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish"
+        ],
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "ねこ",
+        "いぬ",
+        "うさぎ",
+        "さかな"
+      ],
+      "answer": 3,
+      "hint": "うしろと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-005",
+      "skill": "u16-maeushiro",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "うしろから 2ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "car",
+          "apple",
+          "star",
+          "dog"
+        ],
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "くるま",
+        "りんご",
+        "ほし",
+        "いぬ"
+      ],
+      "answer": 2,
+      "hint": "うしろと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-006",
+      "skill": "u16-maeushiro",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "うしろから 3ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "flower",
+          "fish",
+          "cat",
+          "balloon"
+        ],
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "はな",
+        "さかな",
+        "ねこ",
+        "ふうせん"
+      ],
+      "answer": 1,
+      "hint": "うしろと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-007",
+      "skill": "u16-maeushiro",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは まえから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish"
+        ],
+        "mark": 2,
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 2,
+      "hint": "まえと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-008",
+      "skill": "u16-maeushiro",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは まえから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "car",
+          "dog",
+          "apple",
+          "star",
+          "fish"
+        ],
+        "mark": 0,
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 0,
+      "hint": "まえと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-009",
+      "skill": "u16-maeushiro",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは まえから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "flower",
+          "balloon",
+          "cat",
+          "rabbit"
+        ],
+        "mark": 3,
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 3,
+      "hint": "まえと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-010",
+      "skill": "u16-maeushiro",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは うしろから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish"
+        ],
+        "mark": 1,
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 2,
+      "hint": "うしろと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-011",
+      "skill": "u16-maeushiro",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは うしろから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "car",
+          "apple",
+          "star",
+          "dog",
+          "fish"
+        ],
+        "mark": 4,
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 0,
+      "hint": "うしろと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-012",
+      "skill": "u16-maeushiro",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは うしろから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "flower",
+          "cat",
+          "balloon",
+          "rabbit",
+          "fish"
+        ],
+        "mark": 1,
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 3,
+      "hint": "うしろと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-013",
+      "skill": "u16-maeushiro",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "まえから 3ばんめの うしろに",
+        "いるのは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish",
+          "car"
+        ],
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "ねこ",
+        "うさぎ",
+        "さかな",
+        "くるま"
+      ],
+      "answer": 2,
+      "hint": "まず まえから 3ばんめを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-014",
+      "skill": "u16-maeushiro",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "まえから 2ばんめの まえに",
+        "あるのは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "car",
+          "dog",
+          "apple",
+          "star",
+          "fish"
+        ],
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "くるま",
+        "いぬ",
+        "りんご",
+        "ほし"
+      ],
+      "answer": 0,
+      "hint": "まず まえから 2ばんめを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-015",
+      "skill": "u16-maeushiro",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "うしろから 2ばんめの まえに",
+        "いるのは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "rabbit",
+          "flower",
+          "cat",
+          "balloon",
+          "dog"
+        ],
+        "head": "まえ",
+        "tail": "うしろ"
+      },
+      "choices": [
+        "うさぎ",
+        "はな",
+        "ねこ",
+        "ふうせん"
+      ],
+      "answer": 2,
+      "hint": "まず うしろから 2ばんめを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-016",
+      "skill": "u16-migihidari",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ひだりから 2ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit"
+        ],
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "ねこ",
+        "いぬ",
+        "うさぎ"
+      ],
+      "answer": 1,
+      "hint": "ひだりと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-017",
+      "skill": "u16-migihidari",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ひだりから 1ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "apple",
+          "star",
+          "car"
+        ],
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "りんご",
+        "ほし",
+        "くるま"
+      ],
+      "answer": 0,
+      "hint": "ひだりと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-018",
+      "skill": "u16-migihidari",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ひだりから 3ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "fish",
+          "flower",
+          "balloon"
+        ],
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "さかな",
+        "はな",
+        "ふうせん"
+      ],
+      "answer": 2,
+      "hint": "ひだりと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-019",
+      "skill": "u16-migihidari",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "みぎから 1ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish"
+        ],
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "ねこ",
+        "いぬ",
+        "うさぎ",
+        "さかな"
+      ],
+      "answer": 3,
+      "hint": "みぎと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-020",
+      "skill": "u16-migihidari",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "みぎから 2ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "car",
+          "apple",
+          "star",
+          "dog"
+        ],
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "くるま",
+        "りんご",
+        "ほし",
+        "いぬ"
+      ],
+      "answer": 2,
+      "hint": "みぎと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-021",
+      "skill": "u16-migihidari",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "みぎから 3ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "flower",
+          "fish",
+          "cat",
+          "balloon"
+        ],
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "はな",
+        "さかな",
+        "ねこ",
+        "ふうせん"
+      ],
+      "answer": 1,
+      "hint": "みぎと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-022",
+      "skill": "u16-migihidari",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは ひだりから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish"
+        ],
+        "mark": 2,
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 2,
+      "hint": "ひだりと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-023",
+      "skill": "u16-migihidari",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは ひだりから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "star",
+          "car",
+          "apple",
+          "fish",
+          "dog"
+        ],
+        "mark": 0,
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 0,
+      "hint": "ひだりと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-024",
+      "skill": "u16-migihidari",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは ひだりから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "balloon",
+          "cat",
+          "flower",
+          "rabbit"
+        ],
+        "mark": 3,
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 3,
+      "hint": "ひだりと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-025",
+      "skill": "u16-migihidari",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは みぎから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish"
+        ],
+        "mark": 1,
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 2,
+      "hint": "みぎと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-026",
+      "skill": "u16-migihidari",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは みぎから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "car",
+          "apple",
+          "star",
+          "dog",
+          "fish"
+        ],
+        "mark": 4,
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 0,
+      "hint": "みぎと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-027",
+      "skill": "u16-migihidari",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あかい わくは みぎから なんばんめ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "flower",
+          "cat",
+          "balloon",
+          "rabbit",
+          "fish"
+        ],
+        "mark": 1,
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "1ばんめ",
+        "2ばんめ",
+        "3ばんめ",
+        "4ばんめ"
+      ],
+      "answer": 3,
+      "hint": "みぎと かいて ある ほうから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-028",
+      "skill": "u16-migihidari",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ひだりから 3ばんめの みぎに",
+        "いるのは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish",
+          "car"
+        ],
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "ねこ",
+        "うさぎ",
+        "さかな",
+        "くるま"
+      ],
+      "answer": 2,
+      "hint": "まず ひだりから 3ばんめを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-029",
+      "skill": "u16-migihidari",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ひだりから 2ばんめの ひだりに",
+        "あるのは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "car",
+          "dog",
+          "apple",
+          "star",
+          "fish"
+        ],
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "くるま",
+        "いぬ",
+        "りんご",
+        "ほし"
+      ],
+      "answer": 0,
+      "hint": "まず ひだりから 2ばんめを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-030",
+      "skill": "u16-migihidari",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "みぎから 2ばんめの ひだりに",
+        "いるのは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "icons": [
+          "rabbit",
+          "flower",
+          "cat",
+          "balloon",
+          "dog"
+        ],
+        "head": "ひだり",
+        "tail": "みぎ"
+      },
+      "choices": [
+        "うさぎ",
+        "はな",
+        "ねこ",
+        "ふうせん"
+      ],
+      "answer": 2,
+      "hint": "まず みぎから 2ばんめを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-031",
+      "skill": "u16-ueshita",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "うえの れつに いるのは どれ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "cat",
+        "a": 3,
+        "iconB": "dog",
+        "b": 3
+      },
+      "choices": [
+        "ねこ",
+        "いぬ"
+      ],
+      "answer": 0,
+      "hint": "がめんの うえの れつを みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-032",
+      "skill": "u16-ueshita",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "したの れつに あるのは どれ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "apple",
+        "a": 4,
+        "iconB": "star",
+        "b": 3
+      },
+      "choices": [
+        "りんご",
+        "ほし"
+      ],
+      "answer": 1,
+      "hint": "がめんの したの れつを みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-033",
+      "skill": "u16-ueshita",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "うえの れつに いるのは どれ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "fish",
+        "a": 3,
+        "iconB": "rabbit",
+        "b": 4
+      },
+      "choices": [
+        "さかな",
+        "うさぎ"
+      ],
+      "answer": 0,
+      "hint": "がめんの うえの れつを みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-034",
+      "skill": "u16-ueshita",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "うえから 1ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "ねこ",
+        "いぬ",
+        "うさぎ"
+      ],
+      "answer": 0,
+      "hint": "いちばん うえから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-035",
+      "skill": "u16-ueshita",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "うえから 2ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "apple",
+          "star",
+          "car"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "りんご",
+        "ほし",
+        "くるま"
+      ],
+      "answer": 1,
+      "hint": "いちばん うえから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-036",
+      "skill": "u16-ueshita",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "うえから 3ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "fish",
+          "flower",
+          "balloon"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "さかな",
+        "はな",
+        "ふうせん"
+      ],
+      "answer": 2,
+      "hint": "いちばん うえから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-037",
+      "skill": "u16-ueshita",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "したから 1ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "ねこ",
+        "いぬ",
+        "うさぎ",
+        "さかな"
+      ],
+      "answer": 3,
+      "hint": "いちばん したから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-038",
+      "skill": "u16-ueshita",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "したから 2ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "car",
+          "apple",
+          "star",
+          "dog"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "くるま",
+        "りんご",
+        "ほし",
+        "いぬ"
+      ],
+      "answer": 2,
+      "hint": "いちばん したから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-039",
+      "skill": "u16-ueshita",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "したから 3ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "flower",
+          "fish",
+          "cat",
+          "balloon"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "はな",
+        "さかな",
+        "ねこ",
+        "ふうせん"
+      ],
+      "answer": 1,
+      "hint": "いちばん したから かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-040",
+      "skill": "u16-ueshita",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "うえから 4ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish",
+          "car"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "うさぎ",
+        "さかな",
+        "くるま",
+        "いぬ"
+      ],
+      "answer": 1,
+      "hint": "いちばん うえから ゆびで かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-041",
+      "skill": "u16-ueshita",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "したから 4ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "star",
+          "car",
+          "apple",
+          "fish",
+          "dog"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "ほし",
+        "くるま",
+        "りんご",
+        "さかな"
+      ],
+      "answer": 1,
+      "hint": "いちばん したから ゆびで かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-042",
+      "skill": "u16-ueshita",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "したから 2ばんめは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "balloon",
+          "cat",
+          "flower",
+          "rabbit",
+          "fish"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "ふうせん",
+        "ねこ",
+        "はな",
+        "うさぎ"
+      ],
+      "answer": 3,
+      "hint": "いちばん したから ゆびで かぞえよう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-043",
+      "skill": "u16-ueshita",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "うえから 2ばんめの したに",
+        "いるのは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "cat",
+          "dog",
+          "rabbit",
+          "fish",
+          "car"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "ねこ",
+        "いぬ",
+        "うさぎ",
+        "さかな"
+      ],
+      "answer": 2,
+      "hint": "まず うえから 2ばんめを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-044",
+      "skill": "u16-ueshita",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "うえから 3ばんめの うえに",
+        "いるのは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "car",
+          "dog",
+          "apple",
+          "star",
+          "fish"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "くるま",
+        "いぬ",
+        "りんご",
+        "ほし"
+      ],
+      "answer": 1,
+      "hint": "まず うえから 3ばんめを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "u16-045",
+      "skill": "u16-ueshita",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "したから 2ばんめの うえに",
+        "いるのは どれ？"
+      ],
+      "figure": {
+        "kind": "place",
+        "dir": "v",
+        "icons": [
+          "rabbit",
+          "flower",
+          "cat",
+          "balloon",
+          "dog"
+        ],
+        "head": "うえ",
+        "tail": "した"
+      },
+      "choices": [
+        "うさぎ",
+        "はな",
+        "ねこ",
+        "ふうせん"
+      ],
+      "answer": 2,
+      "hint": "まず したから 2ばんめを さがそう",
+      "reward": "ki"
+    }
+  ]
 }

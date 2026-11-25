@@ -1,0 +1,894 @@
+{
+  "u15": [
+    {
+      "id": "u15-001",
+      "skill": "u15-hour",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 3
+      },
+      "choices": [
+        "3じ",
+        "4じ",
+        "9じ"
+      ],
+      "answer": 0,
+      "hint": "みじかい はりを みよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-002",
+      "skill": "u15-hour",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 9
+      },
+      "choices": [
+        "8じ",
+        "9じ",
+        "10じ"
+      ],
+      "answer": 1,
+      "hint": "みじかい はりが さす かずだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-003",
+      "skill": "u15-hour",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 12
+      },
+      "choices": [
+        "12じ",
+        "6じ",
+        "11じ"
+      ],
+      "answer": 0,
+      "hint": "はりが 2ほんとも うえを さして いるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-004",
+      "skill": "u15-hour",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 5
+      },
+      "choices": [
+        "5じ",
+        "4じ",
+        "6じ"
+      ],
+      "answer": 0,
+      "hint": "ながい はりが 12なら ちょうどだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-005",
+      "skill": "u15-hour",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 7
+      },
+      "choices": [
+        "6じ",
+        "7じ",
+        "8じ"
+      ],
+      "answer": 1,
+      "hint": "みじかい はりを みよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-006",
+      "skill": "u15-hour",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 10
+      },
+      "choices": [
+        "11じ",
+        "9じ",
+        "10じ"
+      ],
+      "answer": 2,
+      "hint": "みじかい はりが さす かずだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-007",
+      "skill": "u15-hour",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 2
+      },
+      "choices": [
+        "1じ",
+        "2じ",
+        "3じ",
+        "12じ"
+      ],
+      "answer": 1,
+      "hint": "ながい はりは じかんを きめないよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-008",
+      "skill": "u15-hour",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 6
+      },
+      "choices": [
+        "5じ",
+        "6じ",
+        "7じ",
+        "12じ"
+      ],
+      "answer": 1,
+      "hint": "みじかい はりが したを さして いるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-009",
+      "skill": "u15-hour",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 11
+      },
+      "choices": [
+        "10じ",
+        "11じ",
+        "12じ",
+        "1じ"
+      ],
+      "answer": 1,
+      "hint": "12の ひとつ まえだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-010",
+      "skill": "u15-hour",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "なんじ？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 4
+      },
+      "answer": 4,
+      "hint": "みじかい はりの かずを かこう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-011",
+      "skill": "u15-hour",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "なんじ？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 8
+      },
+      "answer": 8,
+      "hint": "みじかい はりの かずを かこう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-012",
+      "skill": "u15-hour",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "なんじ？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 1
+      },
+      "answer": 1,
+      "hint": "みじかい はりの かずを かこう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-013",
+      "skill": "u15-hour",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "なんじ？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 12
+      },
+      "answer": 12,
+      "hint": "はりが 2ほんとも 12を さして いるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-014",
+      "skill": "u15-hour",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ながい はりが 12。みじかい",
+        "はりが 3。なんじ？"
+      ],
+      "choices": [
+        "3じ",
+        "12じ",
+        "3じはん"
+      ],
+      "answer": 0,
+      "hint": "みじかい はりの かずが なんじだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-015",
+      "skill": "u15-hour",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ながい はりが 12で、みじかい",
+        "はりが 6。なんじ？"
+      ],
+      "answer": 6,
+      "hint": "みじかい はりの かずを かこう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-016",
+      "skill": "u15-half",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 3,
+        "half": true
+      },
+      "choices": [
+        "3じはん",
+        "4じはん",
+        "3じ"
+      ],
+      "answer": 0,
+      "hint": "ながい はりが 6なら はんだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-017",
+      "skill": "u15-half",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 8,
+        "half": true
+      },
+      "choices": [
+        "7じはん",
+        "8じはん",
+        "9じはん"
+      ],
+      "answer": 1,
+      "hint": "みじかい はりが すぎた かずで よむよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-018",
+      "skill": "u15-half",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 1,
+        "half": true
+      },
+      "choices": [
+        "1じはん",
+        "2じはん",
+        "1じ"
+      ],
+      "answer": 0,
+      "hint": "ながい はりが 6なら はんだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-019",
+      "skill": "u15-half",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 6,
+        "half": true
+      },
+      "choices": [
+        "6じはん",
+        "7じはん",
+        "5じはん"
+      ],
+      "answer": 0,
+      "hint": "みじかい はりは 6を すこし すぎて いるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-020",
+      "skill": "u15-half",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 10,
+        "half": true
+      },
+      "choices": [
+        "9じはん",
+        "10じはん",
+        "11じはん"
+      ],
+      "answer": 1,
+      "hint": "みじかい はりが すぎた かずで よむよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-021",
+      "skill": "u15-half",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 12,
+        "half": true
+      },
+      "choices": [
+        "12じはん",
+        "11じはん",
+        "6じはん"
+      ],
+      "answer": 0,
+      "hint": "みじかい はりは 12を すこし すぎて いるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-022",
+      "skill": "u15-half",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 4,
+        "half": true
+      },
+      "choices": [
+        "3じはん",
+        "4じはん",
+        "5じはん",
+        "4じ"
+      ],
+      "answer": 1,
+      "hint": "すぎた ほうの かずで よむよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-023",
+      "skill": "u15-half",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 7,
+        "half": true
+      },
+      "choices": [
+        "6じはん",
+        "7じはん",
+        "8じはん",
+        "7じ"
+      ],
+      "answer": 1,
+      "hint": "ながい はりが 6なら はんだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-024",
+      "skill": "u15-half",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 11,
+        "half": true
+      },
+      "choices": [
+        "10じはん",
+        "11じはん",
+        "12じはん",
+        "11じ"
+      ],
+      "answer": 1,
+      "hint": "すぎた ほうの かずで よむよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-025",
+      "skill": "u15-half",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 5
+      },
+      "choices": [
+        "5じ",
+        "5じはん",
+        "4じはん"
+      ],
+      "answer": 0,
+      "hint": "ながい はりが 12なら はんでは ないよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-026",
+      "skill": "u15-half",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 9,
+        "half": true
+      },
+      "choices": [
+        "9じ",
+        "9じはん",
+        "10じ"
+      ],
+      "answer": 1,
+      "hint": "ながい はりが 6なら はんだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-027",
+      "skill": "u15-half",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 2,
+        "half": true
+      },
+      "choices": [
+        "2じ",
+        "2じはん",
+        "3じはん"
+      ],
+      "answer": 1,
+      "hint": "ながい はりを よく みよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-028",
+      "skill": "u15-half",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "なんじはん？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 7,
+        "half": true
+      },
+      "answer": 7,
+      "hint": "みじかい はりが すぎた かずだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-029",
+      "skill": "u15-half",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "なんじはん？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 10,
+        "half": true
+      },
+      "answer": 10,
+      "hint": "みじかい はりが すぎた かずだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-030",
+      "skill": "u15-half",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "なんじはん？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 4,
+        "half": true
+      },
+      "answer": 4,
+      "hint": "みじかい はりが すぎた かずだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-031",
+      "skill": "u15-life",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "がっこうに つく とけい。",
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 8
+      },
+      "choices": [
+        "8じ",
+        "9じ",
+        "7じ"
+      ],
+      "answer": 0,
+      "hint": "みじかい はりを みよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-032",
+      "skill": "u15-life",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "きゅうしょくの とけい。",
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 12
+      },
+      "choices": [
+        "11じ",
+        "12じ",
+        "1じ"
+      ],
+      "answer": 1,
+      "hint": "はりが 2ほんとも うえを さして いるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-033",
+      "skill": "u15-life",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "1じかんめが はじまる とけい。",
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 9
+      },
+      "choices": [
+        "8じ",
+        "9じ",
+        "10じ"
+      ],
+      "answer": 1,
+      "hint": "みじかい はりの かずを よもう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-034",
+      "skill": "u15-life",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "そうじが はじまる とけい。",
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 3,
+        "half": true
+      },
+      "choices": [
+        "3じ",
+        "3じはん",
+        "2じはん"
+      ],
+      "answer": 1,
+      "hint": "ながい はりが 6なら はんだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-035",
+      "skill": "u15-life",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ひるやすみの とけい。",
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 12,
+        "half": true
+      },
+      "choices": [
+        "12じ",
+        "12じはん",
+        "11じはん"
+      ],
+      "answer": 1,
+      "hint": "ながい はりが 6なら はんだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-036",
+      "skill": "u15-life",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あさの かいの とけい。",
+        "なんじかな？"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 8,
+        "half": true
+      },
+      "choices": [
+        "8じ",
+        "8じはん",
+        "9じ"
+      ],
+      "answer": 1,
+      "hint": "ながい はりを よく みよう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-037",
+      "skill": "u15-life",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "9じと 10じ、はやいのは？"
+      ],
+      "choices": [
+        "9じ",
+        "10じ"
+      ],
+      "answer": 0,
+      "hint": "かずが ちいさい ほうが はやいよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-038",
+      "skill": "u15-life",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "2じと 1じ、おそいのは？"
+      ],
+      "choices": [
+        "1じ",
+        "2じ"
+      ],
+      "answer": 1,
+      "hint": "かずが おおきい ほうが あとだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-039",
+      "skill": "u15-life",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "3じと 3じはん、はやいのは？"
+      ],
+      "choices": [
+        "3じ",
+        "3じはん"
+      ],
+      "answer": 0,
+      "hint": "はんは 3じの あとに くるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-040",
+      "skill": "u15-life",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "がっこうは 8じ、きゅうしょくは",
+        "12じ。はやいのは どっち？"
+      ],
+      "choices": [
+        "がっこう",
+        "きゅうしょく"
+      ],
+      "answer": 0,
+      "hint": "かずが ちいさい ほうが はやいよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-041",
+      "skill": "u15-life",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "1じかんめは 9じ、2じかんめは",
+        "10じ。おそいのは どっち？"
+      ],
+      "choices": [
+        "1じかんめ",
+        "2じかんめ"
+      ],
+      "answer": 1,
+      "hint": "あとに くる ほうを えらぼう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-042",
+      "skill": "u15-life",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "そうじは 3じはん、かえるのは",
+        "4じ。はやいのは どっち？"
+      ],
+      "choices": [
+        "そうじ",
+        "かえる"
+      ],
+      "answer": 0,
+      "hint": "3じはんは 4じより まえだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-043",
+      "skill": "u15-life",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "きゅうしょくの とけい。",
+        "なんじ？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 12
+      },
+      "answer": 12,
+      "hint": "みじかい はりの かずを かこう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-044",
+      "skill": "u15-life",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "がっこうが はじまる とけい。",
+        "なんじ？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 8
+      },
+      "answer": 8,
+      "hint": "みじかい はりの かずを かこう",
+      "reward": "glass"
+    },
+    {
+      "id": "u15-045",
+      "skill": "u15-life",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "そうじが おわる とけい。",
+        "なんじはん？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "clock",
+        "hour": 3,
+        "half": true
+      },
+      "answer": 3,
+      "hint": "みじかい はりが すぎた かずだよ",
+      "reward": "glass"
+    }
+  ]
+}

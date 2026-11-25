@@ -162,6 +162,7 @@ function solids(f) {
  * ★どちらが「まえ」かを 画面に 書く。書かないと 子どもは まよう。
  */
 function place(f) {
+  if (f.dir === "v") return placeV(f);
   const list = (f.icons || []).slice(0, 6);
   const size = 56;
   const gap = 18;
@@ -177,6 +178,32 @@ function place(f) {
     inner += at(name, x, 30, size);
   });
   inner += `<text x="${w - 30}" y="${h / 2 + 8}" font-size="22" text-anchor="middle" fill="${ink}">${f.tail || "うしろ"}</text>`;
+  return wrap(inner, w, h);
+}
+
+/**
+ * ものの いち（うえと した）。place の たて向き。
+ *   { kind:"place", dir:"v", icons:["cat","dog","rabbit"], mark:1 }
+ * ★よこ1れつの 絵に「うえ」「した」と 書くと、1年生は 上下を とりちがえる。
+ *   うえ・した を きくときは、ほんとうに たてに ならべる。
+ */
+function placeV(f) {
+  const list = (f.icons || []).slice(0, 6);
+  const size = 54;
+  const gap = 10;
+  const w = 300;
+  const y0 = 40;
+  const h = y0 + list.length * (size + gap) + 34;
+  const cx = w / 2;
+  let inner = `<text x="${cx}" y="26" font-size="22" text-anchor="middle" fill="${ink}">${f.head || "うえ"}</text>`;
+  list.forEach((name, i) => {
+    const y = y0 + i * (size + gap);
+    if (i === f.mark) {
+      inner += `<rect x="${cx - size / 2 - 8}" y="${y - 6}" width="${size + 16}" height="${size + 12}" rx="14" fill="#FFF0C9" stroke="#E4564B" stroke-width="4"/>`;
+    }
+    inner += at(name, cx - size / 2, y, size);
+  });
+  inner += `<text x="${cx}" y="${h - 8}" font-size="22" text-anchor="middle" fill="${ink}">${f.tail || "した"}</text>`;
   return wrap(inner, w, h);
 }
 

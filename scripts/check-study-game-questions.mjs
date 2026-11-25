@@ -243,18 +243,42 @@ function checkItem(unitId, item, skillIds, seenIds) {
     else if (got !== want) add(`計算が合わない：答えは ${got} だが ${want} のはず`);
   }
 
-  // 小1・1学期の範囲
-  const nums = (item.prompt.join(" ").match(/\d+/g) || []).map(Number);
-  if (nums.some((n) => n > 20)) warns.push(`${where}: 20より大きい数が出ている`);
+  // 小1の範囲（学期で ちがう）
+  const term = termOf(unitId);
+  const maxNum = term === 1 ? 20 : 100;
   // ★学期で 上限が ちがう（termOf のコメントを見てください）。
-  //   1学期：和は10まで。2学期：くりあがりが あるので 和は18まで。
-  const maxSum = termOf(unitId) === 1 ? 10 : 18;
-  const sum = item.prompt.join(" ").match(/(\d+)\s*\+\s*(\d+)/);
-  if (sum && Number(sum[1]) + Number(sum[2]) > maxSum) {
-    add(`たし算の答えが${maxSum}をこえている（小1の範囲外）`);
+  //   1学期：和は10まで・数は20まで。
+  //   2学期：くりあがりが あるので 和は18まで・数は100まで。
+  const maxSum = term === 1 ? 10 : 18;
+  const line = item.prompt.join(" ");
+  const nums = (line.match(/\d+/g) || []).map(Number);
+  if (nums.some((n) => n > maxNum)) warns.push(`${where}: ${maxNum}より大きい数が出ている`);
+
+  // ★「4 + 1 - 2」のような 3つの数の式は、左から じゅんに 計算して 見る。
+  //   さいしょの 2つだけを 見ると「1 - 2」で マイナスだと かんちがいする。
+  const chain = line.match(/\d+(?:\s*[+\-−ー]\s*\d+){2,}/);
+  if (chain) {
+    const parts = chain[0].match(/\d+|[+\-−ー]/g);
+    let v = Number(parts[0]);
+    for (let i = 1; i < parts.length; i += 2) {
+      v = parts[i] === "+" ? v + Number(parts[i + 1]) : v - Number(parts[i + 1]);
+      if (v < 0) {
+        add("とちゅうの こたえが マイナスに なる");
+        break;
+      }
+      if (v > maxSum) {
+        add(`とちゅうの こたえが ${maxSum}を こえる（${term}学期の範囲外）`);
+        break;
+      }
+    }
+  } else {
+    const sum = line.match(/(\d+)\s*\+\s*(\d+)/);
+    if (sum && Number(sum[1]) + Number(sum[2]) > maxSum) {
+      add(`たし算の答えが${maxSum}をこえている（${term}学期の範囲外）`);
+    }
+    const sub = line.match(/(\d+)\s*[-−ー]\s*(\d+)/);
+    if (sub && Number(sub[1]) - Number(sub[2]) < 0) add("ひき算の答えがマイナスになる");
   }
-  const sub = item.prompt.join(" ").match(/(\d+)\s*[-−ー]\s*(\d+)/);
-  if (sub && Number(sub[1]) - Number(sub[2]) < 0) add("ひき算の答えがマイナスになる");
 }
 
 /**

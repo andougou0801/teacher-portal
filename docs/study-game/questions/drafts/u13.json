@@ -1,0 +1,795 @@
+{
+  "u13": [
+    {
+      "id": "u13-001",
+      "skill": "u13-break10",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "10 - 9 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 10,
+        "gone": 9,
+        "icon": "candy"
+      },
+      "answer": 1,
+      "hint": "10の へやから とろう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-002",
+      "skill": "u13-break10",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "10 - 8 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 10,
+        "gone": 8,
+        "icon": "apple"
+      },
+      "answer": 2,
+      "hint": "10の へやから とろう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-003",
+      "skill": "u13-break10",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "10 - 7 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 10,
+        "gone": 7,
+        "icon": "star"
+      },
+      "answer": 3,
+      "hint": "10の へやから とろう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-004",
+      "skill": "u13-break10",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "10 - 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 10,
+        "gone": 6,
+        "icon": "balloon"
+      },
+      "answer": 4,
+      "hint": "10の へやから とろう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-005",
+      "skill": "u13-break10",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "10 - 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 10,
+        "gone": 5,
+        "icon": "fish"
+      },
+      "answer": 5,
+      "hint": "10の へやから とろう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-006",
+      "skill": "u13-break10",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "10 - 4 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 10,
+        "gone": 4,
+        "icon": "flower"
+      },
+      "answer": 6,
+      "hint": "10の へやから とろう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-007",
+      "skill": "u13-break10",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "10 - 9 + 3 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 3
+      },
+      "answer": 4,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-008",
+      "skill": "u13-break10",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "10 - 8 + 2 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 2
+      },
+      "answer": 4,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-009",
+      "skill": "u13-break10",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "10 - 7 + 4 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 4
+      },
+      "answer": 7,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-010",
+      "skill": "u13-break10",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "10 - 9 + 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 5
+      },
+      "answer": 6,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-011",
+      "skill": "u13-break10",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "10 - 8 + 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 6
+      },
+      "answer": 8,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-012",
+      "skill": "u13-break10",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "10 - 6 + 3 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 3
+      },
+      "answer": 7,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-013",
+      "skill": "u13-break10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "10こ あった あめを 9こ たべた。",
+        "8こ もらうと なんこ？"
+      ],
+      "answer": 9,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-014",
+      "skill": "u13-break10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "とりが 10わ いた。6わ とんだ。",
+        "5わ くると なんわ？"
+      ],
+      "answer": 9,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-015",
+      "skill": "u13-break10",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "こどもが 10にん。5にん かえった。",
+        "3にん くると なんにん？"
+      ],
+      "answer": 8,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-016",
+      "skill": "u13-sub-9",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "11 - 9 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 1
+      },
+      "answer": 2,
+      "hint": "11を 10と 1に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-017",
+      "skill": "u13-sub-9",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "12 - 9 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 12,
+        "gone": 9,
+        "icon": "candy"
+      },
+      "answer": 3,
+      "hint": "12を 10と 2に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-018",
+      "skill": "u13-sub-9",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "13 - 9 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 3
+      },
+      "answer": 4,
+      "hint": "13を 10と 3に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-019",
+      "skill": "u13-sub-9",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "14 - 9 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 14,
+        "gone": 9,
+        "icon": "star"
+      },
+      "answer": 5,
+      "hint": "14を 10と 4に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-020",
+      "skill": "u13-sub-9",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "15 - 9 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 5
+      },
+      "answer": 6,
+      "hint": "15を 10と 5に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-021",
+      "skill": "u13-sub-9",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "11 - 8 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 11,
+        "gone": 8,
+        "icon": "cat"
+      },
+      "answer": 3,
+      "hint": "11を 10と 1に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-022",
+      "skill": "u13-sub-9",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "16 - 9 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 6
+      },
+      "answer": 7,
+      "hint": "16を 10と 6に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-023",
+      "skill": "u13-sub-9",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "12 - 8 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 12,
+        "gone": 8,
+        "icon": "rabbit"
+      },
+      "answer": 4,
+      "hint": "12を 10と 2に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-024",
+      "skill": "u13-sub-9",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "13 - 8 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 3
+      },
+      "answer": 5,
+      "hint": "13を 10と 3に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-025",
+      "skill": "u13-sub-9",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "あめが 17こ あった。",
+        "9こ たべると のこりは なんこ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 17,
+        "gone": 9,
+        "icon": "candy"
+      },
+      "answer": 8,
+      "hint": "17を 10と 7に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-026",
+      "skill": "u13-sub-9",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ほしが 18こ あった。",
+        "9こ きえると のこりは なんこ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 18,
+        "gone": 9,
+        "icon": "star"
+      },
+      "answer": 9,
+      "hint": "18を 10と 8に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-027",
+      "skill": "u13-sub-9",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "いぬが 14ひき いた。",
+        "8ひき かえると のこりは なんびき？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 14,
+        "gone": 8,
+        "icon": "dog"
+      },
+      "answer": 6,
+      "hint": "14を 10と 4に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-028",
+      "skill": "u13-sub-9",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "くるまが 15だい あった。",
+        "8だい でると のこりは なんだい？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 15,
+        "gone": 8,
+        "icon": "car"
+      },
+      "answer": 7,
+      "hint": "15を 10と 5に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-029",
+      "skill": "u13-sub-9",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "こどもが 16にん いた。",
+        "8にん かえると のこりは なんにん？"
+      ],
+      "answer": 8,
+      "hint": "16を 10と 6に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-030",
+      "skill": "u13-sub-9",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめが 17こ あった。",
+        "8こ あげると のこりは なんこ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 17,
+        "gone": 8,
+        "icon": "candy"
+      },
+      "answer": 9,
+      "hint": "17を 10と 7に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-031",
+      "skill": "u13-sub-any",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "11 - 7 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 1
+      },
+      "answer": 4,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-032",
+      "skill": "u13-sub-any",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "12 - 7 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 12,
+        "gone": 7,
+        "icon": "dog"
+      },
+      "answer": 5,
+      "hint": "12を 10と 2に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-033",
+      "skill": "u13-sub-any",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "11 - 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 1
+      },
+      "answer": 5,
+      "hint": "11を 10と 1に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-034",
+      "skill": "u13-sub-any",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "13 - 7 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 13,
+        "gone": 7,
+        "icon": "fish"
+      },
+      "answer": 6,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-035",
+      "skill": "u13-sub-any",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "12 - 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 2
+      },
+      "answer": 6,
+      "hint": "12を 10と 2に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-036",
+      "skill": "u13-sub-any",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "11 - 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 11,
+        "gone": 5,
+        "icon": "apple"
+      },
+      "answer": 6,
+      "hint": "11を 10と 1に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-037",
+      "skill": "u13-sub-any",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "14 - 7 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 4
+      },
+      "answer": 7,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-038",
+      "skill": "u13-sub-any",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "13 - 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "total": 13,
+        "gone": 6,
+        "icon": "balloon"
+      },
+      "answer": 7,
+      "hint": "13を 10と 3に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-039",
+      "skill": "u13-sub-any",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "12 - 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 1,
+        "ones": 2
+      },
+      "answer": 7,
+      "hint": "12を 10と 2に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-040",
+      "skill": "u13-sub-any",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "あかい あめが 15こ、",
+        "あおい あめが 7こ。ちがいは なんこ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "a": 15,
+        "b": 7,
+        "iconA": "candy",
+        "iconB": "apple"
+      },
+      "answer": 8,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-041",
+      "skill": "u13-sub-any",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ねこが 14ひき、いぬが 6ぴき。",
+        "ちがいは なんびき？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "a": 14,
+        "b": 6,
+        "iconA": "cat",
+        "iconB": "dog"
+      },
+      "answer": 8,
+      "hint": "14を 10と 4に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-042",
+      "skill": "u13-sub-any",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ほしが 13こ、はなが 5こ。",
+        "ちがいは なんこ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "a": 13,
+        "b": 5,
+        "iconA": "star",
+        "iconB": "flower"
+      },
+      "answer": 8,
+      "hint": "13を 10と 3に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-043",
+      "skill": "u13-sub-any",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "くるまが 16だい、ふうせんが 7こ。",
+        "ちがいは いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "a": 16,
+        "b": 7,
+        "iconA": "car",
+        "iconB": "balloon"
+      },
+      "answer": 9,
+      "hint": "10から ひいて のこりを たそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-044",
+      "skill": "u13-sub-any",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめが 15こ、りんごが 6こ。",
+        "ちがいは なんこ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "a": 15,
+        "b": 6,
+        "iconA": "candy",
+        "iconB": "apple"
+      },
+      "answer": 9,
+      "hint": "15を 10と 5に わけよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "u13-045",
+      "skill": "u13-sub-any",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "りんごが 14こ、さかなが 5ひき。",
+        "ちがいは いくつ？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "a": 14,
+        "b": 5,
+        "iconA": "apple",
+        "iconB": "fish"
+      },
+      "answer": 9,
+      "hint": "14を 10と 4に わけよう",
+      "reward": "ishi"
+    }
+  ]
+}
