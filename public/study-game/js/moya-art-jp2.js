@@ -153,18 +153,17 @@ const PARTS = {
     color: "#4FA6B8",
     soft: "#B3DCE4",
     topBefore: "",
-    body: `<path d="M50 16 72 24 84 44 74 52 86 66 66 84H34L14 66 26 52 16 44 28 24z" fill="#4FA6B8" stroke="${INK}" stroke-width="3"/>`,
+    body: `<path d="M50 12 72 20 84 40 74 48 86 62 66 80H34L14 62 26 48 16 40 28 20z" fill="#4FA6B8" stroke="${INK}" stroke-width="3"/>`,
     mark:
-      `<path d="M40 66 32 78" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round"/>` +
-      `<path d="M58 64v12" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round"/>` +
-      `<path d="M46 75h20" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round"/>`,
-    eyes: [[41, 44, 5.5], [59, 44, 5.5]],
-    mouth: [50, 57],
-    cheek: [[30, 55], [70, 55]],
-    sproutAt: [50, 16],
+      `<path d="M40 62 32 74" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round"/>` +
+      `<path d="M58 60v12" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round"/>` +
+      `<path d="M46 71h20" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round"/>`,
+    eyes: [[41, 40, 5.5], [59, 40, 5.5]],
+    mouth: [50, 53],
+    cheek: [[30, 51], [70, 51]],
+    sproutAt: [50, 12],
     feet: [40, 60],
-    feetY: 90,
-    drop: 2,
+    feetY: 88,
   },
 
   /* j10 かたかなを ゆびで かく
@@ -192,7 +191,7 @@ const PARTS = {
 
   /* j11 かたかなで かく ことば
      － ふねの どう。右うえが とがった みさき、上に ほばしらと 白い ほ。
-       よこに まるい まどが 2つ（遠くの 海から 来た 子） */
+       右下に ふねの 名まえの ふだ（遠くの 海から 来た 子） */
   gaimoya: {
     color: "#5B86C9",
     soft: "#BBCDE8",
@@ -202,9 +201,12 @@ const PARTS = {
       `<path d="M53 20q20 12 16 26H53z" fill="#FFF4E2" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>` +
       `<path d="M47 17 35 21l12 4z" fill="#F2B23C" stroke="${INK}" stroke-width="2"/>`,
     body: `<path d="M12 52h76q-2 24-16 28H28q-14-4-16-28z" fill="#5B86C9" stroke="${INK}" stroke-width="3"/>`,
+    /* ★まるい まどを 目の よこに ならべたら「目が4つ」に 見えたので、
+       右下に ずらした 白い ふだ（ふねの 名まえ）に かえた。
+       中は まっすぐな せん だけ＝かたかなで 書いた 名まえ。 */
     mark:
-      `<circle cx="70" cy="62" r="4.6" fill="#FFF4E2" stroke="${INK}" stroke-width="2.2"/>` +
-      `<circle cx="80" cy="62" r="3.4" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>`,
+      `<rect x="56" y="65" width="21" height="11" rx="3" fill="#FFF4E2" stroke="${INK}" stroke-width="2.2"/>` +
+      `<path d="M62 68 59 74M65 69h8M71 69v5" fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round"/>`,
     eyes: [[36, 62, 5], [52, 62, 5]],
     mouth: [44, 73],
     cheek: [[27, 70], [61, 71]],
@@ -236,7 +238,7 @@ const PARTS = {
   },
 
   /* j13 かんじを よむ（ひとと しぜん）
-     － 2だんの もみの木。上の だんに おひさま、ほそい みきに「人」、
+     － 2だんの もみの木。上の だんに「川」、ほそい みきに「人」、
        下は 根もとが ひろがる */
   shizenmoya: {
     color: "#6FA85A",
@@ -244,8 +246,10 @@ const PARTS = {
     topBefore: `<rect x="43" y="60" width="14" height="18" rx="3" fill="#6FA85A" stroke="${INK}" stroke-width="3"/>`,
     body: `<path d="M50 10 66 36H56L78 62H22L44 36H34z" fill="#6FA85A" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>`,
     topAfter: `<path d="M36 78h28q2 5-6 5H42q-8 0-6-5z" fill="#6FA85A" stroke="${INK}" stroke-width="2.5"/>`,
+    /* ★上の だんは まるい しるしだと「かざり玉」に 見えたので、
+       「川」の 3本に かえた（みきの「人」と あわせて ひとと しぜん）。 */
     mark:
-      `<circle cx="50" cy="27" r="4.6" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>` +
+      `<path d="M44 24v8M50 22v11M56 24v8" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>` +
       `<path d="M50 64 45 75M50 64l5 11" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>`,
     eyes: [[41, 48, 5], [59, 48, 5]],
     mouth: [50, 56],
@@ -264,15 +268,17 @@ const PARTS = {
     topBefore: "",
     body: `<path d="M28 66Q40 81 61 64 82 47 70 32 58 17 37 34 16 51 28 66z" fill="#F2A8C4" stroke="${INK}" stroke-width="3"/>`,
     mark: `<path d="M52 31q13 3 19 13" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round"/>`,
+    /* ★手は 下に 大きく 置くと「あし」に 見えたので、小さくして
+       おなかの 前へ 上げた。ななめに かさねて「手を かさねた おじぎ」。 */
     topAfter:
-      `<rect x="28" y="64" width="22" height="9" rx="4.5" fill="#F2A8C4" stroke="${INK}" stroke-width="2.5"/>` +
-      `<rect x="40" y="70" width="24" height="9" rx="4.5" fill="#F2A8C4" stroke="${INK}" stroke-width="2.5"/>` +
-      `<path d="M17 44q-5-3-5-9" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/>` +
-      `<path d="M26 32q-3-5-1-10" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/>`,
-    eyes: [[33, 53, 4.8], [45, 48, 4.8]],
-    mouth: [40, 60],
-    cheek: [[27, 60], [50, 42]],
-    sproutAt: [38, 36],
+      `<rect x="30" y="59" width="19" height="8" rx="4" fill="#F2A8C4" stroke="${INK}" stroke-width="2.5"/>` +
+      `<rect x="39" y="65" width="17" height="8" rx="4" fill="#F2A8C4" stroke="${INK}" stroke-width="2.5"/>` +
+      `<path d="M17 42q-5-3-5-9" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/>` +
+      `<path d="M26 30q-3-5-1-10" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/>`,
+    eyes: [[32, 46, 4.8], [44, 41, 4.8]],
+    mouth: [38, 53],
+    cheek: [[25, 52], [48, 38]],
+    sproutAt: [37, 33],
     feet: [36, 58],
     feetY: 88,
     drop: 2,
@@ -286,12 +292,15 @@ const PARTS = {
     soft: "#F0DCAE",
     topBefore: "",
     body: `<path d="M12 84q0-48 38-48t38 48z" fill="#D9A94E" stroke="${INK}" stroke-width="3"/>`,
+    /* ★レンズの中に 黒い 四角2つ＋下線を 入れたら「にやりと 笑う 口」に
+       見えたので、よこ線 3本（本の 文）に かえた。まん中の 太い 線が
+       「だいじな ことば」。 */
     mark:
       `<circle cx="64" cy="66" r="13" fill="#FFF4E2" stroke="${INK}" stroke-width="3"/>` +
       `<circle cx="64" cy="66" r="9.5" fill="none" stroke="${INK}" stroke-width="1.6"/>` +
-      `<rect x="56" y="59" width="7" height="5" rx="1.5" fill="${INK}"/>` +
-      `<rect x="66" y="59" width="6" height="5" rx="1.5" fill="${INK}"/>` +
-      `<path d="M56 70h16" fill="none" stroke="${INK}" stroke-width="2.6" stroke-linecap="round"/>`,
+      `<path d="M58 61h12" fill="none" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>` +
+      `<path d="M57 66h14" fill="none" stroke="${INK}" stroke-width="3.4" stroke-linecap="round"/>` +
+      `<path d="M59 71h10" fill="none" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>`,
     eyes: [[36, 48, 5.2], [58, 48, 5.2]],
     mouth: [40, 60],
     cheek: [[24, 58], [47, 63]],
@@ -395,7 +404,7 @@ export const MOYA_ART_JP2 = {
   shizenmoya: {
     name: "しぜんもや",
     unit: "j13",
-    note: "かんじを よむ（ひとと しぜん）。2だんの もみの木の体、上に おひさま、ほそい みきに 人",
+    note: "かんじを よむ（ひとと しぜん）。2だんの もみの木の体、上の だんに 川、ほそい みきに 人",
     svg: normalArt(PARTS.shizenmoya),
     friendSvg: friendArt(PARTS.shizenmoya),
     color: PARTS.shizenmoya.color,
