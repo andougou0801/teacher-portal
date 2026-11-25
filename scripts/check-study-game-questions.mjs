@@ -168,9 +168,35 @@ function expectedAnswer(item) {
  *   2学期：くりあがり/くりさがり（和は18まで）・数は100まで
  *   ここを 学期で 分けないと、2学期の 正しい問題まで エラーに なる。
  */
+// 単元ファイルに 書いてある term を つかう（番号から あてずっぽうで 決めない）
+const TERM_BY_UNIT = (() => {
+  const map = new Map();
+  try {
+    for (const name of readdirSync(unitDir).filter((n) => n.endsWith(".json"))) {
+      const d = JSON.parse(readFileSync(join(unitDir, name), "utf8"));
+      if (d.unitId && d.term) map.set(d.unitId, d.term);
+    }
+  } catch {
+    /* よめなくても 下のあてずっぽうで つづける */
+  }
+  return map;
+})();
+
 function termOf(unitId) {
+  if (TERM_BY_UNIT.has(unitId)) return TERM_BY_UNIT.get(unitId);
   const n = Number(String(unitId).replace(/\D/g, "")) || 1;
-  return n <= 8 ? 1 : 2;
+  return n <= 8 ? 1 : n <= 16 ? 2 : 3;
+}
+
+/** その学期で 出してよい 数の 大きさ（指導要領で 確かめた 範囲） */
+function limitsOf(term) {
+  // 1学期：和は10まで・数は20まで
+  // 2学期：くりあがり/くりさがり（和は18まで）・数は100まで
+  // 3学期：2けたの たしひき（くりあがりなし。和は100まで）・数は120まで
+  //        A(1)ア(カ)「簡単な場合について，３位数の表し方を知ること」
+  if (term === 1) return { maxNum: 20, maxSum: 10 };
+  if (term === 2) return { maxNum: 100, maxSum: 18 };
+  return { maxNum: 120, maxSum: 100 };
 }
 
 function checkItem(unitId, item, skillIds, seenIds) {
@@ -260,11 +286,7 @@ function checkItem(unitId, item, skillIds, seenIds) {
 
   // 小1の範囲（学期で ちがう）
   const term = termOf(unitId);
-  const maxNum = term === 1 ? 20 : 100;
-  // ★学期で 上限が ちがう（termOf のコメントを見てください）。
-  //   1学期：和は10まで・数は20まで。
-  //   2学期：くりあがりが あるので 和は18まで・数は100まで。
-  const maxSum = term === 1 ? 10 : 18;
+  const { maxNum, maxSum } = limitsOf(term);
   const line = item.prompt.join(" ");
   const nums = (line.match(/\d+/g) || []).map(Number);
   if (nums.some((n) => n > maxNum)) warns.push(`${where}: ${maxNum}より大きい数が出ている`);
