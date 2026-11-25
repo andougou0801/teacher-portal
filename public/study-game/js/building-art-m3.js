@@ -22,20 +22,21 @@ const CREAM = "#F4EADA";
 export const BUILDING_ART_M3 = {
   // u17 ひゃくのとう：120までのかず（10の だんが 10こ つみあがる）
   spire: (color) =>
-    `<rect x="20" y="88" width="60" height="7" rx="3" fill="${color}" stroke="${INK}" stroke-width="3"/>` +
-    `<rect x="28" y="82" width="44" height="6" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<rect x="29" y="76" width="42" height="6" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<rect x="30" y="70" width="40" height="6" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<rect x="31" y="64" width="38" height="6" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<rect x="32" y="58" width="36" height="6" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<rect x="33" y="52" width="34" height="6" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<rect x="34" y="46" width="32" height="6" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<rect x="35" y="40" width="30" height="6" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<rect x="36" y="34" width="28" height="6" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<rect x="37" y="28" width="26" height="6" fill="${color}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<path d="M37 28 50 13l13 15z" fill="${color}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>` +
-    `<circle cx="50" cy="8" r="5" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<rect x="45" y="74" width="10" height="14" rx="3" fill="${color}" stroke="${INK}" stroke-width="3"/>`,
+    `<rect x="20" y="84" width="60" height="8" rx="3" fill="${color}" stroke="${INK}" stroke-width="3"/>` +
+    `<rect x="32" y="24" width="36" height="60" fill="${CREAM}" stroke="${INK}" stroke-width="3"/>` +
+    `<path d="M32 30h36M32 36h36M32 42h36M32 48h36M32 54h36M32 60h36M32 66h36M32 72h36M32 78h36" fill="none" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="45" y="25" width="10" height="4" fill="#BFE3FB" stroke="${INK}" stroke-width="1.8"/>` +
+    `<rect x="45" y="31" width="10" height="4" fill="#BFE3FB" stroke="${INK}" stroke-width="1.8"/>` +
+    `<rect x="45" y="37" width="10" height="4" fill="#BFE3FB" stroke="${INK}" stroke-width="1.8"/>` +
+    `<rect x="45" y="43" width="10" height="4" fill="#BFE3FB" stroke="${INK}" stroke-width="1.8"/>` +
+    `<rect x="45" y="49" width="10" height="4" fill="#BFE3FB" stroke="${INK}" stroke-width="1.8"/>` +
+    `<rect x="45" y="55" width="10" height="4" fill="#BFE3FB" stroke="${INK}" stroke-width="1.8"/>` +
+    `<rect x="45" y="61" width="10" height="4" fill="#BFE3FB" stroke="${INK}" stroke-width="1.8"/>` +
+    `<rect x="45" y="67" width="10" height="4" fill="#BFE3FB" stroke="${INK}" stroke-width="1.8"/>` +
+    `<rect x="45" y="73" width="10" height="4" fill="#BFE3FB" stroke="${INK}" stroke-width="1.8"/>` +
+    `<rect x="44" y="76" width="12" height="8" fill="${color}" stroke="${INK}" stroke-width="2.5"/>` +
+    `<path d="M30 24 50 10l20 14z" fill="${color}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>` +
+    `<circle cx="50" cy="6" r="4.5" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>`,
 
   // u18 けたのこや：100までの たしざん ひきざん（たまの さおが 2だん）
   abacus: (color) =>
@@ -69,8 +70,18 @@ export const BUILDING_ART_M3 = {
   // u20 ならびのこみち：ものとひとのかず（門と おくへ つづく いしだたみ）
   pathway: (color) =>
     `<path d="M18 90h64L62 50H38z" fill="${CREAM}" stroke="${INK}" stroke-width="3"/>` +
-    `<path d="M22 82h56M26 74h48M30 66h40M34 58h32" fill="none" stroke="${INK}" stroke-width="2"/>` +
-    `<path d="M50 82v8M50 66v8" fill="none" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="22" y="82" width="15" height="7" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="42" y="82" width="16" height="7" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="63" y="82" width="15" height="7" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="29" y="72" width="13" height="6" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="44" y="72" width="12" height="6" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="59" y="72" width="13" height="6" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="33" y="63" width="11" height="5.5" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="45" y="63" width="10" height="5.5" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="57" y="63" width="11" height="5.5" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="37" y="55" width="9" height="5" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="46" y="55" width="8" height="5" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
+    `<rect x="55" y="55" width="9" height="5" rx="2" fill="#E0D6C2" stroke="${INK}" stroke-width="2"/>` +
     `<rect x="10" y="44" width="11" height="46" fill="${CREAM}" stroke="${INK}" stroke-width="3"/>` +
     `<rect x="79" y="44" width="11" height="46" fill="${CREAM}" stroke="${INK}" stroke-width="3"/>` +
     `<rect x="6" y="34" width="88" height="11" rx="4" fill="${color}" stroke="${INK}" stroke-width="3"/>` +
@@ -79,14 +90,16 @@ export const BUILDING_ART_M3 = {
 
   // u21 いたのこうぼう：かたちづくり（やねが 4まいの いろいた）
   workshop: (color) =>
-    `<path d="M50 22 32 52h36z" fill="${color}" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>` +
-    `<path d="M32 52 14 82h36z" fill="#FFE08A" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>` +
-    `<path d="M68 52 50 82h36z" fill="#7FD4E8" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>` +
-    `<path d="M32 52h36L50 82z" fill="#9BD98C" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>` +
-    `<path d="M50 22 14 82h72z" fill="none" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>` +
-    `<rect x="26" y="82" width="48" height="10" fill="${CREAM}" stroke="${INK}" stroke-width="3"/>` +
-    `<rect x="44" y="82" width="12" height="10" fill="${color}" stroke="${INK}" stroke-width="2.5"/>` +
-    `<path d="M6 92h14L13 80z" fill="#FFE08A" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>`,
+    `<rect x="22" y="58" width="56" height="32" fill="${CREAM}" stroke="${INK}" stroke-width="3"/>` +
+    `<path d="M50 18 33 38h34z" fill="${color}" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>` +
+    `<path d="M33 38 16 58h34z" fill="#FFE08A" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>` +
+    `<path d="M67 38 84 58H50z" fill="#7FD4E8" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>` +
+    `<path d="M33 38h34L50 58z" fill="#9BD98C" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>` +
+    `<path d="M50 18 84 58H16z" fill="none" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>` +
+    `<rect x="42" y="70" width="16" height="20" fill="${color}" stroke="${INK}" stroke-width="3"/>` +
+    `<rect x="28" y="66" width="10" height="10" fill="#BFE3FB" stroke="${INK}" stroke-width="2.5"/>` +
+    `<rect x="62" y="66" width="10" height="10" fill="#BFE3FB" stroke="${INK}" stroke-width="2.5"/>` +
+    `<path d="M4 90h14L11 78z" fill="#FFE08A" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>`,
 
   // u22 おもいでのもん：1ねんのまとめ（大きな アーチと かざり）
   archgate: (color) =>

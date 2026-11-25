@@ -106,23 +106,29 @@ function twoGroups(f) {
   const b = f.b | 0;
   const size = 62;
   const gap = 6;
-  const w = 440;
   const cols = (n) => (n <= 2 ? Math.max(1, n) : n <= 4 ? 2 : 3);
   const rows = (n) => Math.ceil(Math.max(n, 1) / cols(n));
+  const blockW = (n) => cols(n) * (size + gap) - gap;
+  // ★はばは 中身から 決める。
+  //   前は 440 に 決めうちで、5こ以上の まとまりが 左右 18pxずつ 切れていた
+  //   （85問のうち 43問が そうなっていた）。
+  const pad = 10;
+  const signW = 64;
+  const wa = blockW(a);
+  const wb = blockW(b);
+  const w = pad * 2 + wa + signW + wb;
   const h = Math.max(rows(a), rows(b)) * (size + gap) + 16;
-  // 左のまとまりは右よせ、右のまとまりは左よせ（まんなかの ＋ が そろう）
-  const drawGroup = (n, rightEdge, leftEdge) => {
+  const drawGroup = (n, x0) => {
     const c = cols(n);
-    const blockW = c * (size + gap) - gap;
-    const x0 = rightEdge != null ? rightEdge - blockW : leftEdge;
-    let s = "";
+    let s2 = "";
     for (let i = 0; i < n; i++) {
-      s += at(f.icon, x0 + (i % c) * (size + gap), 8 + Math.floor(i / c) * (size + gap), size);
+      s2 += at(f.icon, x0 + (i % c) * (size + gap), 8 + Math.floor(i / c) * (size + gap), size);
     }
-    return s;
+    return s2;
   };
-  let inner = drawGroup(a, 180, null) + drawGroup(b, null, 260);
-  inner += `<path d="M204 ${h / 2} h32 M220 ${h / 2 - 16} v32" stroke="${ink}" stroke-width="7" stroke-linecap="round"/>`;
+  const signX = pad + wa + signW / 2;
+  let inner = drawGroup(a, pad) + drawGroup(b, pad + wa + signW);
+  inner += `<path d="M${signX - 16} ${h / 2} h32 M${signX} ${h / 2 - 16} v32" stroke="${ink}" stroke-width="7" stroke-linecap="round"/>`;
   return wrap(inner, w, h);
 }
 

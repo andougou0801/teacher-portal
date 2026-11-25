@@ -174,21 +174,22 @@ const PARTS = {
   ketamoya: {
     color: "#E0A23C",
     soft: "#F6D79B",
-    topBefore: `<rect x="44" y="38" width="14" height="28" rx="4" fill="#E0A23C" stroke="${INK}" stroke-width="2.5"/>`,
+    topBefore: `<rect x="44" y="34" width="14" height="28" rx="4" fill="#E0A23C" stroke="${INK}" stroke-width="2.5"/>`,
     body:
       `<rect x="14" y="22" width="34" height="62" rx="12" fill="#E0A23C" stroke="${INK}" stroke-width="3"/>` +
       `<rect x="54" y="22" width="32" height="62" rx="12" fill="#E0A23C" stroke="${INK}" stroke-width="3"/>`,
     /* 左の 十のくらいは 10この 点が まとまって 1まいの ふだに、
-       右の 一のくらいは ばらばらの 点が 3つ。 */
+       右の 一のくらいは ばらの 点が たてに 3つ。
+       ★ふだを 口の すぐ下に 置くと「歯」に 見えるので、口を 上げて 間を あけた。 */
     mark:
-      `<rect x="19" y="62" width="24" height="17" rx="5" fill="#FFF4E2" stroke="${INK}" stroke-width="2.5"/>` +
-      dotGrid([23, 27.5, 32, 36.5, 41], [67.5, 73.5], 1.8, INK) +
-      `<circle cx="64" cy="64" r="4" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>` +
-      `<circle cx="76" cy="64" r="4" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>` +
-      `<circle cx="70" cy="74" r="4" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>`,
-    eyes: [[31, 44, 5.5], [70, 44, 5.5]],
-    mouth: [51, 62],
-    cheek: [[18, 56], [83, 56]],
+      `<rect x="19" y="64" width="24" height="15" rx="5" fill="#FFF4E2" stroke="${INK}" stroke-width="2.5"/>` +
+      dotGrid([23, 27.5, 32, 36.5, 41], [69, 74.5], 1.8, INK) +
+      `<circle cx="70" cy="62" r="4" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>` +
+      `<circle cx="70" cy="71" r="4" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>` +
+      `<circle cx="70" cy="80" r="4" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>`,
+    eyes: [[31, 40, 5.5], [70, 40, 5.5]],
+    mouth: [51, 52],
+    cheek: [[18, 52], [83, 52]],
     sproutAt: [31, 22],
     feet: [30, 70],
     feetY: 90,
@@ -204,8 +205,9 @@ const PARTS = {
     mark:
       `<path d="M50 34v42" fill="none" stroke="${INK}" stroke-width="3"/>` +
       `<circle cx="50" cy="39" r="3" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>` +
-      `<rect x="56" y="46" width="30" height="16" rx="3" fill="#FFF4E2" stroke="${INK}" stroke-width="2.5"/>` +
-      `<path d="M66 46v16M76 46v16" fill="none" stroke="${INK}" stroke-width="1.8"/>`,
+      `<rect x="56" y="44" width="30" height="16" rx="3" fill="#FFF4E2" stroke="${INK}" stroke-width="2.5"/>` +
+      `<path d="M66 44v16M76 44v16" fill="none" stroke="${INK}" stroke-width="1.8"/>` +
+      `<path d="M56 64v4h30v-4" fill="none" stroke="#FFF4E2" stroke-width="2.5" stroke-linecap="round"/>`,
     eyes: [[24, 48, 5], [38, 48, 5]],
     mouth: [31, 62],
     cheek: [[16, 59], [44, 59]],
@@ -220,24 +222,24 @@ const PARTS = {
   retsumoya: {
     color: "#B07FC9",
     soft: "#E0C6EC",
-    topBefore: `<path d="M20 56h10M52 56h10M74 56h8" fill="none" stroke="#B07FC9" stroke-width="5" stroke-linecap="round"/>`,
+    topBefore: `<path d="M17 56h12M49 56h12M72 56h10" fill="none" stroke="#B07FC9" stroke-width="4" stroke-linecap="round"/>`,
     body:
-      `<rect x="6" y="44" width="16" height="24" rx="8" fill="#B07FC9" stroke="${INK}" stroke-width="2.5"/>` +
-      `<rect x="28" y="34" width="26" height="34" rx="11" fill="#B07FC9" stroke="${INK}" stroke-width="3"/>` +
-      `<rect x="60" y="42" width="16" height="26" rx="8" fill="#B07FC9" stroke="${INK}" stroke-width="2.5"/>` +
-      `<rect x="80" y="46" width="15" height="22" rx="7" fill="#B07FC9" stroke="${INK}" stroke-width="2.5"/>`,
+      `<rect x="4" y="46" width="15" height="22" rx="7" fill="#B07FC9" stroke="${INK}" stroke-width="2.5"/>` +
+      `<rect x="27" y="34" width="24" height="34" rx="11" fill="#B07FC9" stroke="${INK}" stroke-width="3"/>` +
+      `<rect x="59" y="44" width="15" height="24" rx="7" fill="#B07FC9" stroke="${INK}" stroke-width="2.5"/>` +
+      `<rect x="80" y="48" width="14" height="20" rx="7" fill="#B07FC9" stroke="${INK}" stroke-width="2.5"/>`,
     topAfter:
-      `<circle cx="25" cy="56" r="4" fill="#B07FC9" stroke="${INK}" stroke-width="2.5"/>` +
-      `<circle cx="57" cy="56" r="4" fill="#B07FC9" stroke="${INK}" stroke-width="2.5"/>` +
-      `<circle cx="78" cy="56" r="3.5" fill="#B07FC9" stroke="${INK}" stroke-width="2.5"/>`,
-    mark: tinyFace(14, 52, 3) + tinyFace(68, 50, 3.5) + tinyFace(87, 55, 3),
-    eyes: [[36, 48, 5], [47, 48, 5]],
-    mouth: [41, 59],
-    cheek: [[31, 57], [52, 57]],
-    sproutAt: [41, 34],
-    feet: [36, 48],
+      `<circle cx="23" cy="56" r="3.2" fill="#B07FC9" stroke="${INK}" stroke-width="2.2"/>` +
+      `<circle cx="55" cy="56" r="3.2" fill="#B07FC9" stroke="${INK}" stroke-width="2.2"/>` +
+      `<circle cx="77" cy="56" r="3" fill="#B07FC9" stroke="${INK}" stroke-width="2.2"/>`,
+    mark: tinyFace(11.5, 54, 3) + tinyFace(66.5, 52, 3) + tinyFace(87, 56, 3),
+    eyes: [[34, 47, 4.8], [45, 47, 4.8]],
+    mouth: [40, 58],
+    cheek: [[30, 55], [48, 55]],
+    sproutAt: [39, 34],
+    feet: [34, 46],
     feetY: 76,
-    drop: -15,
+    drop: -13,
   },
 
   /* u21 かたちづくり
@@ -274,7 +276,7 @@ const PARTS = {
       `<circle cx="88" cy="58" r="6.5" fill="#F2C14E" stroke="${INK}" stroke-width="2.5"/>`,
     body: `<circle cx="50" cy="52" r="33" fill="#F2C14E" stroke="${INK}" stroke-width="3"/>`,
     mark:
-      `<circle cx="50" cy="52" r="28.5" fill="none" stroke="#FFF4E2" stroke-width="2.2"/>` +
+      `<circle cx="50" cy="52" r="28.5" fill="none" stroke="#FFF4E2" stroke-width="2.8"/>` +
       `<path d="M31 34v8M27 38h8" fill="none" stroke="#FFF4E2" stroke-width="3" stroke-linecap="round"/>` +
       `<path d="M65 38h8" fill="none" stroke="#FFF4E2" stroke-width="3" stroke-linecap="round"/>` +
       `<circle cx="31" cy="66" r="4.5" fill="none" stroke="#FFF4E2" stroke-width="3"/>` +

@@ -736,9 +736,9 @@
       "figure": {
         "kind": "two-rows",
         "iconA": "rabbit",
-        "a": 3,
+        "a": 2,
         "iconB": "candy",
-        "b": 7
+        "b": 6
       },
       "answer": "4",
       "hint": "ふたつの れつの ちがいを かぞえよう",
@@ -756,9 +756,9 @@
       "figure": {
         "kind": "two-rows",
         "iconA": "dog",
-        "a": 5,
+        "a": 3,
         "iconB": "flower",
-        "b": 8
+        "b": 6
       },
       "answer": "3",
       "hint": "ふたつの れつの ちがいを かぞえよう",
@@ -810,7 +810,7 @@
       "type": "input",
       "prompt": [
         "いぬが 9ひき、ほねが 15ほん。",
-        "いぬに 1ぽんずつ あげた。のこりは？"
+        "1ぽんずつ あげた。ほねの のこりは？"
       ],
       "answer": "6",
       "hint": "いぬの かずだけ へるよ",
