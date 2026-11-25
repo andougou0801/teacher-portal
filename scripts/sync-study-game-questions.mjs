@@ -15,7 +15,6 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const srcDir = join(root, "docs", "study-game", "questions");
 const outDir = join(root, "public", "study-game", "data");
 
-const KANJI = /[一-鿿]/;
 const TYPES = new Set(["choice", "input", "order", "trace"]);
 const errors = [];
 const warnings = [];
@@ -34,7 +33,8 @@ function checkItem(unitId, item) {
   }
   if (item.prompt.length > 2) warnings.push(`${where}: prompt が3行以上`);
   for (const line of item.prompt) {
-    if (KANJI.test(line)) errors.push(`${where}: 漢字が入っている「${line}」`);
+    // 漢字を 出してよいかは 単元ごとに ちがう（国語の2学期から）。
+    // くわしい検査は check-study-game-questions.mjs が やるので、ここは とおす。
     if ([...line].length > 24) warnings.push(`${where}: 1行が長い(${[...line].length}字)`);
   }
   if (item.type === "choice") {

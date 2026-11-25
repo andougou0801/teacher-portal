@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "unitId": "j15",
+  "grade": 1,
+  "subject": "japanese",
+  "term": 2,
+  "order": 15,
+  "title": "だいじな ことばを さがす",
+  "allowedChars": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉっゃゅょアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォッャュョー0123456789「」、。？ ",
+  "allowedKanji": "",
+  "monster": "sagashimoya",
+  "building": "shiorinoie",
+  "skills": [
+    {
+      "id": "j15-toi",
+      "name": "といの ぶんを さがす",
+      "power": "read"
+    },
+    {
+      "id": "j15-kotae",
+      "name": "こたえの ぶんを さがす",
+      "power": "read"
+    },
+    {
+      "id": "j15-daiji",
+      "name": "だいじな ことばを えらぶ",
+      "power": "read"
+    }
+  ],
+  "items": []
+}

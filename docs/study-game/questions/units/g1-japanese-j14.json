@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "unitId": "j14",
+  "grade": 1,
+  "subject": "japanese",
+  "term": 2,
+  "order": 14,
+  "title": "ていねいな ことば",
+  "allowedChars": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉっゃゅょアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォッャュョー0123456789「」、。？ ",
+  "allowedKanji": "",
+  "monster": "teineimoya",
+  "building": "aisatsunomichi",
+  "skills": [
+    {
+      "id": "j14-desu",
+      "name": "です・ます",
+      "power": "word"
+    },
+    {
+      "id": "j14-tsukaiwake",
+      "name": "だれに はなすか",
+      "power": "read"
+    },
+    {
+      "id": "j14-aisatsu",
+      "name": "あいさつの ことば",
+      "power": "word"
+    }
+  ],
+  "items": []
+}

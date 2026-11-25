@@ -39,6 +39,15 @@ export const BUILDINGS = [
   { id: "yubin", name: "ゆうびんきょく", unit: "j05", shape: "post", mat: "ishi", cost: 20, x: 35, y: 78 },
   { id: "toshoshitsu", name: "としょしつ", unit: "j06", shape: "library", mat: "nendo", cost: 16, x: 58, y: 78 },
   { id: "ishibumi", name: "いしぶみ", unit: "j07", shape: "monument", mat: "nendo", cost: 18, x: 80, y: 74 },
+  // ことばのまちの おくの だん（国語2学期の8棟）
+  { id: "katanoie", name: "かたかなのいえ", unit: "j09", shape: "house", mat: "ki", cost: 14, x: 7, y: 33 },
+  { id: "fudenoyakata", name: "ふでのやかた", unit: "j10", shape: "pencilshop", mat: "ki", cost: 16, x: 19, y: 33 },
+  { id: "minatonokura", name: "みなとのくら", unit: "j11", shape: "granary", mat: "glass", cost: 18, x: 31, y: 33 },
+  { id: "kanjinomon", name: "かんじのもん", unit: "j12", shape: "gate", mat: "ishi", cost: 20, x: 43, y: 33 },
+  { id: "morinoyakata", name: "もりのやかた", unit: "j13", shape: "waterhouse", mat: "nendo", cost: 18, x: 55, y: 33 },
+  { id: "aisatsunomichi", name: "あいさつのみち", unit: "j14", shape: "bridge", mat: "ishi", cost: 16, x: 67, y: 33 },
+  { id: "shiorinoie", name: "しおりのいえ", unit: "j15", shape: "library", mat: "nendo", cost: 18, x: 79, y: 33 },
+  { id: "monogatarinoniwa", name: "ものがたりのにわ", unit: "j16", shape: "plaza", mat: "glass", cost: 20, x: 91, y: 33 },
   { id: "tasizankoujou", name: "たしざんこうじょう", unit: "u04", shape: "factory", mat: "ki", cost: 20, x: 12, y: 76 },
   { id: "hikizansouko", name: "ひきざんそうこ", unit: "u05", shape: "barn", mat: "ishi", cost: 20, x: 35, y: 78 },
   { id: "zeronoizumi", name: "ゼロのいずみ", unit: "u06", shape: "well", mat: "nendo", cost: 14, x: 58, y: 78 },
@@ -98,6 +107,14 @@ export const TITLES = [
   { id: "t-retsu", name: "ならびの はかせ", unit: "u20" },
   { id: "t-ita", name: "かたちづくり めいじん", unit: "u21" },
   { id: "t-ichinen", name: "1ねんせいの そつぎょう", unit: "u22" },
+  { id: "t-kata", name: "かたかな めいじん", unit: "j09" },
+  { id: "t-fude", name: "ふでじゅんの たつじん", unit: "j10" },
+  { id: "t-gai", name: "ことばの たびびと", unit: "j11" },
+  { id: "t-kanji1", name: "かんじ みならい", unit: "j12" },
+  { id: "t-kanji2", name: "かんじ はかせ", unit: "j13" },
+  { id: "t-teinei", name: "ていねいな はなしびと", unit: "j14" },
+  { id: "t-sagasi", name: "だいじな ことば さがし", unit: "j15" },
+  { id: "t-monogatari", name: "おはなしの ともだち", unit: "j16" },
 ];
 
 export const buildingByUnit = (unitId) => BUILDINGS.find((b) => b.unit === unitId);

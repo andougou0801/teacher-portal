@@ -168,6 +168,15 @@ function expectedAnswer(item) {
  *   2学期：くりあがり/くりさがり（和は18まで）・数は100まで
  *   ここを 学期で 分けないと、2学期の 正しい問題まで エラーに なる。
  */
+/**
+ * 単元ごとに「出してよい 漢字」。
+ * ★国語は 2学期から 漢字が 入る（指導要領〔知識及び技能〕(1)エ
+ *   「第1学年に配当されている漢字を読み，漸次書き，文や文章の中で使うこと」）。
+ *   漢字を ぜんぶ だめに すると、その単元が そもそも 作れない。
+ *   単元ファイルの allowedKanji に 書いた字だけ とおす。
+ */
+const KANJI_BY_UNIT = new Map();
+
 // 単元ファイルに 書いてある term を つかう（番号から あてずっぽうで 決めない）
 const TERM_BY_UNIT = (() => {
   const map = new Map();
@@ -175,6 +184,7 @@ const TERM_BY_UNIT = (() => {
     for (const name of readdirSync(unitDir).filter((n) => n.endsWith(".json"))) {
       const d = JSON.parse(readFileSync(join(unitDir, name), "utf8"));
       if (d.unitId && d.term) map.set(d.unitId, d.term);
+      if (d.unitId) KANJI_BY_UNIT.set(d.unitId, new Set([...(d.allowedKanji || "")]));
     }
   } catch {
     /* よめなくても 下のあてずっぽうで つづける */
@@ -217,9 +227,16 @@ function checkItem(unitId, item, skillIds, seenIds) {
     return;
   }
   if (item.prompt.length > 2) add(`prompt が ${item.prompt.length}行（2行まで）`);
+  const okKanji = KANJI_BY_UNIT.get(unitId) || new Set();
+  const badKanji = (text) => [...String(text)].filter((ch) => KANJI.test(ch) && !okKanji.has(ch));
   for (const line of item.prompt) {
-    if (KANJI.test(line)) add(`漢字が入っている「${line}」`);
+    const bad = badKanji(line);
+    if (bad.length) add(`ならっていない漢字が入っている「${bad.join("")}」`);
     if ([...line].length > 24) warns.push(`${where}: 1行が長い(${[...line].length}字)「${line}」`);
+  }
+  for (const t of [...(item.choices || []).map((c) => (typeof c === "string" ? c : c?.label || "")), ...(item.tokens || []), item.hint || ""]) {
+    const bad = badKanji(t);
+    if (bad.length) add(`ならっていない漢字が入っている「${bad.join("")}」`);
   }
   if (/[×÷＜＞<>()（）]/.test(item.prompt.join(""))) add("つかえない記号が入っている");
 
@@ -327,7 +344,7 @@ function checkItem(unitId, item, skillIds, seenIds) {
 function checkAllowedChars(unit, item) {
   const allowed = unit.allowedChars;
   if (!allowed) return;
-  const ok = new Set([...allowed, " ", "　"]);
+  const ok = new Set([...allowed, ...(unit.allowedKanji || ""), " ", "　"]);
   const texts = [
     ...(item.prompt || []),
     ...(item.choices || []).map((c) => (typeof c === "string" ? c : c?.label || "")),

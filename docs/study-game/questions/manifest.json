@@ -784,6 +784,213 @@
           ]
         }
       ]
+    },
+    {
+      "grade": 1,
+      "subject": "japanese",
+      "term": 2,
+      "units": [
+        {
+          "unitId": "j09",
+          "title": "かたかなを よむ",
+          "order": 9,
+          "file": "units/g1-japanese-j09.json",
+          "monster": "katamoya",
+          "building": "katanoie",
+          "skills": [
+            {
+              "id": "j09-mikake",
+              "name": "にた かたかなを みわける",
+              "power": "word"
+            },
+            {
+              "id": "j09-yomu",
+              "name": "かたかなの ことばを よむ",
+              "power": "read"
+            },
+            {
+              "id": "j09-hiragana",
+              "name": "ひらがなと くらべる",
+              "power": "word"
+            }
+          ]
+        },
+        {
+          "unitId": "j10",
+          "title": "かたかなを ゆびで かく",
+          "order": 10,
+          "file": "units/g1-japanese-j10.json",
+          "monster": "hitsumoya",
+          "building": "fudenoyakata",
+          "skills": [
+            {
+              "id": "j10-nazori",
+              "name": "ゆびで なぞって かく",
+              "power": "write"
+            },
+            {
+              "id": "j10-nazori2",
+              "name": "むずかしい かたかなを なぞる",
+              "power": "write"
+            },
+            {
+              "id": "j10-junban",
+              "name": "かく じゅんばん",
+              "power": "write"
+            }
+          ]
+        },
+        {
+          "unitId": "j11",
+          "title": "かたかなで かく ことば",
+          "order": 11,
+          "file": "units/g1-japanese-j11.json",
+          "monster": "gaimoya",
+          "building": "minatonokura",
+          "skills": [
+            {
+              "id": "j11-erabu",
+              "name": "かたかなで かく ものを えらぶ",
+              "power": "word"
+            },
+            {
+              "id": "j11-oto",
+              "name": "おとの ことば",
+              "power": "word"
+            },
+            {
+              "id": "j11-bun",
+              "name": "ぶんの 中の かたかな",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "j12",
+          "title": "かんじを よむ（かずと ひ）",
+          "order": 12,
+          "file": "units/g1-japanese-j12.json",
+          "monster": "kanjimoya",
+          "building": "kanjinomon",
+          "skills": [
+            {
+              "id": "j12-kazu",
+              "name": "かずの かんじ",
+              "power": "read"
+            },
+            {
+              "id": "j12-hi",
+              "name": "ようびの かんじ",
+              "power": "read"
+            },
+            {
+              "id": "j12-bun",
+              "name": "ぶんの 中で よむ",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "j13",
+          "title": "かんじを よむ（ひとと しぜん）",
+          "order": 13,
+          "file": "units/g1-japanese-j13.json",
+          "monster": "shizenmoya",
+          "building": "morinoyakata",
+          "skills": [
+            {
+              "id": "j13-hito",
+              "name": "からだの かんじ",
+              "power": "read"
+            },
+            {
+              "id": "j13-shizen",
+              "name": "しぜんの かんじ",
+              "power": "read"
+            },
+            {
+              "id": "j13-bun",
+              "name": "ぶんの 中で よむ",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "j14",
+          "title": "ていねいな ことば",
+          "order": 14,
+          "file": "units/g1-japanese-j14.json",
+          "monster": "teineimoya",
+          "building": "aisatsunomichi",
+          "skills": [
+            {
+              "id": "j14-desu",
+              "name": "です・ます",
+              "power": "word"
+            },
+            {
+              "id": "j14-tsukaiwake",
+              "name": "だれに はなすか",
+              "power": "read"
+            },
+            {
+              "id": "j14-aisatsu",
+              "name": "あいさつの ことば",
+              "power": "word"
+            }
+          ]
+        },
+        {
+          "unitId": "j15",
+          "title": "だいじな ことばを さがす",
+          "order": 15,
+          "file": "units/g1-japanese-j15.json",
+          "monster": "sagashimoya",
+          "building": "shiorinoie",
+          "skills": [
+            {
+              "id": "j15-toi",
+              "name": "といの ぶんを さがす",
+              "power": "read"
+            },
+            {
+              "id": "j15-kotae",
+              "name": "こたえの ぶんを さがす",
+              "power": "read"
+            },
+            {
+              "id": "j15-daiji",
+              "name": "だいじな ことばを えらぶ",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "j16",
+          "title": "ばめんと とうじょうじんぶつ",
+          "order": 16,
+          "file": "units/g1-japanese-j16.json",
+          "monster": "ohanashimoya",
+          "building": "monogatarinoniwa",
+          "skills": [
+            {
+              "id": "j16-dare",
+              "name": "だれが でてくる",
+              "power": "read"
+            },
+            {
+              "id": "j16-doko",
+              "name": "どこの はなし",
+              "power": "read"
+            },
+            {
+              "id": "j16-kimochi",
+              "name": "どんな きもち",
+              "power": "read"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
