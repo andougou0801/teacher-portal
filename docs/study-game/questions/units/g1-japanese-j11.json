@@ -27,5 +27,795 @@
       "power": "read"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "j11-001",
+      "skill": "j11-erabu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かく ことばは どれ？"
+      ],
+      "choices": [
+        "こっぷ",
+        "いぬ",
+        "はな"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-002",
+      "skill": "j11-erabu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かく ことばは どれ？"
+      ],
+      "choices": [
+        "やま",
+        "ぱん",
+        "かわ"
+      ],
+      "answer": 1,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-003",
+      "skill": "j11-erabu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かく ことばは どれ？"
+      ],
+      "choices": [
+        "てれび",
+        "いえ",
+        "そら"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-004",
+      "skill": "j11-erabu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かく ことばは どれ？"
+      ],
+      "choices": [
+        "みるく",
+        "みず",
+        "おちゃ"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた のみものだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-005",
+      "skill": "j11-erabu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かく ことばは どれ？"
+      ],
+      "choices": [
+        "つくえ",
+        "いす",
+        "ぴあの"
+      ],
+      "answer": 2,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-006",
+      "skill": "j11-erabu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かく ことばは どれ？"
+      ],
+      "choices": [
+        "ばなな",
+        "りんご",
+        "みかん"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた くだものだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-007",
+      "skill": "j11-erabu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かく ことばは どれ？"
+      ],
+      "choices": [
+        "ずぼん",
+        "くつした",
+        "ぼうし",
+        "てぶくろ"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-008",
+      "skill": "j11-erabu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かく ことばは どれ？"
+      ],
+      "choices": [
+        "とまと",
+        "なす",
+        "きゅうり",
+        "だいこん"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた やさいだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-009",
+      "skill": "j11-erabu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かく ことばは どれ？"
+      ],
+      "choices": [
+        "くれよん",
+        "ふで",
+        "かみ",
+        "いと"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-010",
+      "skill": "j11-erabu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "そとの くにから きた ことばは どれ？"
+      ],
+      "choices": [
+        "ないふ",
+        "はさみ",
+        "のこぎり"
+      ],
+      "answer": 0,
+      "hint": "そういう ことばは かたかなで かくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-011",
+      "skill": "j11-erabu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "そとの くにから きた ことばは どれ？"
+      ],
+      "choices": [
+        "てんと",
+        "やね",
+        "かべ"
+      ],
+      "answer": 0,
+      "hint": "そういう ことばは かたかなで かくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-012",
+      "skill": "j11-erabu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "そとの くにから きた ことばは どれ？"
+      ],
+      "choices": [
+        "ますく",
+        "かさ",
+        "てぶくろ"
+      ],
+      "answer": 0,
+      "hint": "そういう ことばは かたかなで かくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-013",
+      "skill": "j11-erabu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かかない ことばは どれ？"
+      ],
+      "choices": [
+        "こっぷ",
+        "てれび",
+        "さかな"
+      ],
+      "answer": 2,
+      "hint": "むかしから ある ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-014",
+      "skill": "j11-erabu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "かたかなで かかない ことばは どれ？"
+      ],
+      "choices": [
+        "ぱん",
+        "みるく",
+        "ごはん"
+      ],
+      "answer": 2,
+      "hint": "むかしから つかって いる ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-015",
+      "skill": "j11-erabu",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "「メロン」に ならべよう"
+      ],
+      "tokens": [
+        "ロ",
+        "メ",
+        "ン"
+      ],
+      "answer": [
+        1,
+        0,
+        2
+      ],
+      "hint": "はじめの じは 「メ」だよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-016",
+      "skill": "j11-oto",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "いぬの なきごえは どれ？"
+      ],
+      "choices": [
+        "ワンワン",
+        "ニャーニャー",
+        "モーモー"
+      ],
+      "answer": 0,
+      "hint": "いぬの こえを おもいだして みてね",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-017",
+      "skill": "j11-oto",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ねこの なきごえは どれ？"
+      ],
+      "choices": [
+        "ワンワン",
+        "ニャーニャー",
+        "ピヨピヨ"
+      ],
+      "answer": 1,
+      "hint": "ねこの こえを おもいだして みてね",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-018",
+      "skill": "j11-oto",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あめの おとは どれ？"
+      ],
+      "choices": [
+        "ザーザー",
+        "ワンワン",
+        "トントン"
+      ],
+      "answer": 0,
+      "hint": "あめが つよく ふる おとだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-019",
+      "skill": "j11-oto",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "かぜの おとは どれ？"
+      ],
+      "choices": [
+        "ビュービュー",
+        "ニャーニャー",
+        "パタパタ"
+      ],
+      "answer": 0,
+      "hint": "つよい かぜの おとだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-020",
+      "skill": "j11-oto",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "とを たたく おとは どれ？"
+      ],
+      "choices": [
+        "コンコン",
+        "ザーザー",
+        "モーモー"
+      ],
+      "answer": 0,
+      "hint": "とを たたく かるい おとだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-021",
+      "skill": "j11-oto",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "うしの なきごえは どれ？"
+      ],
+      "choices": [
+        "モーモー",
+        "ピヨピヨ",
+        "ガタガタ"
+      ],
+      "answer": 0,
+      "hint": "うしの こえを おもいだして みてね",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-022",
+      "skill": "j11-oto",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ひよこの なきごえは どれ？"
+      ],
+      "choices": [
+        "ピヨピヨ",
+        "ワンワン",
+        "ゴロゴロ"
+      ],
+      "answer": 0,
+      "hint": "ちいさな とりの こえだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-023",
+      "skill": "j11-oto",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "かみなりの おとは どれ？"
+      ],
+      "choices": [
+        "ゴロゴロ",
+        "チクタク",
+        "ピヨピヨ"
+      ],
+      "answer": 0,
+      "hint": "そらから きこえる おおきな おとだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-024",
+      "skill": "j11-oto",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "とけいの おとは どれ？"
+      ],
+      "choices": [
+        "チクタク",
+        "ザーザー",
+        "モーモー"
+      ],
+      "answer": 0,
+      "hint": "とけいの はりが うごく おとだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-025",
+      "skill": "j11-oto",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "なきごえの ことばは どれ？"
+      ],
+      "choices": [
+        "ニャーニャー",
+        "ノート",
+        "バス"
+      ],
+      "answer": 0,
+      "hint": "いきものの こえを あらわす ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-026",
+      "skill": "j11-oto",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "おとの ことばは どれ？"
+      ],
+      "choices": [
+        "ガタガタ",
+        "テレビ",
+        "ミルク"
+      ],
+      "answer": 0,
+      "hint": "ものが ゆれる おとだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-027",
+      "skill": "j11-oto",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "そとの くにから きた ことばは どれ？"
+      ],
+      "choices": [
+        "コップ",
+        "トントン",
+        "ザーザー"
+      ],
+      "answer": 0,
+      "hint": "おとの ことばでは ない ほうだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-028",
+      "skill": "j11-oto",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "まどが ゆれる おとは どれ？"
+      ],
+      "choices": [
+        "ガタガタ",
+        "ピヨピヨ",
+        "チクタク"
+      ],
+      "answer": 0,
+      "hint": "かぜで まどが ゆれる おとだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-029",
+      "skill": "j11-oto",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "みずが ながれる おとは どれ？"
+      ],
+      "choices": [
+        "サラサラ",
+        "ドンドン",
+        "モーモー"
+      ],
+      "answer": 0,
+      "hint": "かるくて しずかな おとだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-030",
+      "skill": "j11-oto",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "たいこの おとは どれ？"
+      ],
+      "choices": [
+        "ドンドン",
+        "チクタク",
+        "サラサラ"
+      ],
+      "answer": 0,
+      "hint": "おおきな たいこの おとだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-031",
+      "skill": "j11-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "こっぷで みずを のむ",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "こっぷ",
+        "みず",
+        "のむ"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-032",
+      "skill": "j11-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あさに ぱんを たべる",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "あさ",
+        "ぱん",
+        "たべる"
+      ],
+      "answer": 1,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-033",
+      "skill": "j11-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "みんなで てれびを みる",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "みんな",
+        "てれび",
+        "みる"
+      ],
+      "answer": 1,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-034",
+      "skill": "j11-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ねこが みるくを のんだ",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "ねこ",
+        "みるく",
+        "のんだ"
+      ],
+      "answer": 1,
+      "hint": "そとの くにから きた のみものだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-035",
+      "skill": "j11-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "いぬが わんわんと ないた",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "いぬ",
+        "わんわん",
+        "ないた"
+      ],
+      "answer": 1,
+      "hint": "なきごえは かたかなで かくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-036",
+      "skill": "j11-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あめが ざあざあ ふる",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "あめ",
+        "ざあざあ",
+        "ふる"
+      ],
+      "answer": 1,
+      "hint": "おとの ことばは かたかなで かくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-037",
+      "skill": "j11-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "とまとを きって たべる",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "とまと",
+        "きって",
+        "たべる"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた やさいだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-038",
+      "skill": "j11-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ぴあのを ひいて うたう",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "ぴあの",
+        "ひいて",
+        "うたう"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-039",
+      "skill": "j11-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "とけいが ちくたく なる",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "とけい",
+        "ちくたく",
+        "なる"
+      ],
+      "answer": 1,
+      "hint": "おとの ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-040",
+      "skill": "j11-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ばすに のって うみへ いく",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "ばす",
+        "うみ",
+        "のって",
+        "いく"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた のりものだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-041",
+      "skill": "j11-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ますくを つけて そとへ でる",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "ますく",
+        "そと",
+        "つけて",
+        "でる"
+      ],
+      "answer": 0,
+      "hint": "そとの くにから きた ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-042",
+      "skill": "j11-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "かぜが びゅうびゅう ふく",
+        "かたかなで かく ことばは？"
+      ],
+      "choices": [
+        "かぜ",
+        "びゅうびゅう",
+        "ふく"
+      ],
+      "answer": 1,
+      "hint": "かぜの おとの ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-043",
+      "skill": "j11-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "おさらに ケーキが ある",
+        "かたかなの ことばは どれ？"
+      ],
+      "choices": [
+        "おさら",
+        "ケーキ",
+        "ある"
+      ],
+      "answer": 1,
+      "hint": "かたかなで かいて ある ことばだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-044",
+      "skill": "j11-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "いぬが ワンワンと ないた",
+        "かたかなの ことばは どれ？"
+      ],
+      "choices": [
+        "いぬ",
+        "ワンワン",
+        "ないた"
+      ],
+      "answer": 1,
+      "hint": "なきごえは かたかなで かくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "j11-045",
+      "skill": "j11-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ハンカチで てを ふいた",
+        "かたかなの ことばは どれ？"
+      ],
+      "choices": [
+        "ハンカチ",
+        "て",
+        "ふいた"
+      ],
+      "answer": 0,
+      "hint": "かたかなで かいて ある ことばだよ",
+      "reward": "glass"
+    }
+  ]
 }

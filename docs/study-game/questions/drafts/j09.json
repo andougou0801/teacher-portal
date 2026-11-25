@@ -1,0 +1,778 @@
+{
+  "j09": [
+    {
+      "id": "j09-001",
+      "skill": "j09-mikake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「ソ」は どれ？"
+      ],
+      "choices": [
+        "ソ",
+        "ン",
+        "シ"
+      ],
+      "answer": 0,
+      "hint": "「ソ」は てんが うえに ついて いるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-002",
+      "skill": "j09-mikake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「ン」は どれ？"
+      ],
+      "choices": [
+        "ソ",
+        "ン",
+        "ツ"
+      ],
+      "answer": 1,
+      "hint": "「ン」は てんが ひだりに ついて いるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-003",
+      "skill": "j09-mikake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「タ」は どれ？"
+      ],
+      "choices": [
+        "ク",
+        "タ",
+        "ケ"
+      ],
+      "answer": 1,
+      "hint": "「タ」は なかに せんが あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-004",
+      "skill": "j09-mikake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「ツ」は どれ？"
+      ],
+      "choices": [
+        "シ",
+        "ツ",
+        "ソ"
+      ],
+      "answer": 1,
+      "hint": "「ツ」は てんが うえに ふたつ あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-005",
+      "skill": "j09-mikake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「シ」は どれ？"
+      ],
+      "choices": [
+        "ツ",
+        "シ",
+        "ミ"
+      ],
+      "answer": 1,
+      "hint": "「シ」は てんが ひだりに ふたつ あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-006",
+      "skill": "j09-mikake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「ヌ」は どれ？"
+      ],
+      "choices": [
+        "ス",
+        "ヌ",
+        "メ"
+      ],
+      "answer": 1,
+      "hint": "「ヌ」は せんが まじわって いるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-007",
+      "skill": "j09-mikake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「ウ」は どれ？"
+      ],
+      "choices": [
+        "ワ",
+        "ウ",
+        "フ"
+      ],
+      "answer": 1,
+      "hint": "「ウ」は うえに てんが あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-008",
+      "skill": "j09-mikake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「ワ」は どれ？"
+      ],
+      "choices": [
+        "ウ",
+        "フ",
+        "ワ",
+        "ク"
+      ],
+      "answer": 2,
+      "hint": "「ワ」は ひだりに たての せんが あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-009",
+      "skill": "j09-mikake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「パン」は どれ？"
+      ],
+      "choices": [
+        "パソ",
+        "パン",
+        "パツ"
+      ],
+      "answer": 1,
+      "hint": "おわりは てんが ひだりの 「ン」だよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-010",
+      "skill": "j09-mikake",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「タオル」は どれ？"
+      ],
+      "choices": [
+        "クオル",
+        "タオル",
+        "ワオル"
+      ],
+      "answer": 1,
+      "hint": "「タ」は なかに せんが あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-011",
+      "skill": "j09-mikake",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「スープ」は どれ？"
+      ],
+      "choices": [
+        "ヌープ",
+        "スープ",
+        "メープ"
+      ],
+      "answer": 1,
+      "hint": "「ス」は せんが まじわらないよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-012",
+      "skill": "j09-mikake",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「シャツ」は どれ？"
+      ],
+      "choices": [
+        "ツャツ",
+        "シャツ",
+        "シャシ"
+      ],
+      "answer": 1,
+      "hint": "はじめは 「シ」、おわりは 「ツ」だよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-013",
+      "skill": "j09-mikake",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「ソース」は どれ？"
+      ],
+      "choices": [
+        "ノース",
+        "ソース",
+        "ソーヌ"
+      ],
+      "answer": 1,
+      "hint": "はじめは てんが うえの 「ソ」だよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-014",
+      "skill": "j09-mikake",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「スプーン」は どれ？"
+      ],
+      "choices": [
+        "スプーソ",
+        "スプーン",
+        "ヌプーン"
+      ],
+      "answer": 1,
+      "hint": "ひとつずつ ゆびで おさえて よもう",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-015",
+      "skill": "j09-mikake",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「フライパン」は どれ？"
+      ],
+      "choices": [
+        "ウライパン",
+        "フライパン",
+        "ワライパン"
+      ],
+      "answer": 1,
+      "hint": "「フ」は せんが いっぽんだけだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-016",
+      "skill": "j09-yomu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "のみものを いれる ものは どれ？"
+      ],
+      "choices": [
+        "コップ",
+        "ノート",
+        "バス"
+      ],
+      "answer": 0,
+      "hint": "こえに して よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-017",
+      "skill": "j09-yomu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "じを かく ものは どれ？"
+      ],
+      "choices": [
+        "コップ",
+        "ノート",
+        "テレビ"
+      ],
+      "answer": 1,
+      "hint": "こえに して よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-018",
+      "skill": "j09-yomu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "のって でかける ものは どれ？"
+      ],
+      "choices": [
+        "バス",
+        "パン",
+        "ミルク"
+      ],
+      "answer": 0,
+      "hint": "こえに して よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-019",
+      "skill": "j09-yomu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「ミルク」は なんと よむ？"
+      ],
+      "choices": [
+        "みるく",
+        "みるぬ",
+        "みろく"
+      ],
+      "answer": 0,
+      "hint": "ひとつずつ おとに して よもう",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-020",
+      "skill": "j09-yomu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "たべる ものは どれ？"
+      ],
+      "choices": [
+        "ケーキ",
+        "テレビ",
+        "タオル"
+      ],
+      "answer": 0,
+      "hint": "こえに して よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-021",
+      "skill": "j09-yomu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "からだを ふく ものは どれ？"
+      ],
+      "choices": [
+        "タオル",
+        "ピアノ",
+        "ボール"
+      ],
+      "answer": 0,
+      "hint": "こえに して よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-022",
+      "skill": "j09-yomu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "おとを ならす ものは どれ？"
+      ],
+      "choices": [
+        "ピアノ",
+        "スプーン",
+        "マスク"
+      ],
+      "answer": 0,
+      "hint": "こえに して よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-023",
+      "skill": "j09-yomu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "スープを のむとき つかう ものは？"
+      ],
+      "choices": [
+        "スプーン",
+        "クレヨン",
+        "カーテン"
+      ],
+      "answer": 0,
+      "hint": "こえに して よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-024",
+      "skill": "j09-yomu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「テレビ」は なんと よむ？"
+      ],
+      "choices": [
+        "てれび",
+        "てれひ",
+        "でれび"
+      ],
+      "answer": 0,
+      "hint": "てんてんが ついた じを みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-025",
+      "skill": "j09-yomu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "えを かくとき つかう ものは どれ？"
+      ],
+      "choices": [
+        "クレヨン",
+        "ジュース",
+        "トマト"
+      ],
+      "answer": 0,
+      "hint": "こえに して よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-026",
+      "skill": "j09-yomu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あかい やさいは どれ？"
+      ],
+      "choices": [
+        "トマト",
+        "メロン",
+        "レモン"
+      ],
+      "answer": 0,
+      "hint": "いろを おもいだして みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-027",
+      "skill": "j09-yomu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "きいろくて すっぱい くだものは？"
+      ],
+      "choices": [
+        "レモン",
+        "トマト",
+        "バナナ"
+      ],
+      "answer": 0,
+      "hint": "すっぱい あじの くだものだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-028",
+      "skill": "j09-yomu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「ハンカチ」は なんと よむ？"
+      ],
+      "choices": [
+        "はんかち",
+        "はんかぢ",
+        "はんがち"
+      ],
+      "answer": 0,
+      "hint": "ひとつずつ ゆびで おさえて よもう",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-029",
+      "skill": "j09-yomu",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "「ミルク」に ならべよう"
+      ],
+      "tokens": [
+        "ル",
+        "ミ",
+        "ク"
+      ],
+      "answer": [
+        1,
+        0,
+        2
+      ],
+      "hint": "はじめの じは 「ミ」だよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-030",
+      "skill": "j09-yomu",
+      "level": 5,
+      "type": "order",
+      "prompt": [
+        "「ピアノ」に ならべよう"
+      ],
+      "tokens": [
+        "ノ",
+        "ピ",
+        "ア"
+      ],
+      "answer": [
+        1,
+        2,
+        0
+      ],
+      "hint": "はじめの じは 「ピ」だよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-031",
+      "skill": "j09-hiragana",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ひらがなの「か」と おなじ かたかなは？"
+      ],
+      "choices": [
+        "カ",
+        "ガ",
+        "タ"
+      ],
+      "answer": 0,
+      "hint": "こえに して 「か」と よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-032",
+      "skill": "j09-hiragana",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ひらがなの「き」と おなじ かたかなは？"
+      ],
+      "choices": [
+        "キ",
+        "サ",
+        "チ"
+      ],
+      "answer": 0,
+      "hint": "こえに して 「き」と よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-033",
+      "skill": "j09-hiragana",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ひらがなの「く」と おなじ かたかなは？"
+      ],
+      "choices": [
+        "ク",
+        "タ",
+        "ワ"
+      ],
+      "answer": 0,
+      "hint": "「ク」は なかに せんが ないよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-034",
+      "skill": "j09-hiragana",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ひらがなの「し」と おなじ かたかなは？"
+      ],
+      "choices": [
+        "シ",
+        "ツ",
+        "ミ"
+      ],
+      "answer": 0,
+      "hint": "「シ」は てんが ひだりに ふたつ あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-035",
+      "skill": "j09-hiragana",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ひらがなの「つ」と おなじ かたかなは？"
+      ],
+      "choices": [
+        "シ",
+        "ツ",
+        "ソ"
+      ],
+      "answer": 1,
+      "hint": "「ツ」は てんが うえに ふたつ あるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-036",
+      "skill": "j09-hiragana",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ひらがなの「ん」と おなじ かたかなは？"
+      ],
+      "choices": [
+        "ソ",
+        "ン",
+        "レ"
+      ],
+      "answer": 1,
+      "hint": "「ン」は てんが ひだりに ついて いるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-037",
+      "skill": "j09-hiragana",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "かたかなの「ソ」と おなじ ひらがなは？"
+      ],
+      "choices": [
+        "そ",
+        "ん",
+        "し"
+      ],
+      "answer": 0,
+      "hint": "こえに して 「そ」と よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-038",
+      "skill": "j09-hiragana",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "かたかなの「ヌ」と おなじ ひらがなは？"
+      ],
+      "choices": [
+        "す",
+        "ぬ",
+        "め"
+      ],
+      "answer": 1,
+      "hint": "こえに して 「ぬ」と よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-039",
+      "skill": "j09-hiragana",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "かたかなの「ア」と おなじ ひらがなは？"
+      ],
+      "choices": [
+        "ま",
+        "あ",
+        "や"
+      ],
+      "answer": 1,
+      "hint": "こえに して 「あ」と よんで みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-040",
+      "skill": "j09-hiragana",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「ぱん」を かたかなで かくと？"
+      ],
+      "choices": [
+        "パン",
+        "パソ",
+        "バン"
+      ],
+      "answer": 0,
+      "hint": "おとを よく きいて みてね",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-041",
+      "skill": "j09-hiragana",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「こっぷ」を かたかなで かくと？"
+      ],
+      "choices": [
+        "コツプ",
+        "コップ",
+        "ゴップ"
+      ],
+      "answer": 1,
+      "hint": "ちいさい 「ッ」を つかうよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-042",
+      "skill": "j09-hiragana",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「ばす」を かたかなで かくと？"
+      ],
+      "choices": [
+        "バヌ",
+        "バス",
+        "パス"
+      ],
+      "answer": 1,
+      "hint": "「ス」は せんが まじわらないよ",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-043",
+      "skill": "j09-hiragana",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「みるく」を かたかなで かくと？"
+      ],
+      "choices": [
+        "ミルク",
+        "ミルタ",
+        "ミレク"
+      ],
+      "answer": 0,
+      "hint": "ひとつずつ ゆびで おさえて みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-044",
+      "skill": "j09-hiragana",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「ぴあの」を かたかなで かくと？"
+      ],
+      "choices": [
+        "ピアノ",
+        "ヒアノ",
+        "ピマノ"
+      ],
+      "answer": 0,
+      "hint": "「ア」と 「マ」を みくらべよう",
+      "reward": "ki"
+    },
+    {
+      "id": "j09-045",
+      "skill": "j09-hiragana",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「たおる」を かたかなで かくと？"
+      ],
+      "choices": [
+        "タオル",
+        "クオル",
+        "タオレ"
+      ],
+      "answer": 0,
+      "hint": "「タ」は なかに せんが あるよ",
+      "reward": "ki"
+    }
+  ]
+}

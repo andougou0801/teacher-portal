@@ -27,5 +27,776 @@
       "power": "read"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "j13-001",
+      "skill": "j13-hito",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「目」は どう よむ？"
+      ],
+      "choices": [
+        "め",
+        "みみ",
+        "て"
+      ],
+      "answer": 0,
+      "hint": "ものを 見る ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-002",
+      "skill": "j13-hito",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「耳」は どう よむ？"
+      ],
+      "choices": [
+        "みみ",
+        "め",
+        "くち"
+      ],
+      "answer": 0,
+      "hint": "おとを きく ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-003",
+      "skill": "j13-hito",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「手」は どう よむ？"
+      ],
+      "choices": [
+        "て",
+        "あし",
+        "ゆび"
+      ],
+      "answer": 0,
+      "hint": "ものを もつ ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-004",
+      "skill": "j13-hito",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「口」は どう よむ？"
+      ],
+      "choices": [
+        "くち",
+        "みみ",
+        "はな"
+      ],
+      "answer": 0,
+      "hint": "ごはんを たべる ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-005",
+      "skill": "j13-hito",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「足」は どう よむ？"
+      ],
+      "choices": [
+        "あし",
+        "うで",
+        "くび"
+      ],
+      "answer": 0,
+      "hint": "あるく ときに つかうよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-006",
+      "skill": "j13-hito",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「人」は どう よむ？"
+      ],
+      "choices": [
+        "ひと",
+        "いぬ",
+        "むし"
+      ],
+      "answer": 0,
+      "hint": "おとなも こどもも そうだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-007",
+      "skill": "j13-hito",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「見る」は どう よむ？"
+      ],
+      "choices": [
+        "みる",
+        "きく",
+        "さわる"
+      ],
+      "answer": 0,
+      "hint": "目で する ことだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-008",
+      "skill": "j13-hito",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「立つ」は どう よむ？"
+      ],
+      "choices": [
+        "たつ",
+        "すわる",
+        "ねる"
+      ],
+      "answer": 0,
+      "hint": "足で まっすぐに なるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-009",
+      "skill": "j13-hito",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「力」は どう よむ？"
+      ],
+      "choices": [
+        "ちから",
+        "あたま",
+        "ゆび"
+      ],
+      "answer": 0,
+      "hint": "おもい ものを もつ ときに いるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-010",
+      "skill": "j13-hito",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「みみ」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "耳",
+        "目",
+        "口"
+      ],
+      "answer": 0,
+      "hint": "おとを きく ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-011",
+      "skill": "j13-hito",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「て」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "手",
+        "足",
+        "力"
+      ],
+      "answer": 0,
+      "hint": "ものを もつ ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-012",
+      "skill": "j13-hito",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「ひと」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "人",
+        "口",
+        "目"
+      ],
+      "answer": 0,
+      "hint": "あるいて いる かたちだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-013",
+      "skill": "j13-hito",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「め」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "目",
+        "見",
+        "耳"
+      ],
+      "answer": 0,
+      "hint": "かおの ぶぶんだけの かんじだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-014",
+      "skill": "j13-hito",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「みる」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "見",
+        "目",
+        "口"
+      ],
+      "answer": 0,
+      "hint": "目の したに あしが ついて いるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-015",
+      "skill": "j13-hito",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「たつ」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "立",
+        "力",
+        "手"
+      ],
+      "answer": 0,
+      "hint": "まっすぐ たって いる かたちだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-016",
+      "skill": "j13-shizen",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「山」は どう よむ？"
+      ],
+      "choices": [
+        "やま",
+        "かわ",
+        "そら"
+      ],
+      "answer": 0,
+      "hint": "たかく もりあがって いるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-017",
+      "skill": "j13-shizen",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「川」は どう よむ？"
+      ],
+      "choices": [
+        "かわ",
+        "やま",
+        "うみ"
+      ],
+      "answer": 0,
+      "hint": "みずが ながれて いるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-018",
+      "skill": "j13-shizen",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「花」は どう よむ？"
+      ],
+      "choices": [
+        "はな",
+        "くさ",
+        "いし"
+      ],
+      "answer": 0,
+      "hint": "はるに きれいに さくよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-019",
+      "skill": "j13-shizen",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「木」は どう よむ？"
+      ],
+      "choices": [
+        "き",
+        "くさ",
+        "はな"
+      ],
+      "answer": 0,
+      "hint": "たかく のびて はっぱが つくよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-020",
+      "skill": "j13-shizen",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「草」は どう よむ？"
+      ],
+      "choices": [
+        "くさ",
+        "き",
+        "つち"
+      ],
+      "answer": 0,
+      "hint": "じめんに ひくく はえるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-021",
+      "skill": "j13-shizen",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「空」は どう よむ？"
+      ],
+      "choices": [
+        "そら",
+        "くも",
+        "あめ"
+      ],
+      "answer": 0,
+      "hint": "うえに ひろがって いるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-022",
+      "skill": "j13-shizen",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「雨」は どう よむ？"
+      ],
+      "choices": [
+        "あめ",
+        "ゆき",
+        "かぜ"
+      ],
+      "answer": 0,
+      "hint": "空から つめたく ふって くるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-023",
+      "skill": "j13-shizen",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「石」は どう よむ？"
+      ],
+      "choices": [
+        "いし",
+        "すな",
+        "つち"
+      ],
+      "answer": 0,
+      "hint": "かたくて おもいよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-024",
+      "skill": "j13-shizen",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「犬」は どう よむ？"
+      ],
+      "choices": [
+        "いぬ",
+        "ねこ",
+        "とり"
+      ],
+      "answer": 0,
+      "hint": "わんわんと なくよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-025",
+      "skill": "j13-shizen",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「虫」は どう よむ？"
+      ],
+      "choices": [
+        "むし",
+        "とり",
+        "さかな"
+      ],
+      "answer": 0,
+      "hint": "草の なかに いるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-026",
+      "skill": "j13-shizen",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「玉」は どう よむ？"
+      ],
+      "choices": [
+        "たま",
+        "いし",
+        "はこ"
+      ],
+      "answer": 0,
+      "hint": "まるくて ころがるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-027",
+      "skill": "j13-shizen",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「た」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "田",
+        "川",
+        "石"
+      ],
+      "answer": 0,
+      "hint": "おこめを つくる ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-028",
+      "skill": "j13-shizen",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「林」は どう よむ？"
+      ],
+      "choices": [
+        "はやし",
+        "もり",
+        "やま"
+      ],
+      "answer": 0,
+      "hint": "木が ならんで いる かんじだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-029",
+      "skill": "j13-shizen",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「森」は どう よむ？"
+      ],
+      "choices": [
+        "もり",
+        "はやし",
+        "やま"
+      ],
+      "answer": 0,
+      "hint": "木が たくさん あつまって いるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-030",
+      "skill": "j13-shizen",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「天気」は どう よむ？"
+      ],
+      "choices": [
+        "てんき",
+        "あめき",
+        "そらき"
+      ],
+      "answer": 0,
+      "hint": "てんきよほうと いうね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-031",
+      "skill": "j13-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「山に のぼる」の「山」は どう よむ？"
+      ],
+      "choices": [
+        "やま",
+        "かわ",
+        "そら"
+      ],
+      "answer": 0,
+      "hint": "たかい ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-032",
+      "skill": "j13-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「空が あおい」の「空」は どう よむ？"
+      ],
+      "choices": [
+        "そら",
+        "くも",
+        "あめ"
+      ],
+      "answer": 0,
+      "hint": "うえを 見て みよう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-033",
+      "skill": "j13-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「花が さいた」の「花」は どう よむ？"
+      ],
+      "choices": [
+        "はな",
+        "くさ",
+        "たね"
+      ],
+      "answer": 0,
+      "hint": "きれいに さくね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-034",
+      "skill": "j13-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「雨が ふる」の「雨」は どう よむ？"
+      ],
+      "choices": [
+        "あめ",
+        "ゆき",
+        "かぜ"
+      ],
+      "answer": 0,
+      "hint": "かさを さすね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-035",
+      "skill": "j13-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「犬が はしる」の「犬」は どう よむ？"
+      ],
+      "choices": [
+        "いぬ",
+        "ねこ",
+        "うま"
+      ],
+      "answer": 0,
+      "hint": "わんわんと なくね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-036",
+      "skill": "j13-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「川で あそぶ」の「川」は どう よむ？"
+      ],
+      "choices": [
+        "かわ",
+        "うみ",
+        "いけ"
+      ],
+      "answer": 0,
+      "hint": "みずが ながれて いるね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-037",
+      "skill": "j13-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「手を あらう」の「手」は どう よむ？"
+      ],
+      "choices": [
+        "て",
+        "あし",
+        "かお"
+      ],
+      "answer": 0,
+      "hint": "ものを もつ ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-038",
+      "skill": "j13-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「目が さめる」の「目」は どう よむ？"
+      ],
+      "choices": [
+        "め",
+        "みみ",
+        "はな"
+      ],
+      "answer": 0,
+      "hint": "ものを 見る ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-039",
+      "skill": "j13-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「石を ひろう」の「石」は どう よむ？"
+      ],
+      "choices": [
+        "いし",
+        "すな",
+        "たま"
+      ],
+      "answer": 0,
+      "hint": "かたくて おもいね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-040",
+      "skill": "j13-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「人が 立つ」の「立つ」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "たつ",
+        "すわる",
+        "あるく"
+      ],
+      "answer": 0,
+      "hint": "足で まっすぐに なるよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-041",
+      "skill": "j13-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「虫を 見る」の「見る」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "みる",
+        "きく",
+        "さわる"
+      ],
+      "answer": 0,
+      "hint": "目で する ことだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-042",
+      "skill": "j13-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「田んぼの 草」の「草」は どう よむ？"
+      ],
+      "choices": [
+        "くさ",
+        "き",
+        "はな"
+      ],
+      "answer": 0,
+      "hint": "じめんに ひくく はえて いるね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-043",
+      "skill": "j13-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「森の なかを あるく」の「森」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "もり",
+        "はやし",
+        "やま"
+      ],
+      "answer": 0,
+      "hint": "木が たくさん ある ところだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-044",
+      "skill": "j13-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「天気が いい」の「天気」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "てんき",
+        "あめき",
+        "そらき"
+      ],
+      "answer": 0,
+      "hint": "てんきよほうと いうね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j13-045",
+      "skill": "j13-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「草が はえた 林」の「林」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "はやし",
+        "もり",
+        "やま"
+      ],
+      "answer": 0,
+      "hint": "木が ならんで いる ところだよ",
+      "reward": "nendo"
+    }
+  ]
 }

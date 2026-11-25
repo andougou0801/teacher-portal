@@ -1,0 +1,805 @@
+{
+  "j15": [
+    {
+      "id": "j15-001",
+      "skill": "j15-toi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どちら？"
+      ],
+      "choices": [
+        "ねこは なにを たべるのでしょう。",
+        "ねこが ないて います。"
+      ],
+      "answer": 0,
+      "hint": "きいて いる ぶんを さがそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-002",
+      "skill": "j15-toi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どちら？"
+      ],
+      "choices": [
+        "とりは そらを とびます。",
+        "とりは どこで ねるのでしょう。"
+      ],
+      "answer": 1,
+      "hint": "きいて いる ぶんを さがそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-003",
+      "skill": "j15-toi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どちら？"
+      ],
+      "choices": [
+        "これは なんの たねでしょう。",
+        "たねを まきました。"
+      ],
+      "answer": 0,
+      "hint": "きいて いる ぶんを さがそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-004",
+      "skill": "j15-toi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どちら？"
+      ],
+      "choices": [
+        "かたつむりは あめが すきです。",
+        "かたつむりは どこに いるでしょう。"
+      ],
+      "answer": 1,
+      "hint": "「でしょう」で おわる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-005",
+      "skill": "j15-toi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どちら？"
+      ],
+      "choices": [
+        "この はなの なまえは なんでしょう。",
+        "はなが さきました。"
+      ],
+      "answer": 0,
+      "hint": "「でしょう」で おわる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-006",
+      "skill": "j15-toi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どちら？"
+      ],
+      "choices": [
+        "さかなは みずの なかに います。",
+        "さかなは どうやって いきを するのでしょう。"
+      ],
+      "answer": 1,
+      "hint": "「でしょう」で おわる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-007",
+      "skill": "j15-toi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どれ？"
+      ],
+      "choices": [
+        "くまは ふゆに なにを するのでしょう。",
+        "くまは やまに すんで います。",
+        "くまは おおきい どうぶつです。"
+      ],
+      "answer": 0,
+      "hint": "「でしょう」で おわる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-008",
+      "skill": "j15-toi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どれ？"
+      ],
+      "choices": [
+        "あさがおの つるが のびました。",
+        "あさがおは なぜ つるを のばすのでしょう。",
+        "あさがおは あさに さきます。"
+      ],
+      "answer": 1,
+      "hint": "「なぜ」と きいて いる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-009",
+      "skill": "j15-toi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どれ？"
+      ],
+      "choices": [
+        "くじらは うみに います。",
+        "くじらは とても おおきいです。",
+        "くじらは なにを たべるのでしょう。"
+      ],
+      "answer": 2,
+      "hint": "「なにを」と きいて いる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-010",
+      "skill": "j15-toi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どれ？"
+      ],
+      "choices": [
+        "たんぽぽの たねは どこへ いくのでしょうか。",
+        "たんぽぽの たねは かるいです。",
+        "たんぽぽは きいろい はなです。"
+      ],
+      "answer": 0,
+      "hint": "「どこへ」と きいて いる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-011",
+      "skill": "j15-toi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どれ？"
+      ],
+      "choices": [
+        "ありは ぎょうれつを つくります。",
+        "ありは なぜ ぎょうれつを つくるのでしょうか。",
+        "ありは とても ちいさいです。"
+      ],
+      "answer": 1,
+      "hint": "「なぜ」と きいて いる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-012",
+      "skill": "j15-toi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どれ？"
+      ],
+      "choices": [
+        "かえるは みずべに います。",
+        "かえるは およぐのが じょうずです。",
+        "かえるの あしは どんな かたちでしょうか。"
+      ],
+      "answer": 2,
+      "hint": "「どんな」と きいて いる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-013",
+      "skill": "j15-toi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どれ？"
+      ],
+      "choices": [
+        "こうもりは よるに とびます。",
+        "こうもりは どうして よるに とぶのでしょう。",
+        "こうもりは さかさまに ぶらさがります。",
+        "こうもりは むしを たべます。"
+      ],
+      "answer": 1,
+      "hint": "「どうして」と きいて いる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-014",
+      "skill": "j15-toi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どれ？"
+      ],
+      "choices": [
+        "ゆきは しろいです。",
+        "ゆきは つめたいです。",
+        "ゆきは どんな ときに ふるのでしょう。",
+        "ゆきを まるめて あそびました。"
+      ],
+      "answer": 2,
+      "hint": "「どんな」と きいて いる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-015",
+      "skill": "j15-toi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "といの ぶんは どれ？"
+      ],
+      "choices": [
+        "たけのこは はるに でて きます。",
+        "たけのこは たけの こどもです。",
+        "たけのこを ほりました。",
+        "たけのこは なぜ はやく のびるのでしょう。"
+      ],
+      "answer": 3,
+      "hint": "「なぜ」と きいて いる ぶんだよ",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-016",
+      "skill": "j15-kotae",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "うさぎは みみが ながい。",
+        "なにが ながい？"
+      ],
+      "choices": [
+        "みみ",
+        "あし",
+        "しっぽ"
+      ],
+      "answer": 0,
+      "hint": "まえの ぶんを よみかえそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-017",
+      "skill": "j15-kotae",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ぞうは はなが ながい。",
+        "なにが ながい？"
+      ],
+      "choices": [
+        "みみ",
+        "はな",
+        "あし"
+      ],
+      "answer": 1,
+      "hint": "まえの ぶんを よみかえそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-018",
+      "skill": "j15-kotae",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "きりんは くびが ながい。",
+        "なにが ながい？"
+      ],
+      "choices": [
+        "しっぽ",
+        "つの",
+        "くび"
+      ],
+      "answer": 2,
+      "hint": "まえの ぶんを よみかえそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-019",
+      "skill": "j15-kotae",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "かめは せなかが かたい。",
+        "どこが かたい？"
+      ],
+      "choices": [
+        "せなか",
+        "あたま",
+        "あし"
+      ],
+      "answer": 0,
+      "hint": "まえの ぶんを よみかえそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-020",
+      "skill": "j15-kotae",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "とんぼは めが おおきい。",
+        "なにが おおきい？"
+      ],
+      "choices": [
+        "はね",
+        "め",
+        "あし"
+      ],
+      "answer": 1,
+      "hint": "まえの ぶんを よみかえそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-021",
+      "skill": "j15-kotae",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ひまわりは せが たかい。",
+        "どこが たかい？"
+      ],
+      "choices": [
+        "はっぱ",
+        "ね",
+        "せ"
+      ],
+      "answer": 2,
+      "hint": "まえの ぶんを よみかえそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-022",
+      "skill": "j15-kotae",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ねこが えんがわで ねて いる。",
+        "どこで ねて いる？"
+      ],
+      "choices": [
+        "えんがわ",
+        "にわ",
+        "やね"
+      ],
+      "answer": 0,
+      "hint": "「どこで」の こたえを さがそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-023",
+      "skill": "j15-kotae",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あさ とりが ないた。",
+        "いつ ないた？"
+      ],
+      "choices": [
+        "よる",
+        "あさ",
+        "ゆうがた"
+      ],
+      "answer": 1,
+      "hint": "「いつ」の こたえを さがそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-024",
+      "skill": "j15-kotae",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "こうえんで ボールを なげた。",
+        "どこで なげた？"
+      ],
+      "choices": [
+        "かわ",
+        "やま",
+        "こうえん"
+      ],
+      "answer": 2,
+      "hint": "「どこで」の こたえを さがそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-025",
+      "skill": "j15-kotae",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あめが ふったので かさを さした。",
+        "なぜ かさを さした？"
+      ],
+      "choices": [
+        "あめが ふったから",
+        "かぜが ふいたから",
+        "さむかったから"
+      ],
+      "answer": 0,
+      "hint": "「ので」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-026",
+      "skill": "j15-kotae",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "さむいので まどを しめた。",
+        "なぜ まどを しめた？"
+      ],
+      "choices": [
+        "あついから",
+        "さむいから",
+        "くらいから"
+      ],
+      "answer": 1,
+      "hint": "「ので」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-027",
+      "skill": "j15-kotae",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "のどが かわいたので みずを のんだ。",
+        "なぜ みずを のんだ？"
+      ],
+      "choices": [
+        "ねむかったから",
+        "おなかが すいたから",
+        "のどが かわいたから"
+      ],
+      "answer": 2,
+      "hint": "「ので」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-028",
+      "skill": "j15-kotae",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "にわの きに とりが とまった。",
+        "なにが とまった？"
+      ],
+      "choices": [
+        "とり",
+        "き",
+        "にわ",
+        "はっぱ"
+      ],
+      "answer": 0,
+      "hint": "「が」の まえを みてね",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-029",
+      "skill": "j15-kotae",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "いけの なかで かえるが ないた。",
+        "どこで ないた？"
+      ],
+      "choices": [
+        "やまの うえ",
+        "いけの なか",
+        "みちの はし",
+        "にわの すみ"
+      ],
+      "answer": 1,
+      "hint": "「どこで」の こたえを さがそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-030",
+      "skill": "j15-kotae",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ゆうがた にしの そらが あかくなった。",
+        "いつ あかくなった？"
+      ],
+      "choices": [
+        "あさ",
+        "ひるま",
+        "ゆうがた",
+        "よなか"
+      ],
+      "answer": 2,
+      "hint": "「いつ」の こたえを さがそう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-031",
+      "skill": "j15-daiji",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "いぬ ねこ うさぎ",
+        "みんなを まとめる ことばは？"
+      ],
+      "choices": [
+        "どうぶつ",
+        "のりもの",
+        "くだもの"
+      ],
+      "answer": 0,
+      "hint": "なかまの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-032",
+      "skill": "j15-daiji",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "りんご みかん ばなな",
+        "みんなを まとめる ことばは？"
+      ],
+      "choices": [
+        "やさい",
+        "くだもの",
+        "どうぶつ"
+      ],
+      "answer": 1,
+      "hint": "なかまの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-033",
+      "skill": "j15-daiji",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "バス でんしゃ ひこうき",
+        "みんなを まとめる ことばは？"
+      ],
+      "choices": [
+        "たべもの",
+        "どうぶつ",
+        "のりもの"
+      ],
+      "answer": 2,
+      "hint": "なかまの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-034",
+      "skill": "j15-daiji",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あか あお きいろ",
+        "みんなを まとめる ことばは？"
+      ],
+      "choices": [
+        "いろ",
+        "かたち",
+        "かず"
+      ],
+      "answer": 0,
+      "hint": "なかまの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-035",
+      "skill": "j15-daiji",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あさ ひる よる",
+        "みんなを まとめる ことばは？"
+      ],
+      "choices": [
+        "ばしょ",
+        "とき",
+        "いろ"
+      ],
+      "answer": 1,
+      "hint": "なかまの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-036",
+      "skill": "j15-daiji",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "あたま て あし",
+        "みんなを まとめる ことばは？"
+      ],
+      "choices": [
+        "ふく",
+        "たべもの",
+        "からだ"
+      ],
+      "answer": 2,
+      "hint": "なかまの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-037",
+      "skill": "j15-daiji",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ゆきが しずかに ふる。",
+        "だいじな ことばは どれ？"
+      ],
+      "choices": [
+        "ゆき",
+        "が",
+        "に"
+      ],
+      "answer": 0,
+      "hint": "ものの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-038",
+      "skill": "j15-daiji",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "うみで かいを ひろった。",
+        "だいじな ことばは どれ？"
+      ],
+      "choices": [
+        "で",
+        "かい",
+        "を"
+      ],
+      "answer": 1,
+      "hint": "ものの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-039",
+      "skill": "j15-daiji",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "そらに にじが でた。",
+        "だいじな ことばは どれ？"
+      ],
+      "choices": [
+        "に",
+        "が",
+        "にじ"
+      ],
+      "answer": 2,
+      "hint": "ものの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-040",
+      "skill": "j15-daiji",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ありは つちの なかに すむ。",
+        "だいじな ことばは どれ？"
+      ],
+      "choices": [
+        "あり",
+        "は",
+        "に",
+        "の"
+      ],
+      "answer": 0,
+      "hint": "いきものの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-041",
+      "skill": "j15-daiji",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "はるに さくらが さいた。",
+        "だいじな ことばは どれ？"
+      ],
+      "choices": [
+        "に",
+        "さくら",
+        "が",
+        "を"
+      ],
+      "answer": 1,
+      "hint": "ものの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-042",
+      "skill": "j15-daiji",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "とりが えだから とんだ。",
+        "だいじな ことばは どれ？"
+      ],
+      "choices": [
+        "が",
+        "から",
+        "とり",
+        "の"
+      ],
+      "answer": 2,
+      "hint": "いきものの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-043",
+      "skill": "j15-daiji",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ねこと いぬが はしる。",
+        "ふたつを まとめる ことばは？"
+      ],
+      "choices": [
+        "どうぶつ",
+        "のりもの",
+        "たべもの",
+        "くだもの"
+      ],
+      "answer": 0,
+      "hint": "なかまの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-044",
+      "skill": "j15-daiji",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "りんごと みかんを たべた。",
+        "ふたつを まとめる ことばは？"
+      ],
+      "choices": [
+        "やさい",
+        "くだもの",
+        "のりもの",
+        "どうぶつ"
+      ],
+      "answer": 1,
+      "hint": "なかまの なまえを えらぼう",
+      "reward": "nendo"
+    },
+    {
+      "id": "j15-045",
+      "skill": "j15-daiji",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "バスと でんしゃに のった。",
+        "ふたつを まとめる ことばは？"
+      ],
+      "choices": [
+        "たべもの",
+        "どうぶつ",
+        "のりもの",
+        "いろ"
+      ],
+      "answer": 2,
+      "hint": "なかまの なまえを えらぼう",
+      "reward": "nendo"
+    }
+  ]
+}

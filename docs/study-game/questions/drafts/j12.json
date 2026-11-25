@@ -1,0 +1,775 @@
+{
+  "j12": [
+    {
+      "id": "j12-001",
+      "skill": "j12-kazu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「一」は どう よむ？"
+      ],
+      "choices": [
+        "いち",
+        "に",
+        "さん"
+      ],
+      "answer": 0,
+      "hint": "はじめの かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-002",
+      "skill": "j12-kazu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「二」は どう よむ？"
+      ],
+      "choices": [
+        "に",
+        "し",
+        "ご"
+      ],
+      "answer": 0,
+      "hint": "いちの つぎの かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-003",
+      "skill": "j12-kazu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「三」は どう よむ？"
+      ],
+      "choices": [
+        "さん",
+        "ろく",
+        "はち"
+      ],
+      "answer": 0,
+      "hint": "ぼうが みっつ ならんで いるね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-004",
+      "skill": "j12-kazu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「よん」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "四",
+        "二",
+        "八"
+      ],
+      "answer": 0,
+      "hint": "しとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-005",
+      "skill": "j12-kazu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「五」は どう よむ？"
+      ],
+      "choices": [
+        "ご",
+        "く",
+        "ろく"
+      ],
+      "answer": 0,
+      "hint": "かたての ゆびの かずと おなじ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-006",
+      "skill": "j12-kazu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「六」は どう よむ？"
+      ],
+      "choices": [
+        "ろく",
+        "なな",
+        "はち"
+      ],
+      "answer": 0,
+      "hint": "ごの つぎの かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-007",
+      "skill": "j12-kazu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「七」は どう よむ？"
+      ],
+      "choices": [
+        "なな",
+        "はち",
+        "きゅう"
+      ],
+      "answer": 0,
+      "hint": "しちとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-008",
+      "skill": "j12-kazu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「八」は どう よむ？"
+      ],
+      "choices": [
+        "はち",
+        "じゅう",
+        "ろく"
+      ],
+      "answer": 0,
+      "hint": "ななの つぎの かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-009",
+      "skill": "j12-kazu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「九」は どう よむ？"
+      ],
+      "choices": [
+        "きゅう",
+        "しち",
+        "じゅう"
+      ],
+      "answer": 0,
+      "hint": "くとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-010",
+      "skill": "j12-kazu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「十」は どう よむ？"
+      ],
+      "choices": [
+        "じゅう",
+        "ひゃく",
+        "せん"
+      ],
+      "answer": 0,
+      "hint": "りょうての ゆびを ぜんぶ つかう かず",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-011",
+      "skill": "j12-kazu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「ひとつ」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "一",
+        "二",
+        "十"
+      ],
+      "answer": 0,
+      "hint": "いちとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-012",
+      "skill": "j12-kazu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「ふたつ」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "二",
+        "三",
+        "五"
+      ],
+      "answer": 0,
+      "hint": "にとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-013",
+      "skill": "j12-kazu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「百」は どう よむ？"
+      ],
+      "choices": [
+        "ひゃく",
+        "せん",
+        "じゅう"
+      ],
+      "answer": 0,
+      "hint": "じゅうより ずっと おおきい かず",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-014",
+      "skill": "j12-kazu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「千」は どう よむ？"
+      ],
+      "choices": [
+        "せん",
+        "ひゃく",
+        "まん"
+      ],
+      "answer": 0,
+      "hint": "百より おおきい かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-015",
+      "skill": "j12-kazu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「とお」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "十",
+        "百",
+        "千"
+      ],
+      "answer": 0,
+      "hint": "じゅうとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-016",
+      "skill": "j12-hi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「水」は どう よむ？"
+      ],
+      "choices": [
+        "みず",
+        "かぜ",
+        "ゆき"
+      ],
+      "answer": 0,
+      "hint": "のむと つめたいね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-017",
+      "skill": "j12-hi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「木」は どう よむ？"
+      ],
+      "choices": [
+        "き",
+        "かわ",
+        "やま"
+      ],
+      "answer": 0,
+      "hint": "はっぱが つくよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-018",
+      "skill": "j12-hi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「月」は どう よむ？"
+      ],
+      "choices": [
+        "つき",
+        "ほし",
+        "くも"
+      ],
+      "answer": 0,
+      "hint": "よぞらに ひかるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-019",
+      "skill": "j12-hi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「土」は どう よむ？"
+      ],
+      "choices": [
+        "つち",
+        "いし",
+        "すな"
+      ],
+      "answer": 0,
+      "hint": "はたけの じめんだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-020",
+      "skill": "j12-hi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「火」は どう よむ？"
+      ],
+      "choices": [
+        "ひ",
+        "みず",
+        "かぜ"
+      ],
+      "answer": 0,
+      "hint": "あかくて あついよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-021",
+      "skill": "j12-hi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「金」は どう よむ？"
+      ],
+      "choices": [
+        "かね",
+        "いし",
+        "つち"
+      ],
+      "answer": 0,
+      "hint": "きらきら ひかる おかねだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-022",
+      "skill": "j12-hi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「月よう日」の「月」は どう よむ？"
+      ],
+      "choices": [
+        "げつ",
+        "つち",
+        "かね"
+      ],
+      "answer": 0,
+      "hint": "げつようびと いうね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-023",
+      "skill": "j12-hi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「火よう日」の「火」は どう よむ？"
+      ],
+      "choices": [
+        "か",
+        "みず",
+        "き"
+      ],
+      "answer": 0,
+      "hint": "かようびと いうね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-024",
+      "skill": "j12-hi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「水よう日」の「水」は どう よむ？"
+      ],
+      "choices": [
+        "すい",
+        "つち",
+        "かね"
+      ],
+      "answer": 0,
+      "hint": "すいようびと いうね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-025",
+      "skill": "j12-hi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「木よう日」の「木」は どう よむ？"
+      ],
+      "choices": [
+        "もく",
+        "ひ",
+        "みず"
+      ],
+      "answer": 0,
+      "hint": "もくようびと いうね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-026",
+      "skill": "j12-hi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「金よう日」の「金」は どう よむ？"
+      ],
+      "choices": [
+        "きん",
+        "みず",
+        "つち"
+      ],
+      "answer": 0,
+      "hint": "きんようびと いうね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-027",
+      "skill": "j12-hi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「土よう日」の「土」は どう よむ？"
+      ],
+      "choices": [
+        "ど",
+        "つき",
+        "き"
+      ],
+      "answer": 0,
+      "hint": "どようびと いうね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-028",
+      "skill": "j12-hi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「日よう日」の さいしょの「日」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "にち",
+        "つち",
+        "かね"
+      ],
+      "answer": 0,
+      "hint": "にちようびと いうね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-029",
+      "skill": "j12-hi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「つち」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "土",
+        "上",
+        "下"
+      ],
+      "answer": 0,
+      "hint": "下の よこぼうが ながい ほうだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-030",
+      "skill": "j12-hi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「もくようび」と よむのは どれ？"
+      ],
+      "choices": [
+        "木よう日",
+        "水よう日",
+        "金よう日"
+      ],
+      "answer": 0,
+      "hint": "もくは 木の よみかただよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-031",
+      "skill": "j12-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「水が つめたい」の「水」は どう よむ？"
+      ],
+      "choices": [
+        "みず",
+        "こめ",
+        "かぜ"
+      ],
+      "answer": 0,
+      "hint": "のみものだね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-032",
+      "skill": "j12-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「大きな 木」の「木」は どう よむ？"
+      ],
+      "choices": [
+        "き",
+        "くさ",
+        "いし"
+      ],
+      "answer": 0,
+      "hint": "もりに たくさん あるね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-033",
+      "skill": "j12-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「月が きれいだ」の「月」は どう よむ？"
+      ],
+      "choices": [
+        "つき",
+        "ほし",
+        "くも"
+      ],
+      "answer": 0,
+      "hint": "よるの そらに みえるね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-034",
+      "skill": "j12-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「上を みる」の「上」は どう よむ？"
+      ],
+      "choices": [
+        "うえ",
+        "した",
+        "そと"
+      ],
+      "answer": 0,
+      "hint": "そらの ほうだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-035",
+      "skill": "j12-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「下に おりる」の「下」は どう よむ？"
+      ],
+      "choices": [
+        "した",
+        "うえ",
+        "よこ"
+      ],
+      "answer": 0,
+      "hint": "ひくい ほうだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-036",
+      "skill": "j12-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「はこの 中」の「中」は どう よむ？"
+      ],
+      "choices": [
+        "なか",
+        "そと",
+        "うえ"
+      ],
+      "answer": 0,
+      "hint": "はこの うちがわだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-037",
+      "skill": "j12-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「土が ついた」の「土」は どう よむ？"
+      ],
+      "choices": [
+        "つち",
+        "みず",
+        "かぜ"
+      ],
+      "answer": 0,
+      "hint": "そとの じめんだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-038",
+      "skill": "j12-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「大きい」は どう よむ？"
+      ],
+      "choices": [
+        "おおきい",
+        "ちいさい",
+        "たかい"
+      ],
+      "answer": 0,
+      "hint": "小さいの はんたいだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-039",
+      "skill": "j12-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「小さい とり」の「小さい」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "ちいさい",
+        "おおきい",
+        "すこし"
+      ],
+      "answer": 0,
+      "hint": "大きいの はんたいだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-040",
+      "skill": "j12-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「一年が すぎた」の「一年」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "いちねん",
+        "ひととし",
+        "いちとし"
+      ],
+      "answer": 0,
+      "hint": "いちねんと よむよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-041",
+      "skill": "j12-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「水よう日に およぐ」の「水」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "すい",
+        "つち",
+        "かね"
+      ],
+      "answer": 0,
+      "hint": "すいようびと いうね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-042",
+      "skill": "j12-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「十年まえの こと」の「十年」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "じゅうねん",
+        "とおねん",
+        "じゅうとし"
+      ],
+      "answer": 0,
+      "hint": "じゅうねんと よむよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-043",
+      "skill": "j12-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「あつい 日が つづく」の「日」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "ひ",
+        "にち",
+        "か"
+      ],
+      "answer": 0,
+      "hint": "おひさまの ことだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-044",
+      "skill": "j12-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「百えんの パン」の「百」は どう よむ？"
+      ],
+      "choices": [
+        "ひゃく",
+        "せん",
+        "じゅう"
+      ],
+      "answer": 0,
+      "hint": "ひゃくえんと いうね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j12-045",
+      "skill": "j12-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「五十えん」の「五十」は どう よむ？"
+      ],
+      "choices": [
+        "ごじゅう",
+        "ごとお",
+        "いつじゅう"
+      ],
+      "answer": 0,
+      "hint": "ごじゅうと よむよ",
+      "reward": "ishi"
+    }
+  ]
+}

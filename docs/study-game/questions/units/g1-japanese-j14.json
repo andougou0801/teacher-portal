@@ -27,5 +27,778 @@
       "power": "word"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "j14-001",
+      "skill": "j14-desu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「たべる」を ていねいに いうと？"
+      ],
+      "choices": [
+        "たべます",
+        "たべるです",
+        "たべだ"
+      ],
+      "answer": 0,
+      "hint": "「ます」を つけるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-002",
+      "skill": "j14-desu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「のむ」を ていねいに いうと？"
+      ],
+      "choices": [
+        "のむです",
+        "のみます",
+        "のんだ"
+      ],
+      "answer": 1,
+      "hint": "「ます」を つけるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-003",
+      "skill": "j14-desu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「みる」を ていねいに いうと？"
+      ],
+      "choices": [
+        "みるです",
+        "みた",
+        "みます"
+      ],
+      "answer": 2,
+      "hint": "「ます」を つけるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-004",
+      "skill": "j14-desu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「いった」を ていねいに いうと？"
+      ],
+      "choices": [
+        "いいました",
+        "いったです",
+        "いうました"
+      ],
+      "answer": 0,
+      "hint": "「ました」に なるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-005",
+      "skill": "j14-desu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「かいた」を ていねいに いうと？"
+      ],
+      "choices": [
+        "かいたです",
+        "かきました",
+        "かくました"
+      ],
+      "answer": 1,
+      "hint": "「ました」に なるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-006",
+      "skill": "j14-desu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「よんだ」を ていねいに いうと？"
+      ],
+      "choices": [
+        "よむました",
+        "よんだです",
+        "よみました"
+      ],
+      "answer": 2,
+      "hint": "「ました」に なるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-007",
+      "skill": "j14-desu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「ぼくは はしる。」を",
+        "ていねいに いうと？"
+      ],
+      "choices": [
+        "ぼくは はしります。",
+        "ぼくは はしるです。",
+        "ぼくは はしった。"
+      ],
+      "answer": 0,
+      "hint": "「ます」を つけるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-008",
+      "skill": "j14-desu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「わたしは よむ。」を",
+        "ていねいに いうと？"
+      ],
+      "choices": [
+        "わたしは よむです。",
+        "わたしは よみます。",
+        "わたしは よんだ。"
+      ],
+      "answer": 1,
+      "hint": "「ます」を つけるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-009",
+      "skill": "j14-desu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「とりが とんだ。」を",
+        "ていねいに いうと？"
+      ],
+      "choices": [
+        "とりが とぶました。",
+        "とりが とんだです。",
+        "とりが とびました。"
+      ],
+      "answer": 2,
+      "hint": "「ました」に なるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-010",
+      "skill": "j14-desu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ていねいな いいかたは どちら？"
+      ],
+      "choices": [
+        "あしたは やすみです。",
+        "あしたは やすみだ。"
+      ],
+      "answer": 0,
+      "hint": "「です」が ついて いる ほう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-011",
+      "skill": "j14-desu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ていねいな いいかたは どちら？"
+      ],
+      "choices": [
+        "これは えんぴつだ。",
+        "これは えんぴつです。"
+      ],
+      "answer": 1,
+      "hint": "「です」が ついて いる ほう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-012",
+      "skill": "j14-desu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ていねいな いいかたは どちら？"
+      ],
+      "choices": [
+        "にわに はなが さいた。",
+        "にわに はなが さきました。"
+      ],
+      "answer": 1,
+      "hint": "「ました」が ついて いる ほう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-013",
+      "skill": "j14-desu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「あめが ふって いる。」を",
+        "ていねいに いうと？"
+      ],
+      "choices": [
+        "あめが ふって います。",
+        "あめが ふって いるです。",
+        "あめが ふり います。"
+      ],
+      "answer": 0,
+      "hint": "「いる」が「います」に なるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-014",
+      "skill": "j14-desu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「ここは こうえんだ。」を",
+        "ていねいに いうと？"
+      ],
+      "choices": [
+        "ここは こうえんます。",
+        "ここは こうえんです。",
+        "ここは こうえんだよ。"
+      ],
+      "answer": 1,
+      "hint": "「だ」を「です」に かえるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-015",
+      "skill": "j14-desu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「とても たのしかった。」を",
+        "ていねいに いうと？"
+      ],
+      "choices": [
+        "とても たのしいでした。",
+        "とても たのしかったます。",
+        "とても たのしかったです。"
+      ],
+      "answer": 2,
+      "hint": "うしろに「です」を つけるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-016",
+      "skill": "j14-tsukaiwake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "せんせいに はなす ときは どちら？"
+      ],
+      "choices": [
+        "あしたは やすみです。",
+        "あしたは やすみだ。"
+      ],
+      "answer": 0,
+      "hint": "せんせいには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-017",
+      "skill": "j14-tsukaiwake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "おきゃくさんに はなす ときは",
+        "どちら？"
+      ],
+      "choices": [
+        "こっちに きて。",
+        "こちらへ どうぞ。"
+      ],
+      "answer": 1,
+      "hint": "おきゃくさんには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-018",
+      "skill": "j14-tsukaiwake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ともだちに あいさつ する ときは",
+        "どちら？"
+      ],
+      "choices": [
+        "おはよう",
+        "おはよう ございます"
+      ],
+      "answer": 0,
+      "hint": "ともだちには ふだんの ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-019",
+      "skill": "j14-tsukaiwake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "せんせいに へんじを する ときは",
+        "どちら？"
+      ],
+      "choices": [
+        "うん、わかった。",
+        "はい、わかりました。"
+      ],
+      "answer": 1,
+      "hint": "せんせいには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-020",
+      "skill": "j14-tsukaiwake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "おみせの ひとに きく ときは",
+        "どちら？"
+      ],
+      "choices": [
+        "これは いくらですか。",
+        "これ いくら。"
+      ],
+      "answer": 0,
+      "hint": "しらない ひとには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-021",
+      "skill": "j14-tsukaiwake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ともだちに あやまる ときは",
+        "どちら？"
+      ],
+      "choices": [
+        "ごめんね",
+        "もうしわけ ありません"
+      ],
+      "answer": 0,
+      "hint": "ともだちには ふだんの ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-022",
+      "skill": "j14-tsukaiwake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "せんせいに たのむ ときは どちら？"
+      ],
+      "choices": [
+        "これ つかって いい。",
+        "これを つかって いいですか。"
+      ],
+      "answer": 1,
+      "hint": "せんせいには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-023",
+      "skill": "j14-tsukaiwake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "しらない おとなの ひとに",
+        "はなす ときは どちら？"
+      ],
+      "choices": [
+        "ここは どこですか。",
+        "ここ どこ。"
+      ],
+      "answer": 0,
+      "hint": "しらない ひとには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-024",
+      "skill": "j14-tsukaiwake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ともだちに えんぴつを かりる",
+        "ときは どちら？"
+      ],
+      "choices": [
+        "かして いただけますか",
+        "かして"
+      ],
+      "answer": 1,
+      "hint": "ともだちには ふだんの ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-025",
+      "skill": "j14-tsukaiwake",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "おきゃくさんを むかえる ときは",
+        "どちら？"
+      ],
+      "choices": [
+        "いらっしゃいませ。",
+        "やあ、きたね。"
+      ],
+      "answer": 0,
+      "hint": "おきゃくさんには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-026",
+      "skill": "j14-tsukaiwake",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "せんせいに ものを わたす ときは",
+        "どちら？"
+      ],
+      "choices": [
+        "ほら、あげる。",
+        "どうぞ、おねがいします。"
+      ],
+      "answer": 1,
+      "hint": "せんせいには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-027",
+      "skill": "j14-tsukaiwake",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ともだちに おれいを いう ときは",
+        "どちら？"
+      ],
+      "choices": [
+        "ありがとう",
+        "ありがとう ございます"
+      ],
+      "answer": 0,
+      "hint": "ともだちには ふだんの ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-028",
+      "skill": "j14-tsukaiwake",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "おとなの ひとに おれいを いう",
+        "ときは どちら？"
+      ],
+      "choices": [
+        "ありがとう",
+        "ありがとう ございます"
+      ],
+      "answer": 1,
+      "hint": "おとなの ひとには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-029",
+      "skill": "j14-tsukaiwake",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "せんせいに はなしたい ときは",
+        "どちら？"
+      ],
+      "choices": [
+        "おはなしが あります。",
+        "はなしが ある。"
+      ],
+      "answer": 0,
+      "hint": "せんせいには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-030",
+      "skill": "j14-tsukaiwake",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "おきゃくさんに へんじを する",
+        "ときは どちら？"
+      ],
+      "choices": [
+        "うん、そう。",
+        "はい、そうです。"
+      ],
+      "answer": 1,
+      "hint": "おきゃくさんには ていねいな ことばで",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-031",
+      "skill": "j14-aisatsu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "あさ あった ときの あいさつは？"
+      ],
+      "choices": [
+        "おはよう ございます",
+        "こんばんは",
+        "おやすみなさい"
+      ],
+      "answer": 0,
+      "hint": "あさの あいさつだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-032",
+      "skill": "j14-aisatsu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ごはんを たべる まえに いうのは？"
+      ],
+      "choices": [
+        "ごちそうさま",
+        "いただきます",
+        "ただいま"
+      ],
+      "answer": 1,
+      "hint": "たべる まえに いう ことばだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-033",
+      "skill": "j14-aisatsu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "よる ねる ときの あいさつは？"
+      ],
+      "choices": [
+        "おはよう",
+        "こんにちは",
+        "おやすみなさい"
+      ],
+      "answer": 2,
+      "hint": "ねる ときの ことばだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-034",
+      "skill": "j14-aisatsu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ひるま あった ときの あいさつは？"
+      ],
+      "choices": [
+        "こんにちは",
+        "こんばんは",
+        "おやすみ"
+      ],
+      "answer": 0,
+      "hint": "ひるまの あいさつだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-035",
+      "skill": "j14-aisatsu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ごはんを たべた あとに いうのは？"
+      ],
+      "choices": [
+        "いただきます",
+        "ごちそうさま",
+        "いってきます"
+      ],
+      "answer": 1,
+      "hint": "たべた あとの おれいだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-036",
+      "skill": "j14-aisatsu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "いえに かえって きた ときは？"
+      ],
+      "choices": [
+        "いってきます",
+        "おかえり",
+        "ただいま"
+      ],
+      "answer": 2,
+      "hint": "かえって きた ひとが いう ことば",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-037",
+      "skill": "j14-aisatsu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "いえを でる ときの あいさつは？"
+      ],
+      "choices": [
+        "いってきます",
+        "いってらっしゃい",
+        "ただいま"
+      ],
+      "answer": 0,
+      "hint": "でかける ひとが いう ことば",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-038",
+      "skill": "j14-aisatsu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ものを もらった ときに いうのは？"
+      ],
+      "choices": [
+        "ごめんなさい",
+        "ありがとう",
+        "こんにちは"
+      ],
+      "answer": 1,
+      "hint": "おれいの ことばだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-039",
+      "skill": "j14-aisatsu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ともだちの あしを ふんだ ときは？"
+      ],
+      "choices": [
+        "ありがとう",
+        "おはよう",
+        "ごめんなさい"
+      ],
+      "answer": 2,
+      "hint": "あやまる ことばだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-040",
+      "skill": "j14-aisatsu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "かえって きた ひとに いうのは？"
+      ],
+      "choices": [
+        "おかえりなさい",
+        "ただいま",
+        "いってきます",
+        "こんばんは"
+      ],
+      "answer": 0,
+      "hint": "むかえる ひとが いう ことば",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-041",
+      "skill": "j14-aisatsu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "でかける ひとに いうのは？"
+      ],
+      "choices": [
+        "いってきます",
+        "いってらっしゃい",
+        "ただいま",
+        "さようなら"
+      ],
+      "answer": 1,
+      "hint": "みおくる ひとが いう ことば",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-042",
+      "skill": "j14-aisatsu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "よる あった ときの あいさつは？"
+      ],
+      "choices": [
+        "おはよう",
+        "こんにちは",
+        "こんばんは",
+        "いただきます"
+      ],
+      "answer": 2,
+      "hint": "よるに あった ときの ことば",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-043",
+      "skill": "j14-aisatsu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ともだちと わかれる ときは？"
+      ],
+      "choices": [
+        "さようなら",
+        "はじめまして",
+        "いただきます",
+        "ただいま"
+      ],
+      "answer": 0,
+      "hint": "わかれる ときの ことばだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-044",
+      "skill": "j14-aisatsu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "はじめて あった ひとに いうのは？"
+      ],
+      "choices": [
+        "さようなら",
+        "はじめまして",
+        "おかえりなさい",
+        "おやすみなさい"
+      ],
+      "answer": 1,
+      "hint": "はじめて あった ときの ことば",
+      "reward": "ishi"
+    },
+    {
+      "id": "j14-045",
+      "skill": "j14-aisatsu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "せんせいの へやに はいる ときは？"
+      ],
+      "choices": [
+        "いただきます",
+        "ただいま",
+        "しつれいします",
+        "いってきます"
+      ],
+      "answer": 2,
+      "hint": "へやに はいる ときの ことば",
+      "reward": "ishi"
+    }
+  ]
 }
