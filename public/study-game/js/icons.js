@@ -9,6 +9,7 @@ import { BUILDING_ART_M3 } from "./building-art-m3.js";
 import { moyaArtJp, MOYA_NAMES_JP, MOYA_ART_JP } from "./moya-art-jp.js";
 import { moyaArtM2, MOYA_NAMES_M2, MOYA_ART_M2 } from "./moya-art-m2.js";
 import { moyaArtM3, MOYA_NAMES_M3, MOYA_ART_M3 } from "./moya-art-m3.js";
+import { moyaArtJp2, MOYA_NAMES_JP2, MOYA_ART_JP2 } from "./moya-art-jp2.js";
 
 const ink = "#2B2A28";
 
@@ -128,19 +129,22 @@ export function face(index, wearing, size = 100) {
 
 /* ================= もやもや（モンスター） ================= */
 // もやもや（モンスター）の絵は moya-art.js にある（12体・形で見分けられる）
-// さんすう1学期12体＋こくご8体＋さんすう2学期5体＋さんすう3学期6体＝31体
+// さんすう1学期12体＋こくご1学期8体＋さんすう2学期5体＋さんすう3学期6体
+// ＋こくご2学期8体（moya-art-jp2.js）＝39体
 // 2学期の かさ・かたち・とけい は moya-art.js の 3体を そのまま 使う。
 export const MOYA_NAMES = {
   ...MOYA_NAMES_12,
   ...MOYA_NAMES_JP,
   ...MOYA_NAMES_M2,
   ...MOYA_NAMES_M3,
+  ...MOYA_NAMES_JP2,
 };
 
 export function moya(id, mood = "normal", size = 100) {
   if (MOYA_ART_JP[id]) return moyaArtJp(id, mood, size);
   if (MOYA_ART_M2[id]) return moyaArtM2(id, mood, size);
   if (MOYA_ART_M3[id]) return moyaArtM3(id, mood, size);
+  if (MOYA_ART_JP2[id]) return moyaArtJp2(id, mood, size);
   return moyaArt(id, mood, size);
 }
 

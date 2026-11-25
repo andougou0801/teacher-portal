@@ -14,6 +14,7 @@ const CORE = [
   "js/moya-art-jp.js",
   "js/moya-art-m2.js",
   "js/moya-art-m3.js",
+  "js/moya-art-jp2.js",
   "js/hiragana-strokes.js",
   "js/figure.js",
   "js/figure2.js",
