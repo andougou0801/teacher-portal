@@ -230,4 +230,46 @@ function blocks10(f) {
   return wrap(inner, 420, 170);
 }
 
-export const KINDS2 = { clock, cups, vessels, area, solids, place, blocks10 };
+/**
+ * かたちづくり（いろいた・ます）
+ *   { kind:"tiles", pattern:["1a","b."], color:"#F2B23C" }
+ * 1ます＝1もじ。
+ *   "1" ■ぜんぶ／"a" ◣ひだり下／"b" ◥みぎ上／"c" ◤ひだり上／"d" ◢みぎ下／"." なし
+ * ★1年生の「いろいた」は 正方形を ななめに 半分に した さんかく。
+ *   それを ならべて かたちを 作る（指導要領 B(1)ア(イ)）。
+ */
+function tiles(f) {
+  const pat = (f.pattern || []).slice(0, 6);
+  const cell = 46;
+  const cols = Math.max(1, ...pat.map((r) => r.length));
+  const w = Math.max(160, cols * cell + 24);
+  const h = Math.max(100, pat.length * cell + 24);
+  const color = f.color || "#F2B23C";
+  let inner = "";
+  pat.forEach((row, r) => {
+    [...row].forEach((ch, c) => {
+      const x = 12 + c * cell;
+      const y = 12 + r * cell;
+      const e = cell;
+      if (ch === ".") return;
+      let d = null;
+      if (ch === "1") d = `M${x} ${y} h${e} v${e} h-${e} z`;
+      if (ch === "a") d = `M${x} ${y} v${e} h${e} z`;
+      if (ch === "b") d = `M${x} ${y} h${e} v${e} z`;
+      if (ch === "c") d = `M${x} ${y} h${e} L${x} ${y + e} z`;
+      if (ch === "d") d = `M${x + e} ${y} v${e} h-${e} z`;
+      if (d) inner += `<path d="${d}" fill="${color}" stroke="${ink}" stroke-width="3" stroke-linejoin="round"/>`;
+    });
+  });
+  // うすい ますめ（どこに おくか わかるように）
+  let gridSvg = "";
+  for (let r = 0; r <= pat.length; r++) {
+    gridSvg += `<line x1="12" y1="${12 + r * cell}" x2="${12 + cols * cell}" y2="${12 + r * cell}" stroke="#E4D9C4" stroke-width="1.5"/>`;
+  }
+  for (let c = 0; c <= cols; c++) {
+    gridSvg += `<line x1="${12 + c * cell}" y1="12" x2="${12 + c * cell}" y2="${12 + pat.length * cell}" stroke="#E4D9C4" stroke-width="1.5"/>`;
+  }
+  return wrap(gridSvg + inner, w, h);
+}
+
+export const KINDS2 = { clock, cups, vessels, area, solids, place, blocks10, tiles };

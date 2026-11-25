@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "u19",
+  "grade": 1,
+  "subject": "math",
+  "term": 3,
+  "order": 19,
+  "title": "ずを つかって かんがえよう",
+  "monster": "zumoya",
+  "building": "zunohiroba",
+  "skills": [
+    {
+      "id": "u19-fueru",
+      "name": "ふえた ばめん",
+      "power": "read"
+    },
+    {
+      "id": "u19-heru",
+      "name": "へった ばめん",
+      "power": "read"
+    },
+    {
+      "id": "u19-shiki",
+      "name": "ずから しきを つくる",
+      "power": "read"
+    }
+  ],
+  "items": []
+}

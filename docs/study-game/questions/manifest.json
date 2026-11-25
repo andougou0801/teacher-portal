@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-11-22",
+  "updated": "2026-11-25",
   "grades": [
     {
       "grade": 1,
@@ -405,6 +405,163 @@
             {
               "id": "u16-ueshita",
               "name": "うえと した",
+              "power": "shape"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": 1,
+      "subject": "math",
+      "term": 3,
+      "units": [
+        {
+          "unitId": "u17",
+          "title": "120までの かず",
+          "order": 17,
+          "file": "units/g1-math-u17.json",
+          "monster": "hyakumoya",
+          "building": "hyakunotou",
+          "skills": [
+            {
+              "id": "u17-over100",
+              "name": "100より おおきい かず",
+              "power": "count"
+            },
+            {
+              "id": "u17-line",
+              "name": "かずの せんで みる",
+              "power": "count"
+            },
+            {
+              "id": "u17-compare",
+              "name": "どちらが おおきい",
+              "power": "compare"
+            }
+          ]
+        },
+        {
+          "unitId": "u18",
+          "title": "100までの たしざん ひきざん",
+          "order": 18,
+          "file": "units/g1-math-u18.json",
+          "monster": "ketamoya",
+          "building": "ketanokoya",
+          "skills": [
+            {
+              "id": "u18-tens",
+              "name": "10の まとまりで たす ひく",
+              "power": "count"
+            },
+            {
+              "id": "u18-ones",
+              "name": "ばらを たす ひく",
+              "power": "count"
+            },
+            {
+              "id": "u18-mix",
+              "name": "2けたの けいさん",
+              "power": "count"
+            }
+          ]
+        },
+        {
+          "unitId": "u19",
+          "title": "ずを つかって かんがえよう",
+          "order": 19,
+          "file": "units/g1-math-u19.json",
+          "monster": "zumoya",
+          "building": "zunohiroba",
+          "skills": [
+            {
+              "id": "u19-fueru",
+              "name": "ふえた ばめん",
+              "power": "read"
+            },
+            {
+              "id": "u19-heru",
+              "name": "へった ばめん",
+              "power": "read"
+            },
+            {
+              "id": "u19-shiki",
+              "name": "ずから しきを つくる",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "u20",
+          "title": "ものと ひとの かず",
+          "order": 20,
+          "file": "units/g1-math-u20.json",
+          "monster": "retsumoya",
+          "building": "narabinohiroba",
+          "skills": [
+            {
+              "id": "u20-maeushiro",
+              "name": "まえと うしろを あわせる",
+              "power": "read"
+            },
+            {
+              "id": "u20-aida",
+              "name": "あいだの かず",
+              "power": "read"
+            },
+            {
+              "id": "u20-tairitsu",
+              "name": "ものと ひとを くらべる",
+              "power": "compare"
+            }
+          ]
+        },
+        {
+          "unitId": "u21",
+          "title": "かたちづくり",
+          "order": 21,
+          "file": "units/g1-math-u21.json",
+          "monster": "itamoya",
+          "building": "itanokoubou",
+          "skills": [
+            {
+              "id": "u21-count",
+              "name": "いろいたは なんまい",
+              "power": "shape"
+            },
+            {
+              "id": "u21-make",
+              "name": "かたちを つくる",
+              "power": "shape"
+            },
+            {
+              "id": "u21-split",
+              "name": "かたちを わける",
+              "power": "shape"
+            }
+          ]
+        },
+        {
+          "unitId": "u22",
+          "title": "1ねんの まとめ",
+          "order": 22,
+          "file": "units/g1-math-u22.json",
+          "monster": "matomemoya",
+          "building": "omoidenomon",
+          "skills": [
+            {
+              "id": "u22-kazu",
+              "name": "かずの まとめ",
+              "power": "count"
+            },
+            {
+              "id": "u22-keisan",
+              "name": "けいさんの まとめ",
+              "power": "count"
+            },
+            {
+              "id": "u22-katachi",
+              "name": "かたちと りょうの まとめ",
               "power": "shape"
             }
           ]

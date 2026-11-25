@@ -53,6 +53,14 @@ export const BUILDINGS = [
   { id: "tounokura", name: "とおのくら", unit: "u14", shape: "granary", mat: "nendo", cost: 18, x: 67, y: 33 },
   { id: "tokeidai", name: "とけいだい", unit: "u15", shape: "clocktower", mat: "glass", cost: 20, x: 79, y: 33 },
   { id: "michishirube", name: "みちしるべ", unit: "u16", shape: "signpost", mat: "ki", cost: 12, x: 91, y: 33 },
+  // ★3学期は まちの まんなかの あき地（おくの だんと 手前の だんの あいだ）に たつ。
+  //   3学期は みじかいので 6棟。
+  { id: "hyakunotou", name: "ひゃくのとう", unit: "u17", shape: "spire", mat: "glass", cost: 20, x: 10, y: 60 },
+  { id: "ketanokoya", name: "けたのこや", unit: "u18", shape: "abacus", mat: "ki", cost: 16, x: 26, y: 60 },
+  { id: "zunohiroba", name: "ずのひろば", unit: "u19", shape: "easel", mat: "nendo", cost: 16, x: 42, y: 60 },
+  { id: "narabinohiroba", name: "ならびのこみち", unit: "u20", shape: "pathway", mat: "ishi", cost: 18, x: 58, y: 60 },
+  { id: "itanokoubou", name: "いたのこうぼう", unit: "u21", shape: "workshop", mat: "ki", cost: 16, x: 74, y: 60 },
+  { id: "omoidenomon", name: "おもいでのもん", unit: "u22", shape: "archgate", mat: "glass", cost: 22, x: 90, y: 60 },
 ];
 
 export const WEARS = [
@@ -84,6 +92,12 @@ export const TITLES = [
   { id: "t-big", name: "おおきいかず はかせ", unit: "u14" },
   { id: "t-clock", name: "とけい めいじん", unit: "u15" },
   { id: "t-place", name: "みちしるべ づくり", unit: "u16" },
+  { id: "t-hyaku", name: "ひゃくの たつじん", unit: "u17" },
+  { id: "t-keta", name: "けたの めいじん", unit: "u18" },
+  { id: "t-zu", name: "ずの かんがえびと", unit: "u19" },
+  { id: "t-retsu", name: "ならびの はかせ", unit: "u20" },
+  { id: "t-ita", name: "かたちづくり めいじん", unit: "u21" },
+  { id: "t-ichinen", name: "1ねんせいの そつぎょう", unit: "u22" },
 ];
 
 export const buildingByUnit = (unitId) => BUILDINGS.find((b) => b.unit === unitId);

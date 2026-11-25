@@ -210,12 +210,15 @@ function render() {
   const built = here.filter((b) => p.buildings[b.id]?.built);
   const open = p.unlockedUnits || ["u01"];
   const nextUp = buildableList()[0];
-  for (const b of here) {
+  // おくに ある ものから 先に 描く（手前の たてものが うしろに かくれないように）
+  const inOrder = [...here].sort((p1, p2) => p1.y - p2.y);
+  for (const b of inOrder) {
     const x = (b.x / 100) * W;
     const y = (b.y / 100) * H;
     const info = p.buildings[b.id];
     // おくの だんは 小さく えがく（とおくに あるように 見せる）
-    const scale = b.y < 42 ? 1.15 : 1.9;
+    // とおい ものほど 小さく。おく(2学期) → まんなか(1学期上・3学期) → 手前(1学期下)
+    const scale = b.y < 42 ? 1.15 : b.y < 68 ? 1.5 : 1.9;
     const place = `translate(${x - 50 * scale} ${y - 70 * scale}) scale(${scale})`;
     if (info?.built) {
       svg += `<g class="b-built" data-id="${b.id}" transform="${place}">${buildingShapeMarkup(b.shape, info.color || 0)}</g>`;
@@ -223,7 +226,7 @@ function render() {
       // まだ たっていない たてものは「？」で 見せる。
       // うすい たてものだと「もう あるのかな？」と まぎらわしいので、
       // 「ここに なにかが たつ」と はっきり わかる かたちに する。
-      const w = b.y < 42 ? 70 : 112;
+      const w = b.y < 42 ? 70 : b.y < 68 ? 88 : 112;
       svg += `<g class="b-unknown" transform="translate(${x - w / 2} ${y - w * 0.77})">
         <rect x="0" y="0" width="${w}" height="${w}" rx="20" fill="#FFFFFF" fill-opacity="0.72"
               stroke="#2B2A28" stroke-width="4" stroke-dasharray="12 9"/>

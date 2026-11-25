@@ -1,0 +1,1 @@
+{"schemaVersion":1,"unitId":"u18","grade":1,"subject":"math","term":3,"order":18,"title":"100までの たしざん ひきざん","monster":"ketamoya","building":"ketanokoya","skills":[{"id":"u18-tens","name":"10の まとまりで たす ひく","power":"count"},{"id":"u18-ones","name":"ばらを たす ひく","power":"count"},{"id":"u18-mix","name":"2けたの けいさん","power":"count"}],"items":[]}
