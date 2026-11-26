@@ -1,6 +1,6 @@
 // おぼえる仕組み（復習の間隔と、むずかしさの自動調整）。
 // 日づけだけで管理する（時刻は使わない。端末の時計のずれで壊れないように）。
-import { state, save } from "./store.js";
+import { state, save, myGrade } from "./store.js";
 import { dayKey, addDays, dayDiff, clamp } from "./util.js";
 import { allSkills, unitMeta, skillMeta, units, allUnits, availableSubjects } from "./data.js";
 import { subjectOfUnit } from "./subject.js";
@@ -168,11 +168,13 @@ export function masteredCount() {
 
 /** きょう取り組む単元（まだ終わっていない、いちばん前の単元） */
 export function focusUnit(subject = "math") {
+  // ★その子の 学年の 単元だけを 見る。前の学年に もどらせない（決定60）。
+  const mine = new Set(units(subject, myGrade()).map((u) => u.unitId));
   const all = state.progress.unlockedUnits || ["u01"];
-  const open = all.filter((id) => subjectOfUnit(id) === subject);
+  const open = all.filter((id) => subjectOfUnit(id) === subject && mine.has(id));
   if (!open.length) {
-    // その教科を まだ 1つも ひらいていない＝さいしょの単元
-    const first = units(subject)[0];
+    // その教科を まだ 1つも ひらいていない＝その学年の さいしょの単元
+    const first = units(subject, myGrade())[0];
     return first ? first.unitId : "u01";
   }
   // まだ半分も すすんでいない単元を いちばん前から
@@ -210,8 +212,8 @@ export function refreshUnlocks() {
       }
     }
   }
-  for (const subject of availableSubjects()) {
-    const list = units(subject);
+  for (const subject of availableSubjects(myGrade())) {
+    const list = units(subject, myGrade());
     if (!list.length) continue;
     // その教科の さいしょの単元は いつでも ひらいている
     if (!open.has(list[0].unitId)) {

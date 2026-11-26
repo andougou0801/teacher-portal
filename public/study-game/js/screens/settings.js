@@ -14,8 +14,10 @@ import {
   importJSON,
   readSlotSrs,
   deviceDay,
+  myGrade,
+  setMyGrade,
 } from "../store.js";
-import { units, allSkills, skillMeta, availableSubjects } from "../data.js";
+import { units, allSkills, skillMeta, availableSubjects, grades } from "../data.js";
 import { moya } from "../icons.js";
 import { runTrace } from "../trace.js";
 import { subjectMode, setSubjectMode, subjectName } from "../subject.js";
@@ -497,6 +499,9 @@ function renderTeacher(body) {
   );
   body.appendChild(slots);
 
+  // この子の 学年
+  body.appendChild(gradeCard());
+
   // きょうの教科（さんすう／こくご）
   const subj = el("div", "card");
   subj.appendChild(el("div", "s-name", "きょうの教科"));
@@ -586,6 +591,53 @@ function renderTeacher(body) {
  * ぜんぶの機能を 一気に 確かめるためのもの。
  * ★先生モードの中だけに置く（子どもは あんしょうばんごうが ないと 入れない）。
  */
+/**
+ * この子は 何年生か。
+ * ★学年は「どこから はじめるか」だけを きめる（決定60）。
+ *   前の学年を やり直させない。学校で もう 習っているため。
+ *   町も きろくも 学年を またいで のこる（決定63）。
+ */
+function gradeCard() {
+  const card = el("div", "card");
+  card.appendChild(el("div", "s-name", "この子の 学年"));
+  if (!state.slot) {
+    card.appendChild(el("p", "note", "先に 子どもを えらんでください。"));
+    return card;
+  }
+  const have = grades();
+  card.appendChild(
+    el(
+      "p",
+      "note",
+      "その学年の さいしょの単元から はじまります。前の学年は やり直させません（学校で もう ならっているため）。まちと きろくは 学年が 上がっても のこります。",
+    ),
+  );
+  const row = el("div", "row");
+  for (let g = 1; g <= 6; g++) {
+    const b = el("button", "toggle", `${g}年`);
+    b.type = "button";
+    const ready = have.includes(g);
+    b.disabled = !ready;
+    b.setAttribute("aria-pressed", String(myGrade() === g));
+    if (!ready) b.title = "この学年の もんだいは まだ ありません";
+    b.addEventListener("click", () => {
+      setMyGrade(g);
+      refreshUnlocks();
+      toast(`${g}年生に しました`);
+      renderTeacherReload();
+    });
+    row.appendChild(b);
+  }
+  card.appendChild(row);
+  const missing = [1, 2, 3, 4, 5, 6].filter((g) => !have.includes(g));
+  if (missing.length) {
+    card.appendChild(
+      el("p", "note", `もんだいが あるのは ${have.join("・")}年だけです（${missing.join("・")}年は これから）。`),
+    );
+  }
+  return card;
+}
+
 function debugCard() {
   const card = el("div", "card");
   card.appendChild(el("div", "s-name", "かくにんモード（おとな用）"));

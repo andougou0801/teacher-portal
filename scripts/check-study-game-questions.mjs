@@ -179,6 +179,8 @@ function expectedAnswer(item) {
  *   単元ファイルの allowedKanji に 書いた字だけ とおす。
  */
 const KANJI_BY_UNIT = new Map();
+/** 単元ごとの 学年（単元ファイルの grade） */
+const GRADE_BY_UNIT = new Map();
 
 // 単元ファイルに 書いてある term を つかう（番号から あてずっぽうで 決めない）
 const TERM_BY_UNIT = (() => {
@@ -188,6 +190,7 @@ const TERM_BY_UNIT = (() => {
       const d = JSON.parse(readFileSync(join(unitDir, name), "utf8"));
       if (d.unitId && d.term) map.set(d.unitId, d.term);
       if (d.unitId) KANJI_BY_UNIT.set(d.unitId, new Set([...(d.allowedKanji || "")]));
+      if (d.unitId && d.grade) GRADE_BY_UNIT.set(d.unitId, d.grade);
     }
   } catch {
     /* よめなくても 下のあてずっぽうで つづける */
@@ -202,6 +205,10 @@ function termOf(unitId) {
 }
 
 /** その学期で 出してよい 数の 大きさ（指導要領で 確かめた 範囲） */
+function gradeOf(unitId) {
+  return GRADE_BY_UNIT.get(unitId) || 1;
+}
+
 function limitsOf(term) {
   // 1学期：和は10まで・数は20まで
   // 2学期：くりあがり/くりさがり（和は18まで）・数は100まで
@@ -241,7 +248,13 @@ function checkItem(unitId, item, skillIds, seenIds) {
     const bad = badKanji(t);
     if (bad.length) add(`ならっていない漢字が入っている「${bad.join("")}」`);
   }
-  if (/[×÷＜＞<>()（）]/.test(item.prompt.join(""))) add("つかえない記号が入っている");
+  // ★つかえる記号は 学年で ちがう。
+  //   2年の〔用語・記号〕に「**× ＞ ＜**」が 入り、
+  //   内容の取扱い(2)で「（ ）や□ などを用いることができる」と なる。
+  //   1年の きまりのまま だと、2年の かけ算が そもそも 書けない。
+  const badMark =
+    gradeOf(unitId) >= 2 ? /[÷]/ : /[×÷＜＞<>()（）]/;
+  if (badMark.test(item.prompt.join(""))) add("つかえない記号が入っている");
 
   // 絵の形
   if (item.figure) {
@@ -306,7 +319,10 @@ function checkItem(unitId, item, skillIds, seenIds) {
 
   // 小1の範囲（学期で ちがう）
   const term = termOf(unitId);
-  const { maxNum, maxSum } = limitsOf(term);
+  const grade = gradeOf(unitId);
+  // ★2年からは 4位数まで・1万まで（A(1)ア(イ)と 内容の取扱い(1)）。
+  //   たし算ひき算も 2位数どうし、かんたんな 3位数まで ひろがる。
+  const { maxNum, maxSum } = grade >= 2 ? { maxNum: 10000, maxSum: 10000 } : limitsOf(term);
   const line = item.prompt.join(" ");
   const nums = (line.match(/\d+/g) || []).map(Number);
   if (nums.some((n) => n > maxNum)) warns.push(`${where}: ${maxNum}より大きい数が出ている`);

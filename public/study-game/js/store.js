@@ -65,8 +65,11 @@ const DEF_META = { schemaVersion: SCHEMA, slots: [] };
 const DEF_SETTINGS = { sound: false, speech: true, autoSpeak: false, textSize: 1 };
 const DEF_TEACHER = { pin: "", minutes: DEFAULT_MINUTES, classTimer: 0, unlockLevel: 0 };
 
-function defProfile(no, faceIndex) {
-  return { no, face: faceIndex, created: dayKey(), titles: [] };
+function defProfile(no, faceIndex, grade = 1) {
+  // ★grade＝その子が いま 何年生か。先生が せんせいモードで きめる。
+  //   学年は「どこから はじめるか」だけを きめる（決定60）。
+  //   前の学年を やり直させない。
+  return { no, face: faceIndex, grade, created: dayKey(), titles: [] };
 }
 
 function defProgress() {
@@ -149,7 +152,7 @@ function saveMeta(m) {
 
 const pk = (slot, name) => `sg:p${slot}:${name}`;
 
-export function createSlot(no, faceIndex) {
+export function createSlot(no, faceIndex, grade = 1) {
   const m = meta();
   if (m.slots.length >= MAX_SLOTS) return 0;
   const used = new Set(m.slots.map((s) => s.slot));
@@ -158,7 +161,7 @@ export function createSlot(no, faceIndex) {
   m.schemaVersion = SCHEMA;
   m.slots.push({ slot, no, face: faceIndex, updated: dayKey() });
   saveMeta(m);
-  writeRaw(pk(slot, "profile"), JSON.stringify(defProfile(no, faceIndex)));
+  writeRaw(pk(slot, "profile"), JSON.stringify(defProfile(no, faceIndex, grade)));
   writeRaw(pk(slot, "progress"), JSON.stringify(defProgress()));
   writeRaw(pk(slot, "srs"), JSON.stringify({}));
   writeRaw(pk(slot, "days"), JSON.stringify([]));
@@ -307,4 +310,21 @@ export function importJSON(text) {
     state.profile.titles = Array.isArray(data.profile.titles) ? data.profile.titles : [];
   }
   saveNow();
+}
+
+/**
+ * いま あそんでいる 子の 学年（1〜6）。きめていなければ 1年。
+ * ★学年は「どこから はじめるか」だけを きめる（決定60）。
+ *   前の学年を やり直させない。
+ */
+export function myGrade() {
+  const g = state.profile?.grade | 0;
+  return g >= 1 && g <= 6 ? g : 1;
+}
+
+/** その子の 学年を かえる（せんせいモードだけ） */
+export function setMyGrade(g) {
+  if (!state.profile) return;
+  state.profile.grade = Math.min(6, Math.max(1, g | 0));
+  save("profile");
 }

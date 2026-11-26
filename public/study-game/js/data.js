@@ -23,25 +23,48 @@ export function course(subject = "math") {
   return list.find((g) => g.subject === subject) || list[0] || { units: [] };
 }
 
-/** ある教科の単元（順番どおり）。教科を はぶくと さんすう */
-export function units(subject = "math") {
-  return [...(course(subject).units || [])].sort((a, b) => a.order - b.order);
+/**
+ * ある教科・ある学年の単元（順番どおり）。
+ * ★manifest は 学期ごとに かたまりが 分かれている。
+ *   前は さいしょの かたまり（1学期の8単元）しか 見ていなかったので、
+ *   ふつうに あそぶと **u09 から さきが 永久に ひらかなかった**。
+ *   学期を またいで ひとつながりに する。
+ */
+export function units(subject = "math", grade = null) {
+  const out = [];
+  for (const c of courses()) {
+    if (c.subject !== subject) continue;
+    if (grade != null && c.grade !== grade) continue;
+    for (const u of c.units || []) out.push({ ...u, grade: c.grade, term: c.term });
+  }
+  return out.sort((a, b) => a.grade - b.grade || a.order - b.order);
+}
+
+/** この ゲームに 入っている 学年（小さい順） */
+export function grades() {
+  return [...new Set(courses().map((c) => c.grade))].sort((a, b) => a - b);
 }
 
 /** ぜんぶの教科の単元（さんすう → こくご の順。セーブコードの順番にも つかう） */
 export function allUnits() {
   const out = [];
   for (const c of courses()) {
-    for (const u of [...(c.units || [])].sort((x, y) => x.order - y.order)) out.push({ ...u, subject: c.subject });
+    for (const u of [...(c.units || [])].sort((x, y) => x.order - y.order)) {
+      out.push({ ...u, subject: c.subject, grade: c.grade, term: c.term });
+    }
   }
   return out;
 }
 
-/** その教科に 単元が あるか */
-export function availableSubjects() {
-  return courses()
-    .filter((c) => (c.units || []).length)
-    .map((c) => c.subject);
+/** その教科に 単元が あるか（学年を わたすと その学年だけ 見る） */
+export function availableSubjects(grade = null) {
+  const out = [];
+  for (const c of courses()) {
+    if (!(c.units || []).length) continue;
+    if (grade != null && c.grade !== grade) continue;
+    if (!out.includes(c.subject)) out.push(c.subject);
+  }
+  return out;
 }
 
 export function unitMeta(unitId) {
