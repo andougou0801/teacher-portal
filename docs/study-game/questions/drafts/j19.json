@@ -1,0 +1,823 @@
+{
+  "j19": [
+    {
+      "id": "j19-001",
+      "skill": "j19-shugo",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ボールが ころがる",
+        "なにが ころがる？"
+      ],
+      "choices": [
+        "ボール",
+        "ころがる",
+        "が"
+      ],
+      "answer": 0,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-002",
+      "skill": "j19-shugo",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "でんしゃが とまる",
+        "なにが とまる？"
+      ],
+      "choices": [
+        "とまる",
+        "でんしゃ",
+        "が"
+      ],
+      "answer": 1,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-003",
+      "skill": "j19-shugo",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "でんきが つく",
+        "なにが つく？"
+      ],
+      "choices": [
+        "が",
+        "つく",
+        "でんき"
+      ],
+      "answer": 2,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-004",
+      "skill": "j19-shugo",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "とけいが なる",
+        "なにが なる？"
+      ],
+      "choices": [
+        "とけい",
+        "なる",
+        "が"
+      ],
+      "answer": 0,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-005",
+      "skill": "j19-shugo",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ほしが ひかる",
+        "なにが ひかる？"
+      ],
+      "choices": [
+        "ひかる",
+        "ほし",
+        "が"
+      ],
+      "answer": 1,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-006",
+      "skill": "j19-shugo",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "かわが ながれる",
+        "なにが ながれる？"
+      ],
+      "choices": [
+        "が",
+        "ながれる",
+        "かわ"
+      ],
+      "answer": 2,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-007",
+      "skill": "j19-shugo",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "そらで くもが うごく。",
+        "なにが うごく？"
+      ],
+      "choices": [
+        "そら",
+        "くも",
+        "うごく",
+        "で"
+      ],
+      "answer": 1,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-008",
+      "skill": "j19-shugo",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "まどに あめが あたる。",
+        "なにが あたる？"
+      ],
+      "choices": [
+        "まど",
+        "あめ",
+        "あたる",
+        "に"
+      ],
+      "answer": 1,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-009",
+      "skill": "j19-shugo",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "こうえんで はなが さいた。",
+        "なにが さいた？"
+      ],
+      "choices": [
+        "こうえん",
+        "さいた",
+        "で",
+        "はな"
+      ],
+      "answer": 3,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-010",
+      "skill": "j19-shugo",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "かぜが きの えだを ゆらす。",
+        "なにが ゆらす？"
+      ],
+      "choices": [
+        "き",
+        "えだ",
+        "かぜ",
+        "そら"
+      ],
+      "answer": 2,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-011",
+      "skill": "j19-shugo",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あめが まどを ぬらす。",
+        "なにが ぬらす？"
+      ],
+      "choices": [
+        "まど",
+        "あめ",
+        "ぬらす",
+        "いえ"
+      ],
+      "answer": 1,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-012",
+      "skill": "j19-shugo",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ひが ゆきを とかす。",
+        "なにが とかす？"
+      ],
+      "choices": [
+        "ひ",
+        "ゆき",
+        "みず",
+        "とかす"
+      ],
+      "answer": 0,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-013",
+      "skill": "j19-shugo",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "あさ でんしゃが えきを でた。",
+        "なにが でた？"
+      ],
+      "choices": [
+        "でんしゃ",
+        "あさ",
+        "えき",
+        "ひと"
+      ],
+      "answer": 0,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-014",
+      "skill": "j19-shugo",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ゆうべ つよい かぜが ふいた。",
+        "なにが ふいた？"
+      ],
+      "choices": [
+        "ゆうべ",
+        "かぜ",
+        "つよい",
+        "あめ"
+      ],
+      "answer": 1,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-015",
+      "skill": "j19-shugo",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ひるまに みちの ゆきが とけた。",
+        "なにが とけた？"
+      ],
+      "choices": [
+        "みち",
+        "ひるま",
+        "ゆき",
+        "みず"
+      ],
+      "answer": 2,
+      "hint": "「が」の ついた ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-016",
+      "skill": "j19-jutsugo",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "くるまが はしる",
+        "くるまは どうする？"
+      ],
+      "choices": [
+        "くるま",
+        "はしる",
+        "が"
+      ],
+      "answer": 1,
+      "hint": "うごきを あらわす ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-017",
+      "skill": "j19-jutsugo",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ゆきが しろい",
+        "ゆきは どんなだ？"
+      ],
+      "choices": [
+        "しろい",
+        "ゆき",
+        "が"
+      ],
+      "answer": 0,
+      "hint": "ようすを あらわす ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-018",
+      "skill": "j19-jutsugo",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "これは いしだ",
+        "これは なんだ？"
+      ],
+      "choices": [
+        "は",
+        "これ",
+        "いしだ"
+      ],
+      "answer": 2,
+      "hint": "「なんだ」に あたる ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-019",
+      "skill": "j19-jutsugo",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ふねが すすむ",
+        "ふねは どうする？"
+      ],
+      "choices": [
+        "ふね",
+        "すすむ",
+        "が"
+      ],
+      "answer": 1,
+      "hint": "うごきを あらわす ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-020",
+      "skill": "j19-jutsugo",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "みずが つめたい",
+        "みずは どんなだ？"
+      ],
+      "choices": [
+        "つめたい",
+        "みず",
+        "が"
+      ],
+      "answer": 0,
+      "hint": "ようすを あらわす ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-021",
+      "skill": "j19-jutsugo",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "それは ほんだ",
+        "それは なんだ？"
+      ],
+      "choices": [
+        "は",
+        "それ",
+        "ほんだ"
+      ],
+      "answer": 2,
+      "hint": "「なんだ」に あたる ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-022",
+      "skill": "j19-jutsugo",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "にわで むしが なく。",
+        "むしは どうする？"
+      ],
+      "choices": [
+        "にわ",
+        "むし",
+        "なく",
+        "で"
+      ],
+      "answer": 2,
+      "hint": "うごきを あらわす ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-023",
+      "skill": "j19-jutsugo",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "この はなが あかい。",
+        "はなは どんなだ？"
+      ],
+      "choices": [
+        "この",
+        "はな",
+        "あかい",
+        "が"
+      ],
+      "answer": 2,
+      "hint": "ようすを あらわす ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-024",
+      "skill": "j19-jutsugo",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あれは やまだ。",
+        "あれは なんだ？"
+      ],
+      "choices": [
+        "あれ",
+        "やまだ",
+        "は",
+        "そらだ"
+      ],
+      "answer": 1,
+      "hint": "「なんだ」に あたる ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-025",
+      "skill": "j19-jutsugo",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あさ とりが たかく とんだ。",
+        "とりは どうした？"
+      ],
+      "choices": [
+        "あさ",
+        "たかく",
+        "とんだ",
+        "とり"
+      ],
+      "answer": 2,
+      "hint": "うごきを あらわす ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-026",
+      "skill": "j19-jutsugo",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "きょうは そらが あおい。",
+        "そらは どんなだ？"
+      ],
+      "choices": [
+        "あおい",
+        "きょう",
+        "そら",
+        "が"
+      ],
+      "answer": 0,
+      "hint": "ようすを あらわす ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-027",
+      "skill": "j19-jutsugo",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "あれは わたしの かさだ。",
+        "あれは なんだ？"
+      ],
+      "choices": [
+        "かさだ",
+        "あれ",
+        "わたし",
+        "は"
+      ],
+      "answer": 0,
+      "hint": "「なんだ」に あたる ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-028",
+      "skill": "j19-jutsugo",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "きのう にわで こまが よく まわった。",
+        "こまは どうした？"
+      ],
+      "choices": [
+        "にわ",
+        "よく",
+        "まわった",
+        "こま"
+      ],
+      "answer": 2,
+      "hint": "うごきを あらわす ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-029",
+      "skill": "j19-jutsugo",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ふゆの かぜは とても つめたい。",
+        "かぜは どんなだ？"
+      ],
+      "choices": [
+        "つめたい",
+        "ふゆ",
+        "とても",
+        "かぜ"
+      ],
+      "answer": 0,
+      "hint": "ようすを あらわす ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-030",
+      "skill": "j19-jutsugo",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "この おおきい いきものは ぞうだ。",
+        "いきものは なんだ？"
+      ],
+      "choices": [
+        "おおきい",
+        "いきもの",
+        "ぞうだ",
+        "この"
+      ],
+      "answer": 2,
+      "hint": "「なんだ」に あたる ことばを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-031",
+      "skill": "j19-awase",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どちら？"
+      ],
+      "choices": [
+        "とりが とぶ",
+        "とりが さく"
+      ],
+      "answer": 0,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-032",
+      "skill": "j19-awase",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どちら？"
+      ],
+      "choices": [
+        "はなが はしる",
+        "はなが さく"
+      ],
+      "answer": 1,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-033",
+      "skill": "j19-awase",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どちら？"
+      ],
+      "choices": [
+        "あめが ふる",
+        "あめが あるく"
+      ],
+      "answer": 0,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-034",
+      "skill": "j19-awase",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "ゆきが およぐ",
+        "ゆきが ふる",
+        "ゆきが たべる"
+      ],
+      "answer": 1,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-035",
+      "skill": "j19-awase",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "かぜが たべる",
+        "かぜが ふく",
+        "かぜが およぐ"
+      ],
+      "answer": 1,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-036",
+      "skill": "j19-awase",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "でんしゃが さく",
+        "でんしゃが たべる",
+        "でんしゃが とまる"
+      ],
+      "answer": 2,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-037",
+      "skill": "j19-awase",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "ほしが ひかる",
+        "ほしが はしる",
+        "ほしが たべる",
+        "ほしが あるく"
+      ],
+      "answer": 0,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-038",
+      "skill": "j19-awase",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "ふねが さく",
+        "ふねが すすむ",
+        "ふねが たべる",
+        "ふねが うたう"
+      ],
+      "answer": 1,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-039",
+      "skill": "j19-awase",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "とりが さく",
+        "とりが とけた",
+        "とりが ないた",
+        "とりが ふった"
+      ],
+      "answer": 2,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-040",
+      "skill": "j19-awase",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "ゆきが とける",
+        "いしが うたう",
+        "かわが たべる",
+        "やまが およぐ"
+      ],
+      "answer": 0,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-041",
+      "skill": "j19-awase",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "くもが たべる",
+        "かわが ながれる",
+        "つちが うたう",
+        "いしが およぐ"
+      ],
+      "answer": 1,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-042",
+      "skill": "j19-awase",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "いけが はしる",
+        "ひが およぐ",
+        "はなが さく",
+        "いしが たべる"
+      ],
+      "answer": 2,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-043",
+      "skill": "j19-awase",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "やまで かぜが ふく。",
+        "やまで かぜが さく。",
+        "やまで かぜが およぐ。",
+        "やまで かぜが たべる。"
+      ],
+      "answer": 0,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-044",
+      "skill": "j19-awase",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "にわで いしが はしる。",
+        "にわで はなが さく。",
+        "にわで はなが はしる。",
+        "にわで いしが およぐ。"
+      ],
+      "answer": 1,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    },
+    {
+      "id": "j19-045",
+      "skill": "j19-awase",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ちゃんと つながる ぶんは どれ？"
+      ],
+      "choices": [
+        "えきで でんしゃが さいた。",
+        "えきで でんしゃが およいだ。",
+        "えきで でんしゃが とまった。",
+        "えきで でんしゃが わらった。"
+      ],
+      "answer": 2,
+      "hint": "「なにが」と「どうする」が あって いる？",
+      "reward": "ishi"
+    }
+  ]
+}

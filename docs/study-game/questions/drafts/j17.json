@@ -1,0 +1,778 @@
+{
+  "j17": [
+    {
+      "id": "j17-001",
+      "skill": "j17-gakkou",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「学校」は どう よむ？"
+      ],
+      "choices": [
+        "がっこう",
+        "がくこう",
+        "がくもん"
+      ],
+      "answer": 0,
+      "hint": "みんなが べんきょうを する ところ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-002",
+      "skill": "j17-gakkou",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「先生」は どう よむ？"
+      ],
+      "choices": [
+        "せんせい",
+        "せんろ",
+        "せんたく"
+      ],
+      "answer": 0,
+      "hint": "おしえて くれる ひとだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-003",
+      "skill": "j17-gakkou",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「休む」は どう よむ？"
+      ],
+      "choices": [
+        "やすむ",
+        "はたらく",
+        "あそぶ"
+      ],
+      "answer": 0,
+      "hint": "きゅうとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-004",
+      "skill": "j17-gakkou",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「名まえ」は どう よむ？"
+      ],
+      "choices": [
+        "なまえ",
+        "なまい",
+        "ないまえ"
+      ],
+      "answer": 0,
+      "hint": "じぶんの なまえの ことだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-005",
+      "skill": "j17-gakkou",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「文」は どう よむ？"
+      ],
+      "choices": [
+        "ぶん",
+        "え",
+        "こえ"
+      ],
+      "answer": 0,
+      "hint": "ぶんしょうの ぶんだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-006",
+      "skill": "j17-gakkou",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「字」は どう よむ？"
+      ],
+      "choices": [
+        "じ",
+        "え",
+        "かず"
+      ],
+      "answer": 0,
+      "hint": "かいて よむ しるしだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-007",
+      "skill": "j17-gakkou",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「音」は どう よむ？"
+      ],
+      "choices": [
+        "おと",
+        "いろ",
+        "かたち"
+      ],
+      "answer": 0,
+      "hint": "おんとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-008",
+      "skill": "j17-gakkou",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「本」は どう よむ？"
+      ],
+      "choices": [
+        "ほん",
+        "かみ",
+        "ふで"
+      ],
+      "answer": 0,
+      "hint": "ページを めくって よむ ものだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-009",
+      "skill": "j17-gakkou",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「出る」は どう よむ？"
+      ],
+      "choices": [
+        "でる",
+        "はいる",
+        "のぼる"
+      ],
+      "answer": 0,
+      "hint": "だすとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-010",
+      "skill": "j17-gakkou",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「入る」は どう よむ？"
+      ],
+      "choices": [
+        "はいる",
+        "でる",
+        "とおる"
+      ],
+      "answer": 0,
+      "hint": "いれるとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-011",
+      "skill": "j17-gakkou",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「子ども」は どう よむ？"
+      ],
+      "choices": [
+        "こども",
+        "しども",
+        "こうども"
+      ],
+      "answer": 0,
+      "hint": "しとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-012",
+      "skill": "j17-gakkou",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「正しい」は どう よむ？"
+      ],
+      "choices": [
+        "ただしい",
+        "あたらしい",
+        "やさしい"
+      ],
+      "answer": 0,
+      "hint": "しょうとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-013",
+      "skill": "j17-gakkou",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「がく」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "学",
+        "校",
+        "字"
+      ],
+      "answer": 0,
+      "hint": "学校の はじめの かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-014",
+      "skill": "j17-gakkou",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「こう」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "校",
+        "本",
+        "文"
+      ],
+      "answer": 0,
+      "hint": "学校の あとの かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-015",
+      "skill": "j17-gakkou",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「やすむ」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "休",
+        "先",
+        "生"
+      ],
+      "answer": 0,
+      "hint": "おやすみの ときの かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-016",
+      "skill": "j17-machi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「町」は どう よむ？"
+      ],
+      "choices": [
+        "まち",
+        "むら",
+        "みち"
+      ],
+      "answer": 0,
+      "hint": "おみせが ならぶ ところだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-017",
+      "skill": "j17-machi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「村」は どう よむ？"
+      ],
+      "choices": [
+        "むら",
+        "まち",
+        "もり"
+      ],
+      "answer": 0,
+      "hint": "そんとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-018",
+      "skill": "j17-machi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「車」は どう よむ？"
+      ],
+      "choices": [
+        "くるま",
+        "ふね",
+        "ひこうき"
+      ],
+      "answer": 0,
+      "hint": "しゃとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-019",
+      "skill": "j17-machi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「右」は どう よむ？"
+      ],
+      "choices": [
+        "みぎ",
+        "ひだり",
+        "まえ"
+      ],
+      "answer": 0,
+      "hint": "左の はんたいだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-020",
+      "skill": "j17-machi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「左」は どう よむ？"
+      ],
+      "choices": [
+        "ひだり",
+        "みぎ",
+        "うしろ"
+      ],
+      "answer": 0,
+      "hint": "右の はんたいだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-021",
+      "skill": "j17-machi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「円」は どう よむ？"
+      ],
+      "choices": [
+        "えん",
+        "げん",
+        "せん"
+      ],
+      "answer": 0,
+      "hint": "おかねを かぞえる ときに つかうよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-022",
+      "skill": "j17-machi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「王さま」は どう よむ？"
+      ],
+      "choices": [
+        "おうさま",
+        "おさま",
+        "わうさま"
+      ],
+      "answer": 0,
+      "hint": "くにの いちばん えらい ひとだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-023",
+      "skill": "j17-machi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「貝」は どう よむ？"
+      ],
+      "choices": [
+        "かい",
+        "いし",
+        "すな"
+      ],
+      "answer": 0,
+      "hint": "うみべで ひろえる ものだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-024",
+      "skill": "j17-machi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「糸」は どう よむ？"
+      ],
+      "choices": [
+        "いと",
+        "ひも",
+        "はり"
+      ],
+      "answer": 0,
+      "hint": "ぬうときに つかう ものだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-025",
+      "skill": "j17-machi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「女の子」は どう よむ？"
+      ],
+      "choices": [
+        "おんなのこ",
+        "おんなのし",
+        "おなのこ"
+      ],
+      "answer": 0,
+      "hint": "じょとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-026",
+      "skill": "j17-machi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「男の子」は どう よむ？"
+      ],
+      "choices": [
+        "おとこのこ",
+        "おとこのし",
+        "おとのこ"
+      ],
+      "answer": 0,
+      "hint": "だんとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-027",
+      "skill": "j17-machi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「竹」は どう よむ？"
+      ],
+      "choices": [
+        "たけ",
+        "まつ",
+        "くさ"
+      ],
+      "answer": 0,
+      "hint": "はるに たけのこが でるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-028",
+      "skill": "j17-machi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「あお」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "青",
+        "赤",
+        "白"
+      ],
+      "answer": 0,
+      "hint": "そらや うみの いろだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-029",
+      "skill": "j17-machi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「あか」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "赤",
+        "青",
+        "白"
+      ],
+      "answer": 0,
+      "hint": "いちごの いろだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-030",
+      "skill": "j17-machi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「しろ」と よむ かんじは どれ？"
+      ],
+      "choices": [
+        "白",
+        "青",
+        "赤"
+      ],
+      "answer": 0,
+      "hint": "ゆきの いろだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-031",
+      "skill": "j17-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「車が とまる」の「車」は どう よむ？"
+      ],
+      "choices": [
+        "くるま",
+        "ふね",
+        "とり"
+      ],
+      "answer": 0,
+      "hint": "タイヤが ついて いるね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-032",
+      "skill": "j17-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「本を よむ」の「本」は どう よむ？"
+      ],
+      "choices": [
+        "ほん",
+        "かみ",
+        "え"
+      ],
+      "answer": 0,
+      "hint": "ページが あるね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-033",
+      "skill": "j17-bun",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "「白い ゆき」の「白い」は どう よむ？"
+      ],
+      "choices": [
+        "しろい",
+        "くろい",
+        "あおい"
+      ],
+      "answer": 0,
+      "hint": "ゆきの いろだね",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-034",
+      "skill": "j17-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「早く おきる」の「早く」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "はやく",
+        "おそく",
+        "ゆっくり"
+      ],
+      "answer": 0,
+      "hint": "そうとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-035",
+      "skill": "j17-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「夕やけ」の「夕」は どう よむ？"
+      ],
+      "choices": [
+        "ゆう",
+        "あさ",
+        "よる"
+      ],
+      "answer": 0,
+      "hint": "ゆうがたの ゆうだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-036",
+      "skill": "j17-bun",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "「学校へ いく」の「学校」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "がっこう",
+        "がくこう",
+        "こうがく"
+      ],
+      "answer": 0,
+      "hint": "がっこうと よむよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-037",
+      "skill": "j17-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「先に いく」の「先」は どう よむ？"
+      ],
+      "choices": [
+        "さき",
+        "あと",
+        "よこ"
+      ],
+      "answer": 0,
+      "hint": "せんとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-038",
+      "skill": "j17-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「そとに 出る」の「出る」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "でる",
+        "いれる",
+        "とまる"
+      ],
+      "answer": 0,
+      "hint": "そとへ いく ことだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-039",
+      "skill": "j17-bun",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "「へやに 入る」の「入る」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "はいる",
+        "でかける",
+        "とまる"
+      ],
+      "answer": 0,
+      "hint": "なかへ すすむ ことだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-040",
+      "skill": "j17-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「音が する」の「音」は どう よむ？"
+      ],
+      "choices": [
+        "おと",
+        "いろ",
+        "あじ"
+      ],
+      "answer": 0,
+      "hint": "みみで きく ものだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-041",
+      "skill": "j17-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「糸を むすぶ」の「糸」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "いと",
+        "ひも",
+        "ぬの"
+      ],
+      "answer": 0,
+      "hint": "しとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-042",
+      "skill": "j17-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "「町を あるく」の「町」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "まち",
+        "むら",
+        "やま"
+      ],
+      "answer": 0,
+      "hint": "ちょうとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-043",
+      "skill": "j17-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「名まえを よぶ」の「名」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "な",
+        "か",
+        "ね"
+      ],
+      "answer": 0,
+      "hint": "めいとも よむ かんじだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-044",
+      "skill": "j17-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「正しい こたえ」の「正しい」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "ただしい",
+        "あかるい",
+        "つよい"
+      ],
+      "answer": 0,
+      "hint": "まちがって いない ことだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "j17-045",
+      "skill": "j17-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "「先生に きく」の「生」は",
+        "どう よむ？"
+      ],
+      "choices": [
+        "せい",
+        "ねん",
+        "にん"
+      ],
+      "answer": 0,
+      "hint": "せんせいの せいだよ",
+      "reward": "ishi"
+    }
+  ]
+}
