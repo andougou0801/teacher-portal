@@ -17,12 +17,15 @@ const unitDir = join(root, "docs", "study-game", "questions", "units");
 const KANJI = /[一-鿿]/;
 const TYPES = new Set(["choice", "input", "order", "trace"]);
 // なぞり書きで つかえる字（筆順データに ある字だけ）
+// ひらがな46字と カタカナ46字。あわせて 92字 なぞれる
 const TRACEABLE = new Set(
-  readFileSync(join(root, "public", "study-game", "js", "hiragana-strokes.js"), "utf8")
-    .split("\n")
-    .map((line) => /^ {2}(\S): \{$/.exec(line))
-    .filter(Boolean)
-    .map((mm) => mm[1]),
+  ["hiragana-strokes.js", "katakana-strokes.js"].flatMap((f) =>
+    readFileSync(join(root, "public", "study-game", "js", f), "utf8")
+      .split("\n")
+      .map((line) => /^ {2}(\S): \{$/.exec(line))
+      .filter(Boolean)
+      .map((mm) => mm[1]),
+  ),
 );
 const FIGS = new Set([
   "dots",

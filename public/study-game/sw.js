@@ -1,6 +1,6 @@
 // オフラインで あそべるようにする（この /study-game/ の中だけ）。
 // 本体は「まずキャッシュ」、問題のJSONは「まずネット、だめならキャッシュ」。
-const VERSION = "sg-v5"; // 版を上げると、古いキャッシュを捨てて 新しいファイルを とりにいく
+const VERSION = "sg-v6"; // 版を上げると、古いキャッシュを捨てて 新しいファイルを とりにいく
 const CORE = [
   "index.html",
   "css/base.css?v=1",
@@ -16,6 +16,7 @@ const CORE = [
   "js/moya-art-m3.js",
   "js/moya-art-jp2.js",
   "js/hiragana-strokes.js",
+  "js/katakana-strokes.js",
   "js/figure.js",
   "js/figure2.js",
   "js/building-art-m2.js",

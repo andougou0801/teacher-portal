@@ -19,11 +19,13 @@ const HIT = 15;
  * strokes[i] = その画の「通る点」。①から じゅんに 通る。
  * 座標は 100×100（左上が 0,0）。
  */
-// 筆順のデータは hiragana-strokes.js（ひらがな46字）に ある。
+// 筆順のデータは hiragana-strokes.js（ひらがな46字）と
+// katakana-strokes.js（カタカナ46字）に ある。あわせて 92字 なぞれる。
 // strokes[i] = その画の「通る点」。①から じゅんに 通る。座標は 100×100。
-export const TRACE_CHARS = HIRAGANA_STROKES;
-
 import { HIRAGANA_STROKES } from "./hiragana-strokes.js";
+import { KATAKANA_STROKES } from "./katakana-strokes.js";
+
+export const TRACE_CHARS = { ...HIRAGANA_STROKES, ...KATAKANA_STROKES };
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
