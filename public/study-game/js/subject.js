@@ -7,6 +7,7 @@
 //   ・レベル・ぶき・こうげきりょくは **1人に1つ**（教科で 分けない）
 import { state } from "./store.js";
 import { dayKey } from "./util.js";
+import { unitMeta } from "./data.js";
 
 export const SUBJECTS = {
   math: { id: "math", name: "さんすう", town: "かずのまち", en: "KAZU TOWN" },
@@ -41,8 +42,15 @@ export function todaySubject(available = ["math", "japanese"]) {
 export const subjectName = (id) => SUBJECTS[id]?.name || "さんすう";
 export const townName = (id) => SUBJECTS[id]?.town || "かずのまち";
 
-/** 単元の id から 教科を 決める（u…＝さんすう／j…＝こくご） */
+/**
+ * その単元は どの 教科か。
+ * ★まず manifest を 見る。id の あたまの文字で 決めると、
+ *   2年の 単元に べつの 記号を つかった とたん まちがえる。
+ *   manifest が まだ よめていない ときだけ、むかしの 決め方（j…＝こくご）に たよる。
+ */
 export function subjectOfUnit(unitId) {
+  const meta = unitMeta(unitId);
+  if (meta?.subject) return meta.subject;
   return String(unitId).startsWith("j") ? "japanese" : "math";
 }
 

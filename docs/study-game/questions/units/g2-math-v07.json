@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v07",
+  "grade": 2,
+  "subject": "math",
+  "term": 1,
+  "order": 7,
+  "title": "たしざんと ひきざんの かんけい",
+  "monster": "sakamoya",
+  "building": "ikikaerinohashi",
+  "skills": [
+    {
+      "id": "v07-tashikame",
+      "name": "こたえの たしかめ",
+      "power": "count"
+    },
+    {
+      "id": "v07-kakure",
+      "name": "かくれた かずを 見つける",
+      "power": "count"
+    },
+    {
+      "id": "v07-zu",
+      "name": "ずに あう しき",
+      "power": "read"
+    }
+  ],
+  "items": []
+}

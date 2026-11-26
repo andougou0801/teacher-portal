@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v06",
+  "grade": 2,
+  "subject": "math",
+  "term": 1,
+  "order": 6,
+  "title": "かさ（L と dL と mL）",
+  "monster": "masumoya",
+  "building": "masunoie",
+  "skills": [
+    {
+      "id": "v06-yomu",
+      "name": "ますを よむ",
+      "power": "compare"
+    },
+    {
+      "id": "v06-tani",
+      "name": "L と dL と mL",
+      "power": "compare"
+    },
+    {
+      "id": "v06-keisan",
+      "name": "かさの けいさん",
+      "power": "count"
+    }
+  ],
+  "items": []
+}

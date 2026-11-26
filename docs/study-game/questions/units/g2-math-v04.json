@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v04",
+  "grade": 2,
+  "subject": "math",
+  "term": 1,
+  "order": 4,
+  "title": "ながさ（cm と mm）",
+  "monster": "monosashimoya",
+  "building": "monosashinotou",
+  "skills": [
+    {
+      "id": "v04-yomu",
+      "name": "ものさしを よむ",
+      "power": "compare"
+    },
+    {
+      "id": "v04-tani",
+      "name": "cm と mm",
+      "power": "compare"
+    },
+    {
+      "id": "v04-keisan",
+      "name": "ながさの けいさん",
+      "power": "count"
+    }
+  ],
+  "items": []
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v03",
+  "grade": 2,
+  "subject": "math",
+  "term": 1,
+  "order": 3,
+  "title": "ひきざんの ひっ算",
+  "monster": "kurisagemoya",
+  "building": "hikizanyagura",
+  "skills": [
+    {
+      "id": "v03-nocarry",
+      "name": "くりさがりの ない ひっ算",
+      "power": "count"
+    },
+    {
+      "id": "v03-carry",
+      "name": "くりさがりの ある ひっ算",
+      "power": "count"
+    },
+    {
+      "id": "v03-bun",
+      "name": "ひきざんの ばめん",
+      "power": "read"
+    }
+  ],
+  "items": []
+}

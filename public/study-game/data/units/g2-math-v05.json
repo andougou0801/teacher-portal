@@ -1,0 +1,1 @@
+{"schemaVersion":1,"unitId":"v05","grade":2,"subject":"math","term":1,"order":5,"title":"1000までの かず","monster":"senmoya","building":"sennokura","skills":[{"id":"v05-kurai","name":"くらいを 見る","power":"count"},{"id":"v05-yomu","name":"3けたの かずを よむ","power":"count"},{"id":"v05-daisho","name":"かずの 大小","power":"compare"}],"items":[]}

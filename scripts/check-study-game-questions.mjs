@@ -46,6 +46,10 @@ const FIGS = new Set([
   "place",
   "blocks10",
   "tiles",
+  "vcalc",
+  "table",
+  "ruler",
+  "liters",
 ]);
 const ICONS = new Set([
   "apple",

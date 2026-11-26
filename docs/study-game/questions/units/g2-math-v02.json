@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v02",
+  "grade": 2,
+  "subject": "math",
+  "term": 1,
+  "order": 2,
+  "title": "たしざんの ひっ算",
+  "monster": "hissanmoya",
+  "building": "hissankoubou",
+  "skills": [
+    {
+      "id": "v02-nocarry",
+      "name": "くりあがりの ない ひっ算",
+      "power": "count"
+    },
+    {
+      "id": "v02-carry",
+      "name": "くりあがりの ある ひっ算",
+      "power": "count"
+    },
+    {
+      "id": "v02-bun",
+      "name": "たしざんの ばめん",
+      "power": "read"
+    }
+  ],
+  "items": []
+}

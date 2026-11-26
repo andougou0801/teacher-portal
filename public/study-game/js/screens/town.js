@@ -3,7 +3,7 @@
 import { $, el, clear, toast, sleep } from "../util.js";
 import { buildingShapeMarkup, moya, MOYA_NAMES, iconShape } from "../icons.js";
 import { BUILDINGS, MATERIALS, MAT_ORDER, WEARS, TITLES } from "../content.js";
-import { state, save } from "../store.js";
+import { state, save, myGrade } from "../store.js";
 import { unitMeta } from "../data.js";
 import { unitProgress, masteredCount, refreshUnlocks } from "../srs.js";
 import {
@@ -206,7 +206,12 @@ function render() {
   }
 
   // いま見ている まち（教科）の たてものだけ 出す
-  const here = BUILDINGS.filter((b) => subjectOfUnit(b.unit) === viewSubject);
+  // ★まちは その子の 学年の 地区だけ 出す（決定63：1年で1地区・6年で1つの町）。
+  //   ぜんぶ 出すと 1学年22棟 × 6年 ＝ 132棟に なって、画面に 入らない。
+  //   前の学年に 建てた ものは きろくに のこっている。
+  const here = BUILDINGS.filter(
+    (b) => subjectOfUnit(b.unit) === viewSubject && (unitMeta(b.unit)?.grade || 1) === myGrade(),
+  );
   const built = here.filter((b) => p.buildings[b.id]?.built);
   const open = p.unlockedUnits || ["u01"];
   const nextUp = buildableList()[0];

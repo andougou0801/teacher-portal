@@ -1148,6 +1148,213 @@
           ]
         }
       ]
+    },
+    {
+      "grade": 2,
+      "subject": "math",
+      "term": 1,
+      "units": [
+        {
+          "unitId": "v01",
+          "title": "ひょうと グラフ",
+          "order": 1,
+          "file": "units/g2-math-v01.json",
+          "monster": "hyoumoya",
+          "building": "shirabenoyakata",
+          "skills": [
+            {
+              "id": "v01-yomu",
+              "name": "ひょうを よむ",
+              "power": "read"
+            },
+            {
+              "id": "v01-graph",
+              "name": "グラフを よむ",
+              "power": "read"
+            },
+            {
+              "id": "v01-kurabe",
+              "name": "おおい すくないを くらべる",
+              "power": "compare"
+            }
+          ]
+        },
+        {
+          "unitId": "v02",
+          "title": "たしざんの ひっ算",
+          "order": 2,
+          "file": "units/g2-math-v02.json",
+          "monster": "hissanmoya",
+          "building": "hissankoubou",
+          "skills": [
+            {
+              "id": "v02-nocarry",
+              "name": "くりあがりの ない ひっ算",
+              "power": "count"
+            },
+            {
+              "id": "v02-carry",
+              "name": "くりあがりの ある ひっ算",
+              "power": "count"
+            },
+            {
+              "id": "v02-bun",
+              "name": "たしざんの ばめん",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "v03",
+          "title": "ひきざんの ひっ算",
+          "order": 3,
+          "file": "units/g2-math-v03.json",
+          "monster": "kurisagemoya",
+          "building": "hikizanyagura",
+          "skills": [
+            {
+              "id": "v03-nocarry",
+              "name": "くりさがりの ない ひっ算",
+              "power": "count"
+            },
+            {
+              "id": "v03-carry",
+              "name": "くりさがりの ある ひっ算",
+              "power": "count"
+            },
+            {
+              "id": "v03-bun",
+              "name": "ひきざんの ばめん",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "v04",
+          "title": "ながさ（cm と mm）",
+          "order": 4,
+          "file": "units/g2-math-v04.json",
+          "monster": "monosashimoya",
+          "building": "monosashinotou",
+          "skills": [
+            {
+              "id": "v04-yomu",
+              "name": "ものさしを よむ",
+              "power": "compare"
+            },
+            {
+              "id": "v04-tani",
+              "name": "cm と mm",
+              "power": "compare"
+            },
+            {
+              "id": "v04-keisan",
+              "name": "ながさの けいさん",
+              "power": "count"
+            }
+          ]
+        },
+        {
+          "unitId": "v05",
+          "title": "1000までの かず",
+          "order": 5,
+          "file": "units/g2-math-v05.json",
+          "monster": "senmoya",
+          "building": "sennokura",
+          "skills": [
+            {
+              "id": "v05-kurai",
+              "name": "くらいを 見る",
+              "power": "count"
+            },
+            {
+              "id": "v05-yomu",
+              "name": "3けたの かずを よむ",
+              "power": "count"
+            },
+            {
+              "id": "v05-daisho",
+              "name": "かずの 大小",
+              "power": "compare"
+            }
+          ]
+        },
+        {
+          "unitId": "v06",
+          "title": "かさ（L と dL と mL）",
+          "order": 6,
+          "file": "units/g2-math-v06.json",
+          "monster": "masumoya",
+          "building": "masunoie",
+          "skills": [
+            {
+              "id": "v06-yomu",
+              "name": "ますを よむ",
+              "power": "compare"
+            },
+            {
+              "id": "v06-tani",
+              "name": "L と dL と mL",
+              "power": "compare"
+            },
+            {
+              "id": "v06-keisan",
+              "name": "かさの けいさん",
+              "power": "count"
+            }
+          ]
+        },
+        {
+          "unitId": "v07",
+          "title": "たしざんと ひきざんの かんけい",
+          "order": 7,
+          "file": "units/g2-math-v07.json",
+          "monster": "sakamoya",
+          "building": "ikikaerinohashi",
+          "skills": [
+            {
+              "id": "v07-tashikame",
+              "name": "こたえの たしかめ",
+              "power": "count"
+            },
+            {
+              "id": "v07-kakure",
+              "name": "かくれた かずを 見つける",
+              "power": "count"
+            },
+            {
+              "id": "v07-zu",
+              "name": "ずに あう しき",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "v08",
+          "title": "けいさんの くふう",
+          "order": 8,
+          "file": "units/g2-math-v08.json",
+          "monster": "kufumoya",
+          "building": "kufunokoubou",
+          "skills": [
+            {
+              "id": "v08-irekae",
+              "name": "じゅんばんを かえても おなじ",
+              "power": "count"
+            },
+            {
+              "id": "v08-matome",
+              "name": "まとめて たす",
+              "power": "count"
+            },
+            {
+              "id": "v08-hayaku",
+              "name": "はやく とける くふう",
+              "power": "count"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

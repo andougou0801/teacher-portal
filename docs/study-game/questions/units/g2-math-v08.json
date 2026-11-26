@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v08",
+  "grade": 2,
+  "subject": "math",
+  "term": 1,
+  "order": 8,
+  "title": "けいさんの くふう",
+  "monster": "kufumoya",
+  "building": "kufunokoubou",
+  "skills": [
+    {
+      "id": "v08-irekae",
+      "name": "じゅんばんを かえても おなじ",
+      "power": "count"
+    },
+    {
+      "id": "v08-matome",
+      "name": "まとめて たす",
+      "power": "count"
+    },
+    {
+      "id": "v08-hayaku",
+      "name": "はやく とける くふう",
+      "power": "count"
+    }
+  ],
+  "items": []
+}
