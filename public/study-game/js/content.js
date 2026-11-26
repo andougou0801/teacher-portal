@@ -48,6 +48,13 @@ export const BUILDINGS = [
   { id: "aisatsunomichi", name: "あいさつのみち", unit: "j14", shape: "bridge", mat: "ishi", cost: 16, x: 67, y: 33 },
   { id: "shiorinoie", name: "しおりのいえ", unit: "j15", shape: "library", mat: "nendo", cost: 18, x: 79, y: 33 },
   { id: "monogatarinoniwa", name: "ものがたりのにわ", unit: "j16", shape: "plaza", mat: "glass", cost: 20, x: 91, y: 33 },
+  // ことばのまちの まんなかの だん（国語3学期の6棟）
+  { id: "kanjinohiroba", name: "かんじのひろば", unit: "j17", shape: "spire", mat: "ishi", cost: 20, x: 10, y: 60 },
+  { id: "asobinohiroba", name: "あそびのひろば", unit: "j18", shape: "easel", mat: "ki", cost: 14, x: 26, y: 60 },
+  { id: "tsunaginohashi", name: "つなぎのはし", unit: "j19", shape: "pathway", mat: "ishi", cost: 16, x: 42, y: 60 },
+  { id: "kurabenoyagura", name: "くらべのやぐら", unit: "j20", shape: "abacus", mat: "glass", cost: 18, x: 58, y: 60 },
+  { id: "mukashinoyado", name: "むかしのやど", unit: "j21", shape: "workshop", mat: "nendo", cost: 16, x: 74, y: 60 },
+  { id: "tabidachinomon", name: "たびだちのもん", unit: "j22", shape: "archgate", mat: "glass", cost: 22, x: 90, y: 60 },
   { id: "tasizankoujou", name: "たしざんこうじょう", unit: "u04", shape: "factory", mat: "ki", cost: 20, x: 12, y: 76 },
   { id: "hikizansouko", name: "ひきざんそうこ", unit: "u05", shape: "barn", mat: "ishi", cost: 20, x: 35, y: 78 },
   { id: "zeronoizumi", name: "ゼロのいずみ", unit: "u06", shape: "well", mat: "nendo", cost: 14, x: 58, y: 78 },
@@ -115,6 +122,12 @@ export const TITLES = [
   { id: "t-teinei", name: "ていねいな はなしびと", unit: "j14" },
   { id: "t-sagasi", name: "だいじな ことば さがし", unit: "j15" },
   { id: "t-monogatari", name: "おはなしの ともだち", unit: "j16" },
+  { id: "t-kanji3", name: "かんじ めいじん", unit: "j17" },
+  { id: "t-asobi", name: "ことばあそび たつじん", unit: "j18" },
+  { id: "t-tsunagi", name: "ぶんの しくみびと", unit: "j19" },
+  { id: "t-kurabe", name: "くらべる よみて", unit: "j20" },
+  { id: "t-mukashi", name: "むかしばなしの かたりべ", unit: "j21" },
+  { id: "t-sotsu", name: "ことばの たびだち", unit: "j22" },
 ];
 
 export const buildingByUnit = (unitId) => BUILDINGS.find((b) => b.unit === unitId);

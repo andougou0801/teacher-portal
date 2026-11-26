@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-11-25",
+  "updated": "2026-11-26",
   "grades": [
     {
       "grade": 1,
@@ -986,6 +986,163 @@
             {
               "id": "j16-kimochi",
               "name": "どんな きもち",
+              "power": "read"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": 1,
+      "subject": "japanese",
+      "term": 3,
+      "units": [
+        {
+          "unitId": "j17",
+          "title": "かんじを よむ（がっこうと まち）",
+          "order": 17,
+          "file": "units/g1-japanese-j17.json",
+          "monster": "machimoya",
+          "building": "kanjinohiroba",
+          "skills": [
+            {
+              "id": "j17-gakkou",
+              "name": "がっこうの かんじ",
+              "power": "read"
+            },
+            {
+              "id": "j17-machi",
+              "name": "まちの かんじ",
+              "power": "read"
+            },
+            {
+              "id": "j17-bun",
+              "name": "ぶんの 中で よむ",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "j18",
+          "title": "ことばあそび",
+          "order": 18,
+          "file": "units/g1-japanese-j18.json",
+          "monster": "asobimoya",
+          "building": "asobinohiroba",
+          "skills": [
+            {
+              "id": "j18-shiritori",
+              "name": "しりとり",
+              "power": "word"
+            },
+            {
+              "id": "j18-kakure",
+              "name": "ことばの 中の ことば",
+              "power": "word"
+            },
+            {
+              "id": "j18-sakasa",
+              "name": "さかさから よんでも",
+              "power": "word"
+            }
+          ]
+        },
+        {
+          "unitId": "j19",
+          "title": "しゅごと じゅつご",
+          "order": 19,
+          "file": "units/g1-japanese-j19.json",
+          "monster": "tsunagimoya",
+          "building": "tsunaginohashi",
+          "skills": [
+            {
+              "id": "j19-shugo",
+              "name": "「なにが」を さがす",
+              "power": "read"
+            },
+            {
+              "id": "j19-jutsugo",
+              "name": "「どうする」を さがす",
+              "power": "read"
+            },
+            {
+              "id": "j19-awase",
+              "name": "ちゃんと つながる ぶん",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "j20",
+          "title": "くらべて よむ",
+          "order": 20,
+          "file": "units/g1-japanese-j20.json",
+          "monster": "kurabemoya",
+          "building": "kurabenoyagura",
+          "skills": [
+            {
+              "id": "j20-onaji",
+              "name": "おなじ ところ",
+              "power": "read"
+            },
+            {
+              "id": "j20-chigau",
+              "name": "ちがう ところ",
+              "power": "read"
+            },
+            {
+              "id": "j20-junjo",
+              "name": "ことがらの じゅんじょ",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "j21",
+          "title": "むかしばなしを よむ",
+          "order": 21,
+          "file": "units/g1-japanese-j21.json",
+          "monster": "mukashimoya",
+          "building": "mukashinoyado",
+          "skills": [
+            {
+              "id": "j21-tojou",
+              "name": "でてくる ひと",
+              "power": "read"
+            },
+            {
+              "id": "j21-dekigoto",
+              "name": "おきた できごと",
+              "power": "read"
+            },
+            {
+              "id": "j21-owari",
+              "name": "おはなしの おわり",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "j22",
+          "title": "1ねんの まとめ",
+          "order": 22,
+          "file": "units/g1-japanese-j22.json",
+          "monster": "sotsumoya",
+          "building": "tabidachinomon",
+          "skills": [
+            {
+              "id": "j22-moji",
+              "name": "もじの まとめ",
+              "power": "word"
+            },
+            {
+              "id": "j22-kotoba",
+              "name": "ことばの まとめ",
+              "power": "word"
+            },
+            {
+              "id": "j22-yomu",
+              "name": "よみとりの まとめ",
               "power": "read"
             }
           ]

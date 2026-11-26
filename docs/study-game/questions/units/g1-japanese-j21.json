@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "unitId": "j21",
+  "grade": 1,
+  "subject": "japanese",
+  "term": 3,
+  "order": 21,
+  "title": "むかしばなしを よむ",
+  "allowedChars": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉっゃゅょアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォッャュョー0123456789「」、。？ ",
+  "allowedKanji": "",
+  "monster": "mukashimoya",
+  "building": "mukashinoyado",
+  "skills": [
+    {
+      "id": "j21-tojou",
+      "name": "でてくる ひと",
+      "power": "read"
+    },
+    {
+      "id": "j21-dekigoto",
+      "name": "おきた できごと",
+      "power": "read"
+    },
+    {
+      "id": "j21-owari",
+      "name": "おはなしの おわり",
+      "power": "read"
+    }
+  ],
+  "items": []
+}
