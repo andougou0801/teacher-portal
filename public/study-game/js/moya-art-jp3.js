@@ -210,17 +210,16 @@ const PARTS = {
       `<circle cx="34" cy="48" r="23" fill="#E8679B" stroke="${INK}" stroke-width="3"/>` +
       `<circle cx="68" cy="62" r="19" fill="#E8679B" stroke="${INK}" stroke-width="3"/>`,
     /* ★右の まるに 白い 点を 2つ 置いたら「もう1ぴき 顔が ある」ように
-       見えたので、点は やめて 輪と 矢に かえた。
-       ★つなぎめの 輪を 口の よこに 置いたら「口から 出た しゃぼん玉」に
-       見えたので、口より 下（かさなりの 下がわ）へ 下げた。 */
+       見えたので、点は やめて 白い 輪に かえた。
+       ★はじめは 矢じるしも 入れたが、口・輪・矢が 1本の ぐにゃぐにゃの
+       線に 見えたので 矢は やめて、おなじ 大きさの 輪を ななめに 2つだけに
+       した（くさりが 右へ つづいて いく＝しりとり）。顔も 上へ 上げた。 */
     mark:
       `<circle cx="50" cy="62" r="6" fill="none" stroke="#FFF4E2" stroke-width="3"/>` +
-      `<circle cx="79" cy="70" r="3.6" fill="none" stroke="#FFF4E2" stroke-width="2.4"/>` +
-      `<path d="M58 54q10 1 14 8" fill="none" stroke="#FFF4E2" stroke-width="3" stroke-linecap="round"/>` +
-      `<path d="M69 57 75 62 69 67" fill="none" stroke="#FFF4E2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
-    eyes: [[27, 43, 5.2], [41, 43, 5.2]],
-    mouth: [34, 56],
-    cheek: [[18, 53], [47, 51]],
+      `<circle cx="76" cy="70" r="5" fill="none" stroke="#FFF4E2" stroke-width="2.8"/>`,
+    eyes: [[27, 40, 5.2], [41, 40, 5.2]],
+    mouth: [34, 52],
+    cheek: [[18, 49], [47, 47]],
     sproutAt: [34, 25],
     feet: [36, 62],
     feetY: 88,
@@ -232,23 +231,26 @@ const PARTS = {
   tsunagimoya: {
     color: "#4F5BA6",
     soft: "#BDC3E6",
-    topBefore: `<rect x="38" y="42" width="24" height="12" rx="6" fill="#4F5BA6" stroke="${INK}" stroke-width="3"/>`,
+    topBefore: `<rect x="34" y="42" width="32" height="13" rx="6.5" fill="#4F5BA6" stroke="${INK}" stroke-width="3"/>`,
     body:
-      `<rect x="8" y="26" width="36" height="46" rx="10" fill="#4F5BA6" stroke="${INK}" stroke-width="3"/>` +
-      `<rect x="56" y="26" width="36" height="46" rx="10" fill="#4F5BA6" stroke="${INK}" stroke-width="3"/>`,
+      `<rect x="6" y="26" width="34" height="46" rx="10" fill="#4F5BA6" stroke="${INK}" stroke-width="3"/>` +
+      `<rect x="60" y="26" width="34" height="46" rx="10" fill="#4F5BA6" stroke="${INK}" stroke-width="3"/>`,
+    /* ★はじめは つなぎめを ふとい 丸（r9）に したが、その 丸が ぼうを
+       ぜんぶ かくして「丸で つないで いる」ように 見えたので、ぼうを
+       見せて、むすびめは ぼうの上の 白い 輪に かえた。
+       ★左の 白い ふだを 口の まん下に 置くと「歯」に 見えたので、
+       左へ ずらした。 */
     mark:
-      `<rect x="11" y="60" width="18" height="8" rx="3" fill="#FFF4E2" stroke="${INK}" stroke-width="2.2"/>` +
-      `<path d="M15 64h10" fill="none" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>` +
-      `<path d="M64 44h14" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round"/>` +
-      `<path d="M74 39 79 44 74 49" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>` +
-      `<path d="M65 55h11" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>`,
-    topAfter:
-      `<circle cx="50" cy="48" r="9" fill="#4F5BA6" stroke="${INK}" stroke-width="3"/>` +
-      `<circle cx="50" cy="48" r="3.6" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>`,
-    eyes: [[20, 42, 5.2], [34, 42, 5.2]],
-    mouth: [27, 53],
-    cheek: [[13, 51], [40, 51]],
-    sproutAt: [26, 26],
+      `<circle cx="50" cy="48.5" r="4.5" fill="none" stroke="#FFF4E2" stroke-width="2.6"/>` +
+      `<rect x="9" y="60" width="18" height="8" rx="3" fill="#FFF4E2" stroke="${INK}" stroke-width="2.2"/>` +
+      `<path d="M13 64h10" fill="none" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>` +
+      `<path d="M68 44h14" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round"/>` +
+      `<path d="M78 39 83 44 78 49" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>` +
+      `<path d="M69 55h11" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>`,
+    eyes: [[18, 42, 5.2], [32, 42, 5.2]],
+    mouth: [25, 53],
+    cheek: [[10, 51], [37, 51]],
+    sproutAt: [23, 26],
     feet: [30, 70],
     feetY: 80,
     drop: -8,
@@ -268,11 +270,13 @@ const PARTS = {
       `<circle cx="20" cy="56" r="18" fill="#9AA83F" stroke="${INK}" stroke-width="3"/>` +
       `<circle cx="80" cy="52" r="12" fill="#9AA83F" stroke="${INK}" stroke-width="3"/>`,
     /* 長い ふだと 短い ふだ＝くらべる 2つの おはなし。
-       しちゅうの 白い たて線が「つりあって いる」はりの かわり。 */
+       しちゅうの 白い たて線が「つりあって いる」はりの かわり。
+       ★右の ふだを 玉の まん中に 置くと 左の ふだと 高さが そろわず
+       「くらべて いる」ように 見えなかったので、左右 おなじ 高さに した。 */
     mark:
       `<path d="M50 36v12" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>` +
       `<rect x="10" y="44" width="21" height="5" rx="2.5" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>` +
-      `<rect x="74" y="55" width="13" height="4.5" rx="2.2" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>`,
+      `<rect x="74" y="45" width="13" height="4.5" rx="2.2" fill="#FFF4E2" stroke="${INK}" stroke-width="2"/>`,
     eyes: [[14, 58, 5], [27, 58, 5]],
     mouth: [20, 69],
     cheek: [[7, 64], [33, 63]],
