@@ -51,17 +51,20 @@
                       tsunagimoya が「よこに ならんで 線で つながる」のに対して、
                       こちらは「上から ぶら下がって つりあう」ので、
                       小さく しても 見分けられる。玉には 長い ふだと 短い ふだ。
-       mukashimoya  … よこに ひらいた まきもの（四角い かみ）。左下と 右上の
-                      はしが くるんと まいて、まん中が 白い 丸の うずに なる。
+       mukashimoya  … よこに ひらいた まきもの。まん中が 四角い かみで、左右の
+                      はしに たてに 長い まきが 立ち、上下に はみ出して いる。
+                      まきの まん中には ひらいた うずまき。
                       おなかに たてがきの 白い 行が 2本。
                       ずもや（よこ長の 帯＋くぎり線＋テープ図）とは ちがい、
-                      はしに 丸い まきが 2つ 出て いる。
+                      左右に まきの ぼうが 出て いる。けたもや（たて長の はしら
+                      2本）とは ちがい、まん中の かみの ほうが ずっと 大きい。
        sotsumoya    … まるくて 大きい（r=30）。★まとめもや（さんすう3学期・
                       r=33・きいろ・うすい輪・＋ − ○ △ が 四すみ・よこに 手2つ）と
                       ねらいが 同じなので、つぎの 4つで 見分けられるように した：
                         ①色が みず色（まとめもやは きいろ）
-                        ②しるしが もじ（あ・ア・一・「」）で、
-                          下に 一れつに ならぶ（まとめもやは 四すみに ちらばる）
+                        ②しるしが もじ（あ・ア・一・「」）で、「」は 顔の 左右、
+                          あ・ア・一は 下に 弧で 3つ。上はんぶんには しるしが
+                          ない（まとめもやは 四すみに 1つずつ）
                         ③うすい 輪を 入れない（まとめもやは 中に 輪が1つ）
                         ④よこの 手を つけない（まとめもやは 左右に 丸い 手）
 
@@ -162,12 +165,14 @@ function windowMark(x, y, s) {
   );
 }
 
-/* くるんと まいた まきもの の はし（むかしもや） */
-function scrollRoll(x, y, r, color) {
+/* くるんと まいた まきもの の はし（むかしもや）
+   － たてに 長い カプセル＝まいた ところ。上下に つつの ふた、
+     まん中に ひらいた うずまき。白は つかわない（目に 見えて しまうので） */
+function scrollRoll(x, color) {
   return (
-    `<circle cx="${x}" cy="${y}" r="${r}" fill="${color}" stroke="${INK}" stroke-width="3"/>` +
-    `<circle cx="${x}" cy="${y}" r="${(r * 0.4).toFixed(1)}" fill="#FFF4E2" stroke="${INK}" stroke-width="2.2"/>` +
-    `<path d="M${x} ${y - r + 2}q${r - 2} 1 ${r - 2} ${r - 3}" fill="none" stroke="${INK}" stroke-width="1.8"/>`
+    `<rect x="${x}" y="30" width="14" height="44" rx="7" fill="${color}" stroke="${INK}" stroke-width="3"/>` +
+    `<path d="M${x + 1} 39q6-5 12 0M${x + 1} 65q6 5 12 0" fill="none" stroke="${INK}" stroke-width="2"/>` +
+    `<path d="M${x + 7} 48.4q3.6 0 3.6 3.6t-3.6 3.6-3.1-3.1" fill="none" stroke="${INK}" stroke-width="2"/>`
   );
 }
 
@@ -287,43 +292,49 @@ const PARTS = {
   },
 
   /* j21 むかしばなしを よむ
-     － よこに ひらいた まきもの。左下と 右上の はしが くるんと まいて、
-       まん中が 白い うずに なる。おなかに たてがきの 行が 2本 */
+     － よこに ひらいた まきもの。左右の はしが たてに 長い まきに なって
+       上下に はみ出す。おなかに たてがきの 白い 行が 2本 */
   mukashimoya: {
     color: "#8E5E86",
     soft: "#D6BBD2",
     topBefore: "",
-    body: `<rect x="22" y="30" width="56" height="44" rx="3" fill="#8E5E86" stroke="${INK}" stroke-width="3"/>`,
-    mark: `<path d="M66 52v18M72 52v13" fill="none" stroke="#FFF4E2" stroke-width="3" stroke-linecap="round"/>`,
-    topAfter: scrollRoll(22, 62, 11, "#8E5E86") + scrollRoll(78, 42, 11, "#8E5E86"),
-    eyes: [[41, 46, 5.5], [59, 46, 5.5]],
-    mouth: [50, 60],
-    cheek: [[32, 56], [68, 58]],
-    sproutAt: [50, 30],
-    feet: [38, 62],
-    feetY: 88,
-    drop: -2,
+    body: `<rect x="22" y="36" width="56" height="32" rx="2" fill="#8E5E86" stroke="${INK}" stroke-width="3"/>`,
+    mark: `<path d="M65 42v20M71 42v14" fill="none" stroke="#FFF4E2" stroke-width="3" stroke-linecap="round"/>`,
+    /* ★はじめは まきを「まん中が 白い 丸」に して 左下と 右上に 置いたが、
+       右上の まきが 3つめの 目に 見えたので、白を やめて、左右の はしに
+       たてに 長い まき（上下に はみ出す カプセル）を 立てる かたちに かえた。 */
+    topAfter: scrollRoll(12, "#8E5E86") + scrollRoll(74, "#8E5E86"),
+    eyes: [[37, 47, 5], [51, 47, 5]],
+    mouth: [44, 59],
+    cheek: [[29, 56], [56, 55]],
+    sproutAt: [50, 36],
+    feet: [34, 66],
+    feetY: 84,
+    drop: -4,
   },
 
   /* j22 1ねんの まとめ
-     － まるくて 大きい（r=30）。おなかの 下のほうに、1年で ならった しるしが
-       一れつに ならぶ（あ・ア・「一」）。うすい輪や よこの手は つけない */
+     － まるくて 大きい（r=30）。顔の 左右に 「」、下に あ・ア・一 が 弧に
+       ならぶ。うすい輪や よこの手は つけない */
   sotsumoya: {
     color: "#4FB3D9",
     soft: "#BCE4F2",
     topBefore: "",
     body: `<circle cx="50" cy="51" r="30" fill="#4FB3D9" stroke="${INK}" stroke-width="3"/>`,
     /* ★まとめもや（さんすう3学期）と 見分けるため、しるしは ＋−○△ では なく
-       もじ（あ・ア・一・「」）に して、四すみでは なく 下に 一れつに ならべた。
-       中の うすい 輪も つけていない。 */
+       もじ（あ・ア・一・「」）に して、まとめもやの「四すみに 1つずつ」とは
+       ちがう ならべかたに した：「」は 顔の 左右（ちょうど もやが
+       かぎかっこに 入って いるように 見える）、あ・ア・一は 下に 弧の かたちで
+       3つ。上はんぶんに しるしは 置かない。
+       中の うすい 輪も、よこの 手も つけていない。
+       ★はじめは 4つを 下に 一れつに つめたら、せますぎて「あ」が「古」に
+       見えたので、1つずつ 大きくして ばらした。ア には みじかい たて線も 足した。 */
     mark:
-      `<path d="M30 63h11M36 60v7" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>` +
-      `<circle cx="35.5" cy="70" r="3.6" fill="none" stroke="#FFF4E2" stroke-width="2.4"/>` +
-      `<path d="M45 62h11" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>` +
-      `<path d="M54 62q0 7-7 10" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>` +
-      `<path d="M62 62h-4v9" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>` +
-      `<path d="M61 67h7" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>` +
-      `<path d="M71 62v9h-4" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>`,
+      `<path d="M28 44h-6v10M78 44v10h-6" fill="none" stroke="#FFF4E2" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>` +
+      `<path d="M25 62h14M34 58 30 72" fill="none" stroke="#FFF4E2" stroke-width="2.8" stroke-linecap="round"/>` +
+      `<circle cx="33" cy="68" r="4.6" fill="none" stroke="#FFF4E2" stroke-width="2.6"/>` +
+      `<path d="M43 66h14M46 66v5M55 66q0 9-9 12" fill="none" stroke="#FFF4E2" stroke-width="2.8" stroke-linecap="round"/>` +
+      `<path d="M62 64h13" fill="none" stroke="#FFF4E2" stroke-width="2.8" stroke-linecap="round"/>`,
     eyes: [[41, 43, 5.5], [59, 43, 5.5]],
     mouth: [50, 54],
     cheek: [[32, 50], [68, 50]],
