@@ -182,7 +182,7 @@ const PARTS = {
     color: "#6B8396",
     soft: "#C4D0D9",
     topBefore: `<path d="M57 21 67 10 77 21z" fill="#6B8396" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>`,
-    body: `<path d="M10 84V44h18V30h18v22h12V20h18v20h14v24z" fill="#6B8396" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>`,
+    body: `<path d="M10 84V44h18V30h18v22h12V20h18v20h14v44z" fill="#6B8396" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>`,
     /* ★まどを まるくすると「目が いくつも ある」ように 見えたので、
        十字の さんが 入った 四角い まどに して、顔より ずっと 上に 置いた。 */
     mark:
@@ -210,12 +210,14 @@ const PARTS = {
       `<circle cx="34" cy="48" r="23" fill="#E8679B" stroke="${INK}" stroke-width="3"/>` +
       `<circle cx="68" cy="62" r="19" fill="#E8679B" stroke="${INK}" stroke-width="3"/>`,
     /* ★右の まるに 白い 点を 2つ 置いたら「もう1ぴき 顔が ある」ように
-       見えたので、点は やめて 輪と 矢に かえた。 */
+       見えたので、点は やめて 輪と 矢に かえた。
+       ★つなぎめの 輪を 口の よこに 置いたら「口から 出た しゃぼん玉」に
+       見えたので、口より 下（かさなりの 下がわ）へ 下げた。 */
     mark:
-      `<circle cx="52" cy="56" r="6" fill="none" stroke="#FFF4E2" stroke-width="3"/>` +
-      `<circle cx="82" cy="66" r="4" fill="none" stroke="#FFF4E2" stroke-width="2.4"/>` +
-      `<path d="M58 71q10 7 18-3" fill="none" stroke="#FFF4E2" stroke-width="3" stroke-linecap="round"/>` +
-      `<path d="M71 63 77 68 71 73" fill="none" stroke="#FFF4E2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
+      `<circle cx="50" cy="62" r="6" fill="none" stroke="#FFF4E2" stroke-width="3"/>` +
+      `<circle cx="79" cy="70" r="3.6" fill="none" stroke="#FFF4E2" stroke-width="2.4"/>` +
+      `<path d="M58 54q10 1 14 8" fill="none" stroke="#FFF4E2" stroke-width="3" stroke-linecap="round"/>` +
+      `<path d="M69 57 75 62 69 67" fill="none" stroke="#FFF4E2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
     eyes: [[27, 43, 5.2], [41, 43, 5.2]],
     mouth: [34, 56],
     cheek: [[18, 53], [47, 51]],
@@ -235,8 +237,8 @@ const PARTS = {
       `<rect x="8" y="26" width="36" height="46" rx="10" fill="#4F5BA6" stroke="${INK}" stroke-width="3"/>` +
       `<rect x="56" y="26" width="36" height="46" rx="10" fill="#4F5BA6" stroke="${INK}" stroke-width="3"/>`,
     mark:
-      `<rect x="14" y="60" width="24" height="8" rx="3" fill="#FFF4E2" stroke="${INK}" stroke-width="2.2"/>` +
-      `<path d="M19 64h6M29 64h5" fill="none" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>` +
+      `<rect x="11" y="60" width="18" height="8" rx="3" fill="#FFF4E2" stroke="${INK}" stroke-width="2.2"/>` +
+      `<path d="M15 64h10" fill="none" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>` +
       `<path d="M64 44h14" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round"/>` +
       `<path d="M74 39 79 44 74 49" fill="none" stroke="#FFF4E2" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>` +
       `<path d="M65 55h11" fill="none" stroke="#FFF4E2" stroke-width="2.6" stroke-linecap="round"/>`,

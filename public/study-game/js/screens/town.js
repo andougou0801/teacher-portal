@@ -210,6 +210,7 @@ function render() {
   const built = here.filter((b) => p.buildings[b.id]?.built);
   const open = p.unlockedUnits || ["u01"];
   const nextUp = buildableList()[0];
+  let nextLabel = "";
   // おくに ある ものから 先に 描く（手前の たてものが うしろに かくれないように）
   const inOrder = [...here].sort((p1, p2) => p1.y - p2.y);
   for (const b of inOrder) {
@@ -238,7 +239,9 @@ function render() {
         // 札は その たてものの 足もとに 出す（どの たてものの ことか すぐ分かるように）。
         // 下の 帯に かくれないよう、下がりすぎないようにも する
         const labelY = Math.min(y + 48, 468);
-        svg += `<g transform="translate(${x} ${labelY})">
+        // ★札は ぜんぶの たてものを 描いたあとで いちばん上に のせる。
+        //   ここで 描くと、あとから 描く 手前の たてものに かくれてしまう。
+        nextLabel = `<g transform="translate(${x} ${labelY})">
           <rect x="-72" y="-22" width="144" height="42" rx="21" fill="#FFFFFF" stroke="#2B2A28" stroke-width="3"/>
           <rect x="-58" y="-12" width="22" height="22" rx="6" fill="${MATERIALS[b.mat].color}" stroke="#2B2A28" stroke-width="3"/>
           <text x="6" y="8" font-size="26" text-anchor="middle" fill="#2B2A28" font-weight="700">あと ${need}</text>
@@ -246,6 +249,7 @@ function render() {
       }
     }
   }
+  svg += nextLabel;
 
   // なかま（たおした もやもやが まちで くらす）
   // なかまは「みちぞい」に ならべる。
