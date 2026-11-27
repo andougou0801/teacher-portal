@@ -68,10 +68,10 @@
        senmoya       … いちばん よこに 大きい 体（よこ長の 楕円 rx40・ry29）。
                        たての うすい くぎり線 2本で 百・十・一の 3つの へやに
                        わかれ、つぶが 9こ・3こ・1こ の 3かたまりに なっている。
-                       ★ひゃくもや（たて長の 角丸・つぶは 12こ ぜんぶ 同じ
+                       ★ひゃくもや（たて長の 角丸・青・つぶは 12こ ぜんぶ 同じ
                        大きさの ます目ならび・上に はみ出した つぶ1つ）とは
-                       たて／よこと「つぶが 3かたまりに わかれて いるか」で
-                       ちがう。おおかずもや（つぶ12こ そのものが 体・へりが
+                       たて／よこ、つぶが 3かたまりに わかれて いるか、
+                       そして 色（もも色／青）で ちがう。おおかずもや（つぶ12こ そのものが 体・へりが
                        ぷつぷつ）とは、つぶが 中か 外かで ちがう。
                        おさらいもや（rx29の たまご＋リボン）より ずっと 大きい。
        masumoya      … まっすぐな 四角い ます（かど四角 66×47）＋上に よこに
@@ -82,7 +82,7 @@
                        水は ぐにゃぐにゃの 波線）とは ちがい、こちらは
                        かどが 四角で とっ手が なく、水面は まっすぐ。
                        がいもや（ふねの どう）とは 上の ふちの 板で ちがう。
-       sakamoya      … よこ長の 角丸（72×42）。右うえから 右へ むかう 白い
+       sakamoya      … よこ長の 角丸（60×42）。右うえから 右へ むかう 白い
                        やじるしが 1つ、左したから 左へ むかう 白い やじるしが
                        1つ、どちらも 体から 外へ はみ出す（いきと かえり）。
                        ＋は 右うえ、− は 左した。
@@ -320,8 +320,8 @@ const PARTS = {
        顔と めもりの あいだには 白い くぎり線を 入れて、
        「顔の下は ぜんぶ ものさし」だと わかるように した。 */
     mark:
-      `<path d="M38 39h24" fill="none" stroke="#FFF4E2" stroke-width="2.4"/>` +
-      `<path d="M64 44h-9M64 49.5h-5M64 55h-9M64 60.5h-5M64 66h-9M64 71.5h-5M64 77h-9M64 81.5h-5" fill="none" stroke="${INK}" stroke-width="2"/>`,
+      `<path d="M38 41h24" fill="none" stroke="#FFF4E2" stroke-width="2.4"/>` +
+      `<path d="M64 46h-9M64 51h-5M64 56h-9M64 61h-5M64 66h-9M64 71h-5M64 76h-9M64 81h-5" fill="none" stroke="${INK}" stroke-width="2"/>`,
     eyes: [[44, 24, 4.6], [57, 24, 4.6]],
     mouth: [50, 34],
     cheek: [[40, 32], [61, 32]],
@@ -334,21 +334,27 @@ const PARTS = {
      － いちばん よこに 大きい 楕円。たての くぎり線 2本で 百・十・一に わかれ、
        つぶが 9こ・3こ・1こ の 3かたまり */
   senmoya: {
-    color: "#2F7FB3",
-    soft: "#AECEE6",
+    color: "#A8508F",
+    soft: "#E2B4D6",
     topBefore: "",
-    body: `<ellipse cx="50" cy="54" rx="40" ry="29" fill="#2F7FB3" stroke="${INK}" stroke-width="3"/>`,
+    body: `<ellipse cx="50" cy="54" rx="40" ry="29" fill="#A8508F" stroke="${INK}" stroke-width="3"/>`,
     /* ★はじめは つぶを 白い ふだの 中に 入れたが、ふだが 大きすぎて
        「おなかに 四角が 3つ」に 見えたので、ふだは やめて うすい くぎり線に した。
-       つぶの 数が 9・3・1 と ちがうので、小さく しても 3かたまりに 見える。 */
+       ★48pxで ひゃくもや（たて長・青・つぶ12こ）と ならべたら、青い体に
+       白い つぶ という ところが そっくりに 見えたので、
+         ①色を 青から こい もも色に かえ
+         ②つぶの 大きさを 百＜十＜一 と はっきり かえ
+         ③くぎり線を ふとく して 3つの へやに 見えるように した。
+       つぶの 数が 9・3・1 で 大きさも ちがうので、小さく しても
+       「3つの かたまり」に 見える。 */
     mark:
-      `<path d="M47 57v23M62 57v23" fill="none" stroke="#FFF4E2" stroke-width="2.4"/>` +
-      dotGrid([26, 33, 40], [60, 67, 74], 2.7, "#FFF4E2") +
-      dotGrid([54], [60, 67, 74], 2.9, "#FFF4E2") +
-      `<circle cx="70" cy="67" r="3.8" fill="#FFF4E2" stroke="${INK}" stroke-width="1.8"/>`,
-    eyes: [[41, 41, 5.5], [59, 41, 5.5]],
-    mouth: [50, 51],
-    cheek: [[27, 48], [73, 48]],
+      `<path d="M46 55v24M63 55v24" fill="none" stroke="#FFF4E2" stroke-width="3"/>` +
+      dotGrid([26, 33, 40], [58, 65, 72], 2.6, "#FFF4E2") +
+      dotGrid([55], [58, 65, 72], 3.4, "#FFF4E2") +
+      `<circle cx="73" cy="65" r="4.8" fill="#FFF4E2" stroke="${INK}" stroke-width="1.8"/>`,
+    eyes: [[41, 39, 5.5], [59, 39, 5.5]],
+    mouth: [50, 49],
+    cheek: [[27, 46], [73, 46]],
     sproutAt: [50, 25],
     feet: [40, 60],
     feetY: 90,
@@ -382,22 +388,25 @@ const PARTS = {
   /* v07 たしざんと ひきざんの かんけい
      － よこ長の 角丸。右うえに 右むきの やじるし、左したに 左むきの やじるし */
   sakamoya: {
-    color: "#E8743E",
-    soft: "#F8C8AE",
+    color: "#E04E2E",
+    soft: "#F7BDA8",
     topBefore: "",
-    body: `<rect x="14" y="40" width="72" height="42" rx="14" fill="#E8743E" stroke="${INK}" stroke-width="3"/>`,
+    body: `<rect x="20" y="40" width="60" height="42" rx="16" fill="#E04E2E" stroke="${INK}" stroke-width="3"/>`,
     mark:
-      `<path d="M62 45h8M66 41v8" fill="none" stroke="#FFF4E2" stroke-width="2.8" stroke-linecap="round"/>` +
-      `<path d="M30 74h8" fill="none" stroke="#FFF4E2" stroke-width="2.8" stroke-linecap="round"/>`,
+      `<path d="M55 46h10M60 41v10" fill="none" stroke="#FFF4E2" stroke-width="2.8" stroke-linecap="round"/>` +
+      `<path d="M41 74h10" fill="none" stroke="#FFF4E2" stroke-width="2.8" stroke-linecap="round"/>`,
     /* ★やじるしを 体の 下（topBefore）に おくと 頭だけ 出て 三角に 見えたので、
        体の 上に 白く のせて、しっぽが 体の 中、頭が 外に はみ出すように した。
-       2本を ななめ（右うえ・左した）に ずらしたので、顔と かさならない。 */
+       2本を ななめ（右うえ・左した）に ずらしたので、顔と かさならない。
+       ★48pxで ずもや（よこ長の 帯・おなじ オレンジ）と ならべたら 近かったので、
+       体を よこに 短く（60）して かどを もっと まるくし、
+       やじるしを 大きくして 外へ もっと はみ出させ、色も 赤よりに した。 */
     topAfter:
-      `<path d="M72 47h12v-6l10 11-10 11v-6H72z" fill="#FFF4E2" stroke="${INK}" stroke-width="2.4" stroke-linejoin="round"/>` +
-      `<path d="M28 65H16v-6L6 70l10 11v-6h12z" fill="#FFF4E2" stroke="${INK}" stroke-width="2.4" stroke-linejoin="round"/>`,
+      `<path d="M66 46h14v-7l12 13-12 13v-7H66z" fill="#FFF4E2" stroke="${INK}" stroke-width="2.4" stroke-linejoin="round"/>` +
+      `<path d="M34 64H20v-7L8 70l12 13v-7h14z" fill="#FFF4E2" stroke="${INK}" stroke-width="2.4" stroke-linejoin="round"/>`,
     eyes: [[42, 54, 5.2], [58, 54, 5.2]],
     mouth: [50, 64],
-    cheek: [[33, 62], [67, 62]],
+    cheek: [[30, 60], [66, 61]],
     sproutAt: [50, 40],
     feet: [38, 62],
     feetY: 88,
@@ -413,7 +422,7 @@ const PARTS = {
     /* ★はぐるまを おなかの まん中に 置いたら 2つめの 顔に 見えたので、
        頭の 右うえ（体から はみ出す ところ）に 1つだけ 置いた。
        はの 先は とがりすぎないように stroke-linejoin="round" で まるめて ある。 */
-    mark: gearPath(73, 28, 12, 8.5, 8, "#FFF4E2", "#A8743F"),
+    mark: gearPath(68, 33, 12, 8.5, 8, "#FFF4E2", "#A8743F"),
     eyes: [[36, 52, 5.2], [52, 52, 5.2]],
     mouth: [44, 63],
     cheek: [[27, 61], [59, 60]],

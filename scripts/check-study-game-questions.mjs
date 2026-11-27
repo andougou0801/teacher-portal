@@ -101,12 +101,18 @@ function expectedAnswer(item) {
     return v;
   }
 
+  // ★「36 + 27 = 63。63 − 27 は いくつ？」のように、
+  //   さきに 式を 見せてから きく 問題が ある（2年の「こたえの たしかめ」）。
+  //   さいしょの + を ひろうと 63 が 答えだと かんちがいする。
+  //   = が あるときは、いちばん うしろの = より あとだけを 見る。
+  const ask = text.includes("=") ? text.slice(text.lastIndexOf("=") + 1) : text;
+
   // 「3 + 4 は いくつ？」
-  let m = text.match(/(\d+)\s*\+\s*(\d+)/);
+  let m = ask.match(/(\d+)\s*\+\s*(\d+)/);
   if (m) return Number(m[1]) + Number(m[2]);
 
   // 「8 - 3 は いくつ？」（全角マイナス・ハイフンの両方）
-  m = text.match(/(\d+)\s*[-−ー]\s*(\d+)/);
+  m = ask.match(/(\d+)\s*[-−ー]\s*(\d+)/);
   if (m) return Number(m[1]) - Number(m[2]);
 
   // 「10は 6と いくつ？」
