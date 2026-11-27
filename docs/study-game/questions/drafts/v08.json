@@ -494,8 +494,8 @@
       ],
       "figure": {
         "kind": "numline",
-        "from": 0,
-        "to": 20,
+        "from": 8,
+        "to": 18,
         "mark": 9
       },
       "answer": "15",
@@ -539,8 +539,8 @@
       ],
       "figure": {
         "kind": "numline",
-        "from": 15,
-        "to": 30,
+        "from": 18,
+        "to": 28,
         "mark": 19
       },
       "answer": "25",
@@ -584,8 +584,8 @@
       ],
       "figure": {
         "kind": "numline",
-        "from": 10,
-        "to": 30,
+        "from": 15,
+        "to": 25,
         "mark": 25
       },
       "answer": "16",

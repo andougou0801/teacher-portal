@@ -25,5 +25,767 @@
       "power": "count"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "v04-001",
+      "skill": "v04-yomu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "テープの ながさは なんcm？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 8,
+        "mark": 30
+      },
+      "choices": [
+        "3cm",
+        "4cm",
+        "5cm"
+      ],
+      "answer": 0,
+      "hint": "おおきい めもりを かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-002",
+      "skill": "v04-yomu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "テープの ながさは なんcm？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 8,
+        "mark": 50
+      },
+      "choices": [
+        "4cm",
+        "5cm",
+        "6cm"
+      ],
+      "answer": 1,
+      "hint": "おおきい めもりを かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-003",
+      "skill": "v04-yomu",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "テープの ながさは なんcm？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 10,
+        "mark": 70
+      },
+      "answer": 7,
+      "hint": "0から おおきい めもりを かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-004",
+      "skill": "v04-yomu",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "テープの ながさは なんmm？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 6,
+        "mark": 40
+      },
+      "answer": 40,
+      "hint": "1cmは 10mm だよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-005",
+      "skill": "v04-yomu",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "テープの ながさは なんmm？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 8,
+        "mark": 60
+      },
+      "answer": 60,
+      "hint": "1cmは 10mm だよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-006",
+      "skill": "v04-yomu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "テープの ながさは なんmm？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 5,
+        "mark": 20
+      },
+      "choices": [
+        "2mm",
+        "20mm",
+        "12mm"
+      ],
+      "answer": 1,
+      "hint": "2cmだから 10mmが 2つぶん",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-007",
+      "skill": "v04-yomu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "テープの ながさは どれ？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 8,
+        "mark": 35
+      },
+      "choices": [
+        "3cm5mm",
+        "5cm3mm",
+        "35cm"
+      ],
+      "answer": 0,
+      "hint": "おおきい めもり3つと ちいさい めもり5つ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-008",
+      "skill": "v04-yomu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "テープの ながさは どれ？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 8,
+        "mark": 42
+      },
+      "choices": [
+        "2cm4mm",
+        "4cm2mm",
+        "4cm"
+      ],
+      "answer": 1,
+      "hint": "おおきい めもりが 4つ、そのさきが 2つ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-009",
+      "skill": "v04-yomu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "テープの ながさは どれ？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 10,
+        "mark": 67
+      },
+      "choices": [
+        "6cm7mm",
+        "7cm6mm",
+        "67cm"
+      ],
+      "answer": 0,
+      "hint": "まず なんcm、そのあと なんmm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-010",
+      "skill": "v04-yomu",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "テープの ながさは なんmm？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 9,
+        "mark": 58
+      },
+      "answer": 58,
+      "hint": "5cm8mmは 50mmと 8mm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-011",
+      "skill": "v04-yomu",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "テープの ながさは なんmm？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 7,
+        "mark": 26
+      },
+      "answer": 26,
+      "hint": "2cm6mmは 20mmと 6mm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-012",
+      "skill": "v04-yomu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "テープの ながさは なんmm？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 10,
+        "mark": 84
+      },
+      "choices": [
+        "84mm",
+        "48mm",
+        "8mm"
+      ],
+      "answer": 0,
+      "hint": "8cm4mmは 80mmと 4mm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-013",
+      "skill": "v04-yomu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "テープの ながさは どれ？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 12,
+        "mark": 105
+      },
+      "choices": [
+        "10cm5mm",
+        "1cm5mm",
+        "105cm"
+      ],
+      "answer": 0,
+      "hint": "おおきい めもりを さいごまで かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-014",
+      "skill": "v04-yomu",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "テープの ながさは なんmm？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 11,
+        "mark": 93
+      },
+      "answer": 93,
+      "hint": "9cm3mmは 90mmと 3mm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-015",
+      "skill": "v04-yomu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "テープの ながさは どれ？"
+      ],
+      "figure": {
+        "kind": "ruler",
+        "cm": 12,
+        "mark": 118
+      },
+      "choices": [
+        "11cm8mm",
+        "8cm11mm",
+        "118cm"
+      ],
+      "answer": 0,
+      "hint": "mmが 10に なったら cmに なるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-016",
+      "skill": "v04-tani",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "1cm は なんmm？"
+      ],
+      "answer": 10,
+      "hint": "1cmは ちいさい めもり 10こぶん",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-017",
+      "skill": "v04-tani",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "2cm は なんmm？"
+      ],
+      "answer": 20,
+      "hint": "10mmが 2つぶん",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-018",
+      "skill": "v04-tani",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "10mm は なんcm？"
+      ],
+      "answer": 1,
+      "hint": "10mmで ちょうど 1cm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-019",
+      "skill": "v04-tani",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "6cm は なんmm？"
+      ],
+      "answer": 60,
+      "hint": "10mmが 6つぶん",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-020",
+      "skill": "v04-tani",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "80mm は なんcm？"
+      ],
+      "answer": 8,
+      "hint": "10mmずつ わけると いくつに なる？",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-021",
+      "skill": "v04-tani",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "□に はいる かずは？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "cm",
+          "mm"
+        ],
+        "rows": [
+          [
+            "1",
+            "10"
+          ],
+          [
+            "2",
+            "20"
+          ],
+          [
+            "3",
+            "□"
+          ]
+        ]
+      },
+      "answer": 30,
+      "hint": "1cmずつ ふえると 10mmずつ ふえるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-022",
+      "skill": "v04-tani",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "3cm5mm は なんmm？"
+      ],
+      "answer": 35,
+      "hint": "3cmは 30mm。そこに 5mm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-023",
+      "skill": "v04-tani",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "70mm は なんcm？"
+      ],
+      "answer": 7,
+      "hint": "10mmが いくつぶん あるかな",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-024",
+      "skill": "v04-tani",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "2cm8mm は なんmm？"
+      ],
+      "choices": [
+        "28mm",
+        "82mm",
+        "208mm"
+      ],
+      "answer": 0,
+      "hint": "2cmは 20mm。そこに 8mm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-025",
+      "skill": "v04-tani",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "46mm は なんcm なんmm？"
+      ],
+      "choices": [
+        "4cm6mm",
+        "6cm4mm",
+        "46cm"
+      ],
+      "answer": 0,
+      "hint": "10mmずつ 4つで 40mm。のこりが 6mm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-026",
+      "skill": "v04-tani",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "59mm は なんcm なんmm？"
+      ],
+      "choices": [
+        "9cm5mm",
+        "5cm9mm",
+        "5cm"
+      ],
+      "answer": 1,
+      "hint": "50mmで 5cm。のこりが 9mm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-027",
+      "skill": "v04-tani",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "9cm1mm は なんmm？"
+      ],
+      "answer": 91,
+      "hint": "9cmは 90mm。そこに 1mm",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-028",
+      "skill": "v04-tani",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "120mm は なんcm？"
+      ],
+      "answer": 12,
+      "hint": "10mmずつ わけて かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-029",
+      "skill": "v04-tani",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "9cm と 85mm。",
+        "ながいのは どっち？"
+      ],
+      "choices": [
+        "9cm",
+        "85mm"
+      ],
+      "answer": 0,
+      "hint": "どちらも mmに なおして くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-030",
+      "skill": "v04-tani",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "6cm2mm と 58mm。",
+        "みじかいのは どっち？"
+      ],
+      "choices": [
+        "6cm2mm",
+        "58mm"
+      ],
+      "answer": 1,
+      "hint": "どちらも mmに なおして くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-031",
+      "skill": "v04-keisan",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "3cm と 4cm を あわせると",
+        "なんcm？"
+      ],
+      "answer": 7,
+      "hint": "cmの かずを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-032",
+      "skill": "v04-keisan",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "8cm から 3cm ひくと",
+        "なんcm？"
+      ],
+      "answer": 5,
+      "hint": "cmの かずを ひくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-033",
+      "skill": "v04-keisan",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "5cm と 2cm を あわせると？"
+      ],
+      "choices": [
+        "7cm",
+        "3cm",
+        "52cm"
+      ],
+      "answer": 0,
+      "hint": "おなじ たんいどうしを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-034",
+      "skill": "v04-keisan",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "20mm と 30mm を あわせると",
+        "なんmm？"
+      ],
+      "answer": 50,
+      "hint": "mmの かずを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-035",
+      "skill": "v04-keisan",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "70mm から 40mm ひくと",
+        "なんmm？"
+      ],
+      "answer": 30,
+      "hint": "mmの かずを ひくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-036",
+      "skill": "v04-keisan",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "6cm と 3cm を あわせると？"
+      ],
+      "choices": [
+        "9cm",
+        "3cm",
+        "63cm"
+      ],
+      "answer": 0,
+      "hint": "おなじ たんいどうしを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-037",
+      "skill": "v04-keisan",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "3cm5mm と 2cm を",
+        "あわせると？"
+      ],
+      "choices": [
+        "5cm5mm",
+        "3cm7mm",
+        "5cm7mm"
+      ],
+      "answer": 0,
+      "hint": "cmは cmと たす。mmは そのまま",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-038",
+      "skill": "v04-keisan",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "4cm2mm から 2cm ひくと？"
+      ],
+      "choices": [
+        "2cm2mm",
+        "4cm",
+        "2cm4mm"
+      ],
+      "answer": 0,
+      "hint": "cmから cmを ひくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-039",
+      "skill": "v04-keisan",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "6cm3mm と 3mm を",
+        "あわせると？"
+      ],
+      "choices": [
+        "6cm6mm",
+        "9cm3mm",
+        "3cm6mm"
+      ],
+      "answer": 0,
+      "hint": "mmは mmと たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-040",
+      "skill": "v04-keisan",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "5cm3mm と 2cm4mm を",
+        "あわせると？"
+      ],
+      "choices": [
+        "7cm7mm",
+        "3cm1mm",
+        "7cm1mm"
+      ],
+      "answer": 0,
+      "hint": "cmと cm、mmと mmを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-041",
+      "skill": "v04-keisan",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "7cm6mm から 2cm3mm ひくと？"
+      ],
+      "choices": [
+        "5cm3mm",
+        "9cm9mm",
+        "5cm9mm"
+      ],
+      "answer": 0,
+      "hint": "cmから cm、mmから mmを ひくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-042",
+      "skill": "v04-keisan",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "4cm1mm と 3cm5mm を",
+        "あわせると？"
+      ],
+      "choices": [
+        "7cm6mm",
+        "1cm4mm",
+        "7cm4mm"
+      ],
+      "answer": 0,
+      "hint": "cmと cm、mmと mmを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-043",
+      "skill": "v04-keisan",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "6cm と 5mm を あわせると",
+        "なんmm？"
+      ],
+      "answer": 65,
+      "hint": "6cmを 60mmに なおしてから たそう",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-044",
+      "skill": "v04-keisan",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "8cm4mm と 6mm を",
+        "あわせると なんcm？"
+      ],
+      "answer": 9,
+      "hint": "mmが 10に なったら 1cmに なるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v04-045",
+      "skill": "v04-keisan",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "10cm から 3cm5mm ひくと？"
+      ],
+      "choices": [
+        "6cm5mm",
+        "7cm5mm",
+        "13cm5mm"
+      ],
+      "answer": 0,
+      "hint": "10cmを 100mmに なおしてから ひこう",
+      "reward": "glass"
+    }
+  ]
 }

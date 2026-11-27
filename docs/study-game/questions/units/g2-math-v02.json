@@ -25,5 +25,810 @@
       "power": "read"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "v02-001",
+      "skill": "v02-nocarry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "23 + 4 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 23,
+        "b": 4,
+        "op": "+"
+      },
+      "answer": 27,
+      "hint": "4は いちのくらいに そろえて かく",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-002",
+      "skill": "v02-nocarry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "41 + 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 41,
+        "b": 5,
+        "op": "+"
+      },
+      "answer": 46,
+      "hint": "5は いちのくらいに そろえて かく",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-003",
+      "skill": "v02-nocarry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "62 + 3 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 62,
+        "b": 3,
+        "op": "+"
+      },
+      "answer": 65,
+      "hint": "いちのくらいから けいさんしよう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-004",
+      "skill": "v02-nocarry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "12 + 34 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 12,
+        "b": 34,
+        "op": "+"
+      },
+      "answer": 46,
+      "hint": "いちのくらいから じゅんに たそう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-005",
+      "skill": "v02-nocarry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "25 + 43 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 25,
+        "b": 43,
+        "op": "+"
+      },
+      "answer": 68,
+      "hint": "いちのくらいから じゅんに たそう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-006",
+      "skill": "v02-nocarry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "31 + 26 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 31,
+        "b": 26,
+        "op": "+"
+      },
+      "answer": 57,
+      "hint": "いちのくらいから じゅんに たそう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-007",
+      "skill": "v02-nocarry",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "いちのくらいの こたえは？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 34,
+        "b": 52,
+        "op": "+"
+      },
+      "answer": 6,
+      "hint": "いちのくらいだけ たしてみよう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-008",
+      "skill": "v02-nocarry",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "じゅうのくらいの こたえは？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 25,
+        "b": 61,
+        "op": "+"
+      },
+      "answer": 8,
+      "hint": "じゅうのくらいだけ たしてみよう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-009",
+      "skill": "v02-nocarry",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "43 + 56 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 43,
+        "b": 56,
+        "op": "+"
+      },
+      "answer": 99,
+      "hint": "くらいを たてに そろえて みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-010",
+      "skill": "v02-nocarry",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "72 + 16 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 72,
+        "b": 16,
+        "op": "+"
+      },
+      "answer": 88,
+      "hint": "くらいを たてに そろえて みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-011",
+      "skill": "v02-nocarry",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "35 + 24 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 35,
+        "b": 24,
+        "op": "+"
+      },
+      "answer": 59,
+      "hint": "くらいを たてに そろえて みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-012",
+      "skill": "v02-nocarry",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "54 + 23 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 54,
+        "b": 23,
+        "op": "+"
+      },
+      "choices": [
+        "77",
+        "67",
+        "87"
+      ],
+      "answer": 0,
+      "hint": "いちのくらいと じゅうのくらいを べつに たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-013",
+      "skill": "v02-nocarry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "74 + 25 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 74,
+        "b": 25,
+        "op": "+"
+      },
+      "answer": 99,
+      "hint": "いちのくらいは 4と 5で 9",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-014",
+      "skill": "v02-nocarry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "3□ + 24 = 59"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": "3□",
+        "b": 24,
+        "op": "+",
+        "answer": "59"
+      },
+      "answer": 5,
+      "hint": "いちのくらいを みよう。□と 4で 9",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-015",
+      "skill": "v02-nocarry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "41 + □2 = 63"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 41,
+        "b": "□2",
+        "op": "+",
+        "answer": "63"
+      },
+      "answer": 2,
+      "hint": "じゅうのくらいを みよう。4と □で 6",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-016",
+      "skill": "v02-carry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "27 + 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 27,
+        "b": 5,
+        "op": "+"
+      },
+      "answer": 32,
+      "hint": "7と 5で 12。1を じゅうのくらいへ",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-017",
+      "skill": "v02-carry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "38 + 4 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 38,
+        "b": 4,
+        "op": "+"
+      },
+      "answer": 42,
+      "hint": "8と 4で 12。1を じゅうのくらいへ",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-018",
+      "skill": "v02-carry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "46 + 7 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 46,
+        "b": 7,
+        "op": "+"
+      },
+      "answer": 53,
+      "hint": "6と 7で 13。1を じゅうのくらいへ",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-019",
+      "skill": "v02-carry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "18 + 25 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 18,
+        "b": 25,
+        "op": "+"
+      },
+      "answer": 43,
+      "hint": "くりあがった 1を わすれずに たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-020",
+      "skill": "v02-carry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "27 + 34 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 27,
+        "b": 34,
+        "op": "+"
+      },
+      "answer": 61,
+      "hint": "くりあがった 1を わすれずに たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-021",
+      "skill": "v02-carry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "36 + 28 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 36,
+        "b": 28,
+        "op": "+"
+      },
+      "answer": 64,
+      "hint": "くりあがった 1を わすれずに たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-022",
+      "skill": "v02-carry",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "いちのくらいは くりあがる？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 47,
+        "b": 38,
+        "op": "+"
+      },
+      "choices": [
+        "くりあがる",
+        "くりあがらない"
+      ],
+      "answer": 0,
+      "hint": "7と 8で 10を こえるか みよう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-023",
+      "skill": "v02-carry",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "くりあがりが あるのは どっち？"
+      ],
+      "choices": [
+        "29 + 15",
+        "23 + 14"
+      ],
+      "answer": 0,
+      "hint": "いちのくらいが 10を こえる ほう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-024",
+      "skill": "v02-carry",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "48 + 27 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 48,
+        "b": 27,
+        "op": "+"
+      },
+      "answer": 75,
+      "hint": "8と 7で 15。1を くりあげる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-025",
+      "skill": "v02-carry",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "68 + 29 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 68,
+        "b": 29,
+        "op": "+"
+      },
+      "answer": 97,
+      "hint": "8と 9で 17。1を くりあげる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-026",
+      "skill": "v02-carry",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "57 + 36 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 57,
+        "b": 36,
+        "op": "+"
+      },
+      "answer": 93,
+      "hint": "7と 6で 13。1を くりあげる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-027",
+      "skill": "v02-carry",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "39 + 48 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 39,
+        "b": 48,
+        "op": "+"
+      },
+      "choices": [
+        "87",
+        "77",
+        "97"
+      ],
+      "answer": 0,
+      "hint": "9と 8で 17。1を くりあげる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-028",
+      "skill": "v02-carry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "65 + 48 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 65,
+        "b": 48,
+        "op": "+"
+      },
+      "answer": 113,
+      "hint": "じゅうのくらいも くりあがる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-029",
+      "skill": "v02-carry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "87 + 56 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 87,
+        "b": 56,
+        "op": "+"
+      },
+      "answer": 143,
+      "hint": "じゅうのくらいも くりあがる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-030",
+      "skill": "v02-carry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "28 + □4 = 62"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 28,
+        "b": "□4",
+        "op": "+",
+        "answer": "62"
+      },
+      "answer": 3,
+      "hint": "8と 4で 12。くりあがった 1も たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-031",
+      "skill": "v02-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "あめが 24こ あります。",
+        "6こ ふえると なんこ？"
+      ],
+      "answer": 30,
+      "hint": "「ふえる」は たしざん",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-032",
+      "skill": "v02-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "はなが 32ほん さいて います。",
+        "5ほん さくと なんぼん？"
+      ],
+      "answer": 37,
+      "hint": "「ふえる」は たしざん",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-033",
+      "skill": "v02-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "おりがみが 41まい あります。",
+        "7まい もらうと なんまい？"
+      ],
+      "answer": 48,
+      "hint": "もらうと ふえる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-034",
+      "skill": "v02-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "あかい はな 23ぼん、しろい はな 45ほん",
+        "あわせて なんぼん？"
+      ],
+      "answer": 68,
+      "hint": "「あわせて」は たしざん",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-035",
+      "skill": "v02-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "ねこが 31ぴき、いぬが 26ぴき。",
+        "あわせて なんびき？"
+      ],
+      "answer": 57,
+      "hint": "「あわせて」は たしざん",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-036",
+      "skill": "v02-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "ひょうを みて こたえよう。",
+        "あめと ガムで なんこ？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "おかし",
+          "かず"
+        ],
+        "rows": [
+          [
+            "あめ",
+            "24"
+          ],
+          [
+            "ガム",
+            "35"
+          ]
+        ]
+      },
+      "answer": 59,
+      "hint": "2つの ますを たそう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-037",
+      "skill": "v02-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ほんを 18さつ よみました。",
+        "あと 25さつ よむと なんさつ？"
+      ],
+      "answer": 43,
+      "hint": "いちのくらいが くりあがる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-038",
+      "skill": "v02-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "くるまが 27だい とまって います。",
+        "15だい くると なんだい？"
+      ],
+      "answer": 42,
+      "hint": "くると ふえる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-039",
+      "skill": "v02-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "あかい ふうせんが 36こ、",
+        "あおいのが 28こ。ぜんぶで なんこ？"
+      ],
+      "answer": 64,
+      "hint": "「ぜんぶで」は たしざん",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-040",
+      "skill": "v02-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "おとなが 46にん、",
+        "こどもが 38にん。あわせて なんにん？"
+      ],
+      "answer": 84,
+      "hint": "「あわせて」は たしざん",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-041",
+      "skill": "v02-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "さかなを 57ひき つりました。",
+        "もう 29ひき つると なんびき？"
+      ],
+      "answer": 86,
+      "hint": "ふえた ぶんを たそう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-042",
+      "skill": "v02-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ひょうを みて こたえよう。",
+        "あかと あおで なんにん？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "いろ",
+          "にんずう"
+        ],
+        "rows": [
+          [
+            "あか",
+            "48"
+          ],
+          [
+            "あお",
+            "35"
+          ]
+        ]
+      },
+      "answer": 83,
+      "hint": "2つの ますを たそう",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-043",
+      "skill": "v02-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いちごが 65こ、みかんが 48こ。",
+        "あわせて なんこ？"
+      ],
+      "answer": 113,
+      "hint": "こたえは 100を こえる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-044",
+      "skill": "v02-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ほんが 87さつ あります。",
+        "56さつ ふえると なんさつ？"
+      ],
+      "answer": 143,
+      "hint": "こたえは 100を こえる",
+      "reward": "ki"
+    },
+    {
+      "id": "v02-045",
+      "skill": "v02-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ひょうを みて こたえよう。",
+        "ほしと はなで なんまい？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "シール",
+          "かず"
+        ],
+        "rows": [
+          [
+            "ほし",
+            "86"
+          ],
+          [
+            "はな",
+            "49"
+          ]
+        ]
+      },
+      "answer": 135,
+      "hint": "2つの ますを たそう",
+      "reward": "ki"
+    }
+  ]
 }

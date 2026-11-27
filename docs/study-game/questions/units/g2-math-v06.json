@@ -25,5 +25,733 @@
       "power": "count"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "v06-001",
+      "skill": "v06-yomu",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "ますの かさは なんL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 10
+      },
+      "answer": 1,
+      "hint": "1Lますが いっぱいだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-002",
+      "skill": "v06-yomu",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "ますの かさは なんL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 20
+      },
+      "answer": 2,
+      "hint": "いっぱいの ますを かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-003",
+      "skill": "v06-yomu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ますの かさは どれ？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 4
+      },
+      "choices": [
+        "4dL",
+        "4L",
+        "40dL"
+      ],
+      "answer": 0,
+      "hint": "ちいさい めもり 1こが 1dL",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-004",
+      "skill": "v06-yomu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ますの かさは どれ？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 14
+      },
+      "choices": [
+        "1L4dL",
+        "4L1dL",
+        "14L"
+      ],
+      "answer": 0,
+      "hint": "いっぱいの ますが 1つ、のこりが 4dL",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-005",
+      "skill": "v06-yomu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ますの かさは どれ？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 12
+      },
+      "choices": [
+        "1L2dL",
+        "2L1dL",
+        "12L"
+      ],
+      "answer": 0,
+      "hint": "いっぱいの ますが 1つ、のこりが 2dL",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-006",
+      "skill": "v06-yomu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ますの かさは どれ？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 23
+      },
+      "choices": [
+        "2L3dL",
+        "3L2dL",
+        "23L"
+      ],
+      "answer": 0,
+      "hint": "いっぱいの ますが 2つ、のこりが 3dL",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-007",
+      "skill": "v06-yomu",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ぜんぶで なんdL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 14
+      },
+      "answer": 14,
+      "hint": "1Lは 10dL。それに のこりを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-008",
+      "skill": "v06-yomu",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ぜんぶで なんdL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 26
+      },
+      "answer": 26,
+      "hint": "10dLが 2つで 20dL。それに のこり",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-009",
+      "skill": "v06-yomu",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ますの かさは なんdL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 8
+      },
+      "answer": 8,
+      "hint": "めもりを 1つずつ かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-010",
+      "skill": "v06-yomu",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "ますの かさは どれ？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 35
+      },
+      "choices": [
+        "3L5dL",
+        "5L3dL",
+        "35L"
+      ],
+      "answer": 0,
+      "hint": "いっぱいの ますが 3つ、のこりが 5dL",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-011",
+      "skill": "v06-yomu",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ますの かさは なんL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 30
+      },
+      "answer": 3,
+      "hint": "10dLで 1L。いっぱいの ますを かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-012",
+      "skill": "v06-yomu",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ぜんぶで なんdL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 17
+      },
+      "answer": 17,
+      "hint": "10dLと のこりを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-013",
+      "skill": "v06-yomu",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ぜんぶで なんdL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 19
+      },
+      "answer": 19,
+      "hint": "10dLと 9dLを あわせるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-014",
+      "skill": "v06-yomu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ますの かさは なんL なんdL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 25
+      },
+      "choices": [
+        "2L5dL",
+        "5L2dL",
+        "25L"
+      ],
+      "answer": 0,
+      "hint": "いっぱいの ますが 2つ、のこりが 5dL",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-015",
+      "skill": "v06-yomu",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ぜんぶで なんdL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 40
+      },
+      "answer": 40,
+      "hint": "10dLの ますが いくつ あるかな",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-016",
+      "skill": "v06-tani",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "1L は なんdL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 10
+      },
+      "answer": 10,
+      "hint": "1Lますの めもりを かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-017",
+      "skill": "v06-tani",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "2L は なんdL？"
+      ],
+      "answer": 20,
+      "hint": "10dLが 2つぶん",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-018",
+      "skill": "v06-tani",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "10dL は なんL？"
+      ],
+      "answer": 1,
+      "hint": "10dLで ちょうど 1L",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-019",
+      "skill": "v06-tani",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "1L は なんmL？"
+      ],
+      "answer": 1000,
+      "hint": "1Lは 1000mL だよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-020",
+      "skill": "v06-tani",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "1dL は なんmL？"
+      ],
+      "answer": 100,
+      "hint": "1dLは 100mL だよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-021",
+      "skill": "v06-tani",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "□に はいる かずは？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "L",
+          "dL"
+        ],
+        "rows": [
+          [
+            "1",
+            "10"
+          ],
+          [
+            "2",
+            "20"
+          ],
+          [
+            "3",
+            "□"
+          ]
+        ]
+      },
+      "answer": 30,
+      "hint": "1Lずつ ふえると 10dLずつ ふえるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-022",
+      "skill": "v06-tani",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "1L5dL は なんdL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 15
+      },
+      "answer": 15,
+      "hint": "1Lは 10dL。それに 5dL",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-023",
+      "skill": "v06-tani",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "70dL は なんL？"
+      ],
+      "answer": 7,
+      "hint": "10dLずつ わけて かぞえよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-024",
+      "skill": "v06-tani",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "3dL は なんmL？"
+      ],
+      "answer": 300,
+      "hint": "100mLが 3つぶん",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-025",
+      "skill": "v06-tani",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "2L は なんmL？"
+      ],
+      "answer": 2000,
+      "hint": "1000mLが 2つぶん",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-026",
+      "skill": "v06-tani",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "500mL は なんdL？"
+      ],
+      "answer": 5,
+      "hint": "100mLで 1dL",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-027",
+      "skill": "v06-tani",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "28dL は なんL なんdL？"
+      ],
+      "figure": {
+        "kind": "liters",
+        "dl": 28
+      },
+      "choices": [
+        "2L8dL",
+        "8L2dL",
+        "28L"
+      ],
+      "answer": 0,
+      "hint": "10dLずつ まとめると 2Lと 8dL",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-028",
+      "skill": "v06-tani",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "1L は 1dLの なんこぶん？"
+      ],
+      "answer": 10,
+      "hint": "1Lますの めもりの かずだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-029",
+      "skill": "v06-tani",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "1L と 8dL。",
+        "おおいのは どっち？"
+      ],
+      "choices": [
+        "1L",
+        "8dL"
+      ],
+      "answer": 0,
+      "hint": "1Lを dLに なおして くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-030",
+      "skill": "v06-tani",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "600mL と 1L。",
+        "すくないのは どっち？"
+      ],
+      "choices": [
+        "600mL",
+        "1L"
+      ],
+      "answer": 0,
+      "hint": "1Lを mLに なおして くらべよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-031",
+      "skill": "v06-keisan",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "3L と 2L を あわせると",
+        "なんL？"
+      ],
+      "answer": 5,
+      "hint": "Lの かずを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-032",
+      "skill": "v06-keisan",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "8L から 3L ひくと なんL？"
+      ],
+      "answer": 5,
+      "hint": "Lの かずを ひくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-033",
+      "skill": "v06-keisan",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "4dL と 3dL を あわせると？"
+      ],
+      "choices": [
+        "7dL",
+        "1dL",
+        "43dL"
+      ],
+      "answer": 0,
+      "hint": "dLの かずを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-034",
+      "skill": "v06-keisan",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "6dL と 2dL を あわせると",
+        "なんdL？"
+      ],
+      "answer": 8,
+      "hint": "dLの かずを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-035",
+      "skill": "v06-keisan",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "9dL から 4dL ひくと",
+        "なんdL？"
+      ],
+      "answer": 5,
+      "hint": "dLの かずを ひくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-036",
+      "skill": "v06-keisan",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "5L と 4L を あわせると？"
+      ],
+      "choices": [
+        "9L",
+        "1L",
+        "54L"
+      ],
+      "answer": 0,
+      "hint": "おなじ たんいどうしを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-037",
+      "skill": "v06-keisan",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "1L4dL と 2L を",
+        "あわせると？"
+      ],
+      "choices": [
+        "3L4dL",
+        "1L6dL",
+        "3L6dL"
+      ],
+      "answer": 0,
+      "hint": "Lは Lと たす。dLは そのまま",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-038",
+      "skill": "v06-keisan",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "3L6dL から 1L ひくと？"
+      ],
+      "choices": [
+        "2L6dL",
+        "3L5dL",
+        "2L5dL"
+      ],
+      "answer": 0,
+      "hint": "Lから Lを ひくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-039",
+      "skill": "v06-keisan",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "2L3dL と 4dL を",
+        "あわせると？"
+      ],
+      "choices": [
+        "2L7dL",
+        "6L3dL",
+        "2L4dL"
+      ],
+      "answer": 0,
+      "hint": "dLは dLと たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-040",
+      "skill": "v06-keisan",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "1L2dL と 2L5dL を",
+        "あわせると？"
+      ],
+      "choices": [
+        "3L7dL",
+        "1L7dL",
+        "3L3dL"
+      ],
+      "answer": 0,
+      "hint": "Lと L、dLと dLを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-041",
+      "skill": "v06-keisan",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "4L8dL から 2L3dL ひくと？"
+      ],
+      "choices": [
+        "2L5dL",
+        "2L1dL",
+        "6L5dL"
+      ],
+      "answer": 0,
+      "hint": "Lから L、dLから dLを ひくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-042",
+      "skill": "v06-keisan",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "2L4dL と 1L3dL を",
+        "あわせると？"
+      ],
+      "choices": [
+        "3L7dL",
+        "1L1dL",
+        "3L1dL"
+      ],
+      "answer": 0,
+      "hint": "Lと L、dLと dLを たすよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-043",
+      "skill": "v06-keisan",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "7dL と 3dL を あわせると",
+        "なんL？"
+      ],
+      "answer": 1,
+      "hint": "10dLに なったら 1Lだよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-044",
+      "skill": "v06-keisan",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "1L から 4dL ひくと なんdL？"
+      ],
+      "answer": 6,
+      "hint": "1Lを 10dLに なおしてから ひこう",
+      "reward": "glass"
+    },
+    {
+      "id": "v06-045",
+      "skill": "v06-keisan",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "500mL と 500mL を",
+        "あわせると なんL？"
+      ],
+      "answer": 1,
+      "hint": "1000mLで 1Lに なるよ",
+      "reward": "glass"
+    }
+  ]
 }
