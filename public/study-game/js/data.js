@@ -1,7 +1,7 @@
 // 問題データの読み込み。単元のJSONは「入る直前」に読む（初回の読み込みを軽くするため）。
 // 問題を足すときは data/units/ にJSONを置き、manifest.json に1行足すだけでよい。
 
-const V = "6";
+const V = "7";
 let manifest = null;
 const unitCache = new Map();
 

@@ -85,10 +85,9 @@
        sakamoya      … よこ長の 角丸（60×42）。右うえから 右へ むかう 白い
                        やじるしが 1つ、左したから 左へ むかう 白い やじるしが
                        1つ、どちらも 体から 外へ はみ出す（いきと かえり）。
-                       ＋は 右うえ、− は 左した。
                        ★ずもや（よこ長の 帯・たての くぎり線＋テープ図の ます
                        3つ・やじるし なし）とは ちがい、こちらは 左右に
-                       やじるしの 頭が とび出す。いちもや（体ぜんたいが
+                       やじるしの 頭が とび出す（色も 赤より）。いちもや（体ぜんたいが
                        右むき 1つの 矢じるし）とは、やじるしが 2つで むきが
                        はんたいな ところで ちがう。
        kufumoya      … ちいさめの まる（r24）が 少し 左下に よっていて、
@@ -392,15 +391,16 @@ const PARTS = {
     soft: "#F7BDA8",
     topBefore: "",
     body: `<rect x="20" y="40" width="60" height="42" rx="16" fill="#E04E2E" stroke="${INK}" stroke-width="3"/>`,
-    mark:
-      `<path d="M55 46h10M60 41v10" fill="none" stroke="#FFF4E2" stroke-width="2.8" stroke-linecap="round"/>` +
-      `<path d="M41 74h10" fill="none" stroke="#FFF4E2" stroke-width="2.8" stroke-linecap="round"/>`,
+    mark: "",
     /* ★やじるしを 体の 下（topBefore）に おくと 頭だけ 出て 三角に 見えたので、
        体の 上に 白く のせて、しっぽが 体の 中、頭が 外に はみ出すように した。
        2本を ななめ（右うえ・左した）に ずらしたので、顔と かさならない。
        ★48pxで ずもや（よこ長の 帯・おなじ オレンジ）と ならべたら 近かったので、
        体を よこに 短く（60）して かどを もっと まるくし、
-       やじるしを 大きくして 外へ もっと はみ出させ、色も 赤よりに した。 */
+       やじるしを 大きくして 外へ もっと はみ出させ、色も 赤よりに した。
+       ★はじめは ＋ と − の しるしも 入れたが、＋が 右の やじるしの しっぽと
+       くっついて 1つの 白い かたまりに 見えたので、しるしは やめて
+       やじるし 2本だけに した（見てすぐ わかるのは やじるしの ほう）。 */
     topAfter:
       `<path d="M66 46h14v-7l12 13-12 13v-7H66z" fill="#FFF4E2" stroke="${INK}" stroke-width="2.4" stroke-linejoin="round"/>` +
       `<path d="M34 64H20v-7L8 70l12 13v-7h14z" fill="#FFF4E2" stroke="${INK}" stroke-width="2.4" stroke-linejoin="round"/>`,
@@ -500,7 +500,7 @@ export const MOYA_ART_G2 = {
   senmoya: {
     name: "せんもや",
     unit: "v05",
-    note: "1000までの かず。いちばん よこに 大きい体に、つぶが 9こ・3こ・1こ の 3かたまり（百・十・一）",
+    note: "1000までの かず。いちばん よこに 大きい もも色の体に、つぶが 9こ・3こ・1こ の 3かたまり（百・十・一）",
     svg: normalArt(PARTS.senmoya),
     friendSvg: friendArt(PARTS.senmoya),
     color: PARTS.senmoya.color,
