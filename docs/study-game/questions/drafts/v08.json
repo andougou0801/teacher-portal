@@ -1,0 +1,717 @@
+{
+  "v08": [
+    {
+      "id": "v08-001",
+      "skill": "v08-irekae",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "7 + 8 = 15。8 + 7 は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 7,
+        "b": 8
+      },
+      "choices": [
+        "14",
+        "15",
+        "16"
+      ],
+      "answer": 1,
+      "hint": "じゅんばんを かえても こたえは おなじ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-002",
+      "skill": "v08-irekae",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "6 + 9 = 15。9 + 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "star",
+        "a": 6,
+        "b": 9
+      },
+      "choices": [
+        "16",
+        "15",
+        "14"
+      ],
+      "answer": 1,
+      "hint": "じゅんばんを かえても こたえは おなじ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-003",
+      "skill": "v08-irekae",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "4 + 8 = 12。8 + 4 は いくつ？"
+      ],
+      "choices": [
+        "12",
+        "13",
+        "11"
+      ],
+      "answer": 0,
+      "hint": "じゅんばんを かえても こたえは おなじ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-004",
+      "skill": "v08-irekae",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "25 + 36 = 61。",
+        "36 + 25 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 25,
+        "b": 36,
+        "op": "+",
+        "answer": 61
+      },
+      "answer": "61",
+      "hint": "じゅんばんを かえても こたえは おなじ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-005",
+      "skill": "v08-irekae",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "48 + 27 = 75。",
+        "27 + 48 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 48,
+        "b": 27,
+        "op": "+",
+        "answer": 75
+      },
+      "answer": "75",
+      "hint": "じゅんばんを かえても こたえは おなじ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-006",
+      "skill": "v08-irekae",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "たしざんは じゅんばんを",
+        "かえても こたえは おなじ？"
+      ],
+      "choices": [
+        "おなじ",
+        "ちがう"
+      ],
+      "answer": 0,
+      "hint": "たしざんは いれかえても だいじょうぶ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-007",
+      "skill": "v08-irekae",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "8 − 3 と 3 − 8 は おなじ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "candy",
+        "total": 8,
+        "gone": 3
+      },
+      "choices": [
+        "おなじ",
+        "ちがう"
+      ],
+      "answer": 1,
+      "hint": "8 から 3 は ひけるが 3 から 8 は ひけない",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-008",
+      "skill": "v08-irekae",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ひきざんは じゅんばんを",
+        "かえても こたえは おなじ？"
+      ],
+      "choices": [
+        "おなじ",
+        "ちがう"
+      ],
+      "answer": 1,
+      "hint": "ひきざんは いれかえては いけない",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-009",
+      "skill": "v08-irekae",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "12 − 5 と 5 − 12 は おなじ？"
+      ],
+      "choices": [
+        "ちがう",
+        "おなじ"
+      ],
+      "answer": 0,
+      "hint": "ひきざんは ひく かずを うしろに かく",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-010",
+      "skill": "v08-irekae",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "9 + 56 は、56 + 9 に して",
+        "とくと らく。いくつ？"
+      ],
+      "answer": "65",
+      "hint": "おおきい かずを さきに かくと らく",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-011",
+      "skill": "v08-irekae",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "8 + 47 は、47 + 8 に して",
+        "とくと らく。いくつ？"
+      ],
+      "answer": "55",
+      "hint": "おおきい かずを さきに かくと らく",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-012",
+      "skill": "v08-irekae",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "34 + 19 と おなじ こたえの",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "19 + 34",
+        "34 − 19",
+        "43 + 19"
+      ],
+      "answer": 0,
+      "hint": "たす かずと たされる かずを いれかえる",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-013",
+      "skill": "v08-irekae",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "26に 14を たすのと、14に",
+        "26を たすのは おなじ？"
+      ],
+      "choices": [
+        "おなじ",
+        "ちがう"
+      ],
+      "answer": 0,
+      "hint": "たしざんは じゅんばんを かえても おなじ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-014",
+      "skill": "v08-irekae",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "28 + 46 と 46 + 28 の",
+        "こたえは いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 28,
+        "b": 46,
+        "op": "+"
+      },
+      "answer": "74",
+      "hint": "どちらも おなじ こたえに なる",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-015",
+      "skill": "v08-irekae",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "3 + 8 + 7 は いくつ？",
+        "3 と 7 を さきに たすと らく"
+      ],
+      "answer": "18",
+      "hint": "じゅんばんを かえて 10 を つくろう",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-016",
+      "skill": "v08-matome",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "6 + 4 + 7 は いくつ？",
+        "6 と 4 で 10に なる"
+      ],
+      "answer": "17",
+      "hint": "10 に 7 を たせば すぐ わかるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-017",
+      "skill": "v08-matome",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "8 + 2 + 5 は いくつ？",
+        "8 と 2 で 10に なる"
+      ],
+      "answer": "15",
+      "hint": "10 に 5 を たせば すぐ わかるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-018",
+      "skill": "v08-matome",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "3 + 7 + 9 は いくつ？",
+        "3 と 7 で 10に なる"
+      ],
+      "answer": "19",
+      "hint": "10 に 9 を たせば すぐ わかるよ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-019",
+      "skill": "v08-matome",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "18 + 7 + 3。さきに たすと",
+        "らくなのは どれ？"
+      ],
+      "choices": [
+        "7 と 3",
+        "18 と 7",
+        "18 と 3"
+      ],
+      "answer": 0,
+      "hint": "たして 10 に なる ふたつを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-020",
+      "skill": "v08-matome",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "26 + 8 + 2。さきに たすと",
+        "らくなのは どれ？"
+      ],
+      "choices": [
+        "26 と 8",
+        "8 と 2",
+        "26 と 2"
+      ],
+      "answer": 1,
+      "hint": "たして 10 に なる ふたつを さがそう",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-021",
+      "skill": "v08-matome",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "18 + 7 + 3 は いくつ？",
+        "7 + 3 を さきに たそう"
+      ],
+      "answer": "28",
+      "hint": "18 + （7 + 3） と おなじだよ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-022",
+      "skill": "v08-matome",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "34 + （6 + 9）。（ ）の なかは",
+        "いくつ？"
+      ],
+      "answer": "15",
+      "hint": "（ ）の なかを さきに たすよ",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-023",
+      "skill": "v08-matome",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "48 + 7 + 3 は いくつ？",
+        "48 + （7 + 3）と おなじ"
+      ],
+      "answer": "58",
+      "hint": "7 + 3 で 10。48 に 10 を たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-024",
+      "skill": "v08-matome",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "25 + 6 + 4 は いくつ？",
+        "6 + 4 を まとめて たそう"
+      ],
+      "answer": "35",
+      "hint": "6 + 4 で 10。25 に 10 を たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-025",
+      "skill": "v08-matome",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "57 + 8 + 2 は、どの ふたつを",
+        "さきに たすと らく？"
+      ],
+      "choices": [
+        "（8 + 2）",
+        "（57 + 8）",
+        "（57 + 2）"
+      ],
+      "answer": 0,
+      "hint": "10 に なる ふたつを （ ）で まとめる",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-026",
+      "skill": "v08-matome",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "39 + 5 + 5 は いくつ？",
+        "5 + 5 を さきに たそう"
+      ],
+      "answer": "49",
+      "hint": "5 + 5 で 10。39 に 10 を たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-027",
+      "skill": "v08-matome",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "28 + 6 + 4 は いくつ？",
+        "28 + （6 + 4）に すると らく"
+      ],
+      "answer": "38",
+      "hint": "6 + 4 で 10。28 に 10 を たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-028",
+      "skill": "v08-matome",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "47 + 18 + 2 は いくつ？",
+        "18 + 2 を さきに たそう"
+      ],
+      "answer": "67",
+      "hint": "18 + 2 で 20。47 に 20 を たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-029",
+      "skill": "v08-matome",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "36 + 25 + 5 は いくつ？",
+        "25 + 5 を さきに たそう"
+      ],
+      "answer": "66",
+      "hint": "25 + 5 で 30。36 に 30 を たす",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-030",
+      "skill": "v08-matome",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "23 + 17 + 46 は どの ふたつを",
+        "さきに たすと らく？"
+      ],
+      "choices": [
+        "（23 + 17）",
+        "（17 + 46）",
+        "（23 + 46）"
+      ],
+      "answer": 0,
+      "hint": "きりの よい かずに なる ふたつを さがす",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-031",
+      "skill": "v08-hayaku",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "9 + 6 は いくつ？",
+        "9に 1 を たして 10に しよう"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 20,
+        "mark": 9
+      },
+      "answer": "15",
+      "hint": "10 と 5 で 15",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-032",
+      "skill": "v08-hayaku",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "9 + 8 は いくつ？",
+        "9に 1 を たして 10に しよう"
+      ],
+      "answer": "17",
+      "hint": "10 と 7 で 17",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-033",
+      "skill": "v08-hayaku",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "8 + 7 は いくつ？",
+        "8に 2 を たして 10に しよう"
+      ],
+      "answer": "15",
+      "hint": "10 と 5 で 15",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-034",
+      "skill": "v08-hayaku",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "19 + 6 は いくつ？",
+        "19に 1 を たして 20に しよう"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 15,
+        "to": 30,
+        "mark": 19
+      },
+      "answer": "25",
+      "hint": "20 と 5 で 25",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-035",
+      "skill": "v08-hayaku",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "29 + 7 は いくつ？",
+        "29に 1 を たして 30に しよう"
+      ],
+      "answer": "36",
+      "hint": "30 と 6 で 36",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-036",
+      "skill": "v08-hayaku",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "38 + 5 は いくつ？",
+        "38に 2 を たして 40に しよう"
+      ],
+      "answer": "43",
+      "hint": "40 と 3 で 43",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-037",
+      "skill": "v08-hayaku",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "25 − 9 は いくつ？",
+        "10 ひいて 1 もどすと らく"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 10,
+        "to": 30,
+        "mark": 25
+      },
+      "answer": "16",
+      "hint": "25 − 10 で 15。1 もどして 16",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-038",
+      "skill": "v08-hayaku",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "34 − 9 は いくつ？",
+        "10 ひいて 1 もどすと らく"
+      ],
+      "answer": "25",
+      "hint": "34 − 10 で 24。1 もどして 25",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-039",
+      "skill": "v08-hayaku",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "42 − 8 は いくつ？",
+        "10 ひいて 2 もどすと らく"
+      ],
+      "answer": "34",
+      "hint": "42 − 10 で 32。2 もどして 34",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-040",
+      "skill": "v08-hayaku",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "48 + 9 を はやく とく くふうは？"
+      ],
+      "choices": [
+        "50 + 7 に する",
+        "40 + 9 に する",
+        "48 + 10 に する"
+      ],
+      "answer": 0,
+      "hint": "9 から 2 を 48 に わたして 50 に する",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-041",
+      "skill": "v08-hayaku",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "27 + 8 を はやく とく くふうは？"
+      ],
+      "choices": [
+        "30 + 5 に する",
+        "20 + 8 に する",
+        "27 + 10 に する"
+      ],
+      "answer": 0,
+      "hint": "8 から 3 を 27 に わたして 30 に する",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-042",
+      "skill": "v08-hayaku",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "53 − 8 を はやく とく くふうは？"
+      ],
+      "choices": [
+        "53 − 10 + 2",
+        "53 − 10 − 2",
+        "50 − 8 − 3"
+      ],
+      "answer": 0,
+      "hint": "10 ひきすぎたので 2 もどす",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-043",
+      "skill": "v08-hayaku",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "59 + 6 は いくつ？",
+        "59に 1 を たして 60に しよう"
+      ],
+      "answer": "65",
+      "hint": "60 と 5 で 65",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-044",
+      "skill": "v08-hayaku",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "61 − 9 は いくつ？",
+        "10 ひいて 1 もどすと らく"
+      ],
+      "answer": "52",
+      "hint": "61 − 10 で 51。1 もどして 52",
+      "reward": "ki"
+    },
+    {
+      "id": "v08-045",
+      "skill": "v08-hayaku",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "88 + 7 は いくつ？",
+        "88に 2 を たして 90に しよう"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 8,
+        "ones": 8
+      },
+      "answer": "95",
+      "hint": "90 と 5 で 95",
+      "reward": "ki"
+    }
+  ]
+}

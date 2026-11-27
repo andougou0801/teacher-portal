@@ -1,0 +1,867 @@
+{
+  "v07": [
+    {
+      "id": "v07-001",
+      "skill": "v07-tashikame",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "9 − 4 = 5。たしかめる",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "5 + 4",
+        "9 + 5",
+        "9 + 4"
+      ],
+      "answer": 0,
+      "hint": "こたえに ひいた かずを たすと もとに もどる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-002",
+      "skill": "v07-tashikame",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "8 − 3 = 5。たしかめる",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "8 + 5",
+        "5 + 3",
+        "8 + 3"
+      ],
+      "answer": 1,
+      "hint": "こたえに ひいた かずを たすと もとに もどる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-003",
+      "skill": "v07-tashikame",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "10 − 6 = 4。たしかめる",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "10 + 4",
+        "10 + 6",
+        "4 + 6"
+      ],
+      "answer": 2,
+      "hint": "こたえに ひいた かずを たすと もとに もどる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-004",
+      "skill": "v07-tashikame",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "47 − 23 = 24。たしかめる",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "24 + 23",
+        "47 + 23",
+        "47 + 24"
+      ],
+      "answer": 0,
+      "hint": "こたえと ひいた かずを たして みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-005",
+      "skill": "v07-tashikame",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "58 − 35 = 23。たしかめる",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "58 + 35",
+        "23 + 35",
+        "58 + 23"
+      ],
+      "answer": 1,
+      "hint": "こたえと ひいた かずを たして みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-006",
+      "skill": "v07-tashikame",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "69 − 24 = 45。たしかめる",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "69 + 45",
+        "69 + 24",
+        "45 + 24"
+      ],
+      "answer": 2,
+      "hint": "こたえと ひいた かずを たして みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-007",
+      "skill": "v07-tashikame",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "52 − 18 = 34。34 + 18 は",
+        "いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 52,
+        "b": 18,
+        "op": "-",
+        "answer": 34
+      },
+      "answer": "52",
+      "hint": "もとの かずに もどれば あって いる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-008",
+      "skill": "v07-tashikame",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "81 − 27 = 54。54 + 27 は",
+        "いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 81,
+        "b": 27,
+        "op": "-",
+        "answer": 54
+      },
+      "answer": "81",
+      "hint": "もとの かずに もどれば あって いる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-009",
+      "skill": "v07-tashikame",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ひきざんの こたえの たしかめ",
+        "かたは どれ？"
+      ],
+      "choices": [
+        "こたえに ひいた かずを たす",
+        "こたえから ひいた かずを ひく",
+        "こたえと もとの かずを たす"
+      ],
+      "answer": 0,
+      "hint": "たしざんと ひきざんは うらおもてだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-010",
+      "skill": "v07-tashikame",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "28 + 15 = 43。たしかめる",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "43 + 15",
+        "43 − 15",
+        "28 − 15"
+      ],
+      "answer": 1,
+      "hint": "たしざんの たしかめは ひきざんで できる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-011",
+      "skill": "v07-tashikame",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "36 + 27 = 63。たしかめる",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "63 − 27",
+        "63 + 27",
+        "36 + 63"
+      ],
+      "answer": 0,
+      "hint": "こたえから たした かずを ひいて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-012",
+      "skill": "v07-tashikame",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "54 と 26 を たすと 80。",
+        "80 − 26 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 80,
+        "b": 26,
+        "op": "-"
+      },
+      "answer": "54",
+      "hint": "たした かずを ひくと もとに もどる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-013",
+      "skill": "v07-tashikame",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "74 − 28 = 46。たしかめたら",
+        "あって いる？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 74,
+        "b": 28,
+        "op": "-",
+        "answer": 46
+      },
+      "choices": [
+        "あって いる",
+        "まちがい"
+      ],
+      "answer": 0,
+      "hint": "46 に 28 を たして 74 に なるか みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-014",
+      "skill": "v07-tashikame",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "61 − 35 = 36。たしかめたら",
+        "あって いる？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 61,
+        "b": 35,
+        "op": "-",
+        "answer": 36
+      },
+      "choices": [
+        "あって いる",
+        "まちがい"
+      ],
+      "answer": 1,
+      "hint": "36 に 35 を たすと 71。61 に ならない",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-015",
+      "skill": "v07-tashikame",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "85 − 47 = 38。38 + 47 は",
+        "いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 85,
+        "b": 47,
+        "op": "-",
+        "answer": 38
+      },
+      "answer": "85",
+      "hint": "もとの かずに もどれば あって いる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-016",
+      "skill": "v07-kakure",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "□ + 3 = 9。□は いくつ？"
+      ],
+      "figure": {
+        "kind": "numline",
+        "from": 0,
+        "to": 10,
+        "mark": 9
+      },
+      "choices": [
+        "5",
+        "6",
+        "7"
+      ],
+      "answer": 1,
+      "hint": "9 から 3 を ひいて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-017",
+      "skill": "v07-kakure",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "□ + 5 = 8。□は いくつ？"
+      ],
+      "choices": [
+        "4",
+        "3",
+        "2"
+      ],
+      "answer": 1,
+      "hint": "8 から 5 を ひいて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-018",
+      "skill": "v07-kakure",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "7 + □ = 10。□は いくつ？"
+      ],
+      "choices": [
+        "2",
+        "4",
+        "3"
+      ],
+      "answer": 2,
+      "hint": "10 から 7 を ひいて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-019",
+      "skill": "v07-kakure",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "□ − 4 = 5。□は いくつ？"
+      ],
+      "choices": [
+        "9",
+        "8",
+        "10"
+      ],
+      "answer": 0,
+      "hint": "のこりに ひいた かずを たして みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-020",
+      "skill": "v07-kakure",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "12 − □ = 5。□は いくつ？"
+      ],
+      "answer": "7",
+      "hint": "12 から 5 を ひくと わかるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-021",
+      "skill": "v07-kakure",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "□ + 20 = 35。□は いくつ？"
+      ],
+      "figure": {
+        "kind": "blocks10",
+        "tens": 3,
+        "ones": 5
+      },
+      "answer": "15",
+      "hint": "35 から 20 を ひいて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-022",
+      "skill": "v07-kakure",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "□ + 24 = 57。□は いくつ？"
+      ],
+      "answer": "33",
+      "hint": "57 から 24 を ひいて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-023",
+      "skill": "v07-kakure",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "36 + □ = 58。□は いくつ？"
+      ],
+      "answer": "22",
+      "hint": "58 から 36 を ひいて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-024",
+      "skill": "v07-kakure",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "□ − 13 = 42。□は いくつ？"
+      ],
+      "answer": "55",
+      "hint": "のこりに ひいた かずを たして みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-025",
+      "skill": "v07-kakure",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "□ + 27 = 64。□は いくつ？"
+      ],
+      "answer": "37",
+      "hint": "64 から 27 を ひいて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-026",
+      "skill": "v07-kakure",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "85 − □ = 48。□は いくつ？"
+      ],
+      "answer": "37",
+      "hint": "85 から 48 を ひくと わかるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-027",
+      "skill": "v07-kakure",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "□ − 29 = 36。□は いくつ？"
+      ],
+      "answer": "65",
+      "hint": "のこりに ひいた かずを たして みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-028",
+      "skill": "v07-kakure",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめを 18こ もらったら",
+        "41こに なった。はじめは？"
+      ],
+      "answer": "23",
+      "hint": "□ + 18 = 41 と かいて かんがえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-029",
+      "skill": "v07-kakure",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ほしが 24こ。なんこか",
+        "ふえて 50こ。ふえたのは？"
+      ],
+      "answer": "26",
+      "hint": "24 + □ = 50 と かいて かんがえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-030",
+      "skill": "v07-kakure",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "□ − 16 = 28。□を もとめる",
+        "しきは どれ？"
+      ],
+      "choices": [
+        "28 + 16",
+        "28 − 16",
+        "16 + 16"
+      ],
+      "answer": 0,
+      "hint": "のこりに ひいた かずを たしもどそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-031",
+      "skill": "v07-zu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ずに あう しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "apple",
+        "a": 6,
+        "b": 4
+      },
+      "choices": [
+        "6 + 4",
+        "10 − 4",
+        "6 − 4"
+      ],
+      "answer": 0,
+      "hint": "ふたつを あわせる ずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-032",
+      "skill": "v07-zu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ずに あう しきは どれ？"
+      ],
+      "figure": {
+        "kind": "take-away",
+        "icon": "candy",
+        "total": 9,
+        "gone": 4
+      },
+      "choices": [
+        "9 + 4",
+        "9 − 4",
+        "9 − 5"
+      ],
+      "answer": 1,
+      "hint": "ばつが ついた かずを ひくよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-033",
+      "skill": "v07-zu",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ずに あう しきは どれ？"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "star",
+        "a": 7,
+        "b": 8
+      },
+      "choices": [
+        "15 − 7",
+        "7 + 8",
+        "8 − 7"
+      ],
+      "answer": 1,
+      "hint": "ふたつを あわせる ずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-034",
+      "skill": "v07-zu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ちがいを もとめる しきは？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "cat",
+        "a": 6,
+        "iconB": "dog",
+        "b": 4
+      },
+      "choices": [
+        "6 + 4",
+        "6 − 4",
+        "6 − 2"
+      ],
+      "answer": 1,
+      "hint": "うえと したを くらべて ひきざんだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-035",
+      "skill": "v07-zu",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "12 − 8 に あう おはなしは？"
+      ],
+      "choices": [
+        "12こ あって 8こ たべた",
+        "12こに 8こ ふえた",
+        "12こと 8こを あわせた"
+      ],
+      "answer": 0,
+      "hint": "ひきざんは へる おはなしだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-036",
+      "skill": "v07-zu",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "さかなと うさぎの ちがいは",
+        "なんびき？"
+      ],
+      "figure": {
+        "kind": "two-rows",
+        "iconA": "fish",
+        "a": 6,
+        "iconB": "rabbit",
+        "b": 2
+      },
+      "answer": "4",
+      "hint": "おおい ほうから すくない ほうを ひく",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-037",
+      "skill": "v07-zu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あかと あおを あわせる しきは？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "いろ",
+          "かず"
+        ],
+        "rows": [
+          [
+            "あか",
+            "24"
+          ],
+          [
+            "あお",
+            "13"
+          ]
+        ]
+      },
+      "choices": [
+        "24 + 13",
+        "24 − 13",
+        "24 + 31"
+      ],
+      "answer": 0,
+      "hint": "あわせるときは たしざんだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-038",
+      "skill": "v07-zu",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "あかと あおの ちがいは",
+        "いくつ？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "いろ",
+          "かず"
+        ],
+        "rows": [
+          [
+            "あか",
+            "24"
+          ],
+          [
+            "あお",
+            "13"
+          ]
+        ]
+      },
+      "answer": "11",
+      "hint": "おおい ほうから すくない ほうを ひく",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-039",
+      "skill": "v07-zu",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "36 + 18 に あう おはなしは？"
+      ],
+      "choices": [
+        "36こ あって 18こ もらった",
+        "36こ あって 18こ あげた",
+        "36こと 18この ちがい"
+      ],
+      "answer": 0,
+      "hint": "たしざんは ふえる おはなしだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-040",
+      "skill": "v07-zu",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "ずに あう しきを つくろう"
+      ],
+      "figure": {
+        "kind": "two-groups",
+        "icon": "candy",
+        "a": 9,
+        "b": 6
+      },
+      "tokens": [
+        "6",
+        "9",
+        "+",
+        "15",
+        "="
+      ],
+      "answer": [
+        1,
+        2,
+        0,
+        4,
+        3
+      ],
+      "hint": "さいごは こたえの かず",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-041",
+      "skill": "v07-zu",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "ずに あう しきを つくろう"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 52,
+        "b": 18,
+        "op": "-",
+        "answer": 34
+      },
+      "tokens": [
+        "34",
+        "52",
+        "−",
+        "18",
+        "="
+      ],
+      "answer": [
+        1,
+        2,
+        3,
+        4,
+        0
+      ],
+      "hint": "たての しきを よこに なおそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-042",
+      "skill": "v07-zu",
+      "level": 4,
+      "type": "order",
+      "prompt": [
+        "ずに あう しきを つくろう"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 26,
+        "b": 37,
+        "op": "+",
+        "answer": 63
+      },
+      "tokens": [
+        "63",
+        "26",
+        "37",
+        "+",
+        "="
+      ],
+      "answer": [
+        1,
+        3,
+        2,
+        4,
+        0
+      ],
+      "hint": "たての しきを よこに なおそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-043",
+      "skill": "v07-zu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "4ひき きて 12ひきに なった。",
+        "はじめの しきは？"
+      ],
+      "choices": [
+        "□ + 4 = 12",
+        "□ − 4 = 12",
+        "12 + 4 = □"
+      ],
+      "answer": 0,
+      "hint": "はじめの かずが わからないので □ に する",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-044",
+      "skill": "v07-zu",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "あめを 7こ たべて のこりが",
+        "15こ。はじめの しきは？"
+      ],
+      "choices": [
+        "□ − 7 = 15",
+        "□ + 7 = 15",
+        "15 − 7 = □"
+      ],
+      "answer": 0,
+      "hint": "はじめの かずから たべた かずを ひいた",
+      "reward": "ishi"
+    },
+    {
+      "id": "v07-045",
+      "skill": "v07-zu",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "はじめの かずを もとめよう。",
+        "□ − 7 = 15 の □は いくつ？"
+      ],
+      "answer": "22",
+      "hint": "15 に 7 を たしもどすと わかるよ",
+      "reward": "ishi"
+    }
+  ]
+}

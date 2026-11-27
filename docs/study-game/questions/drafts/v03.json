@@ -1,0 +1,808 @@
+{
+  "v03": [
+    {
+      "id": "v03-001",
+      "skill": "v03-nocarry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "27 - 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 27,
+        "b": 5,
+        "op": "-"
+      },
+      "answer": 22,
+      "hint": "5は いちのくらいに そろえて かく",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-002",
+      "skill": "v03-nocarry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "48 - 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 48,
+        "b": 6,
+        "op": "-"
+      },
+      "answer": 42,
+      "hint": "6は いちのくらいに そろえて かく",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-003",
+      "skill": "v03-nocarry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "59 - 3 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 59,
+        "b": 3,
+        "op": "-"
+      },
+      "answer": 56,
+      "hint": "いちのくらいから けいさんしよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-004",
+      "skill": "v03-nocarry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "68 - 25 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 68,
+        "b": 25,
+        "op": "-"
+      },
+      "answer": 43,
+      "hint": "いちのくらいから じゅんに ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-005",
+      "skill": "v03-nocarry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "57 - 34 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 57,
+        "b": 34,
+        "op": "-"
+      },
+      "answer": 23,
+      "hint": "いちのくらいから じゅんに ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-006",
+      "skill": "v03-nocarry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "79 - 46 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 79,
+        "b": 46,
+        "op": "-"
+      },
+      "answer": 33,
+      "hint": "いちのくらいから じゅんに ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-007",
+      "skill": "v03-nocarry",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "いちのくらいの こたえは？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 86,
+        "b": 43,
+        "op": "-"
+      },
+      "answer": 3,
+      "hint": "いちのくらいだけ ひいてみよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-008",
+      "skill": "v03-nocarry",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "くりさがりが あるのは どっち？"
+      ],
+      "choices": [
+        "52 - 38",
+        "57 - 32"
+      ],
+      "answer": 0,
+      "hint": "いちのくらいが ひけない ほう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-009",
+      "skill": "v03-nocarry",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "95 - 62 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 95,
+        "b": 62,
+        "op": "-"
+      },
+      "answer": 33,
+      "hint": "くらいを たてに そろえて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-010",
+      "skill": "v03-nocarry",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "96 - 45 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 96,
+        "b": 45,
+        "op": "-"
+      },
+      "answer": 51,
+      "hint": "くらいを たてに そろえて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-011",
+      "skill": "v03-nocarry",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "78 - 23 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 78,
+        "b": 23,
+        "op": "-"
+      },
+      "answer": 55,
+      "hint": "くらいを たてに そろえて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-012",
+      "skill": "v03-nocarry",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "89 - 36 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 89,
+        "b": 36,
+        "op": "-"
+      },
+      "choices": [
+        "53",
+        "43",
+        "63"
+      ],
+      "answer": 0,
+      "hint": "いちのくらいと じゅうのくらいを べつに ひく",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-013",
+      "skill": "v03-nocarry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "97 - 43 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 97,
+        "b": 43,
+        "op": "-"
+      },
+      "answer": 54,
+      "hint": "くらいを たてに そろえて みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-014",
+      "skill": "v03-nocarry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "6□ - 23 = 41"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": "6□",
+        "b": 23,
+        "op": "-",
+        "answer": "41"
+      },
+      "answer": 4,
+      "hint": "いちのくらいを みよう。□から 3を ひくと 1",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-015",
+      "skill": "v03-nocarry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "87 - □4 = 23"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 87,
+        "b": "□4",
+        "op": "-",
+        "answer": "23"
+      },
+      "answer": 6,
+      "hint": "じゅうのくらいを みよう。8から □を ひくと 2",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-016",
+      "skill": "v03-carry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "23 - 5 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 23,
+        "b": 5,
+        "op": "-"
+      },
+      "answer": 18,
+      "hint": "3から 5は ひけない。10を かりる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-017",
+      "skill": "v03-carry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "41 - 7 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 41,
+        "b": 7,
+        "op": "-"
+      },
+      "answer": 34,
+      "hint": "1から 7は ひけない。10を かりる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-018",
+      "skill": "v03-carry",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "52 - 8 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 52,
+        "b": 8,
+        "op": "-"
+      },
+      "answer": 44,
+      "hint": "2から 8は ひけない。10を かりる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-019",
+      "skill": "v03-carry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "52 - 38 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 52,
+        "b": 38,
+        "op": "-"
+      },
+      "answer": 14,
+      "hint": "じゅうのくらいから 10を かりる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-020",
+      "skill": "v03-carry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "64 - 27 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 64,
+        "b": 27,
+        "op": "-"
+      },
+      "answer": 37,
+      "hint": "じゅうのくらいから 10を かりる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-021",
+      "skill": "v03-carry",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "73 - 46 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 73,
+        "b": 46,
+        "op": "-"
+      },
+      "answer": 27,
+      "hint": "じゅうのくらいから 10を かりる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-022",
+      "skill": "v03-carry",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "いちのくらいは くりさがる？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 61,
+        "b": 28,
+        "op": "-"
+      },
+      "choices": [
+        "くりさがる",
+        "くりさがらない"
+      ],
+      "answer": 0,
+      "hint": "1から 8が ひけるか みよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-023",
+      "skill": "v03-carry",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "くりさがりが ないのは どっち？"
+      ],
+      "choices": [
+        "74 - 28",
+        "76 - 24"
+      ],
+      "answer": 1,
+      "hint": "いちのくらいが そのまま ひける ほう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-024",
+      "skill": "v03-carry",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "85 - 49 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 85,
+        "b": 49,
+        "op": "-"
+      },
+      "answer": 36,
+      "hint": "15から 9を ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-025",
+      "skill": "v03-carry",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "90 - 36 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 90,
+        "b": 36,
+        "op": "-"
+      },
+      "answer": 54,
+      "hint": "0から 6は ひけない。10を かりる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-026",
+      "skill": "v03-carry",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "81 - 57 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 81,
+        "b": 57,
+        "op": "-"
+      },
+      "answer": 24,
+      "hint": "11から 7を ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-027",
+      "skill": "v03-carry",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "72 - 48 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 72,
+        "b": 48,
+        "op": "-"
+      },
+      "choices": [
+        "24",
+        "34",
+        "26"
+      ],
+      "answer": 0,
+      "hint": "12から 8を ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-028",
+      "skill": "v03-carry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "80 - 27 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 80,
+        "b": 27,
+        "op": "-"
+      },
+      "answer": 53,
+      "hint": "0から 7は ひけない。10を かりる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-029",
+      "skill": "v03-carry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "5□ - 28 = 25"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": "5□",
+        "b": 28,
+        "op": "-",
+        "answer": "25"
+      },
+      "answer": 3,
+      "hint": "いちのくらいは 10を かりて けいさんする",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-030",
+      "skill": "v03-carry",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "8□ - 47 = 35"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": "8□",
+        "b": 47,
+        "op": "-",
+        "answer": "35"
+      },
+      "answer": 2,
+      "hint": "いちのくらいは 10を かりて けいさんする",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-031",
+      "skill": "v03-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "あめが 26こ ありました。",
+        "4こ たべると のこりは なんこ？"
+      ],
+      "answer": 22,
+      "hint": "「のこりは」は ひきざん",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-032",
+      "skill": "v03-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "はなが 38ぼん さいて いました。",
+        "5ほん かれると なんぼん？"
+      ],
+      "answer": 33,
+      "hint": "へった ぶんを ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-033",
+      "skill": "v03-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "おりがみが 47まい ありました。",
+        "6まい つかうと なんまい？"
+      ],
+      "answer": 41,
+      "hint": "つかうと へる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-034",
+      "skill": "v03-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "ひょうを みて こたえよう。",
+        "ねこと いぬの ちがいは なんびき？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "どうぶつ",
+          "かず"
+        ],
+        "rows": [
+          [
+            "ねこ",
+            "68"
+          ],
+          [
+            "いぬ",
+            "25"
+          ]
+        ]
+      },
+      "answer": 43,
+      "hint": "おおきい かずから ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-035",
+      "skill": "v03-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "ほんが 79さつ あります。",
+        "46さつ かすと のこりは なんさつ？"
+      ],
+      "answer": 33,
+      "hint": "「のこりは」は ひきざん",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-036",
+      "skill": "v03-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "あかい はな 57ほん、しろい はな 34ほん",
+        "ちがいは なんぼん？"
+      ],
+      "answer": 23,
+      "hint": "「ちがい」は ひきざん",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-037",
+      "skill": "v03-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "あめが 52こ ありました。",
+        "38こ たべると のこりは なんこ？"
+      ],
+      "answer": 14,
+      "hint": "いちのくらいが くりさがる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-038",
+      "skill": "v03-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "くるまが 64だい とまって いました。",
+        "27だい でて いくと なんだい？"
+      ],
+      "answer": 37,
+      "hint": "でて いくと へる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-039",
+      "skill": "v03-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ねこが 73ひき、いぬが 46ひき。",
+        "ちがいは なんびき？"
+      ],
+      "answer": 27,
+      "hint": "「ちがい」は ひきざん",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-040",
+      "skill": "v03-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "さかなを 85ひき つりました。",
+        "49ひき にがすと なんびき？"
+      ],
+      "answer": 36,
+      "hint": "にがすと へる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-041",
+      "skill": "v03-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ひょうを みて こたえよう。",
+        "あかと あおの ちがいは なんにん？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "いろ",
+          "にんずう"
+        ],
+        "rows": [
+          [
+            "あか",
+            "52"
+          ],
+          [
+            "あお",
+            "18"
+          ]
+        ]
+      },
+      "answer": 34,
+      "hint": "おおきい かずから ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-042",
+      "skill": "v03-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ふうせんが 90こ ありました。",
+        "36こ とんで いくと なんこ？"
+      ],
+      "answer": 54,
+      "hint": "0から 6は ひけない",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-043",
+      "skill": "v03-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "おりがみが 81まい ありました。",
+        "57まい つかうと なんまい？"
+      ],
+      "answer": 24,
+      "hint": "11から 7を ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-044",
+      "skill": "v03-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ほんが 95さつ あります。",
+        "68さつ かすと のこりは なんさつ？"
+      ],
+      "answer": 27,
+      "hint": "15から 8を ひこう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v03-045",
+      "skill": "v03-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ひょうを みて こたえよう。",
+        "あめと ガムの ちがいは なんこ？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "おかし",
+          "かず"
+        ],
+        "rows": [
+          [
+            "あめ",
+            "80"
+          ],
+          [
+            "ガム",
+            "27"
+          ]
+        ]
+      },
+      "answer": 53,
+      "hint": "おおきい かずから ひこう",
+      "reward": "ishi"
+    }
+  ]
+}
