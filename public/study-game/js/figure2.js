@@ -14,13 +14,16 @@ function at(name, x, y, size) {
 }
 
 /**
- * とけい（なんじ・なんじはん）
- *   { kind:"clock", hour:3, half:true }
- * ★長いはりは 12 か 6 だけ。1年生が ならうのは なんじ と なんじはん だけ。
+ * とけい
+ *   1年：{ kind:"clock", hour:3, half:true }   なんじ／なんじはん だけ
+ *   2年：{ kind:"clock", hour:3, min:25 }      なんじなんぷん（C(2)ア「日，時，分」）
+ * ★min を かくと 1分きざみで 読める。half は min:30 と おなじ。
+ *   2年からは 5分ごとの めもりの 数字も 出す（長いはりを 読むため）。
  */
 function clock(f) {
   const hour = (((f.hour | 0) + 11) % 12) + 1;
-  const half = !!f.half;
+  const hasMin = typeof f.min === "number";
+  const min = hasMin ? Math.max(0, Math.min(59, f.min | 0)) : f.half ? 30 : 0;
   const cx = 150;
   const cy = 150;
   const R = 118;
@@ -35,11 +38,19 @@ function clock(f) {
       inner += `<text x="${(cx + Math.cos(a) * tr).toFixed(1)}" y="${(cy + Math.sin(a) * tr + 10).toFixed(1)}" font-size="30" font-weight="700" text-anchor="middle" fill="${ink}">${i}</text>`;
     }
   }
-  // みじかい はり（じ）。なんじはんの ときは つぎの数字との あいだを さす
-  const ha = ((((hour % 12) + (half ? 0.5 : 0)) * 30 - 90) * Math.PI) / 180;
+  // ★2年は 長いはりを 読むので、5分ごとの 数字を 小さく そえる
+  if (hasMin) {
+    for (let i = 0; i < 12; i++) {
+      const a = ((i * 30 - 90) * Math.PI) / 180;
+      const tr = R - 13;
+      inner += `<text x="${(cx + Math.cos(a) * tr).toFixed(1)}" y="${(cy + Math.sin(a) * tr + 5).toFixed(1)}" font-size="13" text-anchor="middle" fill="#9A8F7B">${i * 5}</text>`;
+    }
+  }
+  // みじかい はり（じ）。ふんの ぶんだけ つぎの数字へ すすむ
+  const ha = ((((hour % 12) + min / 60) * 30 - 90) * Math.PI) / 180;
   inner += `<line x1="${cx}" y1="${cy}" x2="${(cx + Math.cos(ha) * 60).toFixed(1)}" y2="${(cy + Math.sin(ha) * 60).toFixed(1)}" stroke="${ink}" stroke-width="12" stroke-linecap="round"/>`;
-  // ながい はり（ふん）。12 か 6 だけ
-  const ma = (((half ? 180 : 0) - 90) * Math.PI) / 180;
+  // ながい はり（ふん）
+  const ma = ((min * 6 - 90) * Math.PI) / 180;
   inner += `<line x1="${cx}" y1="${cy}" x2="${(cx + Math.cos(ma) * 92).toFixed(1)}" y2="${(cy + Math.sin(ma) * 92).toFixed(1)}" stroke="#E4564B" stroke-width="8" stroke-linecap="round"/>`;
   inner += `<circle cx="${cx}" cy="${cy}" r="10" fill="${ink}"/>`;
   return wrap(inner, 300, 300);

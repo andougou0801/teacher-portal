@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v09",
+  "grade": 2,
+  "subject": "math",
+  "term": 2,
+  "order": 9,
+  "title": "時こくと 時間",
+  "monster": "jikanmoya",
+  "building": "tokinohiroba",
+  "skills": [
+    {
+      "id": "v09-yomu",
+      "name": "なんじなんぷんを よむ",
+      "power": "read"
+    },
+    {
+      "id": "v09-keika",
+      "name": "たった 時間",
+      "power": "count"
+    },
+    {
+      "id": "v09-tani",
+      "name": "日と 時と 分",
+      "power": "compare"
+    }
+  ],
+  "items": []
+}

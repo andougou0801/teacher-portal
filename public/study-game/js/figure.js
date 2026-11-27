@@ -2,6 +2,7 @@
 import { iconShape, icon } from "./icons.js";
 import { KINDS2 } from "./figure2.js";
 import { KINDS3 } from "./figure3.js";
+import { KINDS4 } from "./figure4.js";
 
 const ink = "#2B2A28";
 const line = "#D9CDB6";
@@ -257,6 +258,7 @@ const KINDS = {
   numline,
   ...KINDS2,
   ...KINDS3,
+  ...KINDS4,
 };
 
 /** 知らない kind は何も描かない（その1問が解けなくならないように、絵だけ省く） */

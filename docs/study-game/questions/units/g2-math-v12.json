@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v12",
+  "grade": 2,
+  "subject": "math",
+  "term": 2,
+  "order": 12,
+  "title": "かけ算（1） 2・3・4・5のだん",
+  "monster": "kakemoya",
+  "building": "kakezankoujou",
+  "skills": [
+    {
+      "id": "v12-imi",
+      "name": "かけ算の いみ",
+      "power": "read"
+    },
+    {
+      "id": "v12-dan25",
+      "name": "2のだんと 5のだん",
+      "power": "count"
+    },
+    {
+      "id": "v12-dan34",
+      "name": "3のだんと 4のだん",
+      "power": "count"
+    }
+  ],
+  "items": []
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v14",
+  "grade": 2,
+  "subject": "math",
+  "term": 2,
+  "order": 14,
+  "title": "かけ算の きまり",
+  "monster": "kimarimoya",
+  "building": "kimarinoie",
+  "skills": [
+    {
+      "id": "v14-irekae",
+      "name": "かける じゅんを かえても おなじ",
+      "power": "count"
+    },
+    {
+      "id": "v14-fueru",
+      "name": "1ふえると いくつ ふえる",
+      "power": "count"
+    },
+    {
+      "id": "v14-bun",
+      "name": "かけ算の ばめん",
+      "power": "read"
+    }
+  ],
+  "items": []
+}

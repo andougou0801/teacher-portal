@@ -50,6 +50,9 @@ const FIGS = new Set([
   "table",
   "ruler",
   "liters",
+  "times",
+  "shapes2d",
+  "grid",
 ]);
 const ICONS = new Set([
   "apple",

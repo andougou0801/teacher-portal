@@ -64,6 +64,15 @@ export const BUILDINGS = [
   { id: "masunoie", name: "ますのいえ", unit: "v06", shape: "waterhouse", mat: "glass", cost: 18, x: 35, y: 78 },
   { id: "ikikaerinohashi", name: "いきかえりのはし", unit: "v07", shape: "bridge", mat: "ishi", cost: 16, x: 58, y: 78 },
   { id: "kufunokoubou", name: "くふうのこうぼう", unit: "v08", shape: "workshop", mat: "ki", cost: 18, x: 80, y: 74 },
+  // 2年2学期の8棟（おくの だん）
+  { id: "tokinohiroba", name: "ときのひろば", unit: "v09", shape: "clocktower", mat: "glass", cost: 20, x: 7, y: 33 },
+  { id: "katachinomon", name: "かたちのもん", unit: "v10", shape: "gate", mat: "ishi", cost: 16, x: 19, y: 33 },
+  { id: "chokkakutou", name: "ちょっかくのとう", unit: "v11", shape: "spire", mat: "ishi", cost: 18, x: 31, y: 33 },
+  { id: "kakezankoujou", name: "かけざんこうじょう", unit: "v12", shape: "factory", mat: "ki", cost: 20, x: 43, y: 33 },
+  { id: "kukunoyagura", name: "くくのやぐら", unit: "v13", shape: "tower", mat: "ki", cost: 20, x: 55, y: 33 },
+  { id: "kimarinoie", name: "きまりのいえ", unit: "v14", shape: "house", mat: "nendo", cost: 16, x: 67, y: 33 },
+  { id: "mannokura", name: "まんのくら", unit: "v15", shape: "granary", mat: "nendo", cost: 20, x: 79, y: 33 },
+  { id: "ookeisanjo", name: "おおけいさんじょ", unit: "v16", shape: "abacus", mat: "glass", cost: 22, x: 91, y: 33 },
   { id: "tasizankoujou", name: "たしざんこうじょう", unit: "u04", shape: "factory", mat: "ki", cost: 20, x: 12, y: 76 },
   { id: "hikizansouko", name: "ひきざんそうこ", unit: "u05", shape: "barn", mat: "ishi", cost: 20, x: 35, y: 78 },
   { id: "zeronoizumi", name: "ゼロのいずみ", unit: "u06", shape: "well", mat: "nendo", cost: 14, x: 58, y: 78 },
@@ -145,6 +154,14 @@ export const TITLES = [
   { id: "t-masu", name: "かさの めいじん", unit: "v06" },
   { id: "t-saka", name: "いきかえりの かんがえびと", unit: "v07" },
   { id: "t-kufu", name: "くふうの たつじん", unit: "v08" },
+  { id: "t-jikan", name: "ときの よみて", unit: "v09" },
+  { id: "t-katachi2", name: "かたちの みわけびと", unit: "v10" },
+  { id: "t-chokkaku", name: "ちょっかく はかせ", unit: "v11" },
+  { id: "t-kake1", name: "かけざん みならい", unit: "v12" },
+  { id: "t-kuku", name: "くく めいじん", unit: "v13" },
+  { id: "t-kimari", name: "きまり みつけびと", unit: "v14" },
+  { id: "t-man", name: "いちまんの かぞえびと", unit: "v15" },
+  { id: "t-ookei", name: "おおきい けいさんの たつじん", unit: "v16" },
 ];
 
 export const buildingByUnit = (unitId) => BUILDINGS.find((b) => b.unit === unitId);

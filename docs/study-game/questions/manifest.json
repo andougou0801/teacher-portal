@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-11-26",
+  "updated": "2026-11-27",
   "grades": [
     {
       "grade": 1,
@@ -1351,6 +1351,213 @@
               "id": "v08-hayaku",
               "name": "はやく とける くふう",
               "power": "count"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": 2,
+      "subject": "math",
+      "term": 2,
+      "units": [
+        {
+          "unitId": "v09",
+          "title": "時こくと 時間",
+          "order": 9,
+          "file": "units/g2-math-v09.json",
+          "monster": "jikanmoya",
+          "building": "tokinohiroba",
+          "skills": [
+            {
+              "id": "v09-yomu",
+              "name": "なんじなんぷんを よむ",
+              "power": "read"
+            },
+            {
+              "id": "v09-keika",
+              "name": "たった 時間",
+              "power": "count"
+            },
+            {
+              "id": "v09-tani",
+              "name": "日と 時と 分",
+              "power": "compare"
+            }
+          ]
+        },
+        {
+          "unitId": "v10",
+          "title": "三角形と 四角形",
+          "order": 10,
+          "file": "units/g2-math-v10.json",
+          "monster": "katachi2moya",
+          "building": "katachinomon",
+          "skills": [
+            {
+              "id": "v10-mikake",
+              "name": "三角形と 四角形を 見分ける",
+              "power": "shape"
+            },
+            {
+              "id": "v10-hen",
+              "name": "へんと ちょうてん",
+              "power": "shape"
+            },
+            {
+              "id": "v10-tsukuru",
+              "name": "かたちを つくる",
+              "power": "shape"
+            }
+          ]
+        },
+        {
+          "unitId": "v11",
+          "title": "正方形と 長方形",
+          "order": 11,
+          "file": "units/g2-math-v11.json",
+          "monster": "chokkakumoya",
+          "building": "chokkakutou",
+          "skills": [
+            {
+              "id": "v11-seihou",
+              "name": "せいほうけい",
+              "power": "shape"
+            },
+            {
+              "id": "v11-chouhou",
+              "name": "ちょうほうけい",
+              "power": "shape"
+            },
+            {
+              "id": "v11-chokkaku",
+              "name": "ちょっかく三角形",
+              "power": "shape"
+            }
+          ]
+        },
+        {
+          "unitId": "v12",
+          "title": "かけ算（1） 2・3・4・5のだん",
+          "order": 12,
+          "file": "units/g2-math-v12.json",
+          "monster": "kakemoya",
+          "building": "kakezankoujou",
+          "skills": [
+            {
+              "id": "v12-imi",
+              "name": "かけ算の いみ",
+              "power": "read"
+            },
+            {
+              "id": "v12-dan25",
+              "name": "2のだんと 5のだん",
+              "power": "count"
+            },
+            {
+              "id": "v12-dan34",
+              "name": "3のだんと 4のだん",
+              "power": "count"
+            }
+          ]
+        },
+        {
+          "unitId": "v13",
+          "title": "かけ算（2） 6・7・8・9・1のだん",
+          "order": 13,
+          "file": "units/g2-math-v13.json",
+          "monster": "kukumoya",
+          "building": "kukunoyagura",
+          "skills": [
+            {
+              "id": "v13-dan67",
+              "name": "6のだんと 7のだん",
+              "power": "count"
+            },
+            {
+              "id": "v13-dan89",
+              "name": "8のだんと 9のだん",
+              "power": "count"
+            },
+            {
+              "id": "v13-dan1",
+              "name": "1のだんと まとめ",
+              "power": "count"
+            }
+          ]
+        },
+        {
+          "unitId": "v14",
+          "title": "かけ算の きまり",
+          "order": 14,
+          "file": "units/g2-math-v14.json",
+          "monster": "kimarimoya",
+          "building": "kimarinoie",
+          "skills": [
+            {
+              "id": "v14-irekae",
+              "name": "かける じゅんを かえても おなじ",
+              "power": "count"
+            },
+            {
+              "id": "v14-fueru",
+              "name": "1ふえると いくつ ふえる",
+              "power": "count"
+            },
+            {
+              "id": "v14-bun",
+              "name": "かけ算の ばめん",
+              "power": "read"
+            }
+          ]
+        },
+        {
+          "unitId": "v15",
+          "title": "10000までの かず",
+          "order": 15,
+          "file": "units/g2-math-v15.json",
+          "monster": "manmoya",
+          "building": "mannokura",
+          "skills": [
+            {
+              "id": "v15-kurai",
+              "name": "4けたの くらい",
+              "power": "count"
+            },
+            {
+              "id": "v15-yomu",
+              "name": "大きい かずを よむ",
+              "power": "count"
+            },
+            {
+              "id": "v15-daisho",
+              "name": "大きい かずの 大小",
+              "power": "compare"
+            }
+          ]
+        },
+        {
+          "unitId": "v16",
+          "title": "大きい かずの けいさん",
+          "order": 16,
+          "file": "units/g2-math-v16.json",
+          "monster": "oomoya",
+          "building": "ookeisanjo",
+          "skills": [
+            {
+              "id": "v16-hyaku",
+              "name": "何百の けいさん",
+              "power": "count"
+            },
+            {
+              "id": "v16-hissan3",
+              "name": "3けたの ひっ算",
+              "power": "count"
+            },
+            {
+              "id": "v16-bun",
+              "name": "大きい かずの ばめん",
+              "power": "read"
             }
           ]
         }

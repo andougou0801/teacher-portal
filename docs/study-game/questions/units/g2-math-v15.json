@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v15",
+  "grade": 2,
+  "subject": "math",
+  "term": 2,
+  "order": 15,
+  "title": "10000までの かず",
+  "monster": "manmoya",
+  "building": "mannokura",
+  "skills": [
+    {
+      "id": "v15-kurai",
+      "name": "4けたの くらい",
+      "power": "count"
+    },
+    {
+      "id": "v15-yomu",
+      "name": "大きい かずを よむ",
+      "power": "count"
+    },
+    {
+      "id": "v15-daisho",
+      "name": "大きい かずの 大小",
+      "power": "compare"
+    }
+  ],
+  "items": []
+}

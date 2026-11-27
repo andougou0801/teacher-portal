@@ -22,6 +22,7 @@ const CORE = [
   "js/figure.js",
   "js/figure2.js",
   "js/figure3.js",
+  "js/figure4.js",
   "js/building-art-m2.js",
   "js/building-art-m3.js",
   "js/content.js",

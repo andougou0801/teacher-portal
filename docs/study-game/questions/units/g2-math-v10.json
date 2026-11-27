@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "unitId": "v10",
+  "grade": 2,
+  "subject": "math",
+  "term": 2,
+  "order": 10,
+  "title": "三角形と 四角形",
+  "monster": "katachi2moya",
+  "building": "katachinomon",
+  "skills": [
+    {
+      "id": "v10-mikake",
+      "name": "三角形と 四角形を 見分ける",
+      "power": "shape"
+    },
+    {
+      "id": "v10-hen",
+      "name": "へんと ちょうてん",
+      "power": "shape"
+    },
+    {
+      "id": "v10-tsukuru",
+      "name": "かたちを つくる",
+      "power": "shape"
+    }
+  ],
+  "items": []
+}
