@@ -1,0 +1,721 @@
+{
+  "v16": [
+    {
+      "id": "v16-001",
+      "skill": "v16-hyaku",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "300 + 200 は いくつ？"
+      ],
+      "answer": 500,
+      "hint": "100が 3こと 2こで 5こ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-002",
+      "skill": "v16-hyaku",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "400 + 500 は いくつ？"
+      ],
+      "answer": 900,
+      "hint": "100が 4こと 5こで 9こ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-003",
+      "skill": "v16-hyaku",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "600 - 200 は いくつ？"
+      ],
+      "answer": 400,
+      "hint": "100が 6こから 2こ とると 4こ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-004",
+      "skill": "v16-hyaku",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "800 - 500 は いくつ？"
+      ],
+      "answer": 300,
+      "hint": "100が 8こから 5こ とると 3こ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-005",
+      "skill": "v16-hyaku",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "700 + 300 は いくつ？"
+      ],
+      "answer": 1000,
+      "hint": "100が 10こで 1000に なるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-006",
+      "skill": "v16-hyaku",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "1000 - 400 は いくつ？"
+      ],
+      "answer": 600,
+      "hint": "1000は 100が 10こ。4こ とろう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-007",
+      "skill": "v16-hyaku",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "500 + 60 は いくつ？"
+      ],
+      "answer": 560,
+      "hint": "じゅうの くらいに 6が つくよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-008",
+      "skill": "v16-hyaku",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "670 - 70 は いくつ？"
+      ],
+      "answer": 600,
+      "hint": "じゅうの くらいが 0に なるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-009",
+      "skill": "v16-hyaku",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "900 - 600 は いくつ？"
+      ],
+      "choices": [
+        "300",
+        "400",
+        "200"
+      ],
+      "answer": 0,
+      "hint": "100が 9こから 6こ とると なんこ？",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-010",
+      "skill": "v16-hyaku",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "□に はいる かずは？",
+        "300 + □ = 800"
+      ],
+      "answer": 500,
+      "hint": "100が 3こに なんこ たすと 8こ？",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-011",
+      "skill": "v16-hyaku",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "□に はいる かずは？",
+        "□ + 200 = 900"
+      ],
+      "answer": 700,
+      "hint": "100が なんこに 2こ たすと 9こ？",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-012",
+      "skill": "v16-hyaku",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "700 - 400 + 200 は いくつ？"
+      ],
+      "answer": 500,
+      "hint": "ひだりから じゅんに けいさんしよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-013",
+      "skill": "v16-hyaku",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "400 + 300 = 700。",
+        "700 - 300 は いくつ？"
+      ],
+      "answer": 400,
+      "hint": "たしざんの こたえから もどすと わかる",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-014",
+      "skill": "v16-hyaku",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "800 - 200 - 300 は いくつ？"
+      ],
+      "answer": 300,
+      "hint": "ひだりから じゅんに ひいて いこう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-015",
+      "skill": "v16-hyaku",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に はいる かずは？",
+        "1000 - □ = 300"
+      ],
+      "answer": 700,
+      "hint": "100が 10こから なんこ とると 3こ？",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-016",
+      "skill": "v16-hissan3",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "243 + 125 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 243,
+        "b": 125,
+        "op": "+"
+      },
+      "answer": 368,
+      "hint": "くらいを たてに そろえて たそう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-017",
+      "skill": "v16-hissan3",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "316 + 452 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 316,
+        "b": 452,
+        "op": "+"
+      },
+      "answer": 768,
+      "hint": "いちの くらいから じゅんに たそう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-018",
+      "skill": "v16-hissan3",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "578 - 234 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 578,
+        "b": 234,
+        "op": "-"
+      },
+      "answer": 344,
+      "hint": "いちの くらいから じゅんに ひこう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-019",
+      "skill": "v16-hissan3",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "235 + 147 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 235,
+        "b": 147,
+        "op": "+"
+      },
+      "answer": 382,
+      "hint": "5と 7で 12。1を じゅうの くらいへ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-020",
+      "skill": "v16-hissan3",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "364 + 128 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 364,
+        "b": 128,
+        "op": "+"
+      },
+      "answer": 492,
+      "hint": "4と 8で 12。1を じゅうの くらいへ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-021",
+      "skill": "v16-hissan3",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "452 - 128 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 452,
+        "b": 128,
+        "op": "-"
+      },
+      "answer": 324,
+      "hint": "2から 8は ひけない。10 かりよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-022",
+      "skill": "v16-hissan3",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "274 + 153 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 274,
+        "b": 153,
+        "op": "+"
+      },
+      "answer": 427,
+      "hint": "7と 5で 12。ひゃくの くらいへ くりあがる",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-023",
+      "skill": "v16-hissan3",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "536 - 172 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 536,
+        "b": 172,
+        "op": "-"
+      },
+      "answer": 364,
+      "hint": "3から 7は ひけない。100 かりよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-024",
+      "skill": "v16-hissan3",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "いちの くらいの こたえは？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 347,
+        "b": 228,
+        "op": "+"
+      },
+      "answer": 5,
+      "hint": "7と 8で 15。かくのは みぎの 5",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-025",
+      "skill": "v16-hissan3",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "268 + 175 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 268,
+        "b": 175,
+        "op": "+"
+      },
+      "answer": 443,
+      "hint": "くりあがりが 2かい あるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-026",
+      "skill": "v16-hissan3",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "406 - 158 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 406,
+        "b": 158,
+        "op": "-"
+      },
+      "answer": 248,
+      "hint": "じゅうの くらいが 0。100 かりよう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-027",
+      "skill": "v16-hissan3",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "500 - 237 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 500,
+        "b": 237,
+        "op": "-"
+      },
+      "choices": [
+        "263",
+        "273",
+        "363"
+      ],
+      "answer": 0,
+      "hint": "500は 100が 5こ。1こ くずそう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-028",
+      "skill": "v16-hissan3",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "657 + 289 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 657,
+        "b": 289,
+        "op": "+"
+      },
+      "answer": 946,
+      "hint": "7と 9で 16。くりあがりを わすれずに",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-029",
+      "skill": "v16-hissan3",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "803 - 476 は いくつ？"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": 803,
+        "b": 476,
+        "op": "-"
+      },
+      "answer": 327,
+      "hint": "じゅうの くらいが 0。となりから かりる",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-030",
+      "skill": "v16-hissan3",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "2□4 + 135 = 389"
+      ],
+      "figure": {
+        "kind": "vcalc",
+        "a": "2□4",
+        "b": 135,
+        "op": "+",
+        "answer": "389"
+      },
+      "answer": 5,
+      "hint": "じゅうの くらいを みよう。□と 3で 8",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-031",
+      "skill": "v16-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "あめが 320こ あります。",
+        "50こ ふえると なんこ？"
+      ],
+      "answer": 370,
+      "hint": "「ふえる」は たしざん",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-032",
+      "skill": "v16-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "あかい はな 240ほん、",
+        "しろい はな 150ほん。ぜんぶで？"
+      ],
+      "answer": 390,
+      "hint": "「ぜんぶで」は たしざん",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-033",
+      "skill": "v16-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "おりがみが 500まい あります。",
+        "200まい つかうと なんまい？"
+      ],
+      "answer": 300,
+      "hint": "「つかう」と へるから ひきざん",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-034",
+      "skill": "v16-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "ひょうを みて こたえよう。",
+        "あめと ガムで なんこ？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "おかし",
+          "かず"
+        ],
+        "rows": [
+          [
+            "あめ",
+            "230"
+          ],
+          [
+            "ガム",
+            "150"
+          ]
+        ]
+      },
+      "answer": 380,
+      "hint": "2つの ますの かずを たそう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-035",
+      "skill": "v16-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "ほんが 365さつ あります。",
+        "124さつ ふえると なんさつ？"
+      ],
+      "answer": 489,
+      "hint": "くらいを そろえて たしざん",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-036",
+      "skill": "v16-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "さかなが 486ひき いました。",
+        "152ひき にげました。なんびき？"
+      ],
+      "answer": 334,
+      "hint": "にげた ぶんを ひこう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-037",
+      "skill": "v16-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "くるまが 258だい とまって",
+        "います。137だい くると なんだい？"
+      ],
+      "answer": 395,
+      "hint": "いちの くらいが くりあがるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-038",
+      "skill": "v16-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "シールが 412まい あります。",
+        "165まい あげると なんまい？"
+      ],
+      "answer": 247,
+      "hint": "あげた ぶんを ひこう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-039",
+      "skill": "v16-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ひょうを みて こたえよう。",
+        "あかと あおで なんにん？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "いろ",
+          "にんずう"
+        ],
+        "rows": [
+          [
+            "あか",
+            "256"
+          ],
+          [
+            "あお",
+            "178"
+          ]
+        ]
+      },
+      "answer": 434,
+      "hint": "2つの ますの かずを たそう",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-040",
+      "skill": "v16-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "おとなが 347にん、",
+        "こどもが 285にん。あわせて？"
+      ],
+      "answer": 632,
+      "hint": "くりあがりが 2かい あるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-041",
+      "skill": "v16-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "どんぐりを 500こ あつめて",
+        "173こ つかうと のこりは なんこ？"
+      ],
+      "answer": 327,
+      "hint": "500から ひこう。10を かりる",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-042",
+      "skill": "v16-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ひょうを みて こたえよう。",
+        "ほしと はなの ちがいは なんまい？"
+      ],
+      "figure": {
+        "kind": "table",
+        "head": [
+          "シール",
+          "かず"
+        ],
+        "rows": [
+          [
+            "ほし",
+            "463"
+          ],
+          [
+            "はな",
+            "285"
+          ]
+        ]
+      },
+      "answer": 178,
+      "hint": "「ちがい」は おおきい ほうから ひく",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-043",
+      "skill": "v16-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いちごが 465こ、",
+        "みかんが 387こ。あわせて なんこ？"
+      ],
+      "answer": 852,
+      "hint": "くりあがりが 2かい あるよ",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-044",
+      "skill": "v16-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ほんが 702さつ あります。",
+        "348さつ かすと のこりは？"
+      ],
+      "answer": 354,
+      "hint": "じゅうの くらいが 0。となりから かりる",
+      "reward": "glass"
+    },
+    {
+      "id": "v16-045",
+      "skill": "v16-bun",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "おりがみが 630まい あります。",
+        "255まい つかうと なんまい？"
+      ],
+      "choices": [
+        "375",
+        "385",
+        "475"
+      ],
+      "answer": 0,
+      "hint": "630から 255を ひこう",
+      "reward": "glass"
+    }
+  ]
+}

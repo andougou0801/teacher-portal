@@ -110,8 +110,14 @@ function expectedAnswer(item) {
   //   = が あるときは、いちばん うしろの = より あとだけを 見る。
   const ask = text.includes("=") ? text.slice(text.lastIndexOf("=") + 1) : text;
 
+  // ★かけ算（2年から × が つかえる）。
+  //   「2 × 4 = 8。2 × 5 は いくつ？」のように さきに 式を 見せる 問題が あるので、
+  //   ここでも = より あとだけを 見る。これが ないと 九九が ぜんぶ 手づめに なる。
+  let m = ask.match(/(\d+)\s*×\s*(\d+)/);
+  if (m) return Number(m[1]) * Number(m[2]);
+
   // 「3 + 4 は いくつ？」
-  let m = ask.match(/(\d+)\s*\+\s*(\d+)/);
+  m = ask.match(/(\d+)\s*\+\s*(\d+)/);
   if (m) return Number(m[1]) + Number(m[2]);
 
   // 「8 - 3 は いくつ？」（全角マイナス・ハイフンの両方）
