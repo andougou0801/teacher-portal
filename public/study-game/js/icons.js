@@ -12,6 +12,7 @@ import { moyaArtM3, MOYA_NAMES_M3, MOYA_ART_M3 } from "./moya-art-m3.js";
 import { moyaArtJp2, MOYA_NAMES_JP2, MOYA_ART_JP2 } from "./moya-art-jp2.js";
 import { moyaArtJp3, MOYA_NAMES_JP3, MOYA_ART_JP3 } from "./moya-art-jp3.js";
 import { moyaArtG2, MOYA_NAMES_G2, MOYA_ART_G2 } from "./moya-art-g2.js";
+import { moyaArtG2b, MOYA_NAMES_G2B, MOYA_ART_G2B } from "./moya-art-g2b.js";
 
 const ink = "#2B2A28";
 
@@ -134,6 +135,7 @@ export function face(index, wearing, size = 100) {
 // さんすう1学期12体＋こくご1学期8体＋さんすう2学期5体＋さんすう3学期6体
 // ＋こくご2学期8体（moya-art-jp2.js）＋こくご3学期6体（moya-art-jp3.js）＝45体
 // ＋2年さんすう1学期8体（moya-art-g2.js）＝53体
+// ＋2年さんすう2学期8体（moya-art-g2b.js）＝61体
 // 2学期の かさ・かたち・とけい は moya-art.js の 3体を そのまま 使う。
 export const MOYA_NAMES = {
   ...MOYA_NAMES_12,
@@ -143,6 +145,7 @@ export const MOYA_NAMES = {
   ...MOYA_NAMES_JP2,
   ...MOYA_NAMES_JP3,
   ...MOYA_NAMES_G2,
+  ...MOYA_NAMES_G2B,
 };
 
 export function moya(id, mood = "normal", size = 100) {
@@ -152,6 +155,7 @@ export function moya(id, mood = "normal", size = 100) {
   if (MOYA_ART_JP2[id]) return moyaArtJp2(id, mood, size);
   if (MOYA_ART_JP3[id]) return moyaArtJp3(id, mood, size);
   if (MOYA_ART_G2[id]) return moyaArtG2(id, mood, size);
+  if (MOYA_ART_G2B[id]) return moyaArtG2b(id, mood, size);
   return moyaArt(id, mood, size);
 }
 

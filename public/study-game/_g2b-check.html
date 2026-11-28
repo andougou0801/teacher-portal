@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>g2b かくにん（使いすて）</title>
+<style>
+  body { background:#FFF4E2; font-family:sans-serif; margin:16px; color:#2B2A28; }
+  h2 { margin:28px 0 8px; border-bottom:2px solid #2B2A28; }
+  .row { display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; }
+  .cell { text-align:center; font-size:12px; }
+  .small .cell { font-size:10px; }
+  .pair { display:flex; gap:4px; align-items:flex-end; background:#fff; border:1px solid #ccc;
+          border-radius:8px; padding:6px; }
+  .pair .cell { font-size:10px; }
+  .tiny48 { display:flex; gap:10px; flex-wrap:wrap; background:#fff; padding:8px; border-radius:8px; }
+</style>
+</head>
+<body>
+<div id="out">よみこみ中…</div>
+<script type="module">
+import { moyaArtG2b, MOYA_ORDER_G2B, MOYA_ART_G2B } from "./js/moya-art-g2b.js";
+import { moyaArt, MOYA_NAMES_12 } from "./js/moya-art.js";
+import { moyaArtJp } from "./js/moya-art-jp.js";
+import { moyaArtM2 } from "./js/moya-art-m2.js";
+import { moyaArtM3 } from "./js/moya-art-m3.js";
+import { moyaArtJp2 } from "./js/moya-art-jp2.js";
+import { moyaArtG2, MOYA_ART_G2 } from "./js/moya-art-g2.js";
+void MOYA_NAMES_12;
+
+const MOODS = ["normal", "hurt", "friend"];
+let h = "";
+
+h += "<h2>① 8体 × 3mood（180px）</h2>";
+for (const id of MOYA_ORDER_G2B) {
+  const a = MOYA_ART_G2B[id];
+  h += `<h3>${a.unit} ${a.name}（${id}）<br><span style="font-weight:400;font-size:12px">${a.note}</span></h3><div class="row">`;
+  for (const m of MOODS) h += `<div class="cell">${moyaArtG2b(id, m, 180)}<div>${m}</div></div>`;
+  h += "</div>";
+}
+
+h += "<h2>② 8体ならべて 48px（normal）</h2><div class='tiny48'>";
+for (const id of MOYA_ORDER_G2B)
+  h += `<div class="cell">${moyaArtG2b(id, "normal", 48)}<div>${MOYA_ART_G2B[id].name}</div></div>`;
+h += "</div>";
+
+h += "<h2>③ 8体ならべて 48px（friend）</h2><div class='tiny48'>";
+for (const id of MOYA_ORDER_G2B)
+  h += `<div class="cell">${moyaArtG2b(id, "friend", 48)}<div>${MOYA_ART_G2B[id].name}</div></div>`;
+h += "</div>";
+
+/* ---- 似た子との 見くらべ ---- */
+const PAIRS = [
+  ["jikanmoya", [["tokeimoya", moyaArt], ["matomemoya", moyaArtM3], ["kazumoya", moyaArt]]],
+  ["katachi2moya", [["katachimoya", moyaArt], ["itamoya", moyaArtM3]]],
+  ["chokkakumoya", [["kanjimoya", moyaArtJp2], ["hyoumoya", moyaArtG2], ["masumoya", moyaArtG2]]],
+  ["kakemoya", [["kukumoya", moyaArtG2b], ["hyakumoya", moyaArtM3], ["hissanmoya", moyaArtG2]]],
+  ["kukumoya", [["kakemoya", moyaArtG2b], ["hyoumoya", moyaArtG2]]],
+  ["kimarimoya", [["katamoya", moyaArtJp2], ["zumoya", moyaArtM3]]],
+  ["manmoya", [["senmoya", moyaArtG2], ["hyakumoya", moyaArtM3], ["ookazumoya", moyaArtM2], ["matomemoya", moyaArtM3]]],
+  ["oomoya", [["hissanmoya", moyaArtG2], ["junbanmoya", moyaArtJp], ["ketamoya", moyaArtM3]]],
+];
+
+for (const size of [48, 110]) {
+  h += `<h2>④ 似た子との 見くらべ（${size}px）</h2>`;
+  for (const [mine, others] of PAIRS) {
+    h += `<div class="row" style="margin-bottom:10px"><div class="pair" style="border-color:#D9485E">`;
+    h += `<div class="cell">${moyaArtG2b(mine, "normal", size)}<div><b>${mine}</b></div></div></div>`;
+    h += `<div class="pair">`;
+    for (const [o, fn] of others)
+      h += `<div class="cell">${fn(o, "normal", size)}<div>${o}</div></div>`;
+    h += "</div></div>";
+  }
+}
+
+document.getElementById("out").innerHTML = h;
+
+/* ---- ⑤ 48pxで ほんとうに どう見えるか（48pxで ラスタライズ → 4ばい拡大） ---- */
+function rasterize(markup, label) {
+  return new Promise((res) => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement("canvas");
+      c.width = 48; c.height = 48;
+      const g = c.getContext("2d");
+      g.fillStyle = "#FFF4E2"; g.fillRect(0, 0, 48, 48);
+      g.drawImage(img, 0, 0, 48, 48);
+      c.style.width = "192px"; c.style.height = "192px";
+      c.style.imageRendering = "pixelated";
+      c.style.border = "1px solid #999";
+      const d = document.createElement("div");
+      d.className = "cell";
+      d.appendChild(c);
+      const t = document.createElement("div");
+      t.textContent = label; t.style.fontSize = "14px";
+      d.appendChild(t);
+      res(d);
+    };
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(markup);
+  });
+}
+
+const GROUPS = [
+  ["まんもや vs せんもや（★いちばん あぶない）",
+    [["manmoya", moyaArtG2b], ["senmoya", moyaArtG2], ["hyakumoya", moyaArtM3], ["ookazumoya", moyaArtM2]]],
+  ["じかんもや vs とけいもや",
+    [["jikanmoya", moyaArtG2b], ["tokeimoya", moyaArt], ["matomemoya", moyaArtM3]]],
+  ["かたちもや2 vs かたちもや・いたもや",
+    [["katachi2moya", moyaArtG2b], ["katachimoya", moyaArt], ["itamoya", moyaArtM3]]],
+  ["ちょっかくもや vs かんじもや・ひょうもや",
+    [["chokkakumoya", moyaArtG2b], ["kanjimoya", moyaArtJp2], ["hyoumoya", moyaArtG2]]],
+  ["かけもや vs くくもや・ひゃくもや",
+    [["kakemoya", moyaArtG2b], ["kukumoya", moyaArtG2b], ["hyakumoya", moyaArtM3]]],
+  ["きまりもや vs かたもや",
+    [["kimarimoya", moyaArtG2b], ["katamoya", moyaArtJp2]]],
+  ["おおもや vs ひっさんもや",
+    [["oomoya", moyaArtG2b], ["hissanmoya", moyaArtG2]]],
+  ["g2b 8体ぜんぶ",
+    MOYA_ORDER_G2B.map((id) => [id, moyaArtG2b])],
+];
+
+const box = document.createElement("div");
+document.body.appendChild(box);
+const hd = document.createElement("h2");
+hd.textContent = "⑤ 48pxで ラスタライズ → 4ばい拡大（ほんとうの 見え方）";
+box.appendChild(hd);
+for (const [title, list] of GROUPS) {
+  const t = document.createElement("h3");
+  t.textContent = title;
+  box.appendChild(t);
+  const r = document.createElement("div");
+  r.className = "row";
+  box.appendChild(r);
+  for (const [id, fn] of list) {
+    r.appendChild(await rasterize(fn(id, "normal", 48), id));
+  }
+}
+</script>
+</body>
+</html>

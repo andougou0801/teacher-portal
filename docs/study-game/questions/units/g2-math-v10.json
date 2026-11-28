@@ -25,5 +25,970 @@
       "power": "shape"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "v10-001",
+      "skill": "v10-mikake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "さんかくけいは どれ？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "triangle",
+          "square"
+        ]
+      },
+      "choices": [
+        "ひだり",
+        "みぎ"
+      ],
+      "answer": 0,
+      "hint": "へんが 3ぼんの かたちだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-002",
+      "skill": "v10-mikake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "しかくけいは どれ？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "circle",
+          "square"
+        ]
+      },
+      "choices": [
+        "ひだり",
+        "みぎ"
+      ],
+      "answer": 1,
+      "hint": "へんが 4ほんの かたちだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-003",
+      "skill": "v10-mikake",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "さんかくけいは どれ？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "triangle",
+          "circle"
+        ]
+      },
+      "choices": [
+        "ひだり",
+        "みぎ"
+      ],
+      "answer": 0,
+      "hint": "まるい かたちには へんが ないよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-004",
+      "skill": "v10-mikake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "さんかくけいは どれ？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "circle",
+          "triangle",
+          "rect"
+        ]
+      },
+      "choices": [
+        "ひだり",
+        "まんなか",
+        "みぎ"
+      ],
+      "answer": 1,
+      "hint": "へんを かぞえて 3ぼんの ものを さがす",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-005",
+      "skill": "v10-mikake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "しかくけいは どれ？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "pentagon",
+          "round",
+          "quad"
+        ]
+      },
+      "choices": [
+        "ひだり",
+        "まんなか",
+        "みぎ"
+      ],
+      "answer": 2,
+      "hint": "かどが まるい ものは しかくけいでは ない",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-006",
+      "skill": "v10-mikake",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "しかくけいは どれ？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "square",
+          "triangle",
+          "circle"
+        ]
+      },
+      "choices": [
+        "ひだり",
+        "まんなか",
+        "みぎ"
+      ],
+      "answer": 0,
+      "hint": "ちょうてんが 4つの ものを さがそう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-007",
+      "skill": "v10-mikake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あかい わくの かたちは？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "triangle",
+          "quad",
+          "pentagon"
+        ],
+        "mark": 1
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "どちらでも ない"
+      ],
+      "answer": 1,
+      "hint": "へんを かぞえよう。4ほん あるかな",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-008",
+      "skill": "v10-mikake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あかい わくの かたちは？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "pentagon",
+          "triangle",
+          "square"
+        ],
+        "mark": 0
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "どちらでも ない"
+      ],
+      "answer": 2,
+      "hint": "へんが 5ほん あるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-009",
+      "skill": "v10-mikake",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "あかい わくの かたちは？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "quad",
+          "circle",
+          "triangle"
+        ],
+        "mark": 2
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "どちらでも ない"
+      ],
+      "answer": 0,
+      "hint": "ちょうてんが 3つ、へんが 3ぼん",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-010",
+      "skill": "v10-mikake",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "さんかくけいは いくつ？",
+        "かずを かこう"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "triangle",
+          "square",
+          "triangle",
+          "circle"
+        ]
+      },
+      "answer": 2,
+      "hint": "へんが 3ぼんの ものを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-011",
+      "skill": "v10-mikake",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "しかくけいは いくつ？",
+        "かずを かこう"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "square",
+          "rect",
+          "pentagon",
+          "quad"
+        ]
+      },
+      "answer": 3,
+      "hint": "へんが 4ほんの ものを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-012",
+      "skill": "v10-mikake",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "さんかくけいは いくつ？",
+        "かずを かこう"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "triangle",
+          "rtriangle",
+          "circle",
+          "square"
+        ]
+      },
+      "answer": 2,
+      "hint": "かたむいて いても へんが 3ぼんなら なかま",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-013",
+      "skill": "v10-mikake",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "へんが 3ぼんの かたちの",
+        "なまえは？"
+      ],
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "まる"
+      ],
+      "answer": 0,
+      "hint": "へんが 3ぼんなら ちょうてんも 3つ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-014",
+      "skill": "v10-mikake",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ちょうてんが 4つの かたちの",
+        "なまえは？"
+      ],
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "まる"
+      ],
+      "answer": 1,
+      "hint": "ちょうてんが 4つなら へんも 4ほん",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-015",
+      "skill": "v10-mikake",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "しかくけいは いくつ？",
+        "かずを かこう"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "round",
+          "circle",
+          "quad",
+          "pentagon"
+        ]
+      },
+      "answer": 1,
+      "hint": "かどが まるい かたちは しかくけいでは ない",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-016",
+      "skill": "v10-hen",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "この かたちの へんは なんぼん？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "triangle"
+        ]
+      },
+      "choices": [
+        "2ほん",
+        "3ぼん",
+        "4ほん"
+      ],
+      "answer": 1,
+      "hint": "まっすぐな せんを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-017",
+      "skill": "v10-hen",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "この かたちの へんは なんぼん？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "square"
+        ]
+      },
+      "choices": [
+        "3ぼん",
+        "4ほん",
+        "5ほん"
+      ],
+      "answer": 1,
+      "hint": "まっすぐな せんを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-018",
+      "skill": "v10-hen",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "ちょうてんは いくつ？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "triangle"
+        ]
+      },
+      "choices": [
+        "2つ",
+        "3つ",
+        "4つ"
+      ],
+      "answer": 1,
+      "hint": "かどの ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-019",
+      "skill": "v10-hen",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "この かたちの へんは なんぼん？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "quad"
+        ]
+      },
+      "choices": [
+        "3ぼん",
+        "4ほん",
+        "5ほん"
+      ],
+      "answer": 1,
+      "hint": "ながさが ちがっても へんは へん",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-020",
+      "skill": "v10-hen",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "この かたちの へんは なんぼん？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "pentagon"
+        ]
+      },
+      "choices": [
+        "4ほん",
+        "5ほん",
+        "6ぽん"
+      ],
+      "answer": 1,
+      "hint": "ゆっくり ひとまわり かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-021",
+      "skill": "v10-hen",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "ちょうてんは いくつ？"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "rect"
+        ]
+      },
+      "choices": [
+        "3つ",
+        "4つ",
+        "5つ"
+      ],
+      "answer": 1,
+      "hint": "かどの ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-022",
+      "skill": "v10-hen",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ちょうてんは いくつ？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 5,
+        "rows": 4,
+        "path": "0,0 4,0 0,3"
+      },
+      "choices": [
+        "3つ",
+        "4つ",
+        "5つ"
+      ],
+      "answer": 0,
+      "hint": "しろい まるの ところが ちょうてん",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-023",
+      "skill": "v10-hen",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "この かたちの へんは なんぼん？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 5,
+        "rows": 4,
+        "path": "0,0 4,0 4,3 0,3"
+      },
+      "choices": [
+        "3ぼん",
+        "4ほん",
+        "5ほん"
+      ],
+      "answer": 1,
+      "hint": "しろい まると まるを むすぶ せん",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-024",
+      "skill": "v10-hen",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "ちょうてんは いくつ？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 6,
+        "rows": 4,
+        "path": "1,0 5,1 4,3 0,2"
+      },
+      "choices": [
+        "3つ",
+        "4つ",
+        "5つ"
+      ],
+      "answer": 1,
+      "hint": "しろい まるの ところが ちょうてん",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-025",
+      "skill": "v10-hen",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "へんは なんぼん？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "pentagon"
+        ]
+      },
+      "answer": 5,
+      "hint": "まっすぐな せんを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-026",
+      "skill": "v10-hen",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ちょうてんは いくつ？",
+        "かずを かこう"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 6,
+        "rows": 4,
+        "path": "0,0 3,0 5,2 2,3"
+      },
+      "answer": 4,
+      "hint": "しろい まるを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-027",
+      "skill": "v10-hen",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ちょうてんは いくつ？",
+        "かずを かこう"
+      ],
+      "figure": {
+        "kind": "shapes2d",
+        "items": [
+          "triangle"
+        ]
+      },
+      "answer": 3,
+      "hint": "かどの ところを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-028",
+      "skill": "v10-hen",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "へんが 4ほんの かたちの",
+        "ちょうてんは いくつ？"
+      ],
+      "choices": [
+        "3つ",
+        "4つ",
+        "5つ"
+      ],
+      "answer": 1,
+      "hint": "へんの かずと ちょうてんの かずは おなじ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-029",
+      "skill": "v10-hen",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "ちょうてんが 3つの かたちの",
+        "へんは なんぼん？"
+      ],
+      "choices": [
+        "2ほん",
+        "3ぼん",
+        "4ほん"
+      ],
+      "answer": 1,
+      "hint": "ちょうてんの かずと おなじ だけ あるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-030",
+      "skill": "v10-hen",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "へんは なんぼん？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 6,
+        "rows": 5,
+        "path": "0,1 2,0 5,1 4,4 1,4"
+      },
+      "answer": 5,
+      "hint": "しろい まるを むすぶ せんを かぞえる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-031",
+      "skill": "v10-tsukuru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "この かたちは なに？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 5,
+        "rows": 4,
+        "path": "0,0 4,0 2,3"
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい"
+      ],
+      "answer": 0,
+      "hint": "しろい まるが 3つ あるね",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-032",
+      "skill": "v10-tsukuru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "この かたちは なに？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 5,
+        "rows": 4,
+        "path": "0,0 4,0 4,3 0,3"
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい"
+      ],
+      "answer": 1,
+      "hint": "しろい まるが 4つ あるね",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-033",
+      "skill": "v10-tsukuru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "てんを 3つ つないで かこむと",
+        "どんな かたちに なる？"
+      ],
+      "choices": [
+        "さんかくけい",
+        "しかくけい"
+      ],
+      "answer": 0,
+      "hint": "てんの かずが ちょうてんの かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-034",
+      "skill": "v10-tsukuru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "てんを 4つ つないで かこむと",
+        "どんな かたちに なる？"
+      ],
+      "choices": [
+        "さんかくけい",
+        "しかくけい"
+      ],
+      "answer": 1,
+      "hint": "てんの かずが ちょうてんの かずだよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-035",
+      "skill": "v10-tsukuru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "この かたちは なに？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 6,
+        "rows": 4,
+        "path": "1,0 5,0 3,3"
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "どちらでも ない"
+      ],
+      "answer": 0,
+      "hint": "へんを かぞえよう。3ぼん あるかな",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-036",
+      "skill": "v10-tsukuru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "この かたちは なに？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 6,
+        "rows": 4,
+        "path": "0,1 4,0 5,3 1,3"
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "どちらでも ない"
+      ],
+      "answer": 1,
+      "hint": "へんを かぞえよう。4ほん あるかな",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-037",
+      "skill": "v10-tsukuru",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "この かたちの なまえは？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 6,
+        "rows": 5,
+        "path": "0,0 5,0 5,4 0,4"
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "まる"
+      ],
+      "answer": 1,
+      "hint": "ちょうてんを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-038",
+      "skill": "v10-tsukuru",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "この かたちの なまえは？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 7,
+        "rows": 5,
+        "path": "0,4 3,0 6,4"
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "まる"
+      ],
+      "answer": 0,
+      "hint": "ちょうてんを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-039",
+      "skill": "v10-tsukuru",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "しかくけいを つくるには",
+        "てんは いくつ いる？"
+      ],
+      "choices": [
+        "3つ",
+        "4つ",
+        "5つ"
+      ],
+      "answer": 1,
+      "hint": "ちょうてんの かずだけ てんが いるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-040",
+      "skill": "v10-tsukuru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "へんは なんぼん？ かずを かこう"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 6,
+        "rows": 5,
+        "path": "0,2 4,0 5,3 1,4"
+      },
+      "answer": 4,
+      "hint": "しろい まるを むすぶ せんを かぞえる",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-041",
+      "skill": "v10-tsukuru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "ちょうてんは いくつ？",
+        "かずを かこう"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 6,
+        "rows": 5,
+        "path": "1,4 3,0 5,4"
+      },
+      "answer": 3,
+      "hint": "しろい まるを かぞえよう",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-042",
+      "skill": "v10-tsukuru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "さんかくけいを つくるには",
+        "てんは いくつ？ かずを かこう"
+      ],
+      "answer": 3,
+      "hint": "ちょうてんの かずだけ てんが いるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-043",
+      "skill": "v10-tsukuru",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "この かたちは なに？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 7,
+        "rows": 5,
+        "path": "0,1 3,0 6,2 5,4 1,4"
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "どちらでも ない"
+      ],
+      "answer": 2,
+      "hint": "へんが 5ほん あるよ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-044",
+      "skill": "v10-tsukuru",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "この かたちは なに？"
+      ],
+      "figure": {
+        "kind": "grid",
+        "cols": 6,
+        "rows": 5,
+        "path": "0,3 2,0 5,1 4,4"
+      },
+      "choices": [
+        "さんかくけい",
+        "しかくけい",
+        "どちらでも ない"
+      ],
+      "answer": 1,
+      "hint": "かたむいて いても ちょうてんは 4つ",
+      "reward": "ishi"
+    },
+    {
+      "id": "v10-045",
+      "skill": "v10-tsukuru",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "てんを 5つ つないで かこむと",
+        "しかくけいに なる？"
+      ],
+      "choices": [
+        "なる",
+        "ならない"
+      ],
+      "answer": 1,
+      "hint": "しかくけいの ちょうてんは 4つ だけ",
+      "reward": "ishi"
+    }
+  ]
 }

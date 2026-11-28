@@ -110,6 +110,17 @@ function expectedAnswer(item) {
   //   = が あるときは、いちばん うしろの = より あとだけを 見る。
   const ask = text.includes("=") ? text.slice(text.lastIndexOf("=") + 1) : text;
 
+  // ★ここから さきは「式を 計算した 答え」を もとめる しくみ。
+  //   つぎの 2つは 計算の 答えを きいていないので、機械では 見ない。
+  //   （どちらも 2年の「かけ算の きまり」で ほんとうに 出る 形。
+  //     見ないように しないと、**正しい問題が エラーに なる**）
+  //   ・□ が ある … 答えは □ の ほうで、式の 答えでは ない
+  //     「6 × 7 = 6 × 6 + □」→ □は 6（式の 答えは 42）
+  //   ・「いくつ おおい／ふえる／すくない」… きいているのは ちがい
+  //     「7 × 9 は 7 × 8より いくつ おおい？」→ 7（式の 答えは 63）
+  if (/□/.test(text)) return null;
+  if (/いくつ\s*(おおい|すくない|ふえる|へる)/.test(text)) return null;
+
   // ★かけ算（2年から × が つかえる）。
   //   「2 × 4 = 8。2 × 5 は いくつ？」のように さきに 式を 見せる 問題が あるので、
   //   ここでも = より あとだけを 見る。これが ないと 九九が ぜんぶ 手づめに なる。
@@ -279,7 +290,9 @@ function checkItem(unitId, item, skillIds, seenIds) {
   if (item.figure) {
     if (!FIGS.has(item.figure.kind)) add(`しらない figure.kind「${item.figure.kind}」`);
     const icons = [item.figure.icon, item.figure.iconA, item.figure.iconB]
-      .concat((item.figure.icons || []), (item.figure.rows || []).map((r) => r.icon))
+      // ★ますめ（grid）の rows は「ますの だんの かず」で、えグラフの rows（ぎょうの はいれつ）とは べつ。
+      //   かぞえないと .map で おちる。
+      .concat((item.figure.icons || []), (Array.isArray(item.figure.rows) ? item.figure.rows : []).map((r) => r.icon))
       .filter(Boolean);
     for (const ic of icons) if (!ICONS.has(ic)) add(`しらない icon「${ic}」`);
     if (item.figure.kind === "dots" && !(item.figure.count >= 0 && item.figure.count <= 20)) {

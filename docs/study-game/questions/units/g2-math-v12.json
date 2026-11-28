@@ -25,5 +25,812 @@
       "power": "count"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "v12-001",
+      "skill": "v12-imi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "はこの えを しきに すると？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 3,
+        "each": 2,
+        "icon": "apple"
+      },
+      "choices": [
+        "2 × 3",
+        "3 × 2",
+        "2 + 3"
+      ],
+      "answer": 0,
+      "hint": "2こずつ 3はこだから 2 × 3",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-002",
+      "skill": "v12-imi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "はこの えを しきに すると？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 4,
+        "each": 3,
+        "icon": "candy"
+      },
+      "choices": [
+        "3 × 4",
+        "4 × 3",
+        "3 + 4"
+      ],
+      "answer": 0,
+      "hint": "3こずつ 4はこだから 3 × 4",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-003",
+      "skill": "v12-imi",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "はこの えを しきに すると？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 2,
+        "each": 5,
+        "icon": "star"
+      },
+      "choices": [
+        "5 × 2",
+        "2 × 5",
+        "5 + 2"
+      ],
+      "answer": 0,
+      "hint": "5こずつ 2はこだから 5 × 2",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-004",
+      "skill": "v12-imi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "4こずつ 2さらに のせます。",
+        "しきは どれ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 2,
+        "each": 4,
+        "icon": "apple"
+      },
+      "choices": [
+        "4 × 2",
+        "2 × 4",
+        "4 + 2"
+      ],
+      "answer": 0,
+      "hint": "さきに 1さらぶんの かずを かく",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-005",
+      "skill": "v12-imi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "5 × 3 の えは どっち？"
+      ],
+      "choices": [
+        "5こずつ 3はこ",
+        "3こずつ 5はこ",
+        "5こと 3こ"
+      ],
+      "answer": 0,
+      "hint": "5 × 3 は 5こずつ 3つぶん",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-006",
+      "skill": "v12-imi",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "2 × 4 を たしざんに すると？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 4,
+        "each": 2,
+        "icon": "balloon"
+      },
+      "choices": [
+        "2 + 2 + 2 + 2",
+        "4 + 4",
+        "2 + 4"
+      ],
+      "answer": 0,
+      "hint": "2を 4かい たすのが 2 × 4",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-007",
+      "skill": "v12-imi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "3 × 5 を たしざんに すると？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 5,
+        "each": 3,
+        "icon": "flower"
+      },
+      "choices": [
+        "3 + 3 + 3 + 3 + 3",
+        "5 + 5 + 5",
+        "3 + 5"
+      ],
+      "answer": 0,
+      "hint": "3を 5かい たすのが 3 × 5",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-008",
+      "skill": "v12-imi",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "2こ・3こ・2こ あります。",
+        "かけざんで かけますか？"
+      ],
+      "choices": [
+        "かけない",
+        "かける"
+      ],
+      "answer": 0,
+      "hint": "おなじ かずずつ では ないから かけない",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-009",
+      "skill": "v12-imi",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "3こずつ 4つぶんは なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 4,
+        "each": 3,
+        "icon": "apple"
+      },
+      "answer": 12,
+      "hint": "3を 4かい たすと 12",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-010",
+      "skill": "v12-imi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "5 × 4 と おなじ いみは どれ？"
+      ],
+      "choices": [
+        "5こずつ 4つぶん",
+        "4こずつ 5つぶん",
+        "5こと 4こ"
+      ],
+      "answer": 0,
+      "hint": "まえの かずが 1つぶんの かず",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-011",
+      "skill": "v12-imi",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "かけざんで かけるのは どっち？"
+      ],
+      "choices": [
+        "3こずつ 4さら",
+        "3こと 4こと 2こ"
+      ],
+      "answer": 0,
+      "hint": "おなじ かずずつ なら かけざんに なる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-012",
+      "skill": "v12-imi",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "2こずつ 6つぶんは なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 6,
+        "each": 2,
+        "icon": "candy"
+      },
+      "answer": 12,
+      "hint": "2を 6かい たすと 12",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-013",
+      "skill": "v12-imi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "5 + 5 + 5 を かけざんに すると？"
+      ],
+      "choices": [
+        "5 × 3",
+        "3 × 5",
+        "5 × 5"
+      ],
+      "answer": 0,
+      "hint": "5が 3つぶん あるから 5 × 3",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-014",
+      "skill": "v12-imi",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "3こずつ 7つぶんは なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 7,
+        "each": 3,
+        "icon": "star"
+      },
+      "answer": 21,
+      "hint": "3のだんで 3 × 7 を かんがえる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-015",
+      "skill": "v12-imi",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "2こずつ 8さら。しきは どれ？"
+      ],
+      "choices": [
+        "2 × 8",
+        "8 × 2",
+        "2 + 8"
+      ],
+      "answer": 0,
+      "hint": "1さらぶんの かずが さきに くる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-016",
+      "skill": "v12-dan25",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "2 × 1 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 1,
+        "each": 2,
+        "icon": "apple"
+      },
+      "answer": 2,
+      "hint": "2こずつ 1つぶん",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-017",
+      "skill": "v12-dan25",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "2 × 2 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 2,
+        "each": 2,
+        "icon": "candy"
+      },
+      "answer": 4,
+      "hint": "2が 2つで 4",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-018",
+      "skill": "v12-dan25",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "5 × 1 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 1,
+        "each": 5,
+        "icon": "star"
+      },
+      "answer": 5,
+      "hint": "5こずつ 1つぶん",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-019",
+      "skill": "v12-dan25",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "2 × 3 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 3,
+        "each": 2,
+        "icon": "fish"
+      },
+      "answer": 6,
+      "hint": "2が 3つで 6",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-020",
+      "skill": "v12-dan25",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "5 × 2 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 2,
+        "each": 5,
+        "icon": "flower"
+      },
+      "answer": 10,
+      "hint": "5が 2つで 10",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-021",
+      "skill": "v12-dan25",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "2 × 4 = 8。2 × 5 は いくつ？"
+      ],
+      "answer": 10,
+      "hint": "2 ふえるから 8 より 2 おおい",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-022",
+      "skill": "v12-dan25",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "5 × 3 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 3,
+        "each": 5,
+        "icon": "apple"
+      },
+      "answer": 15,
+      "hint": "5が 3つで 15",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-023",
+      "skill": "v12-dan25",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "2 × 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 6,
+        "each": 2,
+        "icon": "balloon"
+      },
+      "answer": 12,
+      "hint": "2が 6つで 12",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-024",
+      "skill": "v12-dan25",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "5 × 4 = 20。5 × 5 は いくつ？"
+      ],
+      "answer": 25,
+      "hint": "5 ふえるから 20 より 5 おおい",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-025",
+      "skill": "v12-dan25",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "2 × 7 = 14。2 × 8 は いくつ？"
+      ],
+      "answer": 16,
+      "hint": "2 ふえるから 14 より 2 おおい",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-026",
+      "skill": "v12-dan25",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "5 × 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 6,
+        "each": 5,
+        "icon": "flower"
+      },
+      "answer": 30,
+      "hint": "5のだんは 5 ずつ ふえる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-027",
+      "skill": "v12-dan25",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "あめを 5こずつ 7ふくろに",
+        "いれます。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 7,
+        "each": 5,
+        "icon": "candy"
+      },
+      "answer": 35,
+      "hint": "5 × 7 で もとめる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-028",
+      "skill": "v12-dan25",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "くるまを 2だいずつ 9れつ",
+        "ならべます。ぜんぶで なんだい？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 9,
+        "each": 2,
+        "icon": "car"
+      },
+      "answer": 18,
+      "hint": "2 × 9 で もとめる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-029",
+      "skill": "v12-dan25",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ほしを 5こずつ 8つの かごに",
+        "いれます。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 8,
+        "each": 5,
+        "icon": "star"
+      },
+      "answer": 40,
+      "hint": "5 × 8 で もとめる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-030",
+      "skill": "v12-dan25",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "はなを 5ほんずつ 9たばに",
+        "します。ぜんぶで なんぼん？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 9,
+        "each": 5,
+        "icon": "flower"
+      },
+      "answer": 45,
+      "hint": "5 × 9 で もとめる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-031",
+      "skill": "v12-dan34",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "3 × 1 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 1,
+        "each": 3,
+        "icon": "apple"
+      },
+      "answer": 3,
+      "hint": "3こずつ 1つぶん",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-032",
+      "skill": "v12-dan34",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "3 × 2 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 2,
+        "each": 3,
+        "icon": "candy"
+      },
+      "answer": 6,
+      "hint": "3が 2つで 6",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-033",
+      "skill": "v12-dan34",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "4 × 1 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 1,
+        "each": 4,
+        "icon": "star"
+      },
+      "answer": 4,
+      "hint": "4こずつ 1つぶん",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-034",
+      "skill": "v12-dan34",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "3 × 3 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 3,
+        "each": 3,
+        "icon": "fish"
+      },
+      "answer": 9,
+      "hint": "3が 3つで 9",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-035",
+      "skill": "v12-dan34",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "4 × 2 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 2,
+        "each": 4,
+        "icon": "car"
+      },
+      "answer": 8,
+      "hint": "4が 2つで 8",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-036",
+      "skill": "v12-dan34",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "3 × 4 = 12。3 × 5 は いくつ？"
+      ],
+      "answer": 15,
+      "hint": "3 ふえるから 12 より 3 おおい",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-037",
+      "skill": "v12-dan34",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "4 × 3 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 3,
+        "each": 4,
+        "icon": "balloon"
+      },
+      "answer": 12,
+      "hint": "4が 3つで 12",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-038",
+      "skill": "v12-dan34",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "3 × 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 6,
+        "each": 3,
+        "icon": "flower"
+      },
+      "answer": 18,
+      "hint": "3のだんは 3 ずつ ふえる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-039",
+      "skill": "v12-dan34",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "4 × 4 = 16。4 × 5 は いくつ？"
+      ],
+      "answer": 20,
+      "hint": "4 ふえるから 16 より 4 おおい",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-040",
+      "skill": "v12-dan34",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "3 × 7 = 21。3 × 8 は いくつ？"
+      ],
+      "answer": 24,
+      "hint": "3 ふえるから 21 より 3 おおい",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-041",
+      "skill": "v12-dan34",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "4 × 6 は いくつ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 6,
+        "each": 4,
+        "icon": "rabbit"
+      },
+      "answer": 24,
+      "hint": "4のだんは 4 ずつ ふえる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-042",
+      "skill": "v12-dan34",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "おかしを 4こずつ 7つの さらに",
+        "ならべます。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 7,
+        "each": 4,
+        "icon": "apple"
+      },
+      "answer": 28,
+      "hint": "4 × 7 で もとめる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-043",
+      "skill": "v12-dan34",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "あめを 3こずつ 9ふくろに",
+        "いれます。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 9,
+        "each": 3,
+        "icon": "candy"
+      },
+      "answer": 27,
+      "hint": "3 × 9 で もとめる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-044",
+      "skill": "v12-dan34",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ふうせんを 4こずつ 8たばに",
+        "します。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 8,
+        "each": 4,
+        "icon": "balloon"
+      },
+      "answer": 32,
+      "hint": "4 × 8 で もとめる",
+      "reward": "ki"
+    },
+    {
+      "id": "v12-045",
+      "skill": "v12-dan34",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "いぬが 4ひきずつ 9つの",
+        "こやに います。なんびき？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 9,
+        "each": 4,
+        "icon": "dog"
+      },
+      "answer": 36,
+      "hint": "4 × 9 で もとめる",
+      "reward": "ki"
+    }
+  ]
 }

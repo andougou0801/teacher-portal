@@ -1,0 +1,695 @@
+{
+  "v14": [
+    {
+      "id": "v14-001",
+      "skill": "v14-irekae",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "2 × 3 = 6。3 × 2 は いくつ？"
+      ],
+      "answer": 6,
+      "hint": "かける じゅんを かえても おなじ",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-002",
+      "skill": "v14-irekae",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "4 × 2 = 8。2 × 4 は いくつ？"
+      ],
+      "answer": 8,
+      "hint": "かける じゅんを かえても おなじ",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-003",
+      "skill": "v14-irekae",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "3 × 5 と 5 × 3 の こたえは？"
+      ],
+      "choices": [
+        "おなじ",
+        "ちがう"
+      ],
+      "answer": 0,
+      "hint": "じゅんを かえても こたえは おなじ",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-004",
+      "skill": "v14-irekae",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "5 × 4 = 20。4 × 5 は いくつ？"
+      ],
+      "answer": 20,
+      "hint": "かける じゅんを かえても おなじ",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-005",
+      "skill": "v14-irekae",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "6 × 3 = 18。3 × 6 は いくつ？"
+      ],
+      "answer": 18,
+      "hint": "かける じゅんを かえても おなじ",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-006",
+      "skill": "v14-irekae",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "7 × 2 = 2 × □"
+      ],
+      "answer": 7,
+      "hint": "じゅんを かえた しきに なっている",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-007",
+      "skill": "v14-irekae",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "8 × 4 = 32。4 × 8 は いくつ？"
+      ],
+      "answer": 32,
+      "hint": "かける じゅんを かえても おなじ",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-008",
+      "skill": "v14-irekae",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "6 × 9 = □ × 6"
+      ],
+      "answer": 9,
+      "hint": "じゅんを かえた しきに なっている",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-009",
+      "skill": "v14-irekae",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "3こずつ 4さらと 4こずつ 3さら。",
+        "えは おなじに なる？"
+      ],
+      "choices": [
+        "ちがう えに なる",
+        "おなじ えに なる"
+      ],
+      "answer": 0,
+      "hint": "こたえは おなじでも ばめんは ちがう",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-010",
+      "skill": "v14-irekae",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "7 × 8 = 56。8 × 7 は いくつ？"
+      ],
+      "answer": 56,
+      "hint": "かける じゅんを かえても おなじ",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-011",
+      "skill": "v14-irekae",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "9 × 4 = 4 × □"
+      ],
+      "answer": 9,
+      "hint": "じゅんを かえた しきに なっている",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-012",
+      "skill": "v14-irekae",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "6 × 7 と おなじ こたえは どれ？"
+      ],
+      "choices": [
+        "7 × 6",
+        "6 × 8",
+        "7 × 7"
+      ],
+      "answer": 0,
+      "hint": "かける じゅんを かえても おなじ",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-013",
+      "skill": "v14-irekae",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "9 × 8 = 72。8 × 9 は いくつ？"
+      ],
+      "answer": 72,
+      "hint": "かける じゅんを かえても おなじ",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-014",
+      "skill": "v14-irekae",
+      "level": 5,
+      "type": "choice",
+      "prompt": [
+        "4 × 9 を 9のだんで もとめると？"
+      ],
+      "choices": [
+        "9 × 4",
+        "9 × 9",
+        "4 × 4"
+      ],
+      "answer": 0,
+      "hint": "4 × 9 と 9 × 4 は おなじ こたえ",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-015",
+      "skill": "v14-irekae",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "7 × 5 = □ × 7"
+      ],
+      "answer": 5,
+      "hint": "じゅんを かえた しきに なっている",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-016",
+      "skill": "v14-fueru",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "4 × 3 = 12。4 × 4 は いくつ？"
+      ],
+      "answer": 16,
+      "hint": "4 ふえるから 12 より 4 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-017",
+      "skill": "v14-fueru",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "2 × 5 = 10。2 × 6 は いくつ？"
+      ],
+      "answer": 12,
+      "hint": "2 ふえるから 10 より 2 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-018",
+      "skill": "v14-fueru",
+      "level": 1,
+      "type": "choice",
+      "prompt": [
+        "3のだんは 1ふえると",
+        "いくつ ふえる？"
+      ],
+      "choices": [
+        "3",
+        "1",
+        "6"
+      ],
+      "answer": 0,
+      "hint": "3のだんは 3 ずつ ふえる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-019",
+      "skill": "v14-fueru",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "5 × 6 = 30。5 × 7 は いくつ？"
+      ],
+      "answer": 35,
+      "hint": "5 ふえるから 30 より 5 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-020",
+      "skill": "v14-fueru",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "6 × 4 = 24。6 × 5 は いくつ？"
+      ],
+      "answer": 30,
+      "hint": "6 ふえるから 24 より 6 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-021",
+      "skill": "v14-fueru",
+      "level": 2,
+      "type": "choice",
+      "prompt": [
+        "7のだんは 1ふえると",
+        "いくつ ふえる？"
+      ],
+      "choices": [
+        "7",
+        "1",
+        "14"
+      ],
+      "answer": 0,
+      "hint": "7のだんは 7 ずつ ふえる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-022",
+      "skill": "v14-fueru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "8 × 3 = 24。8 × 4 は いくつ？"
+      ],
+      "answer": 32,
+      "hint": "8 ふえるから 24 より 8 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-023",
+      "skill": "v14-fueru",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "7 × 5 = 35。7 × 6 は いくつ？"
+      ],
+      "answer": 42,
+      "hint": "7 ふえるから 35 より 7 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-024",
+      "skill": "v14-fueru",
+      "level": 3,
+      "type": "choice",
+      "prompt": [
+        "9 × 5 = 45。9 × 6 は いくつ？"
+      ],
+      "choices": [
+        "54",
+        "50",
+        "45"
+      ],
+      "answer": 0,
+      "hint": "9 ふえるから 45 より 9 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-025",
+      "skill": "v14-fueru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "6 × 8 = 48。6 × 9 は いくつ？"
+      ],
+      "answer": 54,
+      "hint": "6 ふえるから 48 より 6 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-026",
+      "skill": "v14-fueru",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "9 × 3 = 27。1ふえると",
+        "こたえは いくつ ふえる？"
+      ],
+      "answer": 9,
+      "hint": "9のだんは 9 ずつ ふえる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-027",
+      "skill": "v14-fueru",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "7 × 8 = 56。1ふえると",
+        "こたえは いくつ ふえる？"
+      ],
+      "choices": [
+        "7",
+        "1",
+        "8"
+      ],
+      "answer": 0,
+      "hint": "7のだんは 7 ずつ ふえる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-028",
+      "skill": "v14-fueru",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "9 × 8 = 72。9 × 9 は いくつ？"
+      ],
+      "answer": 81,
+      "hint": "9 ふえるから 72 より 9 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-029",
+      "skill": "v14-fueru",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "8 × 7 = 56。8 × 8 は いくつ？"
+      ],
+      "answer": 64,
+      "hint": "8 ふえるから 56 より 8 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-030",
+      "skill": "v14-fueru",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "□に あてはまる かずは？",
+        "6 × 6 + □ = 42"
+      ],
+      "answer": 6,
+      "hint": "6 × 7 は 6 × 6 より 6 おおい",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-031",
+      "skill": "v14-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "あめを 3こずつ 2ふくろに",
+        "いれます。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 2,
+        "each": 3,
+        "icon": "candy"
+      },
+      "answer": 6,
+      "hint": "3 × 2 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-032",
+      "skill": "v14-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "くるまが 4だいずつ 2れつ",
+        "あります。ぜんぶで なんだい？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 2,
+        "each": 4,
+        "icon": "car"
+      },
+      "answer": 8,
+      "hint": "4 × 2 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-033",
+      "skill": "v14-bun",
+      "level": 1,
+      "type": "input",
+      "prompt": [
+        "はなを 5ほんずつ 3たばに",
+        "します。ぜんぶで なんぼん？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 3,
+        "each": 5,
+        "icon": "flower"
+      },
+      "answer": 15,
+      "hint": "5 × 3 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-034",
+      "skill": "v14-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "さらに りんごが 6こずつ。",
+        "さらが 3つで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 3,
+        "each": 6,
+        "icon": "apple"
+      },
+      "answer": 18,
+      "hint": "6 × 3 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-035",
+      "skill": "v14-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "ほしが 4こずつ 6れつ",
+        "あります。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 6,
+        "each": 4,
+        "icon": "star"
+      },
+      "answer": 24,
+      "hint": "4 × 6 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-036",
+      "skill": "v14-bun",
+      "level": 2,
+      "type": "input",
+      "prompt": [
+        "おかしを 7こずつ 4はこに",
+        "いれます。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 4,
+        "each": 7,
+        "icon": "candy"
+      },
+      "answer": 28,
+      "hint": "7 × 4 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-037",
+      "skill": "v14-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "かごに うさぎが 2ひきずつ。",
+        "かごが 8つで なんびき？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 8,
+        "each": 2,
+        "icon": "rabbit"
+      },
+      "answer": 16,
+      "hint": "2 × 8 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-038",
+      "skill": "v14-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "さかなを 6ひきずつ 7つの",
+        "バケツに いれます。なんびき？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 7,
+        "each": 6,
+        "icon": "fish"
+      },
+      "answer": 42,
+      "hint": "6 × 7 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-039",
+      "skill": "v14-bun",
+      "level": 3,
+      "type": "input",
+      "prompt": [
+        "ふうせんを 8こずつ 5たばに",
+        "します。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 5,
+        "each": 8,
+        "icon": "balloon"
+      },
+      "answer": 40,
+      "hint": "8 × 5 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-040",
+      "skill": "v14-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "あめを 9こずつ 6ふくろに",
+        "いれます。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 6,
+        "each": 9,
+        "icon": "candy"
+      },
+      "answer": 54,
+      "hint": "9 × 6 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-041",
+      "skill": "v14-bun",
+      "level": 4,
+      "type": "input",
+      "prompt": [
+        "いぬが 3びきずつ 9つの",
+        "こやに います。なんびき？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 9,
+        "each": 3,
+        "icon": "dog"
+      },
+      "answer": 27,
+      "hint": "3 × 9 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-042",
+      "skill": "v14-bun",
+      "level": 4,
+      "type": "choice",
+      "prompt": [
+        "8 × 7 の ばめんは どれ？"
+      ],
+      "choices": [
+        "8こずつ 7はこ",
+        "7こずつ 8はこ",
+        "8こと 7こ"
+      ],
+      "answer": 0,
+      "hint": "8 × 7 は 8こずつ 7つぶん",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-043",
+      "skill": "v14-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "りんごを 7こずつ 8さらに",
+        "ならべます。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 8,
+        "each": 7,
+        "icon": "apple"
+      },
+      "answer": 56,
+      "hint": "7 × 8 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-044",
+      "skill": "v14-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ほしを 9こずつ 9つの はこに",
+        "いれます。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 9,
+        "each": 9,
+        "icon": "star"
+      },
+      "answer": 81,
+      "hint": "9 × 9 で もとめる",
+      "reward": "nendo"
+    },
+    {
+      "id": "v14-045",
+      "skill": "v14-bun",
+      "level": 5,
+      "type": "input",
+      "prompt": [
+        "ふうせんが 8こずつ 9れつ",
+        "あります。ぜんぶで なんこ？"
+      ],
+      "figure": {
+        "kind": "times",
+        "groups": 9,
+        "each": 8,
+        "icon": "balloon"
+      },
+      "answer": 72,
+      "hint": "8 × 9 で もとめる",
+      "reward": "nendo"
+    }
+  ]
+}
